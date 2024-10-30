@@ -1,0 +1,73 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PaymentMethod {
+  PIX
+  BOLETO
+  CREDIT_CARD
+  DEBIT_CARD
+  UNKNOWN
+}
+
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  transactions Transaction[]
+
+  accounts Account[]
+
+  @@map("users")
+}
+
+model Transaction {
+  id             String   @id @default(uuid())
+  name           String
+  description    String
+  amount         BigInt
+  payment_method String
+  is_hidden      Boolean  @default(false)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  account    Account? @relation(fields: [account_id], references: [id])
+  account_id String?
+
+  category    Category? @relation(fields: [category_id], references: [id])
+  category_id String?
+
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String?
+
+  @@map("transactions")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  external_id String   @unique
+  name        String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+model Account {
+  id          String   @id @default(uuid())
+  external_id String   @unique
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  user    User?   @relation(fields: [user_id], references: [id])
+  user_id String?
+
+  transactions Transaction[]
+
+  @@map("accounts")
+}
