@@ -1,6 +1,8 @@
 # FINANCE MANAGER
 
-## MVP
+## Escopo
+
+### MVP
 
 - Autenticação com google
 - Conectar com open finance do seu banco
@@ -27,7 +29,7 @@
   - Listar informações gerais do orçamento (orçamento total, valor gasto, e recomendado por dia)
   - Budget por categoria (progress bar de orçamento total e valor gasto)
 
-## Backlog
+### Backlog
 
 - Transações customizadas: Criar, Atualizar e Deletar transações (criadas pelo usuário)
 - Carteira (representa a carteira física, quantia que pode ser alterada pelo usuário e é adicionada no balanço total)
@@ -36,3 +38,15 @@
 - CRUD Objetivos para acumular dinheiro, referente ao balanço total da sua conta (sugestão de viagem, comprar carro, reserva de emergência ou outro customizável)
 - Tela de analytics com gráfico e insights
 - Tela de investimentos
+
+## Referências
+
+### Mobills
+
+- [Play Store](https://play.google.com/store/apps/details?id=br.com.gerenciadorfinanceiro.controller)
+- [Apple Store](https://apps.apple.com/us/app/mobills-budget-planner/id921838244)
+
+### Minhas Economias
+
+- [Play Store](https://play.google.com/store/apps/details?id=com.minhaseconomias&hl=pt)
+- [Apple Store](https://apps.apple.com/br/app/minhas-economias/id520869873)
