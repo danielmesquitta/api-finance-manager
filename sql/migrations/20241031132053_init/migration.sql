@@ -12,96 +12,93 @@ CREATE TYPE "AccountType" AS ENUM ('BANK', 'CREDIT', 'UNKNOWN');
 
 -- CreateTable
 CREATE TABLE "users" (
-    "id" TEXT NOT NULL,
-    "external_id" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "tier" "Tier" NOT NULL DEFAULT 'TRIAL',
-    "subscription_expires_at" TIMESTAMP(3) NOT NULL,
-    "syncronized_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "subscription_expires_at" TIMESTAMPTZ NOT NULL,
+    "synchronized_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "transactions" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "amount" DOUBLE PRECISION NOT NULL,
     "payment_method" "PaymentMethod" NOT NULL DEFAULT 'UNKNOWN',
     "is_ignored" BOOLEAN NOT NULL DEFAULT false,
-    "date" TIMESTAMP(3) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-    "user_id" TEXT NOT NULL,
-    "account_id" TEXT,
-    "category_id" TEXT,
+    "date" TIMESTAMPTZ NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "user_id" UUID NOT NULL,
+    "account_id" UUID,
+    "category_id" UUID,
 
     CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "categories" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "accounts" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "type" "AccountType" NOT NULL DEFAULT 'UNKNOWN',
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
 
     CONSTRAINT "accounts_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "user_accounts" (
-    "id" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" TEXT NOT NULL,
-    "account_id" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "external_id" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "user_id" UUID NOT NULL,
+    "account_id" UUID NOT NULL,
 
     CONSTRAINT "user_accounts_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "budgets" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "amount" DOUBLE PRECISION NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-    "user_id" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "user_id" UUID NOT NULL,
 
     CONSTRAINT "budgets_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "budget_categories" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "amount" DOUBLE PRECISION NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
-    "budget_id" TEXT NOT NULL,
-    "category_id" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL,
+    "budget_id" UUID NOT NULL,
+    "category_id" UUID NOT NULL,
 
     CONSTRAINT "budget_categories_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "users_external_id_key" ON "users"("external_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
@@ -114,6 +111,9 @@ CREATE UNIQUE INDEX "categories_external_id_key" ON "categories"("external_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "accounts_external_id_key" ON "accounts"("external_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_accounts_external_id_key" ON "user_accounts"("external_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "budgets_user_id_key" ON "budgets"("user_id");

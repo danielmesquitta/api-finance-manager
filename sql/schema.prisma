@@ -15,15 +15,14 @@ enum Tier {
 }
 
 model User {
-  id                      String   @id @default(uuid())
-  external_id             String   @unique
+  id                      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name                    String
   email                   String   @unique
   tier                    Tier     @default(TRIAL)
-  subscription_expires_at DateTime
-  syncronized_at          DateTime @default(now())
-  created_at              DateTime @default(now())
-  updated_at              DateTime @updatedAt
+  subscription_expires_at DateTime @db.Timestamptz()
+  synchronized_at         DateTime @default(now()) @db.Timestamptz()
+  created_at              DateTime @default(now()) @db.Timestamptz()
+  updated_at              DateTime @updatedAt @db.Timestamptz()
 
   budget Budget?
 
@@ -44,35 +43,35 @@ enum PaymentMethod {
 }
 
 model Transaction {
-  id             String        @id @default(uuid())
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id    String        @unique
   name           String
   description    String?
   amount         Float
   payment_method PaymentMethod @default(UNKNOWN)
   is_ignored     Boolean       @default(false)
-  date           DateTime
-  created_at     DateTime      @default(now())
-  updated_at     DateTime      @updatedAt
+  date           DateTime      @db.Timestamptz()
+  created_at     DateTime      @default(now()) @db.Timestamptz()
+  updated_at     DateTime      @updatedAt @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user_id String
+  user_id String @db.Uuid
 
   account    Account? @relation(fields: [account_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  account_id String?
+  account_id String?  @db.Uuid
 
   category    Category? @relation(fields: [category_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  category_id String?
+  category_id String?   @db.Uuid
 
   @@map("transactions")
 }
 
 model Category {
-  id          String   @id @default(uuid())
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id String   @unique
   name        String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  created_at  DateTime @default(now()) @db.Timestamptz()
+  updated_at  DateTime @updatedAt @db.Timestamptz()
 
   transactions Transaction[]
 
@@ -88,12 +87,12 @@ enum AccountType {
 }
 
 model Account {
-  id          String      @id @default(uuid())
+  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id String      @unique
   name        String
   type        AccountType @default(UNKNOWN)
-  created_at  DateTime    @default(now())
-  updated_at  DateTime    @updatedAt
+  created_at  DateTime    @default(now()) @db.Timestamptz()
+  updated_at  DateTime    @updatedAt @db.Timestamptz()
 
   transactions Transaction[]
 
@@ -103,26 +102,27 @@ model Account {
 }
 
 model UserAccount {
-  id         String   @id @default(uuid())
-  created_at DateTime @default(now())
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String   @unique
+  created_at  DateTime @default(now()) @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user_id String
+  user_id String @db.Uuid
 
   account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  account_id String
+  account_id String  @db.Uuid
 
   @@map("user_accounts")
 }
 
 model Budget {
-  id         String   @id @default(uuid())
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   amount     Float
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime @default(now()) @db.Timestamptz()
+  updated_at DateTime @updatedAt @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user_id String @unique
+  user_id String @unique @db.Uuid
 
   budget_categories BudgetCategory[]
 
@@ -130,16 +130,16 @@ model Budget {
 }
 
 model BudgetCategory {
-  id         String   @id @default(uuid())
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   amount     Float
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime @default(now()) @db.Timestamptz()
+  updated_at DateTime @updatedAt @db.Timestamptz()
 
   budget    Budget @relation(fields: [budget_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  budget_id String
+  budget_id String @db.Uuid
 
   category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  category_id String
+  category_id String   @db.Uuid
 
   @@map("budget_categories")
 }
