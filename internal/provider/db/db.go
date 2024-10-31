@@ -42,7 +42,9 @@ func (q *Queries) UseTx(
 ) *Queries {
 	t, ok := ctx.Value(tx.Key).(pgx.Tx)
 	if ok {
-		return &Queries{q.WithTx(t)}
+		return &Queries{
+			Queries: q.WithTx(t),
+		}
 	}
 	return q
 }

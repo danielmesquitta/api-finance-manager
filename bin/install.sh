@@ -6,6 +6,7 @@ packages=(
     "github.com/air-verse/air@latest"
     "github.com/steebchen/prisma-client-go@latest"
     "github.com/sqlc-dev/sqlc/cmd/sqlc@latest"
+    "github.com/google/wire/cmd/wire@latest"
 )
 
 echo "Installing and updating Go packages..."

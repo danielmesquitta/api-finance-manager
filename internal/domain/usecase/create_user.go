@@ -11,27 +11,30 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type CreateUser struct {
+type CreateUserUseCase struct {
 	v  validator.Validator
 	ur repo.UserRepo
 }
 
-func NewCreateUser(
+func NewCreateUserUseCase(
 	v validator.Validator,
 	ur repo.UserRepo,
-) *CreateUser {
-	return &CreateUser{
+) *CreateUserUseCase {
+	return &CreateUserUseCase{
 		v:  v,
 		ur: ur,
 	}
 }
 
-type CreateUserInput struct {
+type CreateUserUseCaseInput struct {
 	Name  string `validate:"required"`
 	Email string `validate:"required,email"`
 }
 
-func (uc *CreateUser) Execute(ctx context.Context, in CreateUserInput) (*entity.User, error) {
+func (uc *CreateUserUseCase) Execute(
+	ctx context.Context,
+	in CreateUserUseCaseInput,
+) (*entity.User, error) {
 	if err := uc.v.Validate(in); err != nil {
 		return nil, errs.New(err)
 	}
