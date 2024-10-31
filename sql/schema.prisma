@@ -1,6 +1,37 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [unaccent]
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+enum Tier {
+  TRIAL
+  PRO
+}
+
+model User {
+  id                      String   @id @default(uuid())
+  external_id             String   @unique
+  name                    String
+  email                   String   @unique
+  tier                    Tier     @default(TRIAL)
+  subscription_expires_at DateTime
+  syncronized_at          DateTime @default(now())
+  created_at              DateTime @default(now())
+  updated_at              DateTime @updatedAt
+
+  budget Budget?
+
+  transactions Transaction[]
+
+  user_accounts UserAccount[]
+
+  @@map("users")
 }
 
 enum PaymentMethod {
@@ -8,40 +39,30 @@ enum PaymentMethod {
   BOLETO
   CREDIT_CARD
   DEBIT_CARD
+  TRANSFERENCE
   UNKNOWN
 }
 
-model User {
-  id         String   @id @default(uuid())
-  name       String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  transactions Transaction[]
-
-  accounts Account[]
-
-  @@map("users")
-}
-
 model Transaction {
-  id             String   @id @default(uuid())
+  id             String        @id @default(uuid())
+  external_id    String        @unique
   name           String
-  description    String
-  amount         BigInt
-  payment_method String
-  is_hidden      Boolean  @default(false)
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  description    String?
+  amount         Float
+  payment_method PaymentMethod @default(UNKNOWN)
+  is_ignored     Boolean       @default(false)
+  date           DateTime
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
 
-  account    Account? @relation(fields: [account_id], references: [id])
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id String
+
+  account    Account? @relation(fields: [account_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   account_id String?
 
-  category    Category? @relation(fields: [category_id], references: [id])
+  category    Category? @relation(fields: [category_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   category_id String?
-
-  user    User?   @relation(fields: [user_id], references: [id])
-  user_id String?
 
   @@map("transactions")
 }
@@ -55,19 +76,70 @@ model Category {
 
   transactions Transaction[]
 
+  budget_categories BudgetCategory[]
+
   @@map("categories")
 }
 
-model Account {
-  id          String   @id @default(uuid())
-  external_id String   @unique
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+enum AccountType {
+  BANK
+  CREDIT
+  UNKNOWN
+}
 
-  user    User?   @relation(fields: [user_id], references: [id])
-  user_id String?
+model Account {
+  id          String      @id @default(uuid())
+  external_id String      @unique
+  name        String
+  type        AccountType @default(UNKNOWN)
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
 
   transactions Transaction[]
 
+  user_accounts UserAccount[]
+
   @@map("accounts")
+}
+
+model UserAccount {
+  id         String   @id @default(uuid())
+  created_at DateTime @default(now())
+
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id String
+
+  account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id String
+
+  @@map("user_accounts")
+}
+
+model Budget {
+  id         String   @id @default(uuid())
+  amount     Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id String @unique
+
+  budget_categories BudgetCategory[]
+
+  @@map("budgets")
+}
+
+model BudgetCategory {
+  id         String   @id @default(uuid())
+  amount     Float
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  budget    Budget @relation(fields: [budget_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  budget_id String
+
+  category    Category @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category_id String
+
+  @@map("budget_categories")
 }

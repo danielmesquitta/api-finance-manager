@@ -24,13 +24,13 @@
   - Definir um gasto limite
   - Atualizar o orçamento
   - Deletar o orçamento
-  - Enviar notificações quando os gastos estiverem em 80% e >=100%
   - Definir orçamento por categoria (Opcional para o usuário, pode criar apenas o orçamento geral)
   - Listar informações gerais do orçamento (orçamento total, valor gasto, e recomendado por dia)
-  - Budget por categoria (progress bar de orçamento total e valor gasto)
+  - Orçamento por (progress bar de orçamento total e valor gasto)
 
 ### Backlog
 
+- Enviar notificações de orçamento quando os gastos estiverem em 80% e >=100% do orçamento definido
 - Transações customizadas: Criar, Atualizar e Deletar transações (criadas pelo usuário)
 - Carteira (representa a carteira física, quantia que pode ser alterada pelo usuário e é adicionada no balanço total)
 - Transações customizadas podem ser vinculadas a carteira
