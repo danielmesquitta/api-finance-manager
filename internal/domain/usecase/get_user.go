@@ -9,19 +9,19 @@ import (
 	"github.com/google/uuid"
 )
 
-type GetUserByID struct {
+type GetUser struct {
 	ur repo.UserRepo
 }
 
-func NewGetUserByID(
+func NewGetUser(
 	ur repo.UserRepo,
-) *GetUserByID {
-	return &GetUserByID{
+) *GetUser {
+	return &GetUser{
 		ur: ur,
 	}
 }
 
-func (uc *GetUserByID) Execute(
+func (uc *GetUser) Execute(
 	ctx context.Context,
 	id string,
 ) (*entity.User, error) {

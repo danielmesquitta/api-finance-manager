@@ -15,4 +15,8 @@ type User struct {
 	SynchronizedAt        time.Time `json:"synchronized_at"`
 	CreatedAt             time.Time `json:"created_at"`
 	UpdatedAt             time.Time `json:"updated_at"`
+
+	Budget       *Budget       `json:"budget"`
+	Transactions []Transaction `json:"transactions"`
+	Accounts     []Account     `json:"accounts"`
 }

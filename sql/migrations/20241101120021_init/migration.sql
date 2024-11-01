@@ -30,7 +30,7 @@ CREATE TABLE "transactions" (
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
-    "amount" DOUBLE PRECISION NOT NULL,
+    "amount" BIGINT NOT NULL,
     "payment_method" "PaymentMethod" NOT NULL DEFAULT 'UNKNOWN',
     "is_ignored" BOOLEAN NOT NULL DEFAULT false,
     "date" TIMESTAMPTZ NOT NULL,
@@ -62,25 +62,28 @@ CREATE TABLE "accounts" (
     "type" "AccountType" NOT NULL DEFAULT 'UNKNOWN',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL,
+    "user_id" UUID NOT NULL,
+    "institution_id" UUID NOT NULL,
 
     CONSTRAINT "accounts_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "user_accounts" (
+CREATE TABLE "institutions" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "image_url" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" UUID NOT NULL,
-    "account_id" UUID NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL,
 
-    CONSTRAINT "user_accounts_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "institutions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "budgets" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "amount" DOUBLE PRECISION NOT NULL,
+    "amount" BIGINT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL,
     "user_id" UUID NOT NULL,
@@ -91,7 +94,7 @@ CREATE TABLE "budgets" (
 -- CreateTable
 CREATE TABLE "budget_categories" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "amount" DOUBLE PRECISION NOT NULL,
+    "amount" BIGINT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL,
     "budget_id" UUID NOT NULL,
@@ -113,7 +116,7 @@ CREATE UNIQUE INDEX "categories_external_id_key" ON "categories"("external_id");
 CREATE UNIQUE INDEX "accounts_external_id_key" ON "accounts"("external_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_accounts_external_id_key" ON "user_accounts"("external_id");
+CREATE UNIQUE INDEX "institutions_external_id_key" ON "institutions"("external_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "budgets_user_id_key" ON "budgets"("user_id");
@@ -128,10 +131,10 @@ ALTER TABLE "transactions" ADD CONSTRAINT "transactions_account_id_fkey" FOREIGN
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_accounts" ADD CONSTRAINT "user_accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_accounts" ADD CONSTRAINT "user_accounts_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "accounts" ADD CONSTRAINT "accounts_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "institutions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "budgets" ADD CONSTRAINT "budgets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

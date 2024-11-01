@@ -39,6 +39,10 @@
 - Tela de analytics com gráfico e insights
 - Tela de investimentos
 
+### Pluggy
+
+- account.item_id -> consent.item_id -> item = institution
+
 ## Referências
 
 ### Mobills

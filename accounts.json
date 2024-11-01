@@ -1,0 +1,55 @@
+[
+  {
+    "id": "26199ce7-eddc-448f-9d88-6b768fe23499",
+    "type": "BANK",
+    "subtype": "CHECKING_ACCOUNT",
+    "name": "Nu Pagamentos S.A. - Instituição de Pagamento",
+    "balance": 75.37,
+    "currencyCode": "BRL",
+    "itemId": "8e7b5824-e232-4f90-b5ee-da347fd659c9",
+    "number": "99125117-4",
+    "createdAt": "2024-04-19T21:26:21.205Z",
+    "updatedAt": "2024-11-01T07:38:37.663Z",
+    "marketingName": null,
+    "taxNumber": "128.287.416-05",
+    "owner": "Daniel Santos de Mesquita",
+    "bankData": {
+      "transferNumber": "260/0001/99125117-4",
+      "closingBalance": 75.37,
+      "automaticallyInvestedBalance": 75.37,
+      "overdraftContractedLimit": null,
+      "overdraftUsedLimit": null,
+      "unarrangedOverdraftAmount": null
+    },
+    "creditData": null
+  },
+  {
+    "id": "1f0d4c9b-47bb-4098-84ad-6d11835a7c5c",
+    "type": "CREDIT",
+    "subtype": "CREDIT_CARD",
+    "name": "gold",
+    "balance": 13380.28,
+    "currencyCode": "BRL",
+    "itemId": "8e7b5824-e232-4f90-b5ee-da347fd659c9",
+    "number": "0656",
+    "createdAt": "2024-04-19T21:26:22.878Z",
+    "updatedAt": "2024-11-01T07:38:37.854Z",
+    "marketingName": null,
+    "taxNumber": null,
+    "owner": "Daniel Santos de Mesquita",
+    "bankData": null,
+    "creditData": {
+      "level": "GOLD",
+      "brand": "MASTERCARD",
+      "balanceCloseDate": null,
+      "balanceDueDate": "2024-10-15",
+      "availableCreditLimit": 514.9265,
+      "balanceForeignCurrency": null,
+      "minimumPayment": 0,
+      "creditLimit": 13895.21,
+      "isLimitFlexible": false,
+      "holderType": null,
+      "status": "CANCELLED"
+    }
+  }
+]

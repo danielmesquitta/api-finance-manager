@@ -14,11 +14,6 @@ type App struct {
 	Env *config.Env
 }
 
-type T interface {
-	string
-	bool
-}
-
 func newApp(
 	e *config.Env,
 	m *middleware.Middleware,

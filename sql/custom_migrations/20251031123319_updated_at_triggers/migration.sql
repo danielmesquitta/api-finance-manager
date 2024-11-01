@@ -2,25 +2,28 @@
 CREATE OR REPLACE FUNCTION update_modified_column() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = now();
 RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$ LANGUAGE 'plpgsql';
 -- CreateTrigger
-CREATE TRIGGER update_modified_time BEFORE
-UPDATE ON "users" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
--- CreateTrigger
-CREATE TRIGGER update_modified_time BEFORE
-UPDATE ON "transactions" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
--- CreateTrigger
-CREATE TRIGGER update_modified_time BEFORE
-UPDATE ON "categories" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
--- CreateTrigger
-CREATE TRIGGER update_modified_time BEFORE
-UPDATE ON "accounts" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
--- CreateTrigger
-CREATE TRIGGER update_modified_time BEFORE
-UPDATE ON "user_accounts" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
--- CreateTrigger
-CREATE TRIGGER update_modified_time BEFORE
-UPDATE ON "budgets" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
--- CreateTrigger
-CREATE TRIGGER update_modified_time BEFORE
-UPDATE ON "budget_categories" FOR EACH ROW EXECUTE PROCEDURE update_modified_column();
+DO $$
+DECLARE tbl_name TEXT;
+BEGIN FOR tbl_name IN
+SELECT unnest(
+    ARRAY [
+            'users',
+            'transactions',
+            'categories',
+            'accounts',
+            'institutions',
+            'budgets',
+            'budget_categories'
+        ]
+  ) LOOP EXECUTE format(
+    'CREATE TRIGGER update_modified_time
+      BEFORE UPDATE ON %I
+      FOR EACH ROW
+      EXECUTE PROCEDURE update_modified_column();',
+    tbl_name
+  );
+END LOOP;
+END;
+$$;

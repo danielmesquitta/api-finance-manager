@@ -28,7 +28,7 @@ model User {
 
   transactions Transaction[]
 
-  user_accounts UserAccount[]
+  accounts Account[]
 
   @@map("users")
 }
@@ -47,7 +47,7 @@ model Transaction {
   external_id    String        @unique
   name           String
   description    String?
-  amount         Float
+  amount         BigInt
   payment_method PaymentMethod @default(UNKNOWN)
   is_ignored     Boolean       @default(false)
   date           DateTime      @db.Timestamptz()
@@ -94,30 +94,33 @@ model Account {
   created_at  DateTime    @default(now()) @db.Timestamptz()
   updated_at  DateTime    @updatedAt @db.Timestamptz()
 
-  transactions Transaction[]
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id String @db.Uuid
 
-  user_accounts UserAccount[]
+  institution    Institution @relation(fields: [institution_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  institution_id String      @db.Uuid
+
+  transactions Transaction[]
 
   @@map("accounts")
 }
 
-model UserAccount {
+model Institution {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id String   @unique
+  name        String
+  image_url   String?
   created_at  DateTime @default(now()) @db.Timestamptz()
+  updated_at  DateTime @updatedAt @db.Timestamptz()
 
-  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user_id String @db.Uuid
+  accounts Account[]
 
-  account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  account_id String  @db.Uuid
-
-  @@map("user_accounts")
+  @@map("institutions")
 }
 
 model Budget {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  amount     Float
+  amount     BigInt
   created_at DateTime @default(now()) @db.Timestamptz()
   updated_at DateTime @updatedAt @db.Timestamptz()
 
@@ -131,7 +134,7 @@ model Budget {
 
 model BudgetCategory {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  amount     Float
+  amount     BigInt
   created_at DateTime @default(now()) @db.Timestamptz()
   updated_at DateTime @updatedAt @db.Timestamptz()
 
