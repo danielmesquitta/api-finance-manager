@@ -23,7 +23,7 @@ model User {
   subscription_expires_at DateTime @db.Timestamptz()
   synchronized_at         DateTime @default(now()) @db.Timestamptz()
   created_at              DateTime @default(now()) @db.Timestamptz()
-  updated_at              DateTime @updatedAt @db.Timestamptz()
+  updated_at              DateTime @default(now()) @db.Timestamptz()
 
   budget Budget?
 
@@ -53,7 +53,7 @@ model Transaction {
   is_ignored     Boolean       @default(false)
   date           DateTime      @db.Timestamptz()
   created_at     DateTime      @default(now()) @db.Timestamptz()
-  updated_at     DateTime      @updatedAt @db.Timestamptz()
+  updated_at     DateTime      @default(now()) @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
@@ -72,7 +72,7 @@ model Category {
   external_id String   @unique
   name        String
   created_at  DateTime @default(now()) @db.Timestamptz()
-  updated_at  DateTime @updatedAt @db.Timestamptz()
+  updated_at  DateTime @default(now()) @db.Timestamptz()
 
   transactions Transaction[]
 
@@ -91,9 +91,10 @@ model Account {
   id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id String      @unique
   name        String
+  balance     BigInt
   type        AccountType @default(UNKNOWN)
   created_at  DateTime    @default(now()) @db.Timestamptz()
-  updated_at  DateTime    @updatedAt @db.Timestamptz()
+  updated_at  DateTime    @default(now()) @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
@@ -101,9 +102,26 @@ model Account {
   institution    Institution @relation(fields: [institution_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   institution_id String      @db.Uuid
 
+  CreditCard CreditCard?
+
   transactions Transaction[]
 
   @@map("accounts")
+}
+
+model CreditCard {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  level           String
+  brand           String
+  limit           BigInt
+  available_limit BigInt
+  created_at      DateTime @default(now()) @db.Timestamptz()
+  updated_at      DateTime @default(now()) @db.Timestamptz()
+
+  account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id String  @unique @db.Uuid
+
+  @@map("credit_cards")
 }
 
 model Institution {
@@ -112,7 +130,7 @@ model Institution {
   name        String
   image_url   String?
   created_at  DateTime @default(now()) @db.Timestamptz()
-  updated_at  DateTime @updatedAt @db.Timestamptz()
+  updated_at  DateTime @default(now()) @db.Timestamptz()
 
   accounts Account[]
 
@@ -123,7 +141,7 @@ model Budget {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   amount     BigInt
   created_at DateTime @default(now()) @db.Timestamptz()
-  updated_at DateTime @updatedAt @db.Timestamptz()
+  updated_at DateTime @default(now()) @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @unique @db.Uuid
@@ -137,7 +155,7 @@ model BudgetCategory {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   amount     BigInt
   created_at DateTime @default(now()) @db.Timestamptz()
-  updated_at DateTime @updatedAt @db.Timestamptz()
+  updated_at DateTime @default(now()) @db.Timestamptz()
 
   budget    Budget @relation(fields: [budget_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   budget_id String @db.Uuid

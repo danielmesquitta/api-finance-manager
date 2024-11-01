@@ -3,6 +3,7 @@ package pgrepo
 import (
 	"context"
 	"database/sql"
+	"errors"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
@@ -51,7 +52,7 @@ func (r *UserPgRepo) GetUserByEmail(
 ) (*entity.User, error) {
 	user, err := r.q.GetUserByEmail(ctx, email)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err
@@ -71,7 +72,7 @@ func (r *UserPgRepo) GetUserByID(
 ) (*entity.User, error) {
 	user, err := r.q.GetUserByID(ctx, id)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
 		}
 		return nil, err

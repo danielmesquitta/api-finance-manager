@@ -17,11 +17,10 @@ type Transaction struct {
 	Date          time.Time     `json:"date,omitempty"`
 	CreatedAt     time.Time     `json:"created_at,omitempty"`
 	UpdatedAt     time.Time     `json:"updated_at,omitempty"`
-
-	UserID     string    `json:"user_id,omitempty"`
-	User       *User     `json:"user,omitempty"`
-	AccountID  *string   `json:"account_id,omitempty"`
-	Account    *Account  `json:"account,omitempty"`
-	CategoryID *string   `json:"category_id,omitempty"`
-	Category   *Category `json:"category,omitempty"`
+	UserID        uuid.UUID     `json:"user_id,omitempty"`
+	User          *User         `json:"user,omitempty"`
+	AccountID     *uuid.UUID    `json:"account_id,omitempty"`
+	Account       *Account      `json:"account,omitempty"`
+	CategoryID    *uuid.UUID    `json:"category_id,omitempty"`
+	Category      *Category     `json:"category,omitempty"`
 }

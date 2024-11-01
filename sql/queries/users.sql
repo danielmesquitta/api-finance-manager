@@ -23,6 +23,7 @@ SET name = $2,
   tier = $4,
   avatar = $5,
   subscription_expires_at = $6,
-  synchronized_at = $7
+  synchronized_at = $7,
+  updated_at = NOW()
 WHERE id = $1
 RETURNING *;

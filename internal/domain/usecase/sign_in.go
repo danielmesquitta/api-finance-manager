@@ -36,7 +36,7 @@ func NewSignInUseCase(
 }
 
 type SignInUseCaseInput struct {
-	Token string `json:"token,omitempty" validate:"required,jwt"`
+	Token string `json:"token,omitempty" validate:"required"`
 }
 
 type SignInUseCaseOutput struct {
@@ -102,8 +102,6 @@ func (uc *SignInUseCase) signIn(
 		}
 
 		refreshToken, err := uc.j.NewToken(jwtutil.UserClaims{
-			Tier:                  user.Tier,
-			SubscriptionExpiresAt: user.SubscriptionExpiresAt,
 			RegisteredClaims: jwt.RegisteredClaims{
 				Issuer:   user.ID.String(),
 				IssuedAt: jwt.NewNumericDate(time.Now()),
@@ -126,14 +124,18 @@ func (uc *SignInUseCase) signIn(
 
 func (uc *SignInUseCase) createUser(
 	ctx context.Context,
-	oauthUser *oauth.User,
+	oauthUser *entity.User,
 ) (*entity.User, error) {
-	params := repo.CreateUserParams{
-		Name:   oauthUser.Name,
-		Email:  oauthUser.Email,
-		Tier:   entity.TierTRIAL,
-		Avatar: &oauthUser.Picture,
+	params := repo.CreateUserParams{}
+	if err := copier.CopyWithOption(
+		&params,
+		oauthUser,
+		copier.Option{IgnoreEmpty: true},
+	); err != nil {
+		return nil, errs.New(err)
 	}
+
+	params.Tier = entity.TierTrial
 
 	twoWeeksFromNow := time.Now().AddDate(0, 0, 14)
 	params.SubscriptionExpiresAt = twoWeeksFromNow
@@ -149,16 +151,20 @@ func (uc *SignInUseCase) createUser(
 func (uc *SignInUseCase) updateUser(
 	ctx context.Context,
 	user *entity.User,
-	oauthUser *oauth.User,
+	oauthUser *entity.User,
 ) (*entity.User, error) {
 	params := repo.UpdateUserParams{}
 	if err := copier.Copy(&params, user); err != nil {
 		return nil, errs.New(err)
 	}
 
-	params.Name = oauthUser.Name
-	params.Email = oauthUser.Email
-	params.Avatar = &oauthUser.Picture
+	if err := copier.CopyWithOption(
+		&params,
+		oauthUser,
+		copier.Option{IgnoreEmpty: true},
+	); err != nil {
+		return nil, errs.New(err)
+	}
 
 	updatedUser, err := uc.ur.UpdateUser(ctx, params)
 	if err != nil {

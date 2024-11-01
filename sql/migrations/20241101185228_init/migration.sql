@@ -20,7 +20,7 @@ CREATE TABLE "users" (
     "subscription_expires_at" TIMESTAMPTZ NOT NULL,
     "synchronized_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -36,7 +36,7 @@ CREATE TABLE "transactions" (
     "is_ignored" BOOLEAN NOT NULL DEFAULT false,
     "date" TIMESTAMPTZ NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" UUID NOT NULL,
     "account_id" UUID,
     "category_id" UUID,
@@ -50,7 +50,7 @@ CREATE TABLE "categories" (
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
 );
@@ -62,7 +62,7 @@ CREATE TABLE "accounts" (
     "name" TEXT NOT NULL,
     "type" "AccountType" NOT NULL DEFAULT 'UNKNOWN',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" UUID NOT NULL,
     "institution_id" UUID NOT NULL,
 
@@ -76,7 +76,7 @@ CREATE TABLE "institutions" (
     "name" TEXT NOT NULL,
     "image_url" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "institutions_pkey" PRIMARY KEY ("id")
 );
@@ -86,7 +86,7 @@ CREATE TABLE "budgets" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "amount" BIGINT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" UUID NOT NULL,
 
     CONSTRAINT "budgets_pkey" PRIMARY KEY ("id")
@@ -97,7 +97,7 @@ CREATE TABLE "budget_categories" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "amount" BIGINT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "budget_id" UUID NOT NULL,
     "category_id" UUID NOT NULL,
 

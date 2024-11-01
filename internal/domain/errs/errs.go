@@ -38,6 +38,12 @@ func newErr(err any, t Type) *Err {
 			StackTrace: string(debug.Stack()),
 			Type:       t,
 		}
+	case []byte:
+		return &Err{
+			Message:    string(v),
+			StackTrace: string(debug.Stack()),
+			Type:       t,
+		}
 	case nil:
 		return nil
 	default:
@@ -75,8 +81,12 @@ var (
 		"user not found",
 		ErrTypeNotFound,
 	)
-	ErrUserAlreadyRegistered = newErr(
-		"user already registered",
+	ErrUnauthorized = newErr(
+		"unauthorized",
+		ErrTypeUnauthorized,
+	)
+	ErrAccountsAlreadyRegistered = newErr(
+		"accounts already registered",
 		ErrTypeForbidden,
 	)
 )

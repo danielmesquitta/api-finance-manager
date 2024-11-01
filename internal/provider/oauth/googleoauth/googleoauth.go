@@ -1,23 +1,20 @@
 package googleoauth
 
 import (
-	"net/url"
-
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth"
+	"github.com/go-resty/resty/v2"
 )
 
 type GoogleOAuth struct {
-	BaseURL url.URL
+	c *resty.Client
 }
 
 func NewGoogleOAuth() *GoogleOAuth {
-	baseURL := url.URL{
-		Scheme: "https",
-		Host:   "googleapis.com",
-	}
+	client := resty.New().
+		SetBaseURL("https://googleapis.com")
 
 	return &GoogleOAuth{
-		BaseURL: baseURL,
+		c: client,
 	}
 }
 

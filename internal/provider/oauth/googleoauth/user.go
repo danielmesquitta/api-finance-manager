@@ -2,49 +2,49 @@ package googleoauth
 
 import (
 	"encoding/json"
-	"net/http"
 
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth"
 )
+
+const authorizationHeaderKey = "authorization"
+
+type UserInfo struct {
+	ID            string `json:"id"`
+	Email         string `json:"email"`
+	VerifiedEmail bool   `json:"verified_email"`
+	Name          string `json:"name"`
+	GivenName     string `json:"given_name"`
+	Picture       string `json:"picture"`
+	Locale        string `json:"locale"`
+}
 
 func (g *GoogleOAuth) GetUser(
 	token string,
-) (*oauth.User, error) {
-	url := g.BaseURL.String() + "/userinfo/v2/me"
+) (*entity.User, error) {
+	res, err := g.c.R().
+		SetHeader(authorizationHeaderKey, "Bearer "+token).
+		Get("/userinfo/v2/me")
 
-	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	req.Header.Add("accept", "application/json")
-	req.Header.Add("content-type", "application/json")
-	req.Header.Add("authorization", "Bearer "+token)
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-	if res == nil {
-		return nil, errs.New("response is nil")
-	}
-	defer res.Body.Close()
-
-	decoder := json.NewDecoder(res.Body)
-
-	if res.StatusCode < 200 && res.StatusCode >= 300 {
-		jsonData := map[string]any{}
-		if err := decoder.Decode(&jsonData); err != nil {
-			return nil, errs.New(err)
-		}
-		return nil, errs.New(jsonData)
+	body := res.Body()
+	if statusCode := res.StatusCode(); statusCode < 200 || statusCode >= 300 {
+		return nil, errs.New(body)
 	}
 
-	userInfo := oauth.User{}
-	if err := decoder.Decode(&userInfo); err != nil {
+	userInfo := UserInfo{}
+	if err := json.Unmarshal(body, &userInfo); err != nil {
 		return nil, errs.New(err)
 	}
 
-	return &userInfo, nil
+	user := entity.User{
+		Name:   userInfo.Name,
+		Email:  userInfo.Email,
+		Avatar: &userInfo.Picture,
+	}
+
+	return &user, nil
 }

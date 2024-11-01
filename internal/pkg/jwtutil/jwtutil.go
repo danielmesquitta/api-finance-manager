@@ -10,14 +10,22 @@ import (
 )
 
 type UserClaims struct {
+	jwt.RegisteredClaims
 	Tier                  entity.Tier `json:"tier,omitempty"`
 	SubscriptionExpiresAt time.Time   `json:"subscription_expires_at,omitempty"`
-	jwt.RegisteredClaims
+}
+
+// IsExpired checks if the token is expired
+// by comparing the expiration time with the current time minus one minute
+// to account for requests that may take longer to process
+func (u *UserClaims) IsExpired() bool {
+	nowMinusOneMinute := time.Now().Add(-1 * time.Minute)
+	return u.RegisteredClaims.ExpiresAt.Before(nowMinusOneMinute)
 }
 
 type JWTManager interface {
-	NewToken(claims UserClaims) (accessToken string, err error)
-	ValidateToken(accessToken string) (*UserClaims, error)
+	NewToken(claims UserClaims) (jwtToken string, err error)
+	Parse(jwtToken string) (*UserClaims, error)
 }
 
 type JWT struct {
@@ -33,13 +41,13 @@ func NewJWT(
 }
 
 func (j *JWT) NewToken(claims UserClaims) (string, error) {
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return accessToken.SignedString(j.secretKey)
+	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return jwtToken.SignedString(j.secretKey)
 }
 
-func (j *JWT) ValidateToken(accessToken string) (*UserClaims, error) {
+func (j *JWT) Parse(jwtToken string) (*UserClaims, error) {
 	parsedAccessToken, err := jwt.ParseWithClaims(
-		accessToken,
+		jwtToken,
 		&UserClaims{},
 		func(_ *jwt.Token) (interface{}, error) {
 			return j.secretKey, nil
@@ -54,15 +62,11 @@ func (j *JWT) ValidateToken(accessToken string) (*UserClaims, error) {
 		return nil, errs.New("invalid claims")
 	}
 
-	if j.isExpired(&userClaims.RegisteredClaims) {
+	if userClaims.IsExpired() {
 		return nil, errs.New("token is expired")
 	}
 
 	return userClaims, nil
-}
-
-func (j *JWT) isExpired(claims *jwt.RegisteredClaims) bool {
-	return claims.ExpiresAt.Before(time.Now())
 }
 
 var _ JWTManager = &JWT{}
