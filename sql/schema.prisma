@@ -19,6 +19,7 @@ model User {
   name                    String
   email                   String   @unique
   tier                    Tier     @default(TRIAL)
+  avatar                  String?
   subscription_expires_at DateTime @db.Timestamptz()
   synchronized_at         DateTime @default(now()) @db.Timestamptz()
   created_at              DateTime @default(now()) @db.Timestamptz()

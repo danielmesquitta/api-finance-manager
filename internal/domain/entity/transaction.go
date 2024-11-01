@@ -7,21 +7,21 @@ import (
 )
 
 type Transaction struct {
-	ID            uuid.UUID     `json:"id"`
-	ExternalID    string        `json:"external_id"`
-	Name          string        `json:"name"`
-	Description   *string       `json:"description"`
-	Amount        int64         `json:"amount"`
-	PaymentMethod PaymentMethod `json:"payment_method"`
-	IsIgnored     bool          `json:"is_ignored"`
-	Date          time.Time     `json:"date"`
-	CreatedAt     time.Time     `json:"created_at"`
-	UpdatedAt     time.Time     `json:"updated_at"`
+	ID            uuid.UUID     `json:"id,omitempty"`
+	ExternalID    string        `json:"external_id,omitempty"`
+	Name          string        `json:"name,omitempty"`
+	Description   *string       `json:"description,omitempty"`
+	Amount        int64         `json:"amount,omitempty"`
+	PaymentMethod PaymentMethod `json:"payment_method,omitempty"`
+	IsIgnored     bool          `json:"is_ignored,omitempty"`
+	Date          time.Time     `json:"date,omitempty"`
+	CreatedAt     time.Time     `json:"created_at,omitempty"`
+	UpdatedAt     time.Time     `json:"updated_at,omitempty"`
 
-	UserID     string    `json:"user_id"`
-	User       *User     `json:"user"`
-	AccountID  *string   `json:"account_id"`
-	Account    *Account  `json:"account"`
-	CategoryID *string   `json:"category_id"`
-	Category   *Category `json:"category"`
+	UserID     string    `json:"user_id,omitempty"`
+	User       *User     `json:"user,omitempty"`
+	AccountID  *string   `json:"account_id,omitempty"`
+	Account    *Account  `json:"account,omitempty"`
+	CategoryID *string   `json:"category_id,omitempty"`
+	Category   *Category `json:"category,omitempty"`
 }

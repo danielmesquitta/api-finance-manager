@@ -145,17 +145,19 @@ func (ns NullTier) Value() (driver.Value, error) {
 }
 
 type Account struct {
-	ID         uuid.UUID   `json:"id"`
-	ExternalID string      `json:"external_id"`
-	Name       string      `json:"name"`
-	Type       AccountType `json:"type"`
-	CreatedAt  time.Time   `json:"created_at"`
-	UpdatedAt  time.Time   `json:"updated_at"`
+	ID            uuid.UUID   `json:"id"`
+	ExternalID    string      `json:"external_id"`
+	Name          string      `json:"name"`
+	Type          AccountType `json:"type"`
+	CreatedAt     time.Time   `json:"created_at"`
+	UpdatedAt     time.Time   `json:"updated_at"`
+	UserID        uuid.UUID   `json:"user_id"`
+	InstitutionID uuid.UUID   `json:"institution_id"`
 }
 
 type Budget struct {
 	ID        uuid.UUID `json:"id"`
-	Amount    float64   `json:"amount"`
+	Amount    int64     `json:"amount"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	UserID    uuid.UUID `json:"user_id"`
@@ -163,7 +165,7 @@ type Budget struct {
 
 type BudgetCategory struct {
 	ID         uuid.UUID `json:"id"`
-	Amount     float64   `json:"amount"`
+	Amount     int64     `json:"amount"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 	BudgetID   uuid.UUID `json:"budget_id"`
@@ -178,12 +180,21 @@ type Category struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 }
 
+type Institution struct {
+	ID         uuid.UUID   `json:"id"`
+	ExternalID string      `json:"external_id"`
+	Name       string      `json:"name"`
+	ImageUrl   pgtype.Text `json:"image_url"`
+	CreatedAt  time.Time   `json:"created_at"`
+	UpdatedAt  time.Time   `json:"updated_at"`
+}
+
 type Transaction struct {
 	ID            uuid.UUID     `json:"id"`
 	ExternalID    string        `json:"external_id"`
 	Name          string        `json:"name"`
 	Description   pgtype.Text   `json:"description"`
-	Amount        float64       `json:"amount"`
+	Amount        int64         `json:"amount"`
 	PaymentMethod PaymentMethod `json:"payment_method"`
 	IsIgnored     bool          `json:"is_ignored"`
 	Date          time.Time     `json:"date"`
@@ -195,20 +206,13 @@ type Transaction struct {
 }
 
 type User struct {
-	ID                    uuid.UUID `json:"id"`
-	Name                  string    `json:"name"`
-	Email                 string    `json:"email"`
-	Tier                  Tier      `json:"tier"`
-	SubscriptionExpiresAt time.Time `json:"subscription_expires_at"`
-	SynchronizedAt        time.Time `json:"synchronized_at"`
-	CreatedAt             time.Time `json:"created_at"`
-	UpdatedAt             time.Time `json:"updated_at"`
-}
-
-type UserAccount struct {
-	ID         uuid.UUID `json:"id"`
-	ExternalID string    `json:"external_id"`
-	CreatedAt  time.Time `json:"created_at"`
-	UserID     uuid.UUID `json:"user_id"`
-	AccountID  uuid.UUID `json:"account_id"`
+	ID                    uuid.UUID   `json:"id"`
+	Name                  string      `json:"name"`
+	Email                 string      `json:"email"`
+	Tier                  Tier        `json:"tier"`
+	Avatar                pgtype.Text `json:"avatar"`
+	SubscriptionExpiresAt time.Time   `json:"subscription_expires_at"`
+	SynchronizedAt        time.Time   `json:"synchronized_at"`
+	CreatedAt             time.Time   `json:"created_at"`
+	UpdatedAt             time.Time   `json:"updated_at"`
 }

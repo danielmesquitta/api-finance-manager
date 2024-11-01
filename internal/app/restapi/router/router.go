@@ -9,18 +9,18 @@ import (
 type Router struct {
 	e  *config.Env
 	hh *handler.HealthHandler
-	uh *handler.UserHandler
+	ah *handler.AuthHandler
 }
 
 func NewRouter(
 	e *config.Env,
 	hh *handler.HealthHandler,
-	uh *handler.UserHandler,
+	ah *handler.AuthHandler,
 ) *Router {
 	return &Router{
 		e:  e,
 		hh: hh,
-		uh: uh,
+		ah: ah,
 	}
 }
 
@@ -32,5 +32,5 @@ func (r *Router) Register(
 
 	apiV1.GET("/health", r.hh.Health)
 
-	apiV1.POST("/users", r.uh.Create)
+	apiV1.POST("/sign-in", r.ah.SignIn)
 }

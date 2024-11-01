@@ -12,8 +12,10 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/router"
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo/pgrepo"
 )
 
@@ -27,9 +29,11 @@ func New() *App {
 	conn := db.NewPGXConn(env)
 	queries := db.NewQueries(conn)
 	userPgRepo := pgrepo.NewUserPgRepo(queries)
-	createUserUseCase := usecase.NewCreateUserUseCase(validate, userPgRepo)
-	userHandler := handler.NewUserHandler(createUserUseCase)
-	routerRouter := router.NewRouter(env, healthHandler, userHandler)
+	googleOAuth := googleoauth.NewGoogleOAuth()
+	jwt := jwtutil.NewJWT(env)
+	signInUseCase := usecase.NewSignInUseCase(validate, userPgRepo, googleOAuth, jwt)
+	authHandler := handler.NewAuthHandler(signInUseCase)
+	routerRouter := router.NewRouter(env, healthHandler, authHandler)
 	app := newApp(env, middlewareMiddleware, routerRouter)
 	return app
 }

@@ -17,9 +17,10 @@ const (
 type Env struct {
 	v validator.Validator
 
-	Environment Environment `mapstructure:"ENVIRONMENT"`
-	Port        string      `mapstructure:"PORT"`
-	DatabaseURL string      `mapstructure:"DATABASE_URL"  validate:"required"`
+	Environment  Environment `mapstructure:"ENVIRONMENT"`
+	Port         string      `mapstructure:"PORT"`
+	DatabaseURL  string      `mapstructure:"DATABASE_URL"   validate:"required"`
+	JWTSecretKey string      `mapstructure:"JWT_SECRET_KEY" validate:"required"`
 }
 
 func (e *Env) validate() error {

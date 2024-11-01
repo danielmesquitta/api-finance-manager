@@ -16,6 +16,7 @@ CREATE TABLE "users" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "tier" "Tier" NOT NULL DEFAULT 'TRIAL',
+    "avatar" TEXT,
     "subscription_expires_at" TIMESTAMPTZ NOT NULL,
     "synchronized_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -7,12 +7,12 @@ import (
 )
 
 type Institution struct {
-	ID         uuid.UUID `json:"id"`
-	ExternalID string    `json:"external_id"`
-	Name       string    `json:"name"`
-	ImageURL   *string   `json:"image_url"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	ID         uuid.UUID `json:"id,omitempty"`
+	ExternalID string    `json:"external_id,omitempty"`
+	Name       string    `json:"name,omitempty"`
+	ImageURL   *string   `json:"image_url,omitempty"`
+	CreatedAt  time.Time `json:"created_at,omitempty"`
+	UpdatedAt  time.Time `json:"updated_at,omitempty"`
 
-	Accounts []Account `json:"accounts"`
+	Accounts []Account `json:"accounts,omitempty"`
 }

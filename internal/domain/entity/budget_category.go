@@ -7,13 +7,13 @@ import (
 )
 
 type BudgetCategory struct {
-	ID        uuid.UUID `json:"id"`
-	Amount    int64     `json:"amount"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        uuid.UUID `json:"id,omitempty"`
+	Amount    int64     `json:"amount,omitempty"`
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
 
-	BudgetID   string    `json:"budget_id"`
-	Budget     *Budget   `json:"budget"`
-	CategoryID string    `json:"category_id"`
-	Category   *Category `json:"category"`
+	BudgetID   string    `json:"budget_id,omitempty"`
+	Budget     *Budget   `json:"budget,omitempty"`
+	CategoryID string    `json:"category_id,omitempty"`
+	Category   *Category `json:"category,omitempty"`
 }
