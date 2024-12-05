@@ -14,8 +14,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo/pgrepo"
 )
@@ -33,11 +32,7 @@ func New() *App {
 		db.NewPGXConn,
 		db.NewQueries,
 
-		// wire.Bind(new(oauth.Provider), new(*googleoauth.GoogleOAuth)),
-		// googleoauth.NewGoogleOAuth,
-
-		wire.Bind(new(oauth.Provider), new(*mockoauth.MockOAuth)),
-		mockoauth.NewMockOAuth,
+		googleoauth.NewGoogleOAuth,
 
 		wire.Bind(new(repo.UserRepo), new(*pgrepo.UserPgRepo)),
 		pgrepo.NewUserPgRepo,

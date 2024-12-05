@@ -29,6 +29,8 @@ model User {
 
   transactions Transaction[]
 
+  investments Investment[]
+
   accounts Account[]
 
   @@map("users")
@@ -65,6 +67,35 @@ model Transaction {
   category_id String?   @db.Uuid
 
   @@map("transactions")
+}
+
+enum InvestmentType {
+  FIXED_INCOME
+  UNKNOWN
+}
+
+enum InvestmentRateType {
+  CDI
+  SELIC
+  IPCA
+  PREFIXED
+  UNKNOWN
+}
+
+// @TODO: Add more fields to Investment model
+model Investment {
+  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String             @unique
+  name        String
+  amount      BigInt
+  type        InvestmentType     @default(UNKNOWN)
+  rate        BigInt
+  rateType    InvestmentRateType @default(UNKNOWN)
+  created_at  DateTime           @default(now()) @db.Timestamptz()
+  updated_at  DateTime           @default(now()) @db.Timestamptz()
+
+  user    User   @relation(fields: [user_id], references: [id])
+  user_id String @db.Uuid
 }
 
 model Category {

@@ -8,35 +8,36 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jinzhu/copier"
 )
 
 type SignInUseCase struct {
-	v  validator.Validator
-	ur repo.UserRepo
-	op oauth.Provider
-	j  jwtutil.JWTManager
+	v   validator.Validator
+	ur  repo.UserRepo
+	j   jwtutil.JWTManager
+	goa *googleoauth.GoogleOAuth
 }
 
 func NewSignInUseCase(
 	v validator.Validator,
 	ur repo.UserRepo,
-	op oauth.Provider,
 	j jwtutil.JWTManager,
+	goa *googleoauth.GoogleOAuth,
 ) *SignInUseCase {
 	return &SignInUseCase{
-		v:  v,
-		ur: ur,
-		op: op,
-		j:  j,
+		v:   v,
+		ur:  ur,
+		j:   j,
+		goa: goa,
 	}
 }
 
 type SignInUseCaseInput struct {
-	Token string `json:"token,omitempty" validate:"required"`
+	Provider string `json:"provider,omitempty" validate:"required,oneof=google apple"`
+	Token    string `json:"token,omitempty"    validate:"required"`
 }
 
 type SignInUseCaseOutput struct {
@@ -53,7 +54,7 @@ func (uc *SignInUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
-	oauthUser, err := uc.op.GetUser(in.Token)
+	oauthUser, err := uc.goa.GetUser(in.Token)
 	if err != nil {
 		return nil, errs.New(err)
 	}

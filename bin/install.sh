@@ -7,6 +7,7 @@ packages=(
     "github.com/steebchen/prisma-client-go@latest"
     "github.com/sqlc-dev/sqlc/cmd/sqlc@latest"
     "github.com/google/wire/cmd/wire@latest"
+    "github.com/danielmesquitta/prisma-to-go@latest"
 )
 
 echo "Installing and updating Go packages..."
