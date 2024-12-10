@@ -38,6 +38,37 @@ definitions:
       total_interest:
         type: number
     type: object
+  dto.EmergencyReserveRequestDTO:
+    properties:
+      jobType:
+        allOf:
+        - $ref: '#/definitions/entity.JobType'
+        enum:
+        - ENTREPRENEUR
+        - EMPLOYEE
+        - CIVIL_SERVANT
+      monthlyExpenses:
+        minimum: 0
+        type: number
+      monthlyIncome:
+        minimum: 0
+        type: number
+      monthlySavingsPercentage:
+        maximum: 100
+        minimum: 0
+        type: number
+    required:
+    - jobType
+    type: object
+  dto.EmergencyReserveResponseDTO:
+    properties:
+      monthsToAchieveEmergencyReserve:
+        type: integer
+      recommendedReserveInMonths:
+        type: integer
+      recommendedReserveInValue:
+        type: number
+    type: object
   dto.ErrorResponseDTO:
     properties:
       message:
@@ -354,6 +385,16 @@ definitions:
     x-enum-varnames:
     - InvestmentTypeFixedIncome
     - InvestmentTypeUnknown
+  entity.JobType:
+    enum:
+    - ENTREPRENEUR
+    - EMPLOYEE
+    - CIVIL_SERVANT
+    type: string
+    x-enum-varnames:
+    - JobTypeEntrepreneur
+    - JobTypeEmployee
+    - JobTypeCivilServant
   entity.PaymentMethod:
     enum:
     - PIX
@@ -579,6 +620,42 @@ paths:
       security:
       - BearerAuth: []
       summary: Calculate compound interest
+      tags:
+      - Calculator
+  /v1/calculator/emergency-reserve:
+    post:
+      consumes:
+      - application/json
+      description: Calculate emergency reserve
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.EmergencyReserveRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.EmergencyReserveResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Calculate emergency reserve
       tags:
       - Calculator
   /v1/calculator/retirement:

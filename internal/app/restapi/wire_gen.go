@@ -34,9 +34,10 @@ func New() *App {
 	signInUseCase := usecase.NewSignInUseCase(validate, userPgRepo, jwt, mockOAuth)
 	authHandler := handler.NewAuthHandler(signInUseCase)
 	calculateCompoundInterestUseCase := usecase.NewCalculateCompoundInterestUseCase(validate)
+	calculateEmergencyReserveUseCase := usecase.NewCalculateEmergencyReserveUseCase(validate)
 	calculateRetirementUseCase := usecase.NewCalculateRetirementUseCase(validate, calculateCompoundInterestUseCase)
 	calculateSimpleInterestUseCase := usecase.NewCalculateSimpleInterestUseCase(validate)
-	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterestUseCase, calculateRetirementUseCase, calculateSimpleInterestUseCase)
+	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterestUseCase, calculateEmergencyReserveUseCase, calculateRetirementUseCase, calculateSimpleInterestUseCase)
 	routerRouter := router.NewRouter(env, healthHandler, authHandler, calculatorHandler)
 	app := newApp(env, middlewareMiddleware, routerRouter)
 	return app

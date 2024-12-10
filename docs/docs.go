@@ -161,6 +161,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/calculator/emergency-reserve": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Calculate emergency reserve",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Calculator"
+                ],
+                "summary": "Calculate emergency reserve",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.EmergencyReserveRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.EmergencyReserveResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/calculator/retirement": {
             "post": {
                 "security": [
@@ -330,6 +387,53 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "total_interest": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.EmergencyReserveRequestDTO": {
+            "type": "object",
+            "required": [
+                "jobType"
+            ],
+            "properties": {
+                "jobType": {
+                    "enum": [
+                        "ENTREPRENEUR",
+                        "EMPLOYEE",
+                        "CIVIL_SERVANT"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.JobType"
+                        }
+                    ]
+                },
+                "monthlyExpenses": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "monthlyIncome": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "monthlySavingsPercentage": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
+                }
+            }
+        },
+        "dto.EmergencyReserveResponseDTO": {
+            "type": "object",
+            "properties": {
+                "monthsToAchieveEmergencyReserve": {
+                    "type": "integer"
+                },
+                "recommendedReserveInMonths": {
+                    "type": "integer"
+                },
+                "recommendedReserveInValue": {
                     "type": "number"
                 }
             }
@@ -797,6 +901,19 @@ const docTemplate = `{
             "x-enum-varnames": [
                 "InvestmentTypeFixedIncome",
                 "InvestmentTypeUnknown"
+            ]
+        },
+        "entity.JobType": {
+            "type": "string",
+            "enum": [
+                "ENTREPRENEUR",
+                "EMPLOYEE",
+                "CIVIL_SERVANT"
+            ],
+            "x-enum-varnames": [
+                "JobTypeEntrepreneur",
+                "JobTypeEmployee",
+                "JobTypeCivilServant"
             ]
         },
         "entity.PaymentMethod": {

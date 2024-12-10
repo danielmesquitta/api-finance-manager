@@ -11,17 +11,20 @@ import (
 
 type CalculatorHandler struct {
 	cci *usecase.CalculateCompoundInterestUseCase
+	cer *usecase.CalculateEmergencyReserveUseCase
 	cr  *usecase.CalculateRetirementUseCase
 	csi *usecase.CalculateSimpleInterestUseCase
 }
 
 func NewCalculatorHandler(
 	cci *usecase.CalculateCompoundInterestUseCase,
+	cer *usecase.CalculateEmergencyReserveUseCase,
 	cr *usecase.CalculateRetirementUseCase,
 	csi *usecase.CalculateSimpleInterestUseCase,
 ) *CalculatorHandler {
 	return &CalculatorHandler{
 		cci: cci,
+		cer: cer,
 		cr:  cr,
 		csi: csi,
 	}
@@ -55,6 +58,37 @@ func (h CalculatorHandler) CompoundInterest(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, dto.CompoundInterestResponseDTO{
 		CalculateCompoundInterestUseCaseOutput: *output,
+	})
+}
+
+// @Summary Calculate emergency reserve
+// @Description Calculate emergency reserve
+// @Tags Calculator
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param request body dto.EmergencyReserveRequestDTO true "Request body"
+// @Success 200 {object} dto.EmergencyReserveResponseDTO
+// @Failure 400 {object} dto.ErrorResponseDTO
+// @Failure 401 {object} dto.ErrorResponseDTO
+// @Failure 500 {object} dto.ErrorResponseDTO
+// @Router /v1/calculator/emergency-reserve [post]
+func (h CalculatorHandler) EmergencyReserve(c echo.Context) error {
+	body := &dto.EmergencyReserveRequestDTO{}
+	if err := c.Bind(body); err != nil {
+		return errs.New(err)
+	}
+
+	output, err := h.cer.Execute(
+		c.Request().Context(),
+		body.CalculateEmergencyReserveUseCaseInput,
+	)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return c.JSON(http.StatusOK, dto.EmergencyReserveResponseDTO{
+		CalculateEmergencyReserveUseCaseOutput: *output,
 	})
 }
 

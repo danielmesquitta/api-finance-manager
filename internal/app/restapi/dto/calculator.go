@@ -10,6 +10,14 @@ type CompoundInterestResponseDTO struct {
 	usecase.CalculateCompoundInterestUseCaseOutput
 }
 
+type EmergencyReserveRequestDTO struct {
+	usecase.CalculateEmergencyReserveUseCaseInput
+}
+
+type EmergencyReserveResponseDTO struct {
+	usecase.CalculateEmergencyReserveUseCaseOutput
+}
+
 type RetirementRequestDTO struct {
 	usecase.CalculateRetirementUseCaseInput
 }
