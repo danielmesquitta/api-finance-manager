@@ -1,0 +1,562 @@
+basePath: /api
+definitions:
+  dto.CompoundInterestRequestDTO:
+    properties:
+      annual_interest:
+        maximum: 100
+        minimum: 0
+        type: number
+      initial_deposit:
+        minimum: 0
+        type: number
+      monthly_deposit:
+        type: number
+      period_in_months:
+        minimum: 1
+        type: integer
+    required:
+    - annual_interest
+    - period_in_months
+    type: object
+  dto.CompoundInterestResponseDTO:
+    properties:
+      by_month:
+        additionalProperties:
+          $ref: '#/definitions/usecase.CompoundInterestResult'
+        type: object
+      total_amount:
+        type: number
+      total_deposit:
+        type: number
+      total_interest:
+        type: number
+    type: object
+  dto.ErrorResponseDTO:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.HealthResponseDTO:
+    properties:
+      ok:
+        type: boolean
+    type: object
+  dto.RetirementRequestDTO:
+    properties:
+      age:
+        minimum: 0
+        type: integer
+      annual_interest:
+        maximum: 100
+        minimum: 0
+        type: number
+      goal_income:
+        minimum: 0
+        type: number
+      goal_patrimony:
+        minimum: 0
+        type: number
+      income_investment_percentage:
+        maximum: 100
+        minimum: 0
+        type: number
+      initial_deposit:
+        minimum: 0
+        type: number
+      life_expectancy:
+        minimum: 1
+        type: integer
+      monthly_income:
+        minimum: 0
+        type: number
+      retirement_age:
+        minimum: 1
+        type: integer
+    required:
+    - age
+    - annual_interest
+    - goal_income
+    - goal_patrimony
+    - income_investment_percentage
+    - initial_deposit
+    - life_expectancy
+    - monthly_income
+    - retirement_age
+    type: object
+  dto.RetirementResponseDTO:
+    properties:
+      achieved_goal_income:
+        type: boolean
+      achieved_goal_patrimony:
+        type: boolean
+      heritage:
+        type: number
+      max_monthly_expenses:
+        type: number
+      property_on_retirement:
+        type: number
+    type: object
+  dto.SignInRequestDTO:
+    properties:
+      provider:
+        type: string
+    type: object
+  dto.SignInResponseDTO:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+      user:
+        $ref: '#/definitions/entity.User'
+    type: object
+  entity.Account:
+    properties:
+      CreditCard:
+        $ref: '#/definitions/entity.CreditCard'
+      balance:
+        type: integer
+      created_at:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      institution:
+        $ref: '#/definitions/entity.Institution'
+      institution_id:
+        type: string
+      name:
+        type: string
+      transactions:
+        items:
+          $ref: '#/definitions/entity.Transaction'
+        type: array
+      type:
+        $ref: '#/definitions/entity.AccountType'
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/entity.User'
+      user_id:
+        type: string
+    type: object
+  entity.AccountType:
+    enum:
+    - BANK
+    - CREDIT
+    - UNKNOWN
+    type: string
+    x-enum-varnames:
+    - AccountTypeBank
+    - AccountTypeCredit
+    - AccountTypeUnknown
+  entity.Budget:
+    properties:
+      amount:
+        type: integer
+      budget_categories:
+        items:
+          $ref: '#/definitions/entity.BudgetCategory'
+        type: array
+      created_at:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/entity.User'
+      user_id:
+        type: string
+    type: object
+  entity.BudgetCategory:
+    properties:
+      amount:
+        type: integer
+      budget:
+        $ref: '#/definitions/entity.Budget'
+      budget_id:
+        type: string
+      category:
+        $ref: '#/definitions/entity.Category'
+      category_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.Category:
+    properties:
+      budget_categories:
+        items:
+          $ref: '#/definitions/entity.BudgetCategory'
+        type: array
+      created_at:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      transactions:
+        items:
+          $ref: '#/definitions/entity.Transaction'
+        type: array
+      updated_at:
+        type: string
+    type: object
+  entity.CreditCard:
+    properties:
+      account:
+        $ref: '#/definitions/entity.Account'
+      account_id:
+        type: string
+      available_limit:
+        type: integer
+      brand:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      level:
+        type: string
+      limit:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  entity.Institution:
+    properties:
+      accounts:
+        items:
+          $ref: '#/definitions/entity.Account'
+        type: array
+      created_at:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.Investment:
+    properties:
+      amount:
+        type: integer
+      created_at:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      rate:
+        type: integer
+      rateType:
+        $ref: '#/definitions/entity.InvestmentRateType'
+      type:
+        $ref: '#/definitions/entity.InvestmentType'
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/entity.User'
+      user_id:
+        type: string
+    type: object
+  entity.InvestmentRateType:
+    enum:
+    - CDI
+    - SELIC
+    - IPCA
+    - PREFIXED
+    - UNKNOWN
+    type: string
+    x-enum-varnames:
+    - InvestmentRateTypeCdi
+    - InvestmentRateTypeSelic
+    - InvestmentRateTypeIpca
+    - InvestmentRateTypePrefixed
+    - InvestmentRateTypeUnknown
+  entity.InvestmentType:
+    enum:
+    - FIXED_INCOME
+    - UNKNOWN
+    type: string
+    x-enum-varnames:
+    - InvestmentTypeFixedIncome
+    - InvestmentTypeUnknown
+  entity.PaymentMethod:
+    enum:
+    - PIX
+    - BOLETO
+    - CREDIT_CARD
+    - DEBIT_CARD
+    - TRANSFERENCE
+    - UNKNOWN
+    type: string
+    x-enum-varnames:
+    - PaymentMethodPix
+    - PaymentMethodBoleto
+    - PaymentMethodCreditCard
+    - PaymentMethodDebitCard
+    - PaymentMethodTransference
+    - PaymentMethodUnknown
+  entity.Provider:
+    enum:
+    - GOOGLE
+    - APPLE
+    type: string
+    x-enum-varnames:
+    - ProviderGoogle
+    - ProviderApple
+  entity.Tier:
+    enum:
+    - TRIAL
+    - PRO
+    type: string
+    x-enum-varnames:
+    - TierTrial
+    - TierPro
+  entity.Transaction:
+    properties:
+      account:
+        $ref: '#/definitions/entity.Account'
+      account_id:
+        type: string
+      amount:
+        type: integer
+      category:
+        $ref: '#/definitions/entity.Category'
+      category_id:
+        type: string
+      created_at:
+        type: string
+      date:
+        type: string
+      description:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      is_ignored:
+        type: boolean
+      name:
+        type: string
+      payment_method:
+        $ref: '#/definitions/entity.PaymentMethod'
+      updated_at:
+        type: string
+      user:
+        $ref: '#/definitions/entity.User'
+      user_id:
+        type: string
+    type: object
+  entity.User:
+    properties:
+      accounts:
+        items:
+          $ref: '#/definitions/entity.Account'
+        type: array
+      avatar:
+        type: string
+      budget:
+        $ref: '#/definitions/entity.Budget'
+      created_at:
+        type: string
+      email:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      investments:
+        items:
+          $ref: '#/definitions/entity.Investment'
+        type: array
+      name:
+        type: string
+      provider:
+        $ref: '#/definitions/entity.Provider'
+      subscription_expires_at:
+        type: string
+      synchronized_at:
+        type: string
+      tier:
+        $ref: '#/definitions/entity.Tier'
+      transactions:
+        items:
+          $ref: '#/definitions/entity.Transaction'
+        type: array
+      updated_at:
+        type: string
+      verified_email:
+        type: boolean
+    type: object
+  usecase.CompoundInterestResult:
+    properties:
+      monthly_interest:
+        type: number
+      total_amount:
+        type: number
+      total_deposit:
+        type: number
+      total_interest:
+        type: number
+    type: object
+info:
+  contact:
+    email: danielmesquitta123@gmail.com
+    name: Daniel Mesquita
+  description: API Finance Manager
+  title: API Finance Manager
+  version: "1.0"
+paths:
+  /auth/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user through Google or Apple token
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignInRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SignInResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Sign in
+      tags:
+      - Auth
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.HealthResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+      summary: Health check
+      tags:
+      - Health
+  /v1/calculator/compound-interest:
+    post:
+      consumes:
+      - application/json
+      description: Calculate compound interest
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CompoundInterestRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CompoundInterestResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Calculate compound interest
+      tags:
+      - Calculator
+  /v1/calculator/retirement:
+    post:
+      consumes:
+      - application/json
+      description: Calculate investments needed for retirement
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RetirementRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RetirementResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Calculate retirement
+      tags:
+      - Calculator
+securityDefinitions:
+  BasicAuth:
+    type: basic
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

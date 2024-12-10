@@ -30,7 +30,11 @@ func (m *Middleware) ErrorHandler(
 			isInternalServerError := statusCode >= 500 || statusCode == 0
 			if isInternalServerError {
 				if err := m.handleInternalServerError(c, appErr); err != nil {
-					slog.Error("failed to handle internal server error", "err", err)
+					slog.Error(
+						"failed to handle internal server error",
+						"err",
+						err,
+					)
 				}
 				return
 			}

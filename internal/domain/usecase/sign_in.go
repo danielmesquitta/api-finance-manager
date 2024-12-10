@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"context"
+	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
@@ -15,23 +17,23 @@ import (
 )
 
 type SignInUseCase struct {
-	v   validator.Validator
-	ur  repo.UserRepo
-	j   jwtutil.JWTManager
-	goa *googleoauth.GoogleOAuth
+	v  validator.Validator
+	ur repo.UserRepo
+	j  jwtutil.JWTManager
+	g  googleoauth.Provider
 }
 
 func NewSignInUseCase(
 	v validator.Validator,
 	ur repo.UserRepo,
 	j jwtutil.JWTManager,
-	goa *googleoauth.GoogleOAuth,
+	g googleoauth.Provider,
 ) *SignInUseCase {
 	return &SignInUseCase{
-		v:   v,
-		ur:  ur,
-		j:   j,
-		goa: goa,
+		v:  v,
+		ur: ur,
+		j:  j,
+		g:  g,
 	}
 }
 
@@ -54,9 +56,12 @@ func (uc *SignInUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
-	oauthUser, err := uc.goa.GetUser(in.Token)
+	token := strings.TrimPrefix(in.Token, "Bearer ")
+
+	oauthUser, err := uc.g.GetUser(token)
 	if err != nil {
-		return nil, errs.New(err)
+		slog.Info("failed to get user from google", "error", err)
+		return nil, errs.ErrUnauthorized
 	}
 
 	registeredUser, err := uc.ur.GetUserByEmail(ctx, oauthUser.Email)

@@ -18,7 +18,7 @@ generate:
 build:
 	@GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o ./tmp/restapi ./cmd/restapi
 lint:
-	@golangci-lint run && nilaway ./...
+	@golangci-lint run && nilaway ./... && golines **/*.go -w -m 80
 create_migration:
 	@prisma-client-go migrate dev --schema=$(schema) --skip-generate
 migrate:

@@ -16,10 +16,20 @@ const (
 	TierPro   Tier = "PRO"
 )
 
+type Provider string
+
+const (
+	ProviderGoogle Provider = "GOOGLE"
+	ProviderApple  Provider = "APPLE"
+)
+
 type User struct {
 	ID                    uuid.UUID     `json:"id,omitempty"`
+	ExternalId            string        `json:"external_id,omitempty"`
+	Provider              Provider      `json:"provider,omitempty"`
 	Name                  string        `json:"name,omitempty"`
 	Email                 string        `json:"email,omitempty"`
+	VerifiedEmail         bool          `json:"verified_email,omitempty"`
 	Tier                  Tier          `json:"tier,omitempty"`
 	Avatar                *string       `json:"avatar,omitempty"`
 	SubscriptionExpiresAt time.Time     `json:"subscription_expires_at,omitempty"`

@@ -9,6 +9,10 @@ type GoogleOAuth struct {
 	c *resty.Client
 }
 
+type Provider interface {
+	oauth.Provider
+}
+
 func NewGoogleOAuth() *GoogleOAuth {
 	client := resty.New().
 		SetBaseURL("https://googleapis.com")
@@ -19,3 +23,5 @@ func NewGoogleOAuth() *GoogleOAuth {
 }
 
 var _ oauth.Provider = &GoogleOAuth{}
+
+var _ Provider = &GoogleOAuth{}

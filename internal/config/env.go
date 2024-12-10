@@ -2,8 +2,6 @@ package config
 
 import (
 	"log"
-	"log/slog"
-	"os"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
@@ -36,8 +34,6 @@ func LoadEnv(v validator.Validator) *Env {
 	if err := env.loadEnv(); err != nil {
 		log.Fatalf("failed to load environment variables: %v", err)
 	}
-
-	env.configLogger()
 
 	return env
 }
@@ -72,11 +68,4 @@ func (e *Env) validate() error {
 		e.Port = "8080"
 	}
 	return nil
-}
-
-func (e *Env) configLogger() {
-	if e.Environment == EnvProduction {
-		slogger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-		slog.SetDefault(slogger)
-	}
 }

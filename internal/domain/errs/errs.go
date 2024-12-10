@@ -89,6 +89,14 @@ var (
 		"accounts already registered",
 		ErrTypeForbidden,
 	)
+	ErrInvalidRetirementAge = newErr(
+		"age should be less than retirement age",
+		ErrTypeValidation,
+	)
+	ErrInvalidLifeExpectance = newErr(
+		"life expectance should be greater than retirement age",
+		ErrTypeValidation,
+	)
 )
 
 var _ error = (*Err)(nil)
