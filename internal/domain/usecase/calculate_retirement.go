@@ -3,11 +3,10 @@ package usecase
 import (
 	"context"
 
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
-
-const lifeExpectance = 72
 
 type CalculateRetirementUseCase struct {
 	v   validator.Validator
@@ -25,15 +24,16 @@ func NewCalculateRetirementUseCase(
 }
 
 type CalculateRetirementUseCaseInput struct {
-	MonthlyIncome              float64 `validate:"required,min=0"         json:"monthly_income,omitempty"`
-	IncomeInvestmentPercentage float64 `validate:"required,min=0,max=100" json:"income_investment_percentage,omitempty"`
-	InitialDeposit             float64 `validate:"required,min=0"         json:"initial_deposit,omitempty"`
-	AnnualInterest             float64 `validate:"required,min=0,max=100" json:"annual_interest,omitempty"`
-	GoalPatrimony              float64 `validate:"required,min=0"         json:"goal_patrimony,omitempty"`
-	GoalIncome                 float64 `validate:"required,min=0"         json:"goal_income,omitempty"`
-	Age                        int     `validate:"required,min=0"         json:"age,omitempty"`
-	RetirementAge              int     `validate:"required,min=1"         json:"retirement_age,omitempty"`
-	LifeExpectancy             int     `validate:"required,min=1"         json:"life_expectancy,omitempty"`
+	MonthlyIncome              float64             `validate:"required,min=0"                json:"monthly_income,omitempty"`
+	IncomeInvestmentPercentage float64             `validate:"required,min=0,max=100"        json:"income_investment_percentage,omitempty"`
+	InitialDeposit             float64             `validate:"required,min=0"                json:"initial_deposit,omitempty"`
+	Interest                   float64             `validate:"required,min=0,max=100"        json:"interest,omitempty"`
+	InterestType               entity.InterestType `validate:"required,oneof=MONTHLY ANNUAL" json:"interest_type,omitempty"`
+	GoalPatrimony              float64             `validate:"required,min=0"                json:"goal_patrimony,omitempty"`
+	GoalIncome                 float64             `validate:"required,min=0"                json:"goal_income,omitempty"`
+	Age                        int                 `validate:"required,min=0"                json:"age,omitempty"`
+	RetirementAge              int                 `validate:"required,min=1"                json:"retirement_age,omitempty"`
+	LifeExpectancy             int                 `validate:"min=1"                         json:"life_expectancy,omitempty"`
 }
 
 type CalculateRetirementUseCaseOutput struct {
@@ -54,16 +54,10 @@ func (uc *CalculateRetirementUseCase) Execute(
 	default:
 	}
 
-	if err := uc.v.Validate(in); err != nil {
+	uc.prepare(&in)
+
+	if err := uc.validate(in); err != nil {
 		return nil, errs.New(err)
-	}
-
-	if in.Age >= in.RetirementAge {
-		return nil, errs.ErrInvalidRetirementAge
-	}
-
-	if in.RetirementAge >= in.LifeExpectancy {
-		return nil, errs.ErrInvalidLifeExpectance
 	}
 
 	resultsOnRetirementDate, err := uc.cci.Execute(
@@ -71,7 +65,8 @@ func (uc *CalculateRetirementUseCase) Execute(
 		CalculateCompoundInterestUseCaseInput{
 			InitialDeposit: in.InitialDeposit,
 			MonthlyDeposit: in.MonthlyIncome * in.IncomeInvestmentPercentage / 100,
-			AnnualInterest: in.AnnualInterest,
+			Interest:       in.Interest,
+			InterestType:   in.InterestType,
 			PeriodInMonths: (in.RetirementAge - in.Age) * 12,
 		},
 	)
@@ -84,8 +79,9 @@ func (uc *CalculateRetirementUseCase) Execute(
 		CalculateCompoundInterestUseCaseInput{
 			InitialDeposit: resultsOnRetirementDate.TotalAmount,
 			MonthlyDeposit: -1 * in.GoalIncome,
-			AnnualInterest: in.AnnualInterest,
-			PeriodInMonths: (lifeExpectance - in.RetirementAge) * 12,
+			Interest:       in.Interest,
+			InterestType:   in.InterestType,
+			PeriodInMonths: (in.LifeExpectancy - in.RetirementAge) * 12,
 		},
 	)
 	if err != nil {
@@ -103,4 +99,30 @@ func (uc *CalculateRetirementUseCase) Execute(
 	}
 
 	return out, nil
+}
+
+func (uc *CalculateRetirementUseCase) prepare(
+	in *CalculateRetirementUseCaseInput,
+) {
+	if in.LifeExpectancy == 0 {
+		in.LifeExpectancy = 72
+	}
+}
+
+func (uc *CalculateRetirementUseCase) validate(
+	in CalculateRetirementUseCaseInput,
+) error {
+	if err := uc.v.Validate(in); err != nil {
+		return errs.New(err)
+	}
+
+	if in.Age >= in.RetirementAge {
+		return errs.ErrInvalidRetirementAge
+	}
+
+	if in.RetirementAge >= in.LifeExpectancy {
+		return errs.ErrInvalidLifeExpectance
+	}
+
+	return nil
 }

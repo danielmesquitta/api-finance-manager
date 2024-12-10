@@ -47,6 +47,7 @@ func New() *App {
 		usecase.NewSignInUseCase,
 		usecase.NewCalculateCompoundInterestUseCase,
 		usecase.NewCalculateRetirementUseCase,
+		usecase.NewCalculateSimpleInterestUseCase,
 
 		handler.NewAuthHandler,
 		handler.NewHealthHandler,

@@ -35,7 +35,8 @@ func New() *App {
 	authHandler := handler.NewAuthHandler(signInUseCase)
 	calculateCompoundInterestUseCase := usecase.NewCalculateCompoundInterestUseCase(validate)
 	calculateRetirementUseCase := usecase.NewCalculateRetirementUseCase(validate, calculateCompoundInterestUseCase)
-	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterestUseCase, calculateRetirementUseCase)
+	calculateSimpleInterestUseCase := usecase.NewCalculateSimpleInterestUseCase(validate)
+	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterestUseCase, calculateRetirementUseCase, calculateSimpleInterestUseCase)
 	routerRouter := router.NewRouter(env, healthHandler, authHandler, calculatorHandler)
 	app := newApp(env, middlewareMiddleware, routerRouter)
 	return app

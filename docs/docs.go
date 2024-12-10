@@ -217,24 +217,93 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v1/calculator/simple-interest": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Calculate simple interest",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Calculator"
+                ],
+                "summary": "Calculate simple interest",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SimpleInterestRequestDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SimpleInterestResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
         "dto.CompoundInterestRequestDTO": {
             "type": "object",
             "required": [
-                "annual_interest",
+                "interest",
+                "interest_type",
                 "period_in_months"
             ],
             "properties": {
-                "annual_interest": {
+                "initial_deposit": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "interest": {
                     "type": "number",
                     "maximum": 100,
                     "minimum": 0
                 },
-                "initial_deposit": {
-                    "type": "number",
-                    "minimum": 0
+                "interest_type": {
+                    "enum": [
+                        "MONTHLY",
+                        "ANNUAL"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.InterestType"
+                        }
+                    ]
                 },
                 "monthly_deposit": {
                     "type": "number"
@@ -285,23 +354,18 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "age",
-                "annual_interest",
                 "goal_income",
                 "goal_patrimony",
                 "income_investment_percentage",
                 "initial_deposit",
-                "life_expectancy",
+                "interest",
+                "interest_type",
                 "monthly_income",
                 "retirement_age"
             ],
             "properties": {
                 "age": {
                     "type": "integer",
-                    "minimum": 0
-                },
-                "annual_interest": {
-                    "type": "number",
-                    "maximum": 100,
                     "minimum": 0
                 },
                 "goal_income": {
@@ -320,6 +384,22 @@ const docTemplate = `{
                 "initial_deposit": {
                     "type": "number",
                     "minimum": 0
+                },
+                "interest": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "interest_type": {
+                    "enum": [
+                        "MONTHLY",
+                        "ANNUAL"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.InterestType"
+                        }
+                    ]
                 },
                 "life_expectancy": {
                     "type": "integer",
@@ -374,6 +454,60 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/entity.User"
+                }
+            }
+        },
+        "dto.SimpleInterestRequestDTO": {
+            "type": "object",
+            "required": [
+                "interest",
+                "interestType",
+                "periodInMonths"
+            ],
+            "properties": {
+                "initialDeposit": {
+                    "type": "number",
+                    "minimum": 0
+                },
+                "interest": {
+                    "type": "number",
+                    "maximum": 100,
+                    "minimum": 0
+                },
+                "interestType": {
+                    "enum": [
+                        "MONTHLY",
+                        "ANNUAL"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.InterestType"
+                        }
+                    ]
+                },
+                "periodInMonths": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            }
+        },
+        "dto.SimpleInterestResponseDTO": {
+            "type": "object",
+            "properties": {
+                "by_month": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/usecase.SimpleInterestResult"
+                    }
+                },
+                "total_amount": {
+                    "type": "number"
+                },
+                "total_deposit": {
+                    "type": "number"
+                },
+                "total_interest": {
+                    "type": "number"
                 }
             }
         },
@@ -587,6 +721,17 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "entity.InterestType": {
+            "type": "string",
+            "enum": [
+                "MONTHLY",
+                "ANNUAL"
+            ],
+            "x-enum-varnames": [
+                "InterestTypeMonthly",
+                "InterestTypeAnnual"
+            ]
         },
         "entity.Investment": {
             "type": "object",
@@ -816,6 +961,20 @@ const docTemplate = `{
                 "monthly_interest": {
                     "type": "number"
                 },
+                "total_amount": {
+                    "type": "number"
+                },
+                "total_deposit": {
+                    "type": "number"
+                },
+                "total_interest": {
+                    "type": "number"
+                }
+            }
+        },
+        "usecase.SimpleInterestResult": {
+            "type": "object",
+            "properties": {
                 "total_amount": {
                     "type": "number"
                 },

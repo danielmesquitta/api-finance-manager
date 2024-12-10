@@ -4,6 +4,7 @@ import (
 	"context"
 	"math"
 
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/moneyutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
@@ -22,10 +23,11 @@ func NewCalculateCompoundInterestUseCase(
 }
 
 type CalculateCompoundInterestUseCaseInput struct {
-	InitialDeposit float64 `validate:"min=0"                  json:"initial_deposit,omitempty"`
-	MonthlyDeposit float64 `                                  json:"monthly_deposit,omitempty"`
-	AnnualInterest float64 `validate:"required,min=0,max=100" json:"annual_interest,omitempty"`
-	PeriodInMonths int     `validate:"required,min=1"         json:"period_in_months,omitempty"`
+	InitialDeposit float64             `validate:"min=0"                         json:"initial_deposit,omitempty"`
+	MonthlyDeposit float64             `                                         json:"monthly_deposit,omitempty"`
+	Interest       float64             `validate:"required,min=0,max=100"        json:"interest,omitempty"`
+	InterestType   entity.InterestType `validate:"required,oneof=MONTHLY ANNUAL" json:"interest_type,omitempty"`
+	PeriodInMonths int                 `validate:"required,min=1"                json:"period_in_months,omitempty"`
 }
 
 type CalculateCompoundInterestUseCaseOutput struct {
@@ -60,7 +62,13 @@ func (uc *CalculateCompoundInterestUseCase) Execute(
 		ByMonth: make(map[int]CompoundInterestResult, in.PeriodInMonths),
 	}
 
-	monthlyInterestRate := (math.Pow(1+in.AnnualInterest/100.0, 1.0/12.0) - 1.0)
+	monthlyInterestRate := 0.0
+	switch in.InterestType {
+	case entity.InterestTypeMonthly:
+		monthlyInterestRate = in.Interest / 100
+	case entity.InterestTypeAnnual:
+		monthlyInterestRate = math.Pow(1+in.Interest/100, 1.0/12) - 1
+	}
 
 	currentBalance := in.InitialDeposit
 	totalDeposit := in.InitialDeposit

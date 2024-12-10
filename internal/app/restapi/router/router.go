@@ -45,4 +45,5 @@ func (r *Router) Register(
 
 	apiV1.POST("/calculator/compound-interest", r.ch.CompoundInterest)
 	apiV1.POST("/calculator/retirement", r.ch.Retirement)
+	apiV1.POST("/calculator/simple-interest", r.ch.SimpleInterest)
 }

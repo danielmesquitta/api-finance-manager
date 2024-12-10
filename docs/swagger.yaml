@@ -2,20 +2,27 @@ basePath: /api
 definitions:
   dto.CompoundInterestRequestDTO:
     properties:
-      annual_interest:
-        maximum: 100
-        minimum: 0
-        type: number
       initial_deposit:
         minimum: 0
         type: number
+      interest:
+        maximum: 100
+        minimum: 0
+        type: number
+      interest_type:
+        allOf:
+        - $ref: '#/definitions/entity.InterestType'
+        enum:
+        - MONTHLY
+        - ANNUAL
       monthly_deposit:
         type: number
       period_in_months:
         minimum: 1
         type: integer
     required:
-    - annual_interest
+    - interest
+    - interest_type
     - period_in_months
     type: object
   dto.CompoundInterestResponseDTO:
@@ -46,10 +53,6 @@ definitions:
       age:
         minimum: 0
         type: integer
-      annual_interest:
-        maximum: 100
-        minimum: 0
-        type: number
       goal_income:
         minimum: 0
         type: number
@@ -63,6 +66,16 @@ definitions:
       initial_deposit:
         minimum: 0
         type: number
+      interest:
+        maximum: 100
+        minimum: 0
+        type: number
+      interest_type:
+        allOf:
+        - $ref: '#/definitions/entity.InterestType'
+        enum:
+        - MONTHLY
+        - ANNUAL
       life_expectancy:
         minimum: 1
         type: integer
@@ -74,12 +87,12 @@ definitions:
         type: integer
     required:
     - age
-    - annual_interest
     - goal_income
     - goal_patrimony
     - income_investment_percentage
     - initial_deposit
-    - life_expectancy
+    - interest
+    - interest_type
     - monthly_income
     - retirement_age
     type: object
@@ -109,6 +122,42 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/entity.User'
+    type: object
+  dto.SimpleInterestRequestDTO:
+    properties:
+      initialDeposit:
+        minimum: 0
+        type: number
+      interest:
+        maximum: 100
+        minimum: 0
+        type: number
+      interestType:
+        allOf:
+        - $ref: '#/definitions/entity.InterestType'
+        enum:
+        - MONTHLY
+        - ANNUAL
+      periodInMonths:
+        minimum: 1
+        type: integer
+    required:
+    - interest
+    - interestType
+    - periodInMonths
+    type: object
+  dto.SimpleInterestResponseDTO:
+    properties:
+      by_month:
+        additionalProperties:
+          $ref: '#/definitions/usecase.SimpleInterestResult'
+        type: object
+      total_amount:
+        type: number
+      total_deposit:
+        type: number
+      total_interest:
+        type: number
     type: object
   entity.Account:
     properties:
@@ -250,6 +299,14 @@ definitions:
       updated_at:
         type: string
     type: object
+  entity.InterestType:
+    enum:
+    - MONTHLY
+    - ANNUAL
+    type: string
+    x-enum-varnames:
+    - InterestTypeMonthly
+    - InterestTypeAnnual
   entity.Investment:
     properties:
       amount:
@@ -416,6 +473,15 @@ definitions:
       total_interest:
         type: number
     type: object
+  usecase.SimpleInterestResult:
+    properties:
+      total_amount:
+        type: number
+      total_deposit:
+        type: number
+      total_interest:
+        type: number
+    type: object
 info:
   contact:
     email: danielmesquitta123@gmail.com
@@ -549,6 +615,42 @@ paths:
       security:
       - BearerAuth: []
       summary: Calculate retirement
+      tags:
+      - Calculator
+  /v1/calculator/simple-interest:
+    post:
+      consumes:
+      - application/json
+      description: Calculate simple interest
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SimpleInterestRequestDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SimpleInterestResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Calculate simple interest
       tags:
       - Calculator
 securityDefinitions:

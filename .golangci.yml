@@ -9,4 +9,3 @@ linters:
     - revive
     - unconvert
     - unparam
-    - lll

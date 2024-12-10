@@ -17,3 +17,11 @@ type RetirementRequestDTO struct {
 type RetirementResponseDTO struct {
 	usecase.CalculateRetirementUseCaseOutput
 }
+
+type SimpleInterestRequestDTO struct {
+	usecase.CalculateSimpleInterestUseCaseInput
+}
+
+type SimpleInterestResponseDTO struct {
+	usecase.CalculateSimpleInterestUseCaseOutput
+}
