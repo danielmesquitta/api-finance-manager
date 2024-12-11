@@ -32,11 +32,11 @@ func NewAuthHandler(
 // @Failure 400 {object} dto.ErrorResponseDTO
 // @Failure 401 {object} dto.ErrorResponseDTO
 // @Failure 500 {object} dto.ErrorResponseDTO
-// @Router /auth/sign-in [post]
+// @Router /v1/auth/sign-in [post]
 func (h AuthHandler) SignIn(c echo.Context) error {
 	token := c.Request().Header.Get("Authorization")
 	if token == "" {
-		return errs.New("missing authorization header")
+		return errs.ErrUnauthorized
 	}
 
 	var body dto.SignInRequestDTO
@@ -44,10 +44,11 @@ func (h AuthHandler) SignIn(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	in := usecase.SignInUseCaseInput{Token: token, Provider: body.Provider}
-
 	ctx := c.Request().Context()
-	out, err := h.signInUseCase.Execute(ctx, in)
+	out, err := h.signInUseCase.Execute(
+		ctx,
+		usecase.SignInUseCaseInput{Token: token, Provider: body.Provider},
+	)
 	if err != nil {
 		return errs.New(err)
 	}

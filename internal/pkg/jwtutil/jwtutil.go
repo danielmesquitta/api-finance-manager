@@ -12,7 +12,7 @@ import (
 type UserClaims struct {
 	jwt.RegisteredClaims
 	Tier                  entity.Tier `json:"tier,omitempty"`
-	SubscriptionExpiresAt time.Time   `json:"subscription_expires_at,omitempty"`
+	SubscriptionExpiresAt *time.Time  `json:"subscription_expires_at,omitempty"`
 }
 
 // IsExpired checks if the token is expired

@@ -38,7 +38,7 @@ func NewSignInUseCase(
 }
 
 type SignInUseCaseInput struct {
-	Provider string `json:"provider,omitempty" validate:"required,oneof=google apple"`
+	Provider string `json:"provider,omitempty" validate:"required,oneof=GOOGLE APPLE"`
 	Token    string `json:"token,omitempty"    validate:"required"`
 }
 
@@ -95,7 +95,7 @@ func (uc *SignInUseCase) signIn(
 		return nil, errs.New(ctx.Err())
 	default:
 		accessToken, err := uc.j.NewToken(jwtutil.UserClaims{
-			Tier:                  user.Tier,
+			Tier:                  entity.Tier(user.Tier),
 			SubscriptionExpiresAt: user.SubscriptionExpiresAt,
 			RegisteredClaims: jwt.RegisteredClaims{
 				Issuer:    user.ID.String(),
@@ -140,11 +140,6 @@ func (uc *SignInUseCase) createUser(
 	); err != nil {
 		return nil, errs.New(err)
 	}
-
-	params.Tier = entity.TierTrial
-
-	twoWeeksFromNow := time.Now().AddDate(0, 0, 14)
-	params.SubscriptionExpiresAt = twoWeeksFromNow
 
 	user, err := uc.ur.CreateUser(ctx, params)
 	if err != nil {

@@ -1,7 +1,21 @@
 package middleware
 
-type Middleware struct{}
+import (
+	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
+)
 
-func NewMiddleware() *Middleware {
-	return &Middleware{}
+type Middleware struct {
+	e *config.Env
+	j jwtutil.JWTManager
+}
+
+func NewMiddleware(
+	e *config.Env,
+	j jwtutil.JWTManager,
+) *Middleware {
+	return &Middleware{
+		e: e,
+		j: j,
+	}
 }

@@ -24,6 +24,8 @@ type Env struct {
 	JWTSecretKey       string      `mapstructure:"JWT_SECRET_KEY"       validate:"required"`
 	PluggyClientID     string      `mapstructure:"PLUGGY_CLIENT_ID"     validate:"required"`
 	PluggyClientSecret string      `mapstructure:"PLUGGY_CLIENT_SECRET" validate:"required"`
+	BasicAuthUsername  string      `mapstructure:"BASIC_AUTH_USERNAME"  validate:"required"`
+	BasicAuthPassword  string      `mapstructure:"BASIC_AUTH_PASSWORD"  validate:"required"`
 }
 
 func LoadEnv(v validator.Validator) *Env {

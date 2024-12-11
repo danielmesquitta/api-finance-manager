@@ -2,28 +2,18 @@ package repo
 
 import (
 	"context"
-	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/google/uuid"
 )
 
 type CreateUserParams struct {
-	Name                  string      `json:"name,omitempty"`
-	Email                 string      `json:"email,omitempty"`
-	Tier                  entity.Tier `json:"tier,omitempty"`
-	Avatar                *string     `json:"avatar,omitempty"`
-	SubscriptionExpiresAt time.Time   `json:"subscription_expires_at,omitempty"`
+	sqlc.CreateUserParams
 }
 
 type UpdateUserParams struct {
-	ID                    uuid.UUID   `json:"id,omitempty"`
-	Name                  string      `json:"name,omitempty"`
-	Email                 string      `json:"email,omitempty"`
-	Tier                  entity.Tier `json:"tier,omitempty"`
-	Avatar                *string     `json:"avatar,omitempty"`
-	SubscriptionExpiresAt time.Time   `json:"subscription_expires_at,omitempty"`
-	SynchronizedAt        time.Time   `json:"synchronized_at,omitempty"`
+	sqlc.UpdateUserParams
 }
 
 type UserRepo interface {

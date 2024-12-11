@@ -5,154 +5,22 @@
 package sqlc
 
 import (
-	"database/sql/driver"
-	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type AccountType string
-
-const (
-	AccountTypeBANK    AccountType = "BANK"
-	AccountTypeCREDIT  AccountType = "CREDIT"
-	AccountTypeUNKNOWN AccountType = "UNKNOWN"
-)
-
-func (e *AccountType) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = AccountType(s)
-	case string:
-		*e = AccountType(s)
-	default:
-		return fmt.Errorf("unsupported scan type for AccountType: %T", src)
-	}
-	return nil
-}
-
-type NullAccountType struct {
-	AccountType AccountType `json:"AccountType"`
-	Valid       bool        `json:"valid"` // Valid is true if AccountType is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullAccountType) Scan(value interface{}) error {
-	if value == nil {
-		ns.AccountType, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.AccountType.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullAccountType) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.AccountType), nil
-}
-
-type PaymentMethod string
-
-const (
-	PaymentMethodPIX          PaymentMethod = "PIX"
-	PaymentMethodBOLETO       PaymentMethod = "BOLETO"
-	PaymentMethodCREDITCARD   PaymentMethod = "CREDIT_CARD"
-	PaymentMethodDEBITCARD    PaymentMethod = "DEBIT_CARD"
-	PaymentMethodTRANSFERENCE PaymentMethod = "TRANSFERENCE"
-	PaymentMethodUNKNOWN      PaymentMethod = "UNKNOWN"
-)
-
-func (e *PaymentMethod) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = PaymentMethod(s)
-	case string:
-		*e = PaymentMethod(s)
-	default:
-		return fmt.Errorf("unsupported scan type for PaymentMethod: %T", src)
-	}
-	return nil
-}
-
-type NullPaymentMethod struct {
-	PaymentMethod PaymentMethod `json:"PaymentMethod"`
-	Valid         bool          `json:"valid"` // Valid is true if PaymentMethod is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullPaymentMethod) Scan(value interface{}) error {
-	if value == nil {
-		ns.PaymentMethod, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.PaymentMethod.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullPaymentMethod) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.PaymentMethod), nil
-}
-
-type Tier string
-
-const (
-	TierTRIAL Tier = "TRIAL"
-	TierPRO   Tier = "PRO"
-)
-
-func (e *Tier) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = Tier(s)
-	case string:
-		*e = Tier(s)
-	default:
-		return fmt.Errorf("unsupported scan type for Tier: %T", src)
-	}
-	return nil
-}
-
-type NullTier struct {
-	Tier  Tier `json:"Tier"`
-	Valid bool `json:"valid"` // Valid is true if Tier is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullTier) Scan(value interface{}) error {
-	if value == nil {
-		ns.Tier, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.Tier.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullTier) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.Tier), nil
-}
-
 type Account struct {
-	ID            uuid.UUID   `json:"id"`
-	ExternalID    string      `json:"external_id"`
-	Name          string      `json:"name"`
-	Type          AccountType `json:"type"`
-	CreatedAt     time.Time   `json:"created_at"`
-	UpdatedAt     time.Time   `json:"updated_at"`
-	UserID        uuid.UUID   `json:"user_id"`
-	InstitutionID uuid.UUID   `json:"institution_id"`
+	ID            uuid.UUID `json:"id"`
+	ExternalID    string    `json:"external_id"`
+	Name          string    `json:"name"`
+	Balance       int64     `json:"balance"`
+	Type          string    `json:"type"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	UserID        uuid.UUID `json:"user_id"`
+	InstitutionID uuid.UUID `json:"institution_id"`
 }
 
 type Budget struct {
@@ -180,39 +48,66 @@ type Category struct {
 	UpdatedAt  time.Time `json:"updated_at"`
 }
 
+type CreditCard struct {
+	ID             uuid.UUID `json:"id"`
+	Level          string    `json:"level"`
+	Brand          string    `json:"brand"`
+	Limit          int64     `json:"limit"`
+	AvailableLimit int64     `json:"available_limit"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	AccountID      uuid.UUID `json:"account_id"`
+}
+
 type Institution struct {
 	ID         uuid.UUID   `json:"id"`
 	ExternalID string      `json:"external_id"`
 	Name       string      `json:"name"`
-	ImageUrl   pgtype.Text `json:"image_url"`
+	Logo       pgtype.Text `json:"logo"`
 	CreatedAt  time.Time   `json:"created_at"`
 	UpdatedAt  time.Time   `json:"updated_at"`
 }
 
+type Investment struct {
+	ID         uuid.UUID `json:"id"`
+	ExternalID string    `json:"external_id"`
+	Name       string    `json:"name"`
+	Amount     int64     `json:"amount"`
+	Type       string    `json:"type"`
+	Rate       int64     `json:"rate"`
+	RateType   string    `json:"rateType"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	UserID     uuid.UUID `json:"user_id"`
+}
+
 type Transaction struct {
-	ID            uuid.UUID     `json:"id"`
-	ExternalID    string        `json:"external_id"`
-	Name          string        `json:"name"`
-	Description   pgtype.Text   `json:"description"`
-	Amount        int64         `json:"amount"`
-	PaymentMethod PaymentMethod `json:"payment_method"`
-	IsIgnored     bool          `json:"is_ignored"`
-	Date          time.Time     `json:"date"`
-	CreatedAt     time.Time     `json:"created_at"`
-	UpdatedAt     time.Time     `json:"updated_at"`
-	UserID        uuid.UUID     `json:"user_id"`
-	AccountID     pgtype.UUID   `json:"account_id"`
-	CategoryID    pgtype.UUID   `json:"category_id"`
+	ID            uuid.UUID   `json:"id"`
+	ExternalID    string      `json:"external_id"`
+	Name          string      `json:"name"`
+	Description   pgtype.Text `json:"description"`
+	Amount        int64       `json:"amount"`
+	PaymentMethod string      `json:"payment_method"`
+	IsIgnored     bool        `json:"is_ignored"`
+	Date          time.Time   `json:"date"`
+	CreatedAt     time.Time   `json:"created_at"`
+	UpdatedAt     time.Time   `json:"updated_at"`
+	UserID        uuid.UUID   `json:"user_id"`
+	AccountID     pgtype.UUID `json:"account_id"`
+	CategoryID    pgtype.UUID `json:"category_id"`
 }
 
 type User struct {
-	ID                    uuid.UUID   `json:"id"`
-	Name                  string      `json:"name"`
-	Email                 string      `json:"email"`
-	Tier                  Tier        `json:"tier"`
-	Avatar                pgtype.Text `json:"avatar"`
-	SubscriptionExpiresAt time.Time   `json:"subscription_expires_at"`
-	SynchronizedAt        time.Time   `json:"synchronized_at"`
-	CreatedAt             time.Time   `json:"created_at"`
-	UpdatedAt             time.Time   `json:"updated_at"`
+	ID                    uuid.UUID          `json:"id"`
+	ExternalID            string             `json:"external_id"`
+	Provider              string             `json:"provider"`
+	Name                  string             `json:"name"`
+	Email                 string             `json:"email"`
+	VerifiedEmail         bool               `json:"verified_email"`
+	Tier                  string             `json:"tier"`
+	Avatar                pgtype.Text        `json:"avatar"`
+	SubscriptionExpiresAt pgtype.Timestamptz `json:"subscription_expires_at"`
+	SynchronizedAt        pgtype.Timestamptz `json:"synchronized_at"`
+	CreatedAt             time.Time          `json:"created_at"`
+	UpdatedAt             time.Time          `json:"updated_at"`
 }

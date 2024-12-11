@@ -40,10 +40,18 @@ func (g *GoogleOAuth) GetUser(
 		return nil, errs.New(err)
 	}
 
+	var avatar *string
+	if userInfo.Picture != "" {
+		avatar = &userInfo.Picture
+	}
+
 	user := entity.User{
-		Name:   userInfo.Name,
-		Email:  userInfo.Email,
-		Avatar: &userInfo.Picture,
+		ExternalID:    userInfo.ID,
+		Name:          userInfo.Name,
+		Email:         userInfo.Email,
+		VerifiedEmail: userInfo.VerifiedEmail,
+		Avatar:        avatar,
+		Provider:      string(entity.ProviderGoogle),
 	}
 
 	return &user, nil

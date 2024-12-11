@@ -8,22 +8,27 @@ FROM users
 WHERE email = $1;
 -- name: CreateUser :one
 INSERT INTO users (
+    external_id,
+    provider,
     name,
     email,
-    tier,
+    verified_email,
     avatar,
-    subscription_expires_at
+    updated_at
   )
-VALUES ($1, $2, $3, $4, $5)
+VALUES ($1, $2, $3, $4, $5, $6, NOW())
 RETURNING *;
 -- name: UpdateUser :one
 UPDATE users
-SET name = $2,
-  email = $3,
-  tier = $4,
-  avatar = $5,
-  subscription_expires_at = $6,
-  synchronized_at = $7,
+SET external_id = $2,
+  provider = $3,
+  name = $4,
+  email = $5,
+  verified_email = $6,
+  tier = $7,
+  avatar = $8,
+  subscription_expires_at = $9,
+  synchronized_at = $10,
   updated_at = NOW()
 WHERE id = $1
 RETURNING *;

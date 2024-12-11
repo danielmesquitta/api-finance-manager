@@ -15,9 +15,12 @@ const ValidUserToken = "valid_user_token"
 func NewMockOAuth() *MockOAuth {
 	avatar := "https://avatars.githubusercontent.com/u/60039311"
 	user := entity.User{
-		Name:   "John Doe",
-		Email:  "johndoe@email.com",
-		Avatar: &avatar,
+		ExternalID:    "6c2342aa-bdac-4efe-a31b-3a018072cff9",
+		Name:          "John Doe",
+		Email:         "johndoe@email.com",
+		Avatar:        &avatar,
+		Provider:      string(entity.ProviderGoogle),
+		VerifiedEmail: true,
 	}
 
 	return &MockOAuth{

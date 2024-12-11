@@ -5,10 +5,10 @@ import (
 	"strings"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/go-playground/locales/en"
+	"github.com/go-playground/locales/pt_BR"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
-	enTranslations "github.com/go-playground/validator/v10/translations/en"
+	ptBRTranslations "github.com/go-playground/validator/v10/translations/pt_BR"
 )
 
 type Validator interface {
@@ -22,14 +22,14 @@ type Validate struct {
 
 func NewValidate() *Validate {
 	validate := validator.New()
-	english := en.New()
-	uni := ut.New(english, english)
-	t, ok := uni.GetTranslator("en")
+	portuguese := pt_BR.New()
+	uni := ut.New(portuguese, portuguese)
+	t, ok := uni.GetTranslator("pt_BR")
 	if !ok {
 		log.Fatalln("translator not found")
 	}
 
-	if err := enTranslations.
+	if err := ptBRTranslations.
 		RegisterDefaultTranslations(validate, t); err != nil {
 		log.Fatalln(err)
 	}

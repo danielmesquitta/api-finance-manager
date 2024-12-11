@@ -24,12 +24,12 @@ import (
 func New() *App {
 	validate := validator.NewValidate()
 	env := config.LoadEnv(validate)
-	middlewareMiddleware := middleware.NewMiddleware()
+	jwt := jwtutil.NewJWT(env)
+	middlewareMiddleware := middleware.NewMiddleware(env, jwt)
 	healthHandler := handler.NewHealthHandler()
 	conn := db.NewPGXConn(env)
 	queries := db.NewQueries(conn)
 	userPgRepo := pgrepo.NewUserPgRepo(queries)
-	jwt := jwtutil.NewJWT(env)
 	mockOAuth := mockoauth.NewMockOAuth()
 	signInUseCase := usecase.NewSignInUseCase(validate, userPgRepo, jwt, mockOAuth)
 	authHandler := handler.NewAuthHandler(signInUseCase)
@@ -38,7 +38,7 @@ func New() *App {
 	calculateRetirementUseCase := usecase.NewCalculateRetirementUseCase(validate, calculateCompoundInterestUseCase)
 	calculateSimpleInterestUseCase := usecase.NewCalculateSimpleInterestUseCase(validate)
 	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterestUseCase, calculateEmergencyReserveUseCase, calculateRetirementUseCase, calculateSimpleInterestUseCase)
-	routerRouter := router.NewRouter(env, healthHandler, authHandler, calculatorHandler)
+	routerRouter := router.NewRouter(env, middlewareMiddleware, healthHandler, authHandler, calculatorHandler)
 	app := newApp(env, middlewareMiddleware, routerRouter)
 	return app
 }

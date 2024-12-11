@@ -2,17 +2,15 @@ package openfinance
 
 import (
 	"context"
-
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 )
 
 type Account struct {
-	ID         string             `json:"id,omitempty"`
-	Type       entity.AccountType `json:"type,omitempty"`
-	Name       string             `json:"name,omitempty"`
-	Balance    float64            `json:"balance,omitempty"`
-	ItemID     string             `json:"itemId,omitempty"`
-	CreditData *CreditData        `json:"creditData,omitempty"`
+	ID         string      `json:"id,omitempty"`
+	Type       string      `json:"type,omitempty"`
+	Name       string      `json:"name,omitempty"`
+	Balance    float64     `json:"balance,omitempty"`
+	ItemID     string      `json:"itemId,omitempty"`
+	CreditData *CreditData `json:"creditData,omitempty"`
 }
 
 type CreditData struct {

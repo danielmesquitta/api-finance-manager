@@ -9,29 +9,19 @@ generator client {
   previewFeatures = ["postgresqlExtensions"]
 }
 
-enum Tier {
-  TRIAL
-  PRO
-}
-
-enum Provider {
-  GOOGLE
-  APPLE
-}
-
 model User {
-  id                      String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id             String
-  provider                Provider
+  provider                String
   name                    String
-  email                   String   @unique
-  verified_email          Boolean  @default(false)
-  tier                    Tier     @default(TRIAL)
+  email                   String    @unique
+  verified_email          Boolean   @default(false)
+  tier                    String    @default("FREE")
   avatar                  String?
-  subscription_expires_at DateTime @db.Timestamptz()
-  synchronized_at         DateTime @default(now()) @db.Timestamptz()
-  created_at              DateTime @default(now()) @db.Timestamptz()
-  updated_at              DateTime @default(now()) @db.Timestamptz()
+  subscription_expires_at DateTime? @db.Timestamptz()
+  synchronized_at         DateTime? @default(now()) @db.Timestamptz()
+  created_at              DateTime  @default(now()) @db.Timestamptz()
+  updated_at              DateTime  @default(now()) @db.Timestamptz()
 
   budget Budget?
 
@@ -44,26 +34,17 @@ model User {
   @@map("users")
 }
 
-enum PaymentMethod {
-  PIX
-  BOLETO
-  CREDIT_CARD
-  DEBIT_CARD
-  TRANSFERENCE
-  UNKNOWN
-}
-
 model Transaction {
-  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id    String        @unique
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id    String   @unique
   name           String
   description    String?
   amount         BigInt
-  payment_method PaymentMethod @default(UNKNOWN)
-  is_ignored     Boolean       @default(false)
-  date           DateTime      @db.Timestamptz()
-  created_at     DateTime      @default(now()) @db.Timestamptz()
-  updated_at     DateTime      @default(now()) @db.Timestamptz()
+  payment_method String   @default("UNKNOWN")
+  is_ignored     Boolean  @default(false)
+  date           DateTime @db.Timestamptz()
+  created_at     DateTime @default(now()) @db.Timestamptz()
+  updated_at     DateTime @default(now()) @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
@@ -77,33 +58,22 @@ model Transaction {
   @@map("transactions")
 }
 
-enum InvestmentType {
-  FIXED_INCOME
-  UNKNOWN
-}
-
-enum InvestmentRateType {
-  CDI
-  SELIC
-  IPCA
-  PREFIXED
-  UNKNOWN
-}
-
 // @TODO: Add more fields to Investment model
 model Investment {
-  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String             @unique
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String   @unique
   name        String
   amount      BigInt
-  type        InvestmentType     @default(UNKNOWN)
+  type        String   @default("UNKNOWN")
   rate        BigInt
-  rateType    InvestmentRateType @default(UNKNOWN)
-  created_at  DateTime           @default(now()) @db.Timestamptz()
-  updated_at  DateTime           @default(now()) @db.Timestamptz()
+  rateType    String   @default("UNKNOWN")
+  created_at  DateTime @default(now()) @db.Timestamptz()
+  updated_at  DateTime @default(now()) @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id])
   user_id String @db.Uuid
+
+  @@map("investments")
 }
 
 model Category {
@@ -120,20 +90,14 @@ model Category {
   @@map("categories")
 }
 
-enum AccountType {
-  BANK
-  CREDIT
-  UNKNOWN
-}
-
 model Account {
-  id          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String      @unique
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String   @unique
   name        String
   balance     BigInt
-  type        AccountType @default(UNKNOWN)
-  created_at  DateTime    @default(now()) @db.Timestamptz()
-  updated_at  DateTime    @default(now()) @db.Timestamptz()
+  type        String   @default("UNKNOWN")
+  created_at  DateTime @default(now()) @db.Timestamptz()
+  updated_at  DateTime @default(now()) @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
@@ -167,7 +131,7 @@ model Institution {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id String   @unique
   name        String
-  image_url   String?
+  logo        String?
   created_at  DateTime @default(now()) @db.Timestamptz()
   updated_at  DateTime @default(now()) @db.Timestamptz()
 

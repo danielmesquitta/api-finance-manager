@@ -78,23 +78,23 @@ func (e *Err) Error() string {
 
 var (
 	ErrUserNotFound = newErr(
-		"user not found",
+		"Usuário não encontrado",
 		ErrTypeNotFound,
 	)
 	ErrUnauthorized = newErr(
-		"unauthorized",
+		"Usuário não autorizado",
 		ErrTypeUnauthorized,
 	)
 	ErrAccountsAlreadyRegistered = newErr(
-		"accounts already registered",
+		"Essa conta já está registrada",
 		ErrTypeForbidden,
 	)
 	ErrInvalidRetirementAge = newErr(
-		"age should be less than retirement age",
+		"Sua idade atual deve ser menor que a idade da aposentadoria",
 		ErrTypeValidation,
 	)
 	ErrInvalidLifeExpectance = newErr(
-		"life expectance should be greater than retirement age",
+		"Sua expectativa de vida deve ser maior que 0",
 		ErrTypeValidation,
 	)
 )

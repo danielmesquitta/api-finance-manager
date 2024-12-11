@@ -6,11 +6,13 @@ import (
 
 	_ "github.com/danielmesquitta/api-finance-manager/docs" // swagger docs
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 )
 
 type Router struct {
 	e  *config.Env
+	m  *middleware.Middleware
 	hh *handler.HealthHandler
 	ah *handler.AuthHandler
 	ch *handler.CalculatorHandler
@@ -18,12 +20,14 @@ type Router struct {
 
 func NewRouter(
 	e *config.Env,
+	m *middleware.Middleware,
 	hh *handler.HealthHandler,
 	ah *handler.AuthHandler,
 	ch *handler.CalculatorHandler,
 ) *Router {
 	return &Router{
 		e:  e,
+		m:  m,
 		hh: hh,
 		ah: ah,
 		ch: ch,
@@ -41,10 +45,12 @@ func (r *Router) Register(
 	apiV1 := app.Group(basePath + "/v1")
 
 	apiV1.GET("/health", r.hh.Health)
-	apiV1.POST("/sign-in", r.ah.SignIn)
+	apiV1.POST("/auth/sign-in", r.ah.SignIn)
 
-	apiV1.POST("/calculator/compound-interest", r.ch.CompoundInterest)
-	apiV1.POST("/calculator/emergency-reserve", r.ch.EmergencyReserve)
-	apiV1.POST("/calculator/retirement", r.ch.Retirement)
-	apiV1.POST("/calculator/simple-interest", r.ch.SimpleInterest)
+	privateApiV1 := apiV1.Group("/", r.m.BearerAuth)
+
+	privateApiV1.POST("/calculator/compound-interest", r.ch.CompoundInterest)
+	privateApiV1.POST("/calculator/emergency-reserve", r.ch.EmergencyReserve)
+	privateApiV1.POST("/calculator/retirement", r.ch.Retirement)
+	privateApiV1.POST("/calculator/simple-interest", r.ch.SimpleInterest)
 }

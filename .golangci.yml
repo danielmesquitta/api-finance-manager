@@ -6,6 +6,5 @@ linters:
     - goconst
     - gofmt
     - goimports
-    - revive
     - unconvert
     - unparam

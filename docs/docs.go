@@ -18,7 +18,36 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/sign-in": {
+        "/health": {
+            "get": {
+                "description": "Health check",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.HealthResponseDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/auth/sign-in": {
             "post": {
                 "security": [
                     {
@@ -64,35 +93,6 @@ const docTemplate = `{
                         "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/dto.ErrorResponseDTO"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
-                        }
-                    }
-                }
-            }
-        },
-        "/health": {
-            "get": {
-                "description": "Health check",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Health"
-                ],
-                "summary": "Health check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HealthResponseDTO"
                         }
                     },
                     "500": {
@@ -639,28 +639,6 @@ const docTemplate = `{
                 "JobTypeCivilServant"
             ]
         },
-        "entity.Provider": {
-            "type": "string",
-            "enum": [
-                "GOOGLE",
-                "APPLE"
-            ],
-            "x-enum-varnames": [
-                "ProviderGoogle",
-                "ProviderApple"
-            ]
-        },
-        "entity.Tier": {
-            "type": "string",
-            "enum": [
-                "TRIAL",
-                "PRO"
-            ],
-            "x-enum-varnames": [
-                "TierTrial",
-                "TierPro"
-            ]
-        },
         "entity.User": {
             "type": "object",
             "properties": {
@@ -683,7 +661,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "provider": {
-                    "$ref": "#/definitions/entity.Provider"
+                    "type": "string"
                 },
                 "subscription_expires_at": {
                     "type": "string"
@@ -692,7 +670,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "tier": {
-                    "$ref": "#/definitions/entity.Tier"
+                    "type": "string"
                 },
                 "updated_at": {
                     "type": "string"

@@ -7,7 +7,6 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
@@ -27,13 +26,8 @@ func (r *UserPgRepo) CreateUser(
 	ctx context.Context,
 	params repo.CreateUserParams,
 ) (*entity.User, error) {
-	sqlcParams := sqlc.CreateUserParams{}
-	if err := copier.Copy(&sqlcParams, params); err != nil {
-		return nil, err
-	}
-
 	tx := r.q.UseTx(ctx)
-	user, err := tx.CreateUser(ctx, sqlcParams)
+	user, err := tx.CreateUser(ctx, params.CreateUserParams)
 	if err != nil {
 		return nil, err
 	}
@@ -90,13 +84,8 @@ func (r *UserPgRepo) UpdateUser(
 	ctx context.Context,
 	params repo.UpdateUserParams,
 ) (*entity.User, error) {
-	sqlcParams := sqlc.UpdateUserParams{}
-	if err := copier.Copy(&sqlcParams, params); err != nil {
-		return nil, err
-	}
-
 	tx := r.q.UseTx(ctx)
-	user, err := tx.UpdateUser(ctx, sqlcParams)
+	user, err := tx.UpdateUser(ctx, params.UpdateUserParams)
 	if err != nil {
 		return nil, err
 	}

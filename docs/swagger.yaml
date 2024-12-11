@@ -208,22 +208,6 @@ definitions:
     - JobTypeEntrepreneur
     - JobTypeEmployee
     - JobTypeCivilServant
-  entity.Provider:
-    enum:
-    - GOOGLE
-    - APPLE
-    type: string
-    x-enum-varnames:
-    - ProviderGoogle
-    - ProviderApple
-  entity.Tier:
-    enum:
-    - TRIAL
-    - PRO
-    type: string
-    x-enum-varnames:
-    - TierTrial
-    - TierPro
   entity.User:
     properties:
       avatar:
@@ -239,13 +223,13 @@ definitions:
       name:
         type: string
       provider:
-        $ref: '#/definitions/entity.Provider'
+        type: string
       subscription_expires_at:
         type: string
       synchronized_at:
         type: string
       tier:
-        $ref: '#/definitions/entity.Tier'
+        type: string
       updated_at:
         type: string
       verified_email:
@@ -279,7 +263,26 @@ info:
   title: API Finance Manager
   version: "1.0"
 paths:
-  /auth/sign-in:
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.HealthResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+      summary: Health check
+      tags:
+      - Health
+  /v1/auth/sign-in:
     post:
       consumes:
       - application/json
@@ -315,25 +318,6 @@ paths:
       summary: Sign in
       tags:
       - Auth
-  /health:
-    get:
-      consumes:
-      - application/json
-      description: Health check
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.HealthResponseDTO'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
-      summary: Health check
-      tags:
-      - Health
   /v1/calculator/compound-interest:
     post:
       consumes:
