@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Account struct {
@@ -60,12 +59,12 @@ type CreditCard struct {
 }
 
 type Institution struct {
-	ID         uuid.UUID   `json:"id"`
-	ExternalID string      `json:"external_id"`
-	Name       string      `json:"name"`
-	Logo       pgtype.Text `json:"logo"`
-	CreatedAt  time.Time   `json:"created_at"`
-	UpdatedAt  time.Time   `json:"updated_at"`
+	ID         uuid.UUID `json:"id"`
+	ExternalID string    `json:"external_id"`
+	Name       string    `json:"name"`
+	Logo       *string   `json:"logo"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
 }
 
 type Investment struct {
@@ -82,32 +81,32 @@ type Investment struct {
 }
 
 type Transaction struct {
-	ID            uuid.UUID   `json:"id"`
-	ExternalID    string      `json:"external_id"`
-	Name          string      `json:"name"`
-	Description   pgtype.Text `json:"description"`
-	Amount        int64       `json:"amount"`
-	PaymentMethod string      `json:"payment_method"`
-	IsIgnored     bool        `json:"is_ignored"`
-	Date          time.Time   `json:"date"`
-	CreatedAt     time.Time   `json:"created_at"`
-	UpdatedAt     time.Time   `json:"updated_at"`
-	UserID        uuid.UUID   `json:"user_id"`
-	AccountID     pgtype.UUID `json:"account_id"`
-	CategoryID    pgtype.UUID `json:"category_id"`
+	ID            uuid.UUID  `json:"id"`
+	ExternalID    string     `json:"external_id"`
+	Name          string     `json:"name"`
+	Description   *string    `json:"description"`
+	Amount        int64      `json:"amount"`
+	PaymentMethod string     `json:"payment_method"`
+	IsIgnored     bool       `json:"is_ignored"`
+	Date          time.Time  `json:"date"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+	UserID        uuid.UUID  `json:"user_id"`
+	AccountID     *uuid.UUID `json:"account_id"`
+	CategoryID    *uuid.UUID `json:"category_id"`
 }
 
 type User struct {
-	ID                    uuid.UUID          `json:"id"`
-	ExternalID            string             `json:"external_id"`
-	Provider              string             `json:"provider"`
-	Name                  string             `json:"name"`
-	Email                 string             `json:"email"`
-	VerifiedEmail         bool               `json:"verified_email"`
-	Tier                  string             `json:"tier"`
-	Avatar                pgtype.Text        `json:"avatar"`
-	SubscriptionExpiresAt pgtype.Timestamptz `json:"subscription_expires_at"`
-	SynchronizedAt        pgtype.Timestamptz `json:"synchronized_at"`
-	CreatedAt             time.Time          `json:"created_at"`
-	UpdatedAt             time.Time          `json:"updated_at"`
+	ID                    uuid.UUID  `json:"id"`
+	ExternalID            string     `json:"external_id"`
+	Provider              string     `json:"provider"`
+	Name                  string     `json:"name"`
+	Email                 string     `json:"email"`
+	VerifiedEmail         bool       `json:"verified_email"`
+	Tier                  string     `json:"tier"`
+	Avatar                *string    `json:"avatar"`
+	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
+	SynchronizedAt        *time.Time `json:"synchronized_at"`
+	CreatedAt             time.Time  `json:"created_at"`
+	UpdatedAt             time.Time  `json:"updated_at"`
 }

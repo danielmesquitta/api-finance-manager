@@ -16,6 +16,8 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/pluggy"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo/pgrepo"
 )
@@ -41,18 +43,26 @@ func New() *App {
 		wire.Bind(new(googleoauth.Provider), new(*mockoauth.MockOAuth)),
 		mockoauth.NewMockOAuth,
 
+		wire.Bind(new(openfinance.Client), new(*pluggy.Client)),
+		pluggy.NewClient,
+
 		wire.Bind(new(repo.UserRepo), new(*pgrepo.UserPgRepo)),
 		pgrepo.NewUserPgRepo,
+
+		wire.Bind(new(repo.InstitutionRepo), new(*pgrepo.InstitutionPgRepo)),
+		pgrepo.NewInstitutionPgRepo,
 
 		usecase.NewSignInUseCase,
 		usecase.NewCalculateCompoundInterestUseCase,
 		usecase.NewCalculateEmergencyReserveUseCase,
 		usecase.NewCalculateRetirementUseCase,
 		usecase.NewCalculateSimpleInterestUseCase,
+		usecase.NewSyncInstitutionsUseCase,
 
 		handler.NewAuthHandler,
 		handler.NewHealthHandler,
 		handler.NewCalculatorHandler,
+		handler.NewInstitutionHandler,
 
 		middleware.NewMiddleware,
 

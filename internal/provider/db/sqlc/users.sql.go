@@ -7,9 +7,9 @@ package sqlc
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -19,20 +19,19 @@ INSERT INTO users (
     name,
     email,
     verified_email,
-    avatar,
-    updated_at
+    avatar
   )
-VALUES ($1, $2, $3, $4, $5, $6, NOW())
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at
 `
 
 type CreateUserParams struct {
-	ExternalID    string      `json:"external_id"`
-	Provider      string      `json:"provider"`
-	Name          string      `json:"name"`
-	Email         string      `json:"email"`
-	VerifiedEmail bool        `json:"verified_email"`
-	Avatar        pgtype.Text `json:"avatar"`
+	ExternalID    string  `json:"external_id"`
+	Provider      string  `json:"provider"`
+	Name          string  `json:"name"`
+	Email         string  `json:"email"`
+	VerifiedEmail bool    `json:"verified_email"`
+	Avatar        *string `json:"avatar"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -124,23 +123,22 @@ SET external_id = $2,
   tier = $7,
   avatar = $8,
   subscription_expires_at = $9,
-  synchronized_at = $10,
-  updated_at = NOW()
+  synchronized_at = $10
 WHERE id = $1
 RETURNING id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at
 `
 
 type UpdateUserParams struct {
-	ID                    uuid.UUID          `json:"id"`
-	ExternalID            string             `json:"external_id"`
-	Provider              string             `json:"provider"`
-	Name                  string             `json:"name"`
-	Email                 string             `json:"email"`
-	VerifiedEmail         bool               `json:"verified_email"`
-	Tier                  string             `json:"tier"`
-	Avatar                pgtype.Text        `json:"avatar"`
-	SubscriptionExpiresAt pgtype.Timestamptz `json:"subscription_expires_at"`
-	SynchronizedAt        pgtype.Timestamptz `json:"synchronized_at"`
+	ID                    uuid.UUID  `json:"id"`
+	ExternalID            string     `json:"external_id"`
+	Provider              string     `json:"provider"`
+	Name                  string     `json:"name"`
+	Email                 string     `json:"email"`
+	VerifiedEmail         bool       `json:"verified_email"`
+	Tier                  string     `json:"tier"`
+	Avatar                *string    `json:"avatar"`
+	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
+	SynchronizedAt        *time.Time `json:"synchronized_at"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {

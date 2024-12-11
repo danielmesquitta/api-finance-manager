@@ -16,6 +16,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/pluggy"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo/pgrepo"
 )
 
@@ -38,7 +39,11 @@ func New() *App {
 	calculateRetirementUseCase := usecase.NewCalculateRetirementUseCase(validate, calculateCompoundInterestUseCase)
 	calculateSimpleInterestUseCase := usecase.NewCalculateSimpleInterestUseCase(validate)
 	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterestUseCase, calculateEmergencyReserveUseCase, calculateRetirementUseCase, calculateSimpleInterestUseCase)
-	routerRouter := router.NewRouter(env, middlewareMiddleware, healthHandler, authHandler, calculatorHandler)
+	client := pluggy.NewClient(env, jwt)
+	institutionPgRepo := pgrepo.NewInstitutionPgRepo(queries)
+	syncInstitutionsUseCase := usecase.NewSyncInstitutionsUseCase(client, institutionPgRepo)
+	institutionHandler := handler.NewInstitutionHandler(syncInstitutionsUseCase)
+	routerRouter := router.NewRouter(env, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler)
 	app := newApp(env, middlewareMiddleware, routerRouter)
 	return app
 }

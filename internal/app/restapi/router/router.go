@@ -16,6 +16,7 @@ type Router struct {
 	hh *handler.HealthHandler
 	ah *handler.AuthHandler
 	ch *handler.CalculatorHandler
+	ih *handler.InstitutionHandler
 }
 
 func NewRouter(
@@ -24,6 +25,7 @@ func NewRouter(
 	hh *handler.HealthHandler,
 	ah *handler.AuthHandler,
 	ch *handler.CalculatorHandler,
+	ih *handler.InstitutionHandler,
 ) *Router {
 	return &Router{
 		e:  e,
@@ -31,6 +33,7 @@ func NewRouter(
 		hh: hh,
 		ah: ah,
 		ch: ch,
+		ih: ih,
 	}
 }
 
@@ -46,6 +49,10 @@ func (r *Router) Register(
 
 	apiV1.GET("/health", r.hh.Health)
 	apiV1.POST("/auth/sign-in", r.ah.SignIn)
+
+	adminApiV1 := apiV1.Group("", r.m.BasicAuth)
+
+	adminApiV1.POST("/institutions/sync", r.ih.Sync)
 
 	privateApiV1 := apiV1.Group("", r.m.BearerAuth)
 

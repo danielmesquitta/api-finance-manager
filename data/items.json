@@ -1,0 +1,56 @@
+{
+  "id": "8e7b5824-e232-4f90-b5ee-da347fd659c9",
+  "connector": {
+    "id": 200,
+    "name": "MeuPluggy",
+    "primaryColor": "ef294b",
+    "institutionUrl": "https://meu.pluggy.ai/",
+    "country": "BR",
+    "type": "PERSONAL_BANK",
+    "credentials": [],
+    "imageUrl": "https://cdn.pluggy.ai/assets/connector-icons/sandbox.svg",
+    "hasMFA": false,
+    "oauth": true,
+    "health": {
+      "status": "ONLINE",
+      "stage": null
+    },
+    "products": [
+      "ACCOUNTS",
+      "TRANSACTIONS",
+      "CREDIT_CARDS",
+      "INVESTMENTS",
+      "INVESTMENTS_TRANSACTIONS",
+      "PAYMENT_DATA",
+      "IDENTITY",
+      "BROKERAGE_NOTE"
+    ],
+    "createdAt": "2023-09-12T16:44:13.900Z",
+    "isSandbox": false,
+    "isOpenFinance": false,
+    "updatedAt": "2024-12-11T19:33:43.654Z",
+    "supportsPaymentInitiation": false,
+    "supportsScheduledPayments": false,
+    "supportsSmartTransfers": false
+  },
+  "createdAt": "2024-10-29T21:37:05.513Z",
+  "updatedAt": "2024-12-11T12:19:15.458Z",
+  "status": "UPDATED",
+  "executionStatus": "SUCCESS",
+  "lastUpdatedAt": "2024-12-11T12:19:15.407Z",
+  "webhookUrl": null,
+  "error": null,
+  "clientUserId": "demo:danielmesquitta123@gmail.com",
+  "consecutiveFailedLoginAttempts": 0,
+  "statusDetail": null,
+  "parameter": null,
+  "userAction": null,
+  "nextAutoSyncAt": "2024-12-12T12:19:15.407Z",
+  "consentExpiresAt": null,
+  "products": [
+    "ACCOUNTS",
+    "CREDIT_CARDS",
+    "TRANSACTIONS"
+  ],
+  "oauthRedirectUri": null
+}

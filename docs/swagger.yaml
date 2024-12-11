@@ -462,6 +462,23 @@ paths:
       summary: Calculate simple interest
       tags:
       - Calculator
+  /v1/institutions/sync:
+    get:
+      consumes:
+      - application/json
+      description: Sync institutions from open finance
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+      summary: Sync institutions from open finance
+      tags:
+      - Institution
 securityDefinitions:
   BasicAuth:
     type: basic

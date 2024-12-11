@@ -13,10 +13,9 @@ INSERT INTO users (
     name,
     email,
     verified_email,
-    avatar,
-    updated_at
+    avatar
   )
-VALUES ($1, $2, $3, $4, $5, $6, NOW())
+VALUES ($1, $2, $3, $4, $5, $6)
 RETURNING *;
 -- name: UpdateUser :one
 UPDATE users
@@ -28,7 +27,6 @@ SET external_id = $2,
   tier = $7,
   avatar = $8,
   subscription_expires_at = $9,
-  synchronized_at = $10,
-  updated_at = NOW()
+  synchronized_at = $10
 WHERE id = $1
 RETURNING *;

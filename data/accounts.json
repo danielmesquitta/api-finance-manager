@@ -51,5 +51,53 @@
       "holderType": null,
       "status": "CANCELLED"
     }
+  },
+  {
+    "id": "0a823f25-600b-47f6-8a4f-dfae990f8a30",
+    "type": "BANK",
+    "subtype": "CHECKING_ACCOUNT",
+    "name": "BTG Investimentos",
+    "balance": 0,
+    "currencyCode": "BRL",
+    "itemId": "5de68b44-d82b-482a-a3b6-b2189f201e6b",
+    "number": "00804035-0",
+    "createdAt": "2024-11-09T20:30:12.278Z",
+    "updatedAt": "2024-11-11T20:39:33.345Z",
+    "marketingName": null,
+    "taxNumber": "128.287.416-05",
+    "owner": "DANIEL SANTOS DE MESQUITA",
+    "bankData": {
+      "transferNumber": "208/0001/00804035-0",
+      "closingBalance": 0,
+      "automaticallyInvestedBalance": 0,
+      "overdraftContractedLimit": null,
+      "overdraftUsedLimit": null,
+      "unarrangedOverdraftAmount": null
+    },
+    "creditData": null
+  },
+  {
+    "id": "46f860c6-5010-41e1-aee3-e3905a51793a",
+    "type": "BANK",
+    "subtype": "CHECKING_ACCOUNT",
+    "name": "BTG Banking",
+    "balance": 0,
+    "currencyCode": "BRL",
+    "itemId": "5de68b44-d82b-482a-a3b6-b2189f201e6b",
+    "number": "00804035-0",
+    "createdAt": "2024-11-09T20:30:12.450Z",
+    "updatedAt": "2024-11-09T20:30:12.450Z",
+    "marketingName": null,
+    "taxNumber": "128.287.416-05",
+    "owner": "DANIEL SANTOS DE MESQUITA",
+    "bankData": {
+      "transferNumber": "208/0020/00804035-0",
+      "closingBalance": 0,
+      "automaticallyInvestedBalance": 0,
+      "overdraftContractedLimit": null,
+      "overdraftUsedLimit": null,
+      "unarrangedOverdraftAmount": null
+    },
+    "creditData": null
   }
 ]

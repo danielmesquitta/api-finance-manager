@@ -4,17 +4,8 @@ import (
 	"context"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/google/uuid"
 )
-
-type CreateUserParams struct {
-	sqlc.CreateUserParams
-}
-
-type UpdateUserParams struct {
-	sqlc.UpdateUserParams
-}
 
 type UserRepo interface {
 	CreateUser(

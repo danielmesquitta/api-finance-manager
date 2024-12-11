@@ -8,26 +8,26 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
 )
 
-type consentsResponse struct {
+type connectorsResponse struct {
 	Results []result `json:"results"`
 }
 
 type result struct {
-	ItemID string `json:"itemId"`
+	ID       int    `json:"id"`
+	Name     string `json:"name"`
+	ImageURL string `json:"image_url"`
 }
 
-func (c *Client) GetInstitution(
+func (c *Client) ListInstitutions(
 	ctx context.Context,
-	accountItemID string,
-) (*openfinance.Institution, error) {
+) ([]openfinance.Institution, error) {
 	if err := c.refreshAccessToken(ctx); err != nil {
 		return nil, errs.New(err)
 	}
 
 	res, err := c.c.R().
 		SetContext(ctx).
-		SetQueryParam("item_id", accountItemID).
-		Get("/consents")
+		Get("/connectors")
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -36,32 +36,19 @@ func (c *Client) GetInstitution(
 		return nil, errs.New(body)
 	}
 
-	consents := consentsResponse{}
-	if err := json.Unmarshal(body, &consents); err != nil {
+	connectors := connectorsResponse{}
+	if err := json.Unmarshal(body, &connectors); err != nil {
 		return nil, errs.New(err)
 	}
 
-	if len(consents.Results) == 0 {
-		return nil, errs.New("no consents found")
+	var institutions []openfinance.Institution
+	for _, connector := range connectors.Results {
+		institutions = append(institutions, openfinance.Institution{
+			ID:       connector.ID,
+			Name:     connector.Name,
+			ImageURL: connector.ImageURL,
+		})
 	}
 
-	institutionID := consents.Results[0].ItemID
-
-	res, err = c.c.R().
-		SetContext(ctx).
-		Get("/items/" + institutionID)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-	body = res.Body()
-	if statusCode := res.StatusCode(); statusCode < 200 || statusCode >= 300 {
-		return nil, errs.New(body)
-	}
-
-	institution := openfinance.Institution{}
-	if err := json.Unmarshal(body, &institution); err != nil {
-		return nil, errs.New(err)
-	}
-
-	return &institution, nil
+	return institutions, nil
 }

@@ -32,7 +32,7 @@ func (r *AccountPgRepo) ListAccountsByUserID(
 
 	results := []entity.Account{}
 	if err := copier.Copy(&results, accounts); err != nil {
-		return nil, err
+		return nil, errs.New(err)
 	}
 
 	return results, nil

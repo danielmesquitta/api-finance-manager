@@ -9,6 +9,7 @@ packages=(
     "github.com/sqlc-dev/sqlc/cmd/sqlc@latest"
     "github.com/google/wire/cmd/wire@latest"
     "github.com/danielmesquitta/prisma-to-go@latest"
+    "github.com/danielmesquitta/copy-sqlc-params@latest"
     "github.com/swaggo/swag/cmd/swag@latest"
 )
 
