@@ -190,146 +190,6 @@ definitions:
       total_interest:
         type: number
     type: object
-  entity.Account:
-    properties:
-      CreditCard:
-        $ref: '#/definitions/entity.CreditCard'
-      balance:
-        type: integer
-      created_at:
-        type: string
-      external_id:
-        type: string
-      id:
-        type: string
-      institution:
-        $ref: '#/definitions/entity.Institution'
-      institution_id:
-        type: string
-      name:
-        type: string
-      transactions:
-        items:
-          $ref: '#/definitions/entity.Transaction'
-        type: array
-      type:
-        $ref: '#/definitions/entity.AccountType'
-      updated_at:
-        type: string
-      user:
-        $ref: '#/definitions/entity.User'
-      user_id:
-        type: string
-    type: object
-  entity.AccountType:
-    enum:
-    - BANK
-    - CREDIT
-    - UNKNOWN
-    type: string
-    x-enum-varnames:
-    - AccountTypeBank
-    - AccountTypeCredit
-    - AccountTypeUnknown
-  entity.Budget:
-    properties:
-      amount:
-        type: integer
-      budget_categories:
-        items:
-          $ref: '#/definitions/entity.BudgetCategory'
-        type: array
-      created_at:
-        type: string
-      id:
-        type: string
-      updated_at:
-        type: string
-      user:
-        $ref: '#/definitions/entity.User'
-      user_id:
-        type: string
-    type: object
-  entity.BudgetCategory:
-    properties:
-      amount:
-        type: integer
-      budget:
-        $ref: '#/definitions/entity.Budget'
-      budget_id:
-        type: string
-      category:
-        $ref: '#/definitions/entity.Category'
-      category_id:
-        type: string
-      created_at:
-        type: string
-      id:
-        type: string
-      updated_at:
-        type: string
-    type: object
-  entity.Category:
-    properties:
-      budget_categories:
-        items:
-          $ref: '#/definitions/entity.BudgetCategory'
-        type: array
-      created_at:
-        type: string
-      external_id:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      transactions:
-        items:
-          $ref: '#/definitions/entity.Transaction'
-        type: array
-      updated_at:
-        type: string
-    type: object
-  entity.CreditCard:
-    properties:
-      account:
-        $ref: '#/definitions/entity.Account'
-      account_id:
-        type: string
-      available_limit:
-        type: integer
-      brand:
-        type: string
-      created_at:
-        type: string
-      id:
-        type: string
-      level:
-        type: string
-      limit:
-        type: integer
-      updated_at:
-        type: string
-    type: object
-  entity.Institution:
-    properties:
-      accounts:
-        items:
-          $ref: '#/definitions/entity.Account'
-        type: array
-      created_at:
-        type: string
-      external_id:
-        type: string
-      id:
-        type: string
-      image_url:
-        type: string
-      name:
-        type: string
-      updated_at:
-        type: string
-    type: object
   entity.InterestType:
     enum:
     - MONTHLY
@@ -338,53 +198,6 @@ definitions:
     x-enum-varnames:
     - InterestTypeMonthly
     - InterestTypeAnnual
-  entity.Investment:
-    properties:
-      amount:
-        type: integer
-      created_at:
-        type: string
-      external_id:
-        type: string
-      id:
-        type: string
-      name:
-        type: string
-      rate:
-        type: integer
-      rateType:
-        $ref: '#/definitions/entity.InvestmentRateType'
-      type:
-        $ref: '#/definitions/entity.InvestmentType'
-      updated_at:
-        type: string
-      user:
-        $ref: '#/definitions/entity.User'
-      user_id:
-        type: string
-    type: object
-  entity.InvestmentRateType:
-    enum:
-    - CDI
-    - SELIC
-    - IPCA
-    - PREFIXED
-    - UNKNOWN
-    type: string
-    x-enum-varnames:
-    - InvestmentRateTypeCdi
-    - InvestmentRateTypeSelic
-    - InvestmentRateTypeIpca
-    - InvestmentRateTypePrefixed
-    - InvestmentRateTypeUnknown
-  entity.InvestmentType:
-    enum:
-    - FIXED_INCOME
-    - UNKNOWN
-    type: string
-    x-enum-varnames:
-    - InvestmentTypeFixedIncome
-    - InvestmentTypeUnknown
   entity.JobType:
     enum:
     - ENTREPRENEUR
@@ -395,22 +208,6 @@ definitions:
     - JobTypeEntrepreneur
     - JobTypeEmployee
     - JobTypeCivilServant
-  entity.PaymentMethod:
-    enum:
-    - PIX
-    - BOLETO
-    - CREDIT_CARD
-    - DEBIT_CARD
-    - TRANSFERENCE
-    - UNKNOWN
-    type: string
-    x-enum-varnames:
-    - PaymentMethodPix
-    - PaymentMethodBoleto
-    - PaymentMethodCreditCard
-    - PaymentMethodDebitCard
-    - PaymentMethodTransference
-    - PaymentMethodUnknown
   entity.Provider:
     enum:
     - GOOGLE
@@ -427,51 +224,10 @@ definitions:
     x-enum-varnames:
     - TierTrial
     - TierPro
-  entity.Transaction:
-    properties:
-      account:
-        $ref: '#/definitions/entity.Account'
-      account_id:
-        type: string
-      amount:
-        type: integer
-      category:
-        $ref: '#/definitions/entity.Category'
-      category_id:
-        type: string
-      created_at:
-        type: string
-      date:
-        type: string
-      description:
-        type: string
-      external_id:
-        type: string
-      id:
-        type: string
-      is_ignored:
-        type: boolean
-      name:
-        type: string
-      payment_method:
-        $ref: '#/definitions/entity.PaymentMethod'
-      updated_at:
-        type: string
-      user:
-        $ref: '#/definitions/entity.User'
-      user_id:
-        type: string
-    type: object
   entity.User:
     properties:
-      accounts:
-        items:
-          $ref: '#/definitions/entity.Account'
-        type: array
       avatar:
         type: string
-      budget:
-        $ref: '#/definitions/entity.Budget'
       created_at:
         type: string
       email:
@@ -480,10 +236,6 @@ definitions:
         type: string
       id:
         type: string
-      investments:
-        items:
-          $ref: '#/definitions/entity.Investment'
-        type: array
       name:
         type: string
       provider:
@@ -494,10 +246,6 @@ definitions:
         type: string
       tier:
         $ref: '#/definitions/entity.Tier'
-      transactions:
-        items:
-          $ref: '#/definitions/entity.Transaction'
-        type: array
       updated_at:
         type: string
       verified_email:

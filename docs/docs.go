@@ -615,217 +615,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.Account": {
-            "type": "object",
-            "properties": {
-                "CreditCard": {
-                    "$ref": "#/definitions/entity.CreditCard"
-                },
-                "balance": {
-                    "type": "integer"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "external_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "institution": {
-                    "$ref": "#/definitions/entity.Institution"
-                },
-                "institution_id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "transactions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Transaction"
-                    }
-                },
-                "type": {
-                    "$ref": "#/definitions/entity.AccountType"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/entity.User"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.AccountType": {
-            "type": "string",
-            "enum": [
-                "BANK",
-                "CREDIT",
-                "UNKNOWN"
-            ],
-            "x-enum-varnames": [
-                "AccountTypeBank",
-                "AccountTypeCredit",
-                "AccountTypeUnknown"
-            ]
-        },
-        "entity.Budget": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "integer"
-                },
-                "budget_categories": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.BudgetCategory"
-                    }
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/entity.User"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.BudgetCategory": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "integer"
-                },
-                "budget": {
-                    "$ref": "#/definitions/entity.Budget"
-                },
-                "budget_id": {
-                    "type": "string"
-                },
-                "category": {
-                    "$ref": "#/definitions/entity.Category"
-                },
-                "category_id": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Category": {
-            "type": "object",
-            "properties": {
-                "budget_categories": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.BudgetCategory"
-                    }
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "external_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "transactions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Transaction"
-                    }
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.CreditCard": {
-            "type": "object",
-            "properties": {
-                "account": {
-                    "$ref": "#/definitions/entity.Account"
-                },
-                "account_id": {
-                    "type": "string"
-                },
-                "available_limit": {
-                    "type": "integer"
-                },
-                "brand": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "level": {
-                    "type": "string"
-                },
-                "limit": {
-                    "type": "integer"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Institution": {
-            "type": "object",
-            "properties": {
-                "accounts": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Account"
-                    }
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "external_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "image_url": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.InterestType": {
             "type": "string",
             "enum": [
@@ -835,72 +624,6 @@ const docTemplate = `{
             "x-enum-varnames": [
                 "InterestTypeMonthly",
                 "InterestTypeAnnual"
-            ]
-        },
-        "entity.Investment": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "integer"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "external_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "rate": {
-                    "type": "integer"
-                },
-                "rateType": {
-                    "$ref": "#/definitions/entity.InvestmentRateType"
-                },
-                "type": {
-                    "$ref": "#/definitions/entity.InvestmentType"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/entity.User"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.InvestmentRateType": {
-            "type": "string",
-            "enum": [
-                "CDI",
-                "SELIC",
-                "IPCA",
-                "PREFIXED",
-                "UNKNOWN"
-            ],
-            "x-enum-varnames": [
-                "InvestmentRateTypeCdi",
-                "InvestmentRateTypeSelic",
-                "InvestmentRateTypeIpca",
-                "InvestmentRateTypePrefixed",
-                "InvestmentRateTypeUnknown"
-            ]
-        },
-        "entity.InvestmentType": {
-            "type": "string",
-            "enum": [
-                "FIXED_INCOME",
-                "UNKNOWN"
-            ],
-            "x-enum-varnames": [
-                "InvestmentTypeFixedIncome",
-                "InvestmentTypeUnknown"
             ]
         },
         "entity.JobType": {
@@ -914,25 +637,6 @@ const docTemplate = `{
                 "JobTypeEntrepreneur",
                 "JobTypeEmployee",
                 "JobTypeCivilServant"
-            ]
-        },
-        "entity.PaymentMethod": {
-            "type": "string",
-            "enum": [
-                "PIX",
-                "BOLETO",
-                "CREDIT_CARD",
-                "DEBIT_CARD",
-                "TRANSFERENCE",
-                "UNKNOWN"
-            ],
-            "x-enum-varnames": [
-                "PaymentMethodPix",
-                "PaymentMethodBoleto",
-                "PaymentMethodCreditCard",
-                "PaymentMethodDebitCard",
-                "PaymentMethodTransference",
-                "PaymentMethodUnknown"
             ]
         },
         "entity.Provider": {
@@ -957,73 +661,11 @@ const docTemplate = `{
                 "TierPro"
             ]
         },
-        "entity.Transaction": {
-            "type": "object",
-            "properties": {
-                "account": {
-                    "$ref": "#/definitions/entity.Account"
-                },
-                "account_id": {
-                    "type": "string"
-                },
-                "amount": {
-                    "type": "integer"
-                },
-                "category": {
-                    "$ref": "#/definitions/entity.Category"
-                },
-                "category_id": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "date": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "external_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "is_ignored": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "payment_method": {
-                    "$ref": "#/definitions/entity.PaymentMethod"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "user": {
-                    "$ref": "#/definitions/entity.User"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.User": {
             "type": "object",
             "properties": {
-                "accounts": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Account"
-                    }
-                },
                 "avatar": {
                     "type": "string"
-                },
-                "budget": {
-                    "$ref": "#/definitions/entity.Budget"
                 },
                 "created_at": {
                     "type": "string"
@@ -1036,12 +678,6 @@ const docTemplate = `{
                 },
                 "id": {
                     "type": "string"
-                },
-                "investments": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Investment"
-                    }
                 },
                 "name": {
                     "type": "string"
@@ -1057,12 +693,6 @@ const docTemplate = `{
                 },
                 "tier": {
                     "$ref": "#/definitions/entity.Tier"
-                },
-                "transactions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Transaction"
-                    }
                 },
                 "updated_at": {
                     "type": "string"
