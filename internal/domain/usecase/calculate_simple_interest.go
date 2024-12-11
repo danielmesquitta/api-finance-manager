@@ -5,7 +5,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/pkg/moneyutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
 
@@ -76,15 +76,15 @@ func (uc *CalculateSimpleInterestUseCase) Execute(
 		totalInterest += monthlyInterest
 
 		output.ByMonth[month] = SimpleInterestResult{
-			TotalAmount:   moneyutil.Round2Decimal(currentBalance),
-			TotalInterest: moneyutil.Round2Decimal(totalInterest),
-			TotalDeposit:  moneyutil.Round2Decimal(totalDeposit),
+			TotalAmount:   money.Round(currentBalance),
+			TotalInterest: money.Round(totalInterest),
+			TotalDeposit:  money.Round(totalDeposit),
 		}
 	}
 
-	output.TotalAmount = moneyutil.Round2Decimal(currentBalance)
-	output.TotalInterest = moneyutil.Round2Decimal(totalInterest)
-	output.TotalDeposit = moneyutil.Round2Decimal(totalDeposit)
+	output.TotalAmount = money.Round(currentBalance)
+	output.TotalInterest = money.Round(totalInterest)
+	output.TotalDeposit = money.Round(totalDeposit)
 
 	return output, nil
 }

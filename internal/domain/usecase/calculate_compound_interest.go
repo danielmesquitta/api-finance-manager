@@ -2,11 +2,11 @@ package usecase
 
 import (
 	"context"
-	"math"
+	"log/slog"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/pkg/moneyutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
 
@@ -54,7 +54,7 @@ func (uc *CalculateCompoundInterestUseCase) Execute(
 	default:
 	}
 
-	if err := uc.v.Validate(in); err != nil {
+	if err := uc.validate(in); err != nil {
 		return nil, errs.New(err)
 	}
 
@@ -62,12 +62,15 @@ func (uc *CalculateCompoundInterestUseCase) Execute(
 		ByMonth: make(map[int]CompoundInterestResult, in.PeriodInMonths),
 	}
 
+	interestRate := in.Interest / 100
 	monthlyInterestRate := 0.0
 	switch in.InterestType {
 	case entity.InterestTypeMonthly:
-		monthlyInterestRate = in.Interest / 100
+		monthlyInterestRate = interestRate
 	case entity.InterestTypeAnnual:
-		monthlyInterestRate = math.Pow(1+in.Interest/100, 1.0/12) - 1
+		monthlyInterestRate = money.CompoundInterestAnnualToMonthlyRate(
+			interestRate,
+		)
 	}
 
 	currentBalance := in.InitialDeposit
@@ -81,16 +84,32 @@ func (uc *CalculateCompoundInterestUseCase) Execute(
 		totalInterest += monthlyInterest
 
 		output.ByMonth[month] = CompoundInterestResult{
-			TotalAmount:     moneyutil.Round2Decimal(currentBalance),
-			TotalInterest:   moneyutil.Round2Decimal(totalInterest),
-			TotalDeposit:    moneyutil.Round2Decimal(totalDeposit),
-			MonthlyInterest: moneyutil.Round2Decimal(monthlyInterest),
+			TotalAmount:     money.Round(currentBalance),
+			TotalInterest:   money.Round(totalInterest),
+			TotalDeposit:    money.Round(totalDeposit),
+			MonthlyInterest: money.Round(monthlyInterest),
 		}
 	}
 
-	output.TotalAmount = moneyutil.Round2Decimal(currentBalance)
-	output.TotalInterest = moneyutil.Round2Decimal(totalInterest)
-	output.TotalDeposit = moneyutil.Round2Decimal(totalDeposit)
+	output.TotalAmount = money.Round(currentBalance)
+	output.TotalInterest = money.Round(totalInterest)
+	output.TotalDeposit = money.Round(totalDeposit)
+
+	slog.Info("CalculateCompoundInterestUseCase.Execute", "output", output)
 
 	return output, nil
+}
+
+func (uc *CalculateCompoundInterestUseCase) validate(
+	in CalculateCompoundInterestUseCaseInput,
+) error {
+	if err := uc.v.Validate(in); err != nil {
+		return errs.New(err)
+	}
+
+	if in.InitialDeposit == 0 && in.MonthlyDeposit == 0 {
+		return errs.ErrInvalidCompoundInterestInput
+	}
+
+	return nil
 }

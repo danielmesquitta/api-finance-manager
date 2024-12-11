@@ -97,6 +97,10 @@ var (
 		"Sua expectativa de vida deve ser maior que 0",
 		ErrTypeValidation,
 	)
+	ErrInvalidCompoundInterestInput = newErr(
+		"Pelo menos um dos valores de depósito inicial e mensal deve ser diferente de 0",
+		ErrTypeValidation,
+	)
 )
 
 var _ error = (*Err)(nil)

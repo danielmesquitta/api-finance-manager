@@ -6,7 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/pkg/moneyutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
 
@@ -62,7 +62,7 @@ func (uc *CalculateEmergencyReserveUseCase) Execute(
 
 	monthlySavings := in.MonthlyIncome * in.MonthlySavingsPercentage / 100
 
-	out.RecommendedReserveInValue = moneyutil.Round2Decimal(
+	out.RecommendedReserveInValue = money.Round(
 		in.MonthlyExpenses * float64(out.RecommendedReserveInMonths),
 	)
 

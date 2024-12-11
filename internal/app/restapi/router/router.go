@@ -47,7 +47,7 @@ func (r *Router) Register(
 	apiV1.GET("/health", r.hh.Health)
 	apiV1.POST("/auth/sign-in", r.ah.SignIn)
 
-	privateApiV1 := apiV1.Group("/", r.m.BearerAuth)
+	privateApiV1 := apiV1.Group("", r.m.BearerAuth)
 
 	privateApiV1.POST("/calculator/compound-interest", r.ch.CompoundInterest)
 	privateApiV1.POST("/calculator/emergency-reserve", r.ch.EmergencyReserve)
