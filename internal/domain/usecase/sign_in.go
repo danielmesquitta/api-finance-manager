@@ -13,6 +13,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -38,8 +39,9 @@ func NewSignInUseCase(
 }
 
 type SignInUseCaseInput struct {
-	Provider string `json:"provider,omitempty" validate:"required,oneof=GOOGLE APPLE"`
-	Token    string `json:"token,omitempty"    validate:"required"`
+	Provider entity.Provider `json:"provider,omitempty" validate:"required,oneof=GOOGLE APPLE REFRESH"`
+	Token    string          `json:"token,omitempty"    validate:"required_without=UserID"`
+	UserID   string          `json:"-"                  validate:"required_without=Token,uuid"`
 }
 
 type SignInUseCaseOutput struct {
@@ -56,7 +58,21 @@ func (uc *SignInUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
-	token := strings.TrimPrefix(in.Token, "Bearer ")
+	switch in.Provider {
+	case entity.ProviderGoogle:
+		return uc.signInWithGoogle(ctx, in.Token)
+	case entity.ProviderRefresh:
+		return uc.refreshToken(ctx, in.UserID)
+	default:
+		return nil, errs.New("Provedor não implementado")
+	}
+}
+
+func (uc *SignInUseCase) signInWithGoogle(
+	ctx context.Context,
+	token string,
+) (*SignInUseCaseOutput, error) {
+	token = strings.TrimPrefix(token, "Bearer ")
 
 	oauthUser, err := uc.g.GetUser(token)
 	if err != nil {
@@ -86,6 +102,22 @@ func (uc *SignInUseCase) Execute(
 	return uc.signIn(ctx, user)
 }
 
+func (uc *SignInUseCase) refreshToken(
+	ctx context.Context,
+	userID string,
+) (*SignInUseCaseOutput, error) {
+	userUUID := uuid.MustParse(userID)
+	user, err := uc.ur.GetUserByID(ctx, userUUID)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+	if user == nil {
+		return nil, errs.ErrUserNotFound
+	}
+
+	return uc.signIn(ctx, user)
+}
+
 func (uc *SignInUseCase) signIn(
 	ctx context.Context,
 	user *entity.User,
@@ -94,38 +126,43 @@ func (uc *SignInUseCase) signIn(
 	case <-ctx.Done():
 		return nil, errs.New(ctx.Err())
 	default:
-		accessToken, err := uc.j.NewToken(jwtutil.UserClaims{
-			Tier:                  entity.Tier(user.Tier),
-			SubscriptionExpiresAt: user.SubscriptionExpiresAt,
-			RegisteredClaims: jwt.RegisteredClaims{
-				Issuer:    user.ID.String(),
-				IssuedAt:  jwt.NewNumericDate(time.Now()),
-				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
-			},
-		})
-		if err != nil {
-			return nil, errs.New(err)
-		}
-
-		refreshToken, err := uc.j.NewToken(jwtutil.UserClaims{
-			RegisteredClaims: jwt.RegisteredClaims{
-				Issuer:   user.ID.String(),
-				IssuedAt: jwt.NewNumericDate(time.Now()),
-				ExpiresAt: jwt.NewNumericDate(
-					time.Now().Add(time.Hour * 24 * 7),
-				),
-			},
-		})
-		if err != nil {
-			return nil, errs.New(err)
-		}
-
-		return &SignInUseCaseOutput{
-			User:         *user,
-			AccessToken:  accessToken,
-			RefreshToken: refreshToken,
-		}, nil
 	}
+
+	accessToken, err := uc.j.NewToken(jwtutil.UserClaims{
+		Tier:                  entity.Tier(user.Tier),
+		SubscriptionExpiresAt: user.SubscriptionExpiresAt,
+		TokenType:             jwtutil.TokenTypeAccess,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    user.ID.String(),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+		},
+	})
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	refreshToken, err := uc.j.NewToken(jwtutil.UserClaims{
+		Tier:                  entity.Tier(user.Tier),
+		SubscriptionExpiresAt: user.SubscriptionExpiresAt,
+		TokenType:             jwtutil.TokenTypeRefresh,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:   user.ID.String(),
+			IssuedAt: jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(
+				time.Now().Add(time.Hour * 24 * 7),
+			),
+		},
+	})
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	return &SignInUseCaseOutput{
+		User:         *user,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
 }
 
 func (uc *SignInUseCase) createUser(

@@ -85,6 +85,10 @@ var (
 		"Usuário não autorizado",
 		ErrTypeUnauthorized,
 	)
+	ErrSubscriptionExpired = newErr(
+		"Assinatura expirada",
+		ErrTypeUnauthorized,
+	)
 	ErrAccountsAlreadyRegistered = newErr(
 		"Essa conta já está registrada",
 		ErrTypeForbidden,

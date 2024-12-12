@@ -9,10 +9,18 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+type TokenType string
+
+const (
+	TokenTypeAccess  TokenType = "access"
+	TokenTypeRefresh TokenType = "refresh"
+)
+
 type UserClaims struct {
 	jwt.RegisteredClaims
 	Tier                  entity.Tier `json:"tier,omitempty"`
 	SubscriptionExpiresAt *time.Time  `json:"subscription_expires_at,omitempty"`
+	TokenType             TokenType   `json:"token_type,omitempty"`
 }
 
 // IsExpired checks if the token is expired

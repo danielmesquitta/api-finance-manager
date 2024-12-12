@@ -7,14 +7,9 @@ args_bin = []
 bin = "./tmp/restapi"
 cmd = "go build -o ./tmp/restapi ./cmd/restapi"
 delay = 1000
-exclude_dir = [
-  "tmp",
-  "docs",
-  "internal/provider/db/sqlc",
-  "internal/domain/entity",
-]
+exclude_dir = ["tmp", "docs", "internal/provider/db/sqlc"]
 exclude_file = []
-exclude_regex = ["_test.go", "wire_gen.go"]
+exclude_regex = ["_test.go", "_gen.go"]
 exclude_unchanged = false
 follow_symlink = false
 full_bin = ""

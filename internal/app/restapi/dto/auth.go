@@ -1,9 +1,12 @@
 package dto
 
-import "github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+import (
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+)
 
 type SignInRequestDTO struct {
-	Provider string `json:"provider"`
+	Provider entity.Provider `json:"provider"`
 }
 
 type SignInResponseDTO struct {

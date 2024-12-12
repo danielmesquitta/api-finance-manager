@@ -143,7 +143,7 @@ definitions:
   dto.SignInRequestDTO:
     properties:
       provider:
-        type: string
+        $ref: '#/definitions/entity.Provider'
     type: object
   dto.SignInResponseDTO:
     properties:
@@ -208,6 +208,16 @@ definitions:
     - JobTypeEntrepreneur
     - JobTypeEmployee
     - JobTypeCivilServant
+  entity.Provider:
+    enum:
+    - GOOGLE
+    - APPLE
+    - REFRESH
+    type: string
+    x-enum-varnames:
+    - ProviderGoogle
+    - ProviderApple
+    - ProviderRefresh
   entity.User:
     properties:
       avatar:

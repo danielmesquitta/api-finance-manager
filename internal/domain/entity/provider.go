@@ -3,6 +3,7 @@ package entity
 type Provider string
 
 const (
-	ProviderGoogle Provider = "GOOGLE"
-	ProviderApple  Provider = "APPLE"
+	ProviderGoogle  Provider = "GOOGLE"
+	ProviderApple   Provider = "APPLE"
+	ProviderRefresh Provider = "REFRESH"
 )

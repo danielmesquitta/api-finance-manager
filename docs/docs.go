@@ -569,7 +569,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "provider": {
-                    "type": "string"
+                    "$ref": "#/definitions/entity.Provider"
                 }
             }
         },
@@ -663,6 +663,19 @@ const docTemplate = `{
                 "JobTypeEntrepreneur",
                 "JobTypeEmployee",
                 "JobTypeCivilServant"
+            ]
+        },
+        "entity.Provider": {
+            "type": "string",
+            "enum": [
+                "GOOGLE",
+                "APPLE",
+                "REFRESH"
+            ],
+            "x-enum-varnames": [
+                "ProviderGoogle",
+                "ProviderApple",
+                "ProviderRefresh"
             ]
         },
         "entity.User": {
