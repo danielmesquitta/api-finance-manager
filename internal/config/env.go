@@ -13,6 +13,8 @@ type Environment string
 const (
 	EnvDevelopment Environment = "development"
 	EnvProduction  Environment = "production"
+	EnvStaging     Environment = "staging"
+	EnvTest        Environment = "test"
 )
 
 type Env struct {

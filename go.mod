@@ -1,6 +1,6 @@
 module github.com/danielmesquitta/api-finance-manager
 
-go 1.23.2
+go 1.23.4
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -13,7 +13,7 @@ require (
 	github.com/google/wire v0.6.0
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/jinzhu/copier v0.4.0
-	github.com/labstack/echo/v4 v4.13.1
+	github.com/labstack/echo/v4 v4.13.2
 	github.com/spf13/viper v1.19.0
 	github.com/swaggo/echo-swagger v1.4.1
 	github.com/swaggo/swag v1.16.4
