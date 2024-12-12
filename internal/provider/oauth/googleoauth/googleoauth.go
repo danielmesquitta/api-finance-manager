@@ -15,7 +15,8 @@ type Provider interface {
 
 func NewGoogleOAuth() *GoogleOAuth {
 	client := resty.New().
-		SetBaseURL("https://googleapis.com")
+		SetHeader("Accept", "application/json").
+		SetBaseURL("https://www.googleapis.com")
 
 	return &GoogleOAuth{
 		c: client,

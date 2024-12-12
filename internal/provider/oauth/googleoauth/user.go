@@ -24,7 +24,8 @@ func (g *GoogleOAuth) GetUser(
 ) (*entity.User, error) {
 	res, err := g.c.R().
 		SetHeader(authorizationHeaderKey, "Bearer "+token).
-		Get("/userinfo/v2/me")
+		SetQueryParam("alt", "json").
+		Get("/oauth2/v1/userinfo")
 
 	if err != nil {
 		return nil, errs.New(err)

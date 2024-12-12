@@ -15,7 +15,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/pluggy"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo/pgrepo"
 )
@@ -31,8 +31,8 @@ func New() *App {
 	conn := db.NewPGXConn(env)
 	queries := db.NewQueries(conn)
 	userPgRepo := pgrepo.NewUserPgRepo(queries)
-	mockOAuth := mockoauth.NewMockOAuth()
-	signInUseCase := usecase.NewSignInUseCase(validate, userPgRepo, jwt, mockOAuth)
+	googleOAuth := googleoauth.NewGoogleOAuth()
+	signInUseCase := usecase.NewSignInUseCase(validate, userPgRepo, jwt, googleOAuth)
 	authHandler := handler.NewAuthHandler(signInUseCase)
 	calculateCompoundInterestUseCase := usecase.NewCalculateCompoundInterestUseCase(validate)
 	calculateEmergencyReserveUseCase := usecase.NewCalculateEmergencyReserveUseCase(validate)
