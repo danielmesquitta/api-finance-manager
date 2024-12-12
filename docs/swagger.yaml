@@ -213,11 +213,13 @@ definitions:
     - GOOGLE
     - APPLE
     - REFRESH
+    - MOCK
     type: string
     x-enum-varnames:
     - ProviderGoogle
     - ProviderApple
     - ProviderRefresh
+    - ProviderMock
   entity.User:
     properties:
       avatar:
@@ -292,6 +294,35 @@ paths:
       summary: Health check
       tags:
       - Health
+  /v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Use refresh token to generate new access token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.SignInResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponseDTO'
+      security:
+      - BearerAuth: []
+      summary: Refresh token
+      tags:
+      - Auth
   /v1/auth/sign-in:
     post:
       consumes:

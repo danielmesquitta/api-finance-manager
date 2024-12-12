@@ -16,6 +16,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/pluggy"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo/pgrepo"
 )
@@ -32,8 +33,10 @@ func New() *App {
 	queries := db.NewQueries(conn)
 	userPgRepo := pgrepo.NewUserPgRepo(queries)
 	googleOAuth := googleoauth.NewGoogleOAuth()
-	signInUseCase := usecase.NewSignInUseCase(validate, userPgRepo, jwt, googleOAuth)
-	authHandler := handler.NewAuthHandler(signInUseCase)
+	mockOAuth := mockoauth.NewMockOAuth(env)
+	signInUseCase := usecase.NewSignInUseCase(validate, userPgRepo, jwt, googleOAuth, mockOAuth)
+	refreshTokenUseCase := usecase.NewRefreshTokenUseCase(signInUseCase)
+	authHandler := handler.NewAuthHandler(signInUseCase, refreshTokenUseCase)
 	calculateCompoundInterestUseCase := usecase.NewCalculateCompoundInterestUseCase(validate)
 	calculateEmergencyReserveUseCase := usecase.NewCalculateEmergencyReserveUseCase(validate)
 	calculateRetirementUseCase := usecase.NewCalculateRetirementUseCase(validate, calculateCompoundInterestUseCase)

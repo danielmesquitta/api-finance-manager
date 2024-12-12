@@ -11,6 +11,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
@@ -21,27 +22,30 @@ type SignInUseCase struct {
 	v  validator.Validator
 	ur repo.UserRepo
 	j  jwtutil.JWTManager
-	g  googleoauth.Provider
+	g  *googleoauth.GoogleOAuth
+	m  *mockoauth.MockOAuth
 }
 
 func NewSignInUseCase(
 	v validator.Validator,
 	ur repo.UserRepo,
 	j jwtutil.JWTManager,
-	g googleoauth.Provider,
+	g *googleoauth.GoogleOAuth,
+	m *mockoauth.MockOAuth,
 ) *SignInUseCase {
 	return &SignInUseCase{
 		v:  v,
 		ur: ur,
 		j:  j,
 		g:  g,
+		m:  m,
 	}
 }
 
 type SignInUseCaseInput struct {
-	Provider entity.Provider `json:"provider,omitempty" validate:"required,oneof=GOOGLE APPLE REFRESH"`
+	Provider entity.Provider `json:"provider,omitempty" validate:"required,oneof=GOOGLE APPLE REFRESH MOCK"`
 	Token    string          `json:"token,omitempty"    validate:"required_without=UserID"`
-	UserID   string          `json:"-"                  validate:"required_without=Token,uuid"`
+	UserID   uuid.UUID       `json:"-"                  validate:"required_without=Token"`
 }
 
 type SignInUseCaseOutput struct {
@@ -63,6 +67,8 @@ func (uc *SignInUseCase) Execute(
 		return uc.signInWithGoogle(ctx, in.Token)
 	case entity.ProviderRefresh:
 		return uc.refreshToken(ctx, in.UserID)
+	case entity.ProviderMock:
+		return uc.signInWithMock(ctx, in.Token)
 	default:
 		return nil, errs.New("Provedor não implementado")
 	}
@@ -102,12 +108,43 @@ func (uc *SignInUseCase) signInWithGoogle(
 	return uc.signIn(ctx, user)
 }
 
+func (uc *SignInUseCase) signInWithMock(
+	ctx context.Context,
+	token string,
+) (*SignInUseCaseOutput, error) {
+	oauthUser, err := uc.m.GetUser(token)
+	if err != nil {
+		slog.Info("failed to get user from mock", "error", err)
+		return nil, errs.ErrUnauthorized
+	}
+
+	registeredUser, err := uc.ur.GetUserByEmail(ctx, oauthUser.Email)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	if registeredUser != nil {
+		updatedUser, err := uc.updateUser(ctx, registeredUser, oauthUser)
+		if err != nil {
+			return nil, errs.New(err)
+		}
+
+		return uc.signIn(ctx, updatedUser)
+	}
+
+	user, err := uc.createUser(ctx, oauthUser)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	return uc.signIn(ctx, user)
+}
+
 func (uc *SignInUseCase) refreshToken(
 	ctx context.Context,
-	userID string,
+	userID uuid.UUID,
 ) (*SignInUseCaseOutput, error) {
-	userUUID := uuid.MustParse(userID)
-	user, err := uc.ur.GetUserByID(ctx, userUUID)
+	user, err := uc.ur.GetUserByID(ctx, userID)
 	if err != nil {
 		return nil, errs.New(err)
 	}

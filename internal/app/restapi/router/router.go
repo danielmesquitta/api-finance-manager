@@ -48,7 +48,7 @@ func (r *Router) Register(
 
 	apiV1 := app.Group(basePath + "/v1")
 	apiV1.POST("/auth/sign-in", r.ah.SignIn)
-	apiV1.POST("/auth/refresh", r.ah.SignIn, r.m.BearerAuthRefreshToken)
+	apiV1.POST("/auth/refresh", r.ah.RefreshToken, r.m.BearerAuthRefreshToken)
 
 	adminApiV1 := apiV1.Group("", r.m.BasicAuth)
 	adminApiV1.POST("/institutions/sync", r.ih.Sync)

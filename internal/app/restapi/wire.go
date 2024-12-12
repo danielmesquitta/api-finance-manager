@@ -15,6 +15,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/pluggy"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
@@ -34,13 +35,8 @@ func New() *App {
 		db.NewPGXConn,
 		db.NewQueries,
 
-		// PRODUCTION
-		wire.Bind(new(googleoauth.Provider), new(*googleoauth.GoogleOAuth)),
 		googleoauth.NewGoogleOAuth,
-
-		// DEVELOPMENT
-		// wire.Bind(new(googleoauth.Provider), new(*mockoauth.MockOAuth)),
-		// mockoauth.NewMockOAuth,
+		mockoauth.NewMockOAuth,
 
 		wire.Bind(new(openfinance.Client), new(*pluggy.Client)),
 		pluggy.NewClient,
@@ -52,6 +48,7 @@ func New() *App {
 		pgrepo.NewInstitutionPgRepo,
 
 		usecase.NewSignInUseCase,
+		usecase.NewRefreshTokenUseCase,
 		usecase.NewCalculateCompoundInterestUseCase,
 		usecase.NewCalculateEmergencyReserveUseCase,
 		usecase.NewCalculateRetirementUseCase,

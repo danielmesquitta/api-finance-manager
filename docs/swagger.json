@@ -40,6 +40,52 @@
                 }
             }
         },
+        "/v1/auth/refresh": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Use refresh token to generate new access token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SignInResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/auth/sign-in": {
             "post": {
                 "security": [
@@ -663,12 +709,14 @@
             "enum": [
                 "GOOGLE",
                 "APPLE",
-                "REFRESH"
+                "REFRESH",
+                "MOCK"
             ],
             "x-enum-varnames": [
                 "ProviderGoogle",
                 "ProviderApple",
-                "ProviderRefresh"
+                "ProviderRefresh",
+                "ProviderMock"
             ]
         },
         "entity.User": {
