@@ -1,7 +1,7 @@
 FROM golang:1.23.4-alpine as builder
 WORKDIR /app
 COPY . .
-RUN make build
+RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o ./tmp/restapi ./cmd/restapi
 
 FROM scratch
 COPY --from=builder /app/tmp/restapi .
