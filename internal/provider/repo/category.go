@@ -14,4 +14,12 @@ type CategoryRepo interface {
 		ctx context.Context,
 		params []CreateManyCategoriesParams,
 	) error
+	SearchCategories(
+		ctx context.Context,
+		arg SearchCategoriesParams,
+	) ([]entity.Category, error)
+	CountSearchCategories(
+		ctx context.Context,
+		search string,
+	) (int64, error)
 }

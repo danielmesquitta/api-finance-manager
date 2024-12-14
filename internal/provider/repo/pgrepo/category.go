@@ -55,4 +55,33 @@ func (r *CategoryPgRepo) CreateManyCategories(
 	return nil
 }
 
+func (r *CategoryPgRepo) SearchCategories(
+	ctx context.Context,
+	params repo.SearchCategoriesParams,
+) ([]entity.Category, error) {
+	dbParams := sqlc.SearchCategoriesParams{}
+	if err := copier.Copy(&dbParams, params); err != nil {
+		return nil, errs.New(err)
+	}
+
+	categories, err := r.q.SearchCategories(ctx, dbParams)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	results := []entity.Category{}
+	if err := copier.Copy(&results, categories); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return results, nil
+}
+
+func (r *CategoryPgRepo) CountSearchCategories(
+	ctx context.Context,
+	search string,
+) (int64, error) {
+	return r.q.CountSearchCategories(ctx, search)
+}
+
 var _ repo.CategoryRepo = &CategoryPgRepo{}

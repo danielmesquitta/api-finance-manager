@@ -79,6 +79,21 @@ definitions:
       ok:
         type: boolean
     type: object
+  dto.ListCategoriesResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/entity.Category'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
   dto.RetirementRequest:
     properties:
       age:
@@ -189,6 +204,19 @@ definitions:
         type: number
       total_interest:
         type: number
+    type: object
+  entity.Category:
+    properties:
+      created_at:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
     type: object
   entity.InterestType:
     enum:
@@ -541,6 +569,40 @@ paths:
       summary: Calculate simple interest
       tags:
       - Calculator
+  /v1/categories:
+    get:
+      consumes:
+      - application/json
+      description: List categories
+      parameters:
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: string
+      - description: Page size
+        in: query
+        name: page_size
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ListCategoriesResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List categories
+      tags:
+      - Category
 securityDefinitions:
   BasicAuth:
     type: basic

@@ -10,13 +10,16 @@ import (
 
 type CategoryHandler struct {
 	sc *usecase.SyncCategoriesUseCase
+	lc *usecase.ListCategoriesUseCase
 }
 
 func NewCategoryHandler(
 	sc *usecase.SyncCategoriesUseCase,
+	lc *usecase.ListCategoriesUseCase,
 ) *CategoryHandler {
 	return &CategoryHandler{
 		sc: sc,
+		lc: lc,
 	}
 }
 
@@ -35,4 +38,34 @@ func (h CategoryHandler) Sync(c echo.Context) error {
 	}
 
 	return c.NoContent(http.StatusNoContent)
+}
+
+// @Summary List categories
+// @Description List categories
+// @Tags Category
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param search query string false "Search"
+// @Param page query string false "Page"
+// @Param page_size query string false "Page size"
+// @Success 200 {object} dto.ListCategoriesResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/categories [get]
+func (h CategoryHandler) List(c echo.Context) error {
+	search, page, pageSize := getPaginationParams(c)
+	in := usecase.ListCategoriesUseCaseInput{
+		PaginationInput: usecase.PaginationInput{
+			Search:   search,
+			Page:     page,
+			PageSize: pageSize,
+		},
+	}
+
+	res, err := h.lc.Execute(c.Request().Context(), in)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return c.JSON(http.StatusOK, res)
 }

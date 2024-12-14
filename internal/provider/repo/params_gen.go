@@ -16,6 +16,12 @@ type CreateManyCategoriesParams struct {
 	Name       string `json:"name"`
 }
 
+type SearchCategoriesParams struct {
+	Limit  int32  `json:"limit"`
+	Offset int32  `json:"offset"`
+	Search string `json:"search"`
+}
+
 type CreateManyInstitutionsParams struct {
 	ExternalID string      `json:"external_id"`
 	Name       string      `json:"name"`
