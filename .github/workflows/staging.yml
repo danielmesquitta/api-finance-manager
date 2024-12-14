@@ -9,21 +9,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: staging
-    strategy:
-      matrix:
-        go-version: ["1.23.x"]
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ matrix.go-version }}
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Create .env file
         run: echo "${{ secrets.ENV }}" > .env
-      - name: Install migration tool
-        run: go install github.com/steebchen/prisma-client-go@latest
-      - name: Run migration
-        run: prisma-client-go migrate deploy --schema=sql/schema.prisma
       - name: Login to docker hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
       - name: Build docker image
