@@ -9,12 +9,12 @@ import (
 )
 
 type CalculateRetirementUseCase struct {
-	v   validator.Validator
+	v   *validator.Validator
 	cci *CalculateCompoundInterestUseCase
 }
 
 func NewCalculateRetirementUseCase(
-	v validator.Validator,
+	v *validator.Validator,
 	cci *CalculateCompoundInterestUseCase,
 ) *CalculateRetirementUseCase {
 	return &CalculateRetirementUseCase{

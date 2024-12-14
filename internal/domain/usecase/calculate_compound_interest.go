@@ -11,11 +11,11 @@ import (
 )
 
 type CalculateCompoundInterestUseCase struct {
-	v validator.Validator
+	v *validator.Validator
 }
 
 func NewCalculateCompoundInterestUseCase(
-	v validator.Validator,
+	v *validator.Validator,
 ) *CalculateCompoundInterestUseCase {
 	return &CalculateCompoundInterestUseCase{
 		v: v,

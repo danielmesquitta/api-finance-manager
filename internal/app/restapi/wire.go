@@ -24,10 +24,8 @@ import (
 
 func New() *App {
 	wire.Build(
-		wire.Bind(new(validator.Validator), new(*validator.Validate)),
-		validator.NewValidate,
+		validator.NewValidator,
 
-		wire.Bind(new(jwtutil.JWTManager), new(*jwtutil.JWT)),
 		jwtutil.NewJWT,
 
 		config.LoadEnv,

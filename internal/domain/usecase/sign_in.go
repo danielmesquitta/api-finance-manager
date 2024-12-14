@@ -19,17 +19,17 @@ import (
 )
 
 type SignInUseCase struct {
-	v  validator.Validator
+	v  *validator.Validator
 	ur repo.UserRepo
-	j  jwtutil.JWTManager
+	j  *jwtutil.JWT
 	g  *googleoauth.GoogleOAuth
 	m  *mockoauth.MockOAuth
 }
 
 func NewSignInUseCase(
-	v validator.Validator,
+	v *validator.Validator,
 	ur repo.UserRepo,
-	j jwtutil.JWTManager,
+	j *jwtutil.JWT,
 	g *googleoauth.GoogleOAuth,
 	m *mockoauth.MockOAuth,
 ) *SignInUseCase {
@@ -168,21 +168,17 @@ func (uc *SignInUseCase) signIn(
 	accessToken, err := uc.j.NewToken(jwtutil.UserClaims{
 		Tier:                  entity.Tier(user.Tier),
 		SubscriptionExpiresAt: user.SubscriptionExpiresAt,
-		TokenType:             jwtutil.TokenTypeAccess,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    user.ID.String(),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 		},
-	})
+	}, jwtutil.TokenTypeAccess)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
 	refreshToken, err := uc.j.NewToken(jwtutil.UserClaims{
-		Tier:                  entity.Tier(user.Tier),
-		SubscriptionExpiresAt: user.SubscriptionExpiresAt,
-		TokenType:             jwtutil.TokenTypeRefresh,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:   user.ID.String(),
 			IssuedAt: jwt.NewNumericDate(time.Now()),
@@ -190,7 +186,7 @@ func (uc *SignInUseCase) signIn(
 				time.Now().Add(time.Hour * 24 * 7),
 			),
 		},
-	})
+	}, jwtutil.TokenTypeRefresh)
 	if err != nil {
 		return nil, errs.New(err)
 	}

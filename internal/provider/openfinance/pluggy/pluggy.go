@@ -11,12 +11,12 @@ type Client struct {
 	c *resty.Client
 
 	e *config.Env
-	j jwtutil.JWTManager
+	j *jwtutil.JWT
 }
 
 func NewClient(
 	e *config.Env,
-	j jwtutil.JWTManager,
+	j *jwtutil.JWT,
 ) *Client {
 	client := resty.New().
 		SetBaseURL("https://api.pluggy.ai")

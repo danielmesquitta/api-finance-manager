@@ -11,11 +11,11 @@ import (
 )
 
 type CalculateEmergencyReserveUseCase struct {
-	v validator.Validator
+	v *validator.Validator
 }
 
 func NewCalculateEmergencyReserveUseCase(
-	v validator.Validator,
+	v *validator.Validator,
 ) *CalculateEmergencyReserveUseCase {
 	return &CalculateEmergencyReserveUseCase{
 		v: v,

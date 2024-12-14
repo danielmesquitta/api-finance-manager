@@ -28,7 +28,7 @@ func NewInstitutionHandler(
 // @Produce json
 // @Success 200
 // @Failure 500 {object} dto.ErrorResponseDTO
-// @Router /v1/institutions/sync [get]
+// @Router /v1/admin/institutions/sync [get]
 func (h InstitutionHandler) Sync(c echo.Context) error {
 	if err := h.si.Execute(c.Request().Context()); err != nil {
 		return errs.New(err)

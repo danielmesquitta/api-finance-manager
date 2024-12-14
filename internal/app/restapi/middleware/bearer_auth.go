@@ -31,9 +31,7 @@ func (m *Middleware) BearerAuthAccessToken(
 		opt(&defaultOptions)
 	}
 
-	bearerAuthOptions := []bearerAuthOption{
-		withTokenType(jwtutil.TokenTypeAccess),
-	}
+	bearerAuthOptions := []bearerAuthOption{}
 	if len(defaultOptions.Tiers) > 0 {
 		bearerAuthOptions = append(
 			bearerAuthOptions,
@@ -48,6 +46,7 @@ func (m *Middleware) BearerAuthAccessToken(
 			return m.bearerAuth(
 				c,
 				next,
+				jwtutil.TokenTypeAccess,
 				bearerAuthOptions...,
 			)
 		}
@@ -61,7 +60,7 @@ func (m *Middleware) BearerAuthRefreshToken(
 		return m.bearerAuth(
 			c,
 			next,
-			withTokenType(jwtutil.TokenTypeRefresh),
+			jwtutil.TokenTypeRefresh,
 		)
 	}
 }
@@ -73,12 +72,6 @@ type bearerAuthOptions struct {
 
 type bearerAuthOption func(*bearerAuthOptions)
 
-func withTokenType(tokenType jwtutil.TokenType) bearerAuthOption {
-	return func(o *bearerAuthOptions) {
-		o.TokenType = tokenType
-	}
-}
-
 func withTiers(tiers []entity.Tier) bearerAuthOption {
 	return func(o *bearerAuthOptions) {
 		o.Tiers = tiers
@@ -88,6 +81,7 @@ func withTiers(tiers []entity.Tier) bearerAuthOption {
 func (m *Middleware) bearerAuth(
 	c echo.Context,
 	next echo.HandlerFunc,
+	tokenType jwtutil.TokenType,
 	options ...bearerAuthOption,
 ) error {
 	defaultOptions := bearerAuthOptions{}
@@ -110,22 +104,19 @@ func (m *Middleware) bearerAuth(
 	accessToken := parts[1]
 
 	// Parse and validate the token
-	claims, err := m.j.Parse(accessToken)
+	claims, err := m.j.Parse(accessToken, tokenType)
 	if err != nil {
 		return errs.ErrUnauthorized
 	}
 
-	if defaultOptions.TokenType != "" &&
-		claims.TokenType != defaultOptions.TokenType {
-		return errs.ErrUnauthorized
-	}
-
+	// Block if subscription is expired
 	now := time.Now()
 	if claims.SubscriptionExpiresAt != nil &&
 		now.After(*claims.SubscriptionExpiresAt) {
 		return errs.ErrSubscriptionExpired
 	}
 
+	// Block if not allowed tier
 	if len(defaultOptions.Tiers) > 0 {
 		if !slices.Contains(defaultOptions.Tiers, claims.Tier) {
 			return errs.ErrUnauthorized

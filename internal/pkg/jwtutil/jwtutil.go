@@ -9,18 +9,17 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type TokenType string
+type TokenType byte
 
 const (
-	TokenTypeAccess  TokenType = "access"
-	TokenTypeRefresh TokenType = "refresh"
+	TokenTypeAccess TokenType = iota
+	TokenTypeRefresh
 )
 
 type UserClaims struct {
 	jwt.RegisteredClaims
 	Tier                  entity.Tier `json:"tier,omitempty"`
 	SubscriptionExpiresAt *time.Time  `json:"subscription_expires_at,omitempty"`
-	TokenType             TokenType   `json:"token_type,omitempty"`
 }
 
 // IsExpired checks if the token is expired
@@ -31,34 +30,34 @@ func (u *UserClaims) IsExpired() bool {
 	return u.RegisteredClaims.ExpiresAt.Before(nowMinusOneMinute)
 }
 
-type JWTManager interface {
-	NewToken(claims UserClaims) (jwtToken string, err error)
-	Parse(jwtToken string) (*UserClaims, error)
-}
-
 type JWT struct {
-	secretKey []byte
+	keys map[TokenType]string
 }
 
 func NewJWT(
-	env *config.Env,
+	e *config.Env,
 ) *JWT {
+	keys := map[TokenType]string{
+		TokenTypeAccess:  e.JWTAccessTokenSecretKey,
+		TokenTypeRefresh: e.JWTRefreshTokenSecretKey,
+	}
+
 	return &JWT{
-		secretKey: []byte(env.JWTSecretKey),
+		keys: keys,
 	}
 }
 
-func (j *JWT) NewToken(claims UserClaims) (string, error) {
+func (j *JWT) NewToken(claims UserClaims, tokenType TokenType) (string, error) {
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return jwtToken.SignedString(j.secretKey)
+	return jwtToken.SignedString(j.keys[tokenType])
 }
 
-func (j *JWT) Parse(jwtToken string) (*UserClaims, error) {
+func (j *JWT) Parse(jwtToken string, tokenType TokenType) (*UserClaims, error) {
 	parsedAccessToken, err := jwt.ParseWithClaims(
 		jwtToken,
 		&UserClaims{},
 		func(_ *jwt.Token) (interface{}, error) {
-			return j.secretKey, nil
+			return j.keys[tokenType], nil
 		},
 	)
 	if err != nil {
@@ -71,10 +70,8 @@ func (j *JWT) Parse(jwtToken string) (*UserClaims, error) {
 	}
 
 	if userClaims.IsExpired() {
-		return nil, errs.New("token is expired")
+		return nil, errs.ErrUnauthorized
 	}
 
 	return userClaims, nil
 }
-
-var _ JWTManager = &JWT{}

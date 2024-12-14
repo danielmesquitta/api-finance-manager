@@ -50,7 +50,7 @@ func (r *Router) Register(
 	apiV1.POST("/auth/sign-in", r.ah.SignIn)
 	apiV1.POST("/auth/refresh", r.ah.RefreshToken, r.m.BearerAuthRefreshToken)
 
-	adminApiV1 := apiV1.Group("", r.m.BasicAuth)
+	adminApiV1 := apiV1.Group("/admin", r.m.BasicAuth)
 	adminApiV1.POST("/institutions/sync", r.ih.Sync)
 
 	usersApiV1 := apiV1.Group("", r.m.BearerAuthAccessToken())

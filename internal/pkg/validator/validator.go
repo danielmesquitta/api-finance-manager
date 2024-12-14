@@ -11,16 +11,12 @@ import (
 	ptBRTranslations "github.com/go-playground/validator/v10/translations/pt_BR"
 )
 
-type Validator interface {
-	Validate(data any) error
-}
-
-type Validate struct {
+type Validator struct {
 	v *validator.Validate
 	t ut.Translator
 }
 
-func NewValidate() *Validate {
+func NewValidator() *Validator {
 	validate := validator.New()
 	portuguese := pt_BR.New()
 	uni := ut.New(portuguese, portuguese)
@@ -34,7 +30,7 @@ func NewValidate() *Validate {
 		log.Fatalln(err)
 	}
 
-	return &Validate{
+	return &Validator{
 		validate,
 		t,
 	}
@@ -42,7 +38,7 @@ func NewValidate() *Validate {
 
 // Validate validates the data (struct)
 // returning an error if the data is invalid.
-func (v *Validate) Validate(
+func (v *Validator) Validate(
 	data any,
 ) error {
 	err := v.v.Struct(data)
@@ -67,5 +63,3 @@ func (v *Validate) Validate(
 
 	return errs.NewWithType(errMsg, errs.ErrTypeValidation)
 }
-
-var _ Validator = (*Validate)(nil)

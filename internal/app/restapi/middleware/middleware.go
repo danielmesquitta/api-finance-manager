@@ -7,12 +7,12 @@ import (
 
 type Middleware struct {
 	e *config.Env
-	j jwtutil.JWTManager
+	j *jwtutil.JWT
 }
 
 func NewMiddleware(
 	e *config.Env,
-	j jwtutil.JWTManager,
+	j *jwtutil.JWT,
 ) *Middleware {
 	return &Middleware{
 		e: e,
