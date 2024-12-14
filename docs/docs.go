@@ -35,20 +35,51 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.HealthResponseDTO"
+                            "$ref": "#/definitions/dto.HealthResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/admin/categories/sync": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Sync categories from open finance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Category"
+                ],
+                "summary": "Sync categories from open finance",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
             }
         },
         "/v1/admin/institutions/sync": {
-            "get": {
+            "post": {
                 "security": [
                     {
                         "BasicAuth": []
@@ -66,13 +97,13 @@ const docTemplate = `{
                 ],
                 "summary": "Sync institutions from open finance",
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "204": {
+                        "description": "No Content"
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -100,25 +131,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SignInResponseDTO"
+                            "$ref": "#/definitions/dto.SignInResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -149,7 +180,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.SignInRequestDTO"
+                            "$ref": "#/definitions/dto.SignInRequest"
                         }
                     }
                 ],
@@ -157,25 +188,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SignInResponseDTO"
+                            "$ref": "#/definitions/dto.SignInResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -206,7 +237,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.CompoundInterestRequestDTO"
+                            "$ref": "#/definitions/dto.CompoundInterestRequest"
                         }
                     }
                 ],
@@ -214,25 +245,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.CompoundInterestResponseDTO"
+                            "$ref": "#/definitions/dto.CompoundInterestResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -263,7 +294,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.EmergencyReserveRequestDTO"
+                            "$ref": "#/definitions/dto.EmergencyReserveRequest"
                         }
                     }
                 ],
@@ -271,25 +302,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.EmergencyReserveResponseDTO"
+                            "$ref": "#/definitions/dto.EmergencyReserveResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -320,7 +351,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.RetirementRequestDTO"
+                            "$ref": "#/definitions/dto.RetirementRequest"
                         }
                     }
                 ],
@@ -328,25 +359,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.RetirementResponseDTO"
+                            "$ref": "#/definitions/dto.RetirementResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -377,7 +408,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.SimpleInterestRequestDTO"
+                            "$ref": "#/definitions/dto.SimpleInterestRequest"
                         }
                     }
                 ],
@@ -385,25 +416,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SimpleInterestResponseDTO"
+                            "$ref": "#/definitions/dto.SimpleInterestResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponseDTO"
+                            "$ref": "#/definitions/dto.ErrorResponse"
                         }
                     }
                 }
@@ -411,7 +442,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "dto.CompoundInterestRequestDTO": {
+        "dto.CompoundInterestRequest": {
             "type": "object",
             "required": [
                 "interest",
@@ -448,7 +479,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.CompoundInterestResponseDTO": {
+        "dto.CompoundInterestResponse": {
             "type": "object",
             "properties": {
                 "by_month": {
@@ -468,7 +499,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.EmergencyReserveRequestDTO": {
+        "dto.EmergencyReserveRequest": {
             "type": "object",
             "required": [
                 "jobType"
@@ -501,7 +532,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.EmergencyReserveResponseDTO": {
+        "dto.EmergencyReserveResponse": {
             "type": "object",
             "properties": {
                 "monthsToAchieveEmergencyReserve": {
@@ -515,7 +546,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.ErrorResponseDTO": {
+        "dto.ErrorResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -523,7 +554,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.HealthResponseDTO": {
+        "dto.HealthResponse": {
             "type": "object",
             "properties": {
                 "ok": {
@@ -531,7 +562,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.RetirementRequestDTO": {
+        "dto.RetirementRequest": {
             "type": "object",
             "required": [
                 "age",
@@ -596,7 +627,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.RetirementResponseDTO": {
+        "dto.RetirementResponse": {
             "type": "object",
             "properties": {
                 "achieved_goal_income": {
@@ -616,7 +647,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.SignInRequestDTO": {
+        "dto.SignInRequest": {
             "type": "object",
             "properties": {
                 "provider": {
@@ -624,7 +655,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.SignInResponseDTO": {
+        "dto.SignInResponse": {
             "type": "object",
             "properties": {
                 "access_token": {
@@ -638,7 +669,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.SimpleInterestRequestDTO": {
+        "dto.SimpleInterestRequest": {
             "type": "object",
             "required": [
                 "interest",
@@ -672,7 +703,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.SimpleInterestResponseDTO": {
+        "dto.SimpleInterestResponse": {
             "type": "object",
             "properties": {
                 "by_month": {

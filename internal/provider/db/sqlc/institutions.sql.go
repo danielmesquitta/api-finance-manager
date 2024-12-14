@@ -7,12 +7,14 @@ package sqlc
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type CreateManyInstitutionsParams struct {
-	ExternalID string  `json:"external_id"`
-	Name       string  `json:"name"`
-	Logo       *string `json:"logo"`
+	ExternalID string      `json:"external_id"`
+	Name       string      `json:"name"`
+	Logo       pgtype.Text `json:"logo"`
 }
 
 const listInstitutions = `-- name: ListInstitutions :many

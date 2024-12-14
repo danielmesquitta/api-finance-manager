@@ -9,6 +9,39 @@ import (
 	"context"
 )
 
+// iteratorForCreateManyCategories implements pgx.CopyFromSource.
+type iteratorForCreateManyCategories struct {
+	rows                 []CreateManyCategoriesParams
+	skippedFirstNextCall bool
+}
+
+func (r *iteratorForCreateManyCategories) Next() bool {
+	if len(r.rows) == 0 {
+		return false
+	}
+	if !r.skippedFirstNextCall {
+		r.skippedFirstNextCall = true
+		return true
+	}
+	r.rows = r.rows[1:]
+	return len(r.rows) > 0
+}
+
+func (r iteratorForCreateManyCategories) Values() ([]interface{}, error) {
+	return []interface{}{
+		r.rows[0].ExternalID,
+		r.rows[0].Name,
+	}, nil
+}
+
+func (r iteratorForCreateManyCategories) Err() error {
+	return nil
+}
+
+func (q *Queries) CreateManyCategories(ctx context.Context, arg []CreateManyCategoriesParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"categories"}, []string{"external_id", "name"}, &iteratorForCreateManyCategories{rows: arg})
+}
+
 // iteratorForCreateManyInstitutions implements pgx.CopyFromSource.
 type iteratorForCreateManyInstitutions struct {
 	rows                 []CreateManyInstitutionsParams

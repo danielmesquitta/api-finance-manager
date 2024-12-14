@@ -45,6 +45,9 @@ func New() *App {
 		wire.Bind(new(repo.InstitutionRepo), new(*pgrepo.InstitutionPgRepo)),
 		pgrepo.NewInstitutionPgRepo,
 
+		wire.Bind(new(repo.CategoryRepo), new(*pgrepo.CategoryPgRepo)),
+		pgrepo.NewCategoryPgRepo,
+
 		usecase.NewSignInUseCase,
 		usecase.NewRefreshTokenUseCase,
 		usecase.NewCalculateCompoundInterestUseCase,
@@ -52,11 +55,13 @@ func New() *App {
 		usecase.NewCalculateRetirementUseCase,
 		usecase.NewCalculateSimpleInterestUseCase,
 		usecase.NewSyncInstitutionsUseCase,
+		usecase.NewSyncCategoriesUseCase,
 
 		handler.NewAuthHandler,
 		handler.NewHealthHandler,
 		handler.NewCalculatorHandler,
 		handler.NewInstitutionHandler,
+		handler.NewCategoryHandler,
 
 		middleware.NewMiddleware,
 

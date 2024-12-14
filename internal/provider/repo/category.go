@@ -1,4 +1,4 @@
-package openfinance
+package repo
 
 import (
 	"context"
@@ -6,11 +6,12 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 )
 
-type Client interface {
-	ListInstitutions(
-		ctx context.Context,
-	) ([]entity.Institution, error)
+type CategoryRepo interface {
 	ListCategories(
 		ctx context.Context,
 	) ([]entity.Category, error)
+	CreateManyCategories(
+		ctx context.Context,
+		params []CreateManyCategoriesParams,
+	) error
 }

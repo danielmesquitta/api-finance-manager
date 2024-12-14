@@ -46,7 +46,10 @@ func New() *App {
 	institutionPgRepo := pgrepo.NewInstitutionPgRepo(queries)
 	syncInstitutionsUseCase := usecase.NewSyncInstitutionsUseCase(client, institutionPgRepo)
 	institutionHandler := handler.NewInstitutionHandler(syncInstitutionsUseCase)
-	routerRouter := router.NewRouter(env, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler)
+	categoryPgRepo := pgrepo.NewCategoryPgRepo(queries)
+	syncCategoriesUseCase := usecase.NewSyncCategoriesUseCase(client, categoryPgRepo)
+	categoryHandler := handler.NewCategoryHandler(syncCategoriesUseCase)
+	routerRouter := router.NewRouter(env, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler)
 	app := newApp(env, middlewareMiddleware, routerRouter)
 	return app
 }

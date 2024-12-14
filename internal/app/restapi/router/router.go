@@ -11,12 +11,13 @@ import (
 )
 
 type Router struct {
-	e  *config.Env
-	m  *middleware.Middleware
-	hh *handler.HealthHandler
-	ah *handler.AuthHandler
-	ch *handler.CalculatorHandler
-	ih *handler.InstitutionHandler
+	e   *config.Env
+	m   *middleware.Middleware
+	hh  *handler.HealthHandler
+	ah  *handler.AuthHandler
+	ch  *handler.CalculatorHandler
+	ih  *handler.InstitutionHandler
+	cth *handler.CategoryHandler
 }
 
 func NewRouter(
@@ -26,14 +27,16 @@ func NewRouter(
 	ah *handler.AuthHandler,
 	ch *handler.CalculatorHandler,
 	ih *handler.InstitutionHandler,
+	cth *handler.CategoryHandler,
 ) *Router {
 	return &Router{
-		e:  e,
-		m:  m,
-		hh: hh,
-		ah: ah,
-		ch: ch,
-		ih: ih,
+		e:   e,
+		m:   m,
+		hh:  hh,
+		ah:  ah,
+		ch:  ch,
+		ih:  ih,
+		cth: cth,
 	}
 }
 
@@ -52,6 +55,7 @@ func (r *Router) Register(
 
 	adminApiV1 := apiV1.Group("/admin", r.m.BasicAuth)
 	adminApiV1.POST("/institutions/sync", r.ih.Sync)
+	adminApiV1.POST("/categories/sync", r.cth.Sync)
 
 	usersApiV1 := apiV1.Group("", r.m.BearerAuthAccessToken())
 	usersApiV1.POST("/calculator/compound-interest", r.ch.CompoundInterest)

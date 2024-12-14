@@ -1,5 +1,5 @@
 package dto
 
-type HealthResponseDTO struct {
+type HealthResponse struct {
 	Ok bool `json:"ok"`
 }

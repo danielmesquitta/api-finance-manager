@@ -10,36 +10,36 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type SyncInstitutionsUseCase struct {
+type SyncCategoriesUseCase struct {
 	o  openfinance.Client
-	ir repo.InstitutionRepo
+	ir repo.CategoryRepo
 }
 
-func NewSyncInstitutionsUseCase(
+func NewSyncCategoriesUseCase(
 	o openfinance.Client,
-	ir repo.InstitutionRepo,
-) *SyncInstitutionsUseCase {
-	return &SyncInstitutionsUseCase{
+	ir repo.CategoryRepo,
+) *SyncCategoriesUseCase {
+	return &SyncCategoriesUseCase{
 		o:  o,
 		ir: ir,
 	}
 }
 
-func (uc *SyncInstitutionsUseCase) Execute(ctx context.Context) error {
-	var openFinanceInstitutions, institutions []entity.Institution
+func (uc *SyncCategoriesUseCase) Execute(ctx context.Context) error {
+	var openFinanceCategories, institutions []entity.Category
 
 	var errCh = make(chan error, 2)
 	defer close(errCh)
 
 	go func() {
 		var err error
-		openFinanceInstitutions, err = uc.o.ListInstitutions(ctx)
+		openFinanceCategories, err = uc.o.ListCategories(ctx)
 		errCh <- errs.New(err)
 	}()
 
 	go func() {
 		var err error
-		institutions, err = uc.ir.ListInstitutions(ctx)
+		institutions, err = uc.ir.ListCategories(ctx)
 		errCh <- errs.New(err)
 	}()
 
@@ -49,24 +49,24 @@ func (uc *SyncInstitutionsUseCase) Execute(ctx context.Context) error {
 		}
 	}
 
-	institutionsByExternalID := make(map[string]entity.Institution)
+	institutionsByExternalID := make(map[string]entity.Category)
 	for _, i := range institutions {
 		institutionsByExternalID[i.ExternalID] = i
 	}
 
-	params := []repo.CreateManyInstitutionsParams{}
-	for _, i := range openFinanceInstitutions {
+	params := []repo.CreateManyCategoriesParams{}
+	for _, i := range openFinanceCategories {
 		if _, ok := institutionsByExternalID[i.ExternalID]; ok {
 			continue
 		}
-		param := repo.CreateManyInstitutionsParams{}
+		param := repo.CreateManyCategoriesParams{}
 		if err := copier.Copy(&param, i); err != nil {
 			return errs.New(err)
 		}
 		params = append(params, param)
 	}
 
-	if err := uc.ir.CreateManyInstitutions(ctx, params); err != nil {
+	if err := uc.ir.CreateManyCategories(ctx, params); err != nil {
 		return errs.New(err)
 	}
 

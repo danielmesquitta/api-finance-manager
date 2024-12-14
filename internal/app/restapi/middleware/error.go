@@ -41,7 +41,7 @@ func (m *Middleware) ErrorHandler(
 
 			if err := c.JSON(
 				statusCode,
-				dto.ErrorResponseDTO{Message: appErr.Error()},
+				dto.ErrorResponse{Message: appErr.Error()},
 			); err != nil {
 				slog.Error("failed to handle app err", "err", err)
 			}
@@ -73,6 +73,6 @@ func (m *Middleware) handleInternalServerError(
 
 	return c.JSON(
 		statusCode,
-		dto.ErrorResponseDTO{Message: "internal server error"},
+		dto.ErrorResponse{Message: "internal server error"},
 	)
 }

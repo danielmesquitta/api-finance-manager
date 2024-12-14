@@ -18,9 +18,9 @@ func NewHealthHandler() *HealthHandler {
 // @Tags Health
 // @Accept json
 // @Produce json
-// @Success 200 {object} dto.HealthResponseDTO
-// @Failure 500 {object} dto.ErrorResponseDTO
+// @Success 200 {object} dto.HealthResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /health [get]
 func (h HealthHandler) Health(c echo.Context) error {
-	return c.JSON(http.StatusOK, dto.HealthResponseDTO{Ok: true})
+	return c.JSON(http.StatusOK, dto.HealthResponse{Ok: true})
 }

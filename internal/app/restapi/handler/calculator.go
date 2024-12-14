@@ -36,14 +36,14 @@ func NewCalculatorHandler(
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param request body dto.CompoundInterestRequestDTO true "Request body"
-// @Success 200 {object} dto.CompoundInterestResponseDTO
-// @Failure 400 {object} dto.ErrorResponseDTO
-// @Failure 401 {object} dto.ErrorResponseDTO
-// @Failure 500 {object} dto.ErrorResponseDTO
+// @Param request body dto.CompoundInterestRequest true "Request body"
+// @Success 200 {object} dto.CompoundInterestResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/calculator/compound-interest [post]
 func (h CalculatorHandler) CompoundInterest(c echo.Context) error {
-	body := &dto.CompoundInterestRequestDTO{}
+	body := &dto.CompoundInterestRequest{}
 	if err := c.Bind(body); err != nil {
 		return errs.New(err)
 	}
@@ -56,7 +56,7 @@ func (h CalculatorHandler) CompoundInterest(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.CompoundInterestResponseDTO{
+	return c.JSON(http.StatusOK, dto.CompoundInterestResponse{
 		CalculateCompoundInterestUseCaseOutput: *output,
 	})
 }
@@ -67,14 +67,14 @@ func (h CalculatorHandler) CompoundInterest(c echo.Context) error {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param request body dto.EmergencyReserveRequestDTO true "Request body"
-// @Success 200 {object} dto.EmergencyReserveResponseDTO
-// @Failure 400 {object} dto.ErrorResponseDTO
-// @Failure 401 {object} dto.ErrorResponseDTO
-// @Failure 500 {object} dto.ErrorResponseDTO
+// @Param request body dto.EmergencyReserveRequest true "Request body"
+// @Success 200 {object} dto.EmergencyReserveResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/calculator/emergency-reserve [post]
 func (h CalculatorHandler) EmergencyReserve(c echo.Context) error {
-	body := &dto.EmergencyReserveRequestDTO{}
+	body := &dto.EmergencyReserveRequest{}
 	if err := c.Bind(body); err != nil {
 		return errs.New(err)
 	}
@@ -87,7 +87,7 @@ func (h CalculatorHandler) EmergencyReserve(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.EmergencyReserveResponseDTO{
+	return c.JSON(http.StatusOK, dto.EmergencyReserveResponse{
 		CalculateEmergencyReserveUseCaseOutput: *output,
 	})
 }
@@ -98,14 +98,14 @@ func (h CalculatorHandler) EmergencyReserve(c echo.Context) error {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param request body dto.RetirementRequestDTO true "Request body"
-// @Success 200 {object} dto.RetirementResponseDTO
-// @Failure 400 {object} dto.ErrorResponseDTO
-// @Failure 401 {object} dto.ErrorResponseDTO
-// @Failure 500 {object} dto.ErrorResponseDTO
+// @Param request body dto.RetirementRequest true "Request body"
+// @Success 200 {object} dto.RetirementResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/calculator/retirement [post]
 func (h CalculatorHandler) Retirement(c echo.Context) error {
-	body := &dto.RetirementRequestDTO{}
+	body := &dto.RetirementRequest{}
 	if err := c.Bind(body); err != nil {
 		return errs.New(err)
 	}
@@ -118,7 +118,7 @@ func (h CalculatorHandler) Retirement(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.RetirementResponseDTO{
+	return c.JSON(http.StatusOK, dto.RetirementResponse{
 		CalculateRetirementUseCaseOutput: *output,
 	})
 }
@@ -129,14 +129,14 @@ func (h CalculatorHandler) Retirement(c echo.Context) error {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param request body dto.SimpleInterestRequestDTO true "Request body"
-// @Success 200 {object} dto.SimpleInterestResponseDTO
-// @Failure 400 {object} dto.ErrorResponseDTO
-// @Failure 401 {object} dto.ErrorResponseDTO
-// @Failure 500 {object} dto.ErrorResponseDTO
+// @Param request body dto.SimpleInterestRequest true "Request body"
+// @Success 200 {object} dto.SimpleInterestResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/calculator/simple-interest [post]
 func (h CalculatorHandler) SimpleInterest(c echo.Context) error {
-	body := &dto.SimpleInterestRequestDTO{}
+	body := &dto.SimpleInterestRequest{}
 	if err := c.Bind(body); err != nil {
 		return errs.New(err)
 	}
@@ -149,7 +149,7 @@ func (h CalculatorHandler) SimpleInterest(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.SimpleInterestResponseDTO{
+	return c.JSON(http.StatusOK, dto.SimpleInterestResponse{
 		CalculateSimpleInterestUseCaseOutput: *output,
 	})
 }

@@ -1,5 +1,5 @@
 package dto
 
-type ErrorResponseDTO struct {
+type ErrorResponse struct {
 	Message string `json:"message"`
 }

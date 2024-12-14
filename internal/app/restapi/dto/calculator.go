@@ -2,34 +2,34 @@ package dto
 
 import "github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 
-type CompoundInterestRequestDTO struct {
+type CompoundInterestRequest struct {
 	usecase.CalculateCompoundInterestUseCaseInput
 }
 
-type CompoundInterestResponseDTO struct {
+type CompoundInterestResponse struct {
 	usecase.CalculateCompoundInterestUseCaseOutput
 }
 
-type EmergencyReserveRequestDTO struct {
+type EmergencyReserveRequest struct {
 	usecase.CalculateEmergencyReserveUseCaseInput
 }
 
-type EmergencyReserveResponseDTO struct {
+type EmergencyReserveResponse struct {
 	usecase.CalculateEmergencyReserveUseCaseOutput
 }
 
-type RetirementRequestDTO struct {
+type RetirementRequest struct {
 	usecase.CalculateRetirementUseCaseInput
 }
 
-type RetirementResponseDTO struct {
+type RetirementResponse struct {
 	usecase.CalculateRetirementUseCaseOutput
 }
 
-type SimpleInterestRequestDTO struct {
+type SimpleInterestRequest struct {
 	usecase.CalculateSimpleInterestUseCaseInput
 }
 
-type SimpleInterestResponseDTO struct {
+type SimpleInterestResponse struct {
 	usecase.CalculateSimpleInterestUseCaseOutput
 }

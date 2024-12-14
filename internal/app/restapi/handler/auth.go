@@ -32,11 +32,11 @@ func NewAuthHandler(
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param request body dto.SignInRequestDTO true "Request body"
-// @Success 200 {object} dto.SignInResponseDTO
-// @Failure 400 {object} dto.ErrorResponseDTO
-// @Failure 401 {object} dto.ErrorResponseDTO
-// @Failure 500 {object} dto.ErrorResponseDTO
+// @Param request body dto.SignInRequest true "Request body"
+// @Success 200 {object} dto.SignInResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/auth/sign-in [post]
 func (h AuthHandler) SignIn(c echo.Context) error {
 	token := c.Request().Header.Get("Authorization")
@@ -44,7 +44,7 @@ func (h AuthHandler) SignIn(c echo.Context) error {
 		return errs.ErrUnauthorized
 	}
 
-	var body dto.SignInRequestDTO
+	var body dto.SignInRequest
 	if err := c.Bind(&body); err != nil {
 		return errs.New(err)
 	}
@@ -67,10 +67,10 @@ func (h AuthHandler) SignIn(c echo.Context) error {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Success 200 {object} dto.SignInResponseDTO
-// @Failure 400 {object} dto.ErrorResponseDTO
-// @Failure 401 {object} dto.ErrorResponseDTO
-// @Failure 500 {object} dto.ErrorResponseDTO
+// @Success 200 {object} dto.SignInResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/auth/refresh [post]
 func (h AuthHandler) RefreshToken(c echo.Context) error {
 	claims := c.Get("claims").(*jwtutil.UserClaims)

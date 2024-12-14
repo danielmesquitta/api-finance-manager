@@ -5,10 +5,10 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 )
 
-type SignInRequestDTO struct {
+type SignInRequest struct {
 	Provider entity.Provider `json:"provider"`
 }
 
-type SignInResponseDTO struct {
+type SignInResponse struct {
 	usecase.SignInUseCaseOutput
 }

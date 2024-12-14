@@ -1,6 +1,6 @@
 basePath: /api
 definitions:
-  dto.CompoundInterestRequestDTO:
+  dto.CompoundInterestRequest:
     properties:
       initial_deposit:
         minimum: 0
@@ -25,7 +25,7 @@ definitions:
     - interest_type
     - period_in_months
     type: object
-  dto.CompoundInterestResponseDTO:
+  dto.CompoundInterestResponse:
     properties:
       by_month:
         additionalProperties:
@@ -38,7 +38,7 @@ definitions:
       total_interest:
         type: number
     type: object
-  dto.EmergencyReserveRequestDTO:
+  dto.EmergencyReserveRequest:
     properties:
       jobType:
         allOf:
@@ -60,7 +60,7 @@ definitions:
     required:
     - jobType
     type: object
-  dto.EmergencyReserveResponseDTO:
+  dto.EmergencyReserveResponse:
     properties:
       monthsToAchieveEmergencyReserve:
         type: integer
@@ -69,17 +69,17 @@ definitions:
       recommendedReserveInValue:
         type: number
     type: object
-  dto.ErrorResponseDTO:
+  dto.ErrorResponse:
     properties:
       message:
         type: string
     type: object
-  dto.HealthResponseDTO:
+  dto.HealthResponse:
     properties:
       ok:
         type: boolean
     type: object
-  dto.RetirementRequestDTO:
+  dto.RetirementRequest:
     properties:
       age:
         minimum: 0
@@ -127,7 +127,7 @@ definitions:
     - monthly_income
     - retirement_age
     type: object
-  dto.RetirementResponseDTO:
+  dto.RetirementResponse:
     properties:
       achieved_goal_income:
         type: boolean
@@ -140,12 +140,12 @@ definitions:
       property_on_retirement:
         type: number
     type: object
-  dto.SignInRequestDTO:
+  dto.SignInRequest:
     properties:
       provider:
         $ref: '#/definitions/entity.Provider'
     type: object
-  dto.SignInResponseDTO:
+  dto.SignInResponse:
     properties:
       access_token:
         type: string
@@ -154,7 +154,7 @@ definitions:
       user:
         $ref: '#/definitions/entity.User'
     type: object
-  dto.SimpleInterestRequestDTO:
+  dto.SimpleInterestRequest:
     properties:
       initialDeposit:
         minimum: 0
@@ -177,7 +177,7 @@ definitions:
     - interestType
     - periodInMonths
     type: object
-  dto.SimpleInterestResponseDTO:
+  dto.SimpleInterestResponse:
     properties:
       by_month:
         additionalProperties:
@@ -286,28 +286,47 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.HealthResponseDTO'
+            $ref: '#/definitions/dto.HealthResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
       summary: Health check
       tags:
       - Health
+  /v1/admin/categories/sync:
+    post:
+      consumes:
+      - application/json
+      description: Sync categories from open finance
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BasicAuth: []
+      summary: Sync categories from open finance
+      tags:
+      - Category
   /v1/admin/institutions/sync:
-    get:
+    post:
       consumes:
       - application/json
       description: Sync institutions from open finance
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BasicAuth: []
       summary: Sync institutions from open finance
@@ -324,19 +343,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SignInResponseDTO'
+            $ref: '#/definitions/dto.SignInResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Refresh token
@@ -353,26 +372,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.SignInRequestDTO'
+          $ref: '#/definitions/dto.SignInRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SignInResponseDTO'
+            $ref: '#/definitions/dto.SignInResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Sign in
@@ -389,26 +408,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.CompoundInterestRequestDTO'
+          $ref: '#/definitions/dto.CompoundInterestRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.CompoundInterestResponseDTO'
+            $ref: '#/definitions/dto.CompoundInterestResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Calculate compound interest
@@ -425,26 +444,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.EmergencyReserveRequestDTO'
+          $ref: '#/definitions/dto.EmergencyReserveRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.EmergencyReserveResponseDTO'
+            $ref: '#/definitions/dto.EmergencyReserveResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Calculate emergency reserve
@@ -461,26 +480,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.RetirementRequestDTO'
+          $ref: '#/definitions/dto.RetirementRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.RetirementResponseDTO'
+            $ref: '#/definitions/dto.RetirementResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Calculate retirement
@@ -497,26 +516,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.SimpleInterestRequestDTO'
+          $ref: '#/definitions/dto.SimpleInterestRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SimpleInterestResponseDTO'
+            $ref: '#/definitions/dto.SimpleInterestResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponseDTO'
+            $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Calculate simple interest

@@ -26,13 +26,13 @@ func NewInstitutionHandler(
 // @Security BasicAuth
 // @Accept json
 // @Produce json
-// @Success 200
-// @Failure 500 {object} dto.ErrorResponseDTO
-// @Router /v1/admin/institutions/sync [get]
+// @Success 204
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/admin/institutions/sync [post]
 func (h InstitutionHandler) Sync(c echo.Context) error {
 	if err := h.si.Execute(c.Request().Context()); err != nil {
 		return errs.New(err)
 	}
 
-	return c.NoContent(http.StatusOK)
+	return c.NoContent(http.StatusNoContent)
 }

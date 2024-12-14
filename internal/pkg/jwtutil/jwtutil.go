@@ -1,6 +1,9 @@
 package jwtutil
 
 import (
+	"encoding/base64"
+	"encoding/json"
+	"strings"
 	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
@@ -16,8 +19,17 @@ const (
 	TokenTypeRefresh
 )
 
-type UserClaims struct {
+type RegisteredClaims struct {
 	jwt.RegisteredClaims
+}
+
+func (rc *RegisteredClaims) IsExpired() bool {
+	nowMinusOneMinute := time.Now().Add(-1 * time.Minute)
+	return rc.ExpiresAt.Before(nowMinusOneMinute)
+}
+
+type UserClaims struct {
+	RegisteredClaims
 	Tier                  entity.Tier `json:"tier,omitempty"`
 	SubscriptionExpiresAt *time.Time  `json:"subscription_expires_at,omitempty"`
 }
@@ -25,10 +37,6 @@ type UserClaims struct {
 // IsExpired checks if the token is expired
 // by comparing the expiration time with the current time minus one minute
 // to account for requests that may take longer to process
-func (u *UserClaims) IsExpired() bool {
-	nowMinusOneMinute := time.Now().Add(-1 * time.Minute)
-	return u.RegisteredClaims.ExpiresAt.Before(nowMinusOneMinute)
-}
 
 type JWT struct {
 	keys map[TokenType]string
@@ -74,4 +82,24 @@ func (j *JWT) Parse(jwtToken string, tokenType TokenType) (*UserClaims, error) {
 	}
 
 	return userClaims, nil
+}
+
+// Decode decodes a JWT and extracts the payload.
+func (j *JWT) Decode(token string) (*RegisteredClaims, error) {
+	parts := strings.Split(token, ".")
+	if len(parts) != 3 {
+		return nil, errs.New("invalid token")
+	}
+
+	payload, err := base64.RawURLEncoding.DecodeString(parts[1])
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	var claims RegisteredClaims
+	if err := json.Unmarshal(payload, &claims); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return &claims, nil
 }

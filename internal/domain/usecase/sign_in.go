@@ -165,28 +165,26 @@ func (uc *SignInUseCase) signIn(
 	default:
 	}
 
-	accessToken, err := uc.j.NewToken(jwtutil.UserClaims{
-		Tier:                  entity.Tier(user.Tier),
-		SubscriptionExpiresAt: user.SubscriptionExpiresAt,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    user.ID.String(),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
-		},
-	}, jwtutil.TokenTypeAccess)
+	tokenClaims := jwtutil.UserClaims{}
+	tokenClaims.Issuer = user.ID.String()
+	tokenClaims.IssuedAt = jwt.NewNumericDate(time.Now())
+	in7Days := time.Now().Add(time.Hour * 24 * 7)
+	tokenClaims.ExpiresAt = jwt.NewNumericDate(in7Days)
+
+	refreshToken, err := uc.j.NewToken(tokenClaims, jwtutil.TokenTypeRefresh)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	refreshToken, err := uc.j.NewToken(jwtutil.UserClaims{
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:   user.ID.String(),
-			IssuedAt: jwt.NewNumericDate(time.Now()),
-			ExpiresAt: jwt.NewNumericDate(
-				time.Now().Add(time.Hour * 24 * 7),
-			),
-		},
-	}, jwtutil.TokenTypeRefresh)
+	tokenClaims.Tier = entity.Tier(user.Tier)
+	tokenClaims.SubscriptionExpiresAt = user.SubscriptionExpiresAt
+	in24Hours := time.Now().Add(time.Hour * 24)
+	tokenClaims.ExpiresAt = jwt.NewNumericDate(in24Hours)
+
+	accessToken, err := uc.j.NewToken(
+		tokenClaims,
+		jwtutil.TokenTypeAccess,
+	)
 	if err != nil {
 		return nil, errs.New(err)
 	}

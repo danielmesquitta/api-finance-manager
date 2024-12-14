@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 )
 
 type authResponse struct {
@@ -29,7 +28,7 @@ func (c *Client) refreshAccessToken(ctx context.Context) error {
 		return nil
 	}
 
-	claims, err := c.j.Parse(accessToken, jwtutil.TokenTypeAccess)
+	claims, err := c.j.Decode(accessToken)
 	if err != nil {
 		return errs.New(err)
 	}
