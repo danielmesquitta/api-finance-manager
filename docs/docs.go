@@ -380,6 +380,11 @@ const docTemplate = `{
         },
         "/v1/institutions/sync": {
             "get": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
                 "description": "Sync institutions from open finance",
                 "consumes": [
                     "application/json"

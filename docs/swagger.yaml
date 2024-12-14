@@ -517,6 +517,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponseDTO'
+      security:
+      - BasicAuth: []
       summary: Sync institutions from open finance
       tags:
       - Institution

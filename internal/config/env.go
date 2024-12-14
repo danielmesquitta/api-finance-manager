@@ -1,8 +1,11 @@
 package config
 
 import (
+	"bytes"
+	_ "embed"
 	"log"
 
+	root "github.com/danielmesquitta/api-finance-manager"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/spf13/viper"
@@ -31,24 +34,25 @@ type Env struct {
 }
 
 func LoadEnv(v validator.Validator) *Env {
-	env := &Env{
+	e := &Env{
 		v: v,
 	}
 
-	if err := env.loadEnv(); err != nil {
+	if err := e.loadEnv(); err != nil {
 		log.Fatalf("failed to load environment variables: %v", err)
 	}
 
-	return env
+	return e
 }
 
 func (e *Env) loadEnv() error {
-	viper.SetConfigFile(".env")
-	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err != nil {
+	viper.SetConfigType("env")
+	err := viper.ReadConfig(bytes.NewBuffer(root.Env))
+	if err != nil {
 		return errs.New(err)
 	}
+
+	viper.AutomaticEnv()
 
 	if err := viper.Unmarshal(&e); err != nil {
 		return errs.New(err)

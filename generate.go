@@ -1,4 +1,4 @@
-package main
+package root
 
 //go:generate sqlc generate
 //go:generate copy-sqlc-params --input ./internal/provider/db/sqlc --output ./internal/provider/repo

@@ -23,6 +23,7 @@ func NewInstitutionHandler(
 // @Summary Sync institutions from open finance
 // @Description Sync institutions from open finance
 // @Tags Institution
+// @Security BasicAuth
 // @Accept json
 // @Produce json
 // @Success 200
