@@ -213,11 +213,8 @@ definitions:
         items:
           $ref: '#/definitions/usecase.UpsertBudgetCategoryInput'
         type: array
-      user_id:
-        type: string
     required:
     - amount
-    - user_id
     type: object
   entity.Category:
     properties:

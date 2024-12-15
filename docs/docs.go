@@ -857,8 +857,7 @@ const docTemplate = `{
         "dto.UpsertBudgetRequest": {
             "type": "object",
             "required": [
-                "amount",
-                "user_id"
+                "amount"
             ],
             "properties": {
                 "amount": {
@@ -869,9 +868,6 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/usecase.UpsertBudgetCategoryInput"
                     }
-                },
-                "user_id": {
-                    "type": "string"
                 }
             }
         },

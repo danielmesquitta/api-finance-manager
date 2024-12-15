@@ -35,7 +35,7 @@ type UpsertBudgetCategoryInput struct {
 
 type UpsertBudgetUseCaseInput struct {
 	Amount     float64                     `json:"amount,omitempty"     validate:"required,gt=0"`
-	UserID     uuid.UUID                   `json:"user_id,omitempty"    validate:"required"`
+	UserID     uuid.UUID                   `json:"-"                    validate:"required"`
 	Categories []UpsertBudgetCategoryInput `json:"categories,omitempty" validate:"dive"`
 }
 
