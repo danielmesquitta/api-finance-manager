@@ -6,7 +6,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
-	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
@@ -73,7 +72,7 @@ func (h AuthHandler) SignIn(c echo.Context) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/auth/refresh [post]
 func (h AuthHandler) RefreshToken(c echo.Context) error {
-	claims := c.Get("claims").(*jwtutil.UserClaims)
+	claims := getUserClaims(c)
 
 	ctx := c.Request().Context()
 	out, err := h.rt.Execute(

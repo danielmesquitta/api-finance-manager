@@ -65,6 +65,14 @@ func (r *BudgetPgRepo) CreateBudgetCategories(
 	return nil
 }
 
+func (r *BudgetPgRepo) DeleteBudgetByID(
+	ctx context.Context,
+	id uuid.UUID,
+) error {
+	tx := r.q.UseTx(ctx)
+	return tx.DeleteBudgetByID(ctx, id)
+}
+
 func (r *BudgetPgRepo) DeleteBudgetCategoriesByBudgetID(
 	ctx context.Context,
 	budgetID uuid.UUID,
@@ -91,7 +99,43 @@ func (r *BudgetPgRepo) GetBudgetByUserID(
 	}
 
 	return &result, nil
+}
 
+func (r *BudgetPgRepo) GetBudgetWithCategoriesByUserID(
+	ctx context.Context,
+	userID uuid.UUID,
+) (*entity.Budget, []entity.BudgetCategory, []entity.Category, error) {
+	rows, err := r.q.GetBudgetWithCategoriesByUserID(ctx, userID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil, nil, nil
+		}
+		return nil, nil, nil, errs.New(err)
+	}
+
+	budget := entity.Budget{}
+	if err := copier.Copy(&budget, rows[0].Budget); err != nil {
+		return nil, nil, nil, errs.New(err)
+	}
+
+	budgetCategories := []entity.BudgetCategory{}
+	categories := []entity.Category{}
+
+	for _, row := range rows {
+		budgetCategory := entity.BudgetCategory{}
+		if err := copier.Copy(&budgetCategory, row.BudgetCategory); err != nil {
+			return nil, nil, nil, errs.New(err)
+		}
+		budgetCategories = append(budgetCategories, budgetCategory)
+
+		category := entity.Category{}
+		if err := copier.Copy(&category, row.Category); err != nil {
+			return nil, nil, nil, errs.New(err)
+		}
+		categories = append(categories, category)
+	}
+
+	return &budget, budgetCategories, categories, nil
 }
 
 func (r *BudgetPgRepo) UpdateBudget(

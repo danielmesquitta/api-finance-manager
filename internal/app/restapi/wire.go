@@ -63,6 +63,8 @@ func New() *App {
 		usecase.NewSyncCategoriesUseCase,
 		usecase.NewListCategoriesUseCase,
 		usecase.NewUpsertBudgetUseCase,
+		usecase.NewGetBudgetUseCase,
+		usecase.NewDeleteBudgetUseCase,
 
 		handler.NewAuthHandler,
 		handler.NewHealthHandler,

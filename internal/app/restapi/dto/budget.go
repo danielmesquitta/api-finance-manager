@@ -7,3 +7,7 @@ import (
 type UpsertBudgetRequest struct {
 	usecase.UpsertBudgetUseCaseInput
 }
+
+type GetBudgetResponse struct {
+	usecase.GetBudgetUseCaseOutput
+}

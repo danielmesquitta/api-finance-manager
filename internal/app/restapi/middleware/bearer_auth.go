@@ -11,6 +11,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+const ClaimsKey = "claims"
+
 type BearerAuthOptions struct {
 	Tiers []entity.Tier
 }
@@ -124,7 +126,7 @@ func (m *Middleware) bearerAuth(
 	}
 
 	// Set the claims in the context
-	c.Set("claims", claims)
+	c.Set(ClaimsKey, claims)
 
 	// Token is valid, proceed with the request
 	return next(c)

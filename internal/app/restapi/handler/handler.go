@@ -3,6 +3,8 @@ package handler
 import (
 	"strconv"
 
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/labstack/echo/v4"
 )
 
@@ -19,4 +21,10 @@ func getPaginationParams(
 	page, _ = strconv.Atoi(c.QueryParam(queryParamPage))
 	pageSize, _ = strconv.Atoi(c.QueryParam(queryParamPageSize))
 	return search, page, pageSize
+}
+
+func getUserClaims(
+	c echo.Context,
+) *jwtutil.UserClaims {
+	return c.Get(middleware.ClaimsKey).(*jwtutil.UserClaims)
 }

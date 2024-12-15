@@ -47,8 +47,8 @@ func (h CategoryHandler) Sync(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param search query string false "Search"
-// @Param page query string false "Page"
-// @Param page_size query string false "Page size"
+// @Param page query int false "Page"
+// @Param page_size query int false "Page size"
 // @Success 200 {object} dto.ListCategoriesResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/categories [get]

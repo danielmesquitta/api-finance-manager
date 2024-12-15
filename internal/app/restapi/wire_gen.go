@@ -54,7 +54,9 @@ func New() *App {
 	pgxTX := tx.NewPgxTX(conn)
 	budgetPgRepo := pgrepo.NewBudgetPgRepo(queries)
 	upsertBudgetUseCase := usecase.NewUpsertBudgetUseCase(validatorValidator, pgxTX, budgetPgRepo)
-	budgetHandler := handler.NewBudgetHandler(upsertBudgetUseCase)
+	getBudgetUseCase := usecase.NewGetBudgetUseCase(budgetPgRepo)
+	deleteBudgetUseCase := usecase.NewDeleteBudgetUseCase(pgxTX, budgetPgRepo)
+	budgetHandler := handler.NewBudgetHandler(upsertBudgetUseCase, getBudgetUseCase, deleteBudgetUseCase)
 	routerRouter := router.NewRouter(env, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler)
 	app := newApp(env, middlewareMiddleware, routerRouter)
 	return app

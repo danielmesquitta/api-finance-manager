@@ -41,6 +41,16 @@ type CreateBudgetCategoriesParams struct {
 	CategoryID uuid.UUID `json:"category_id"`
 }
 
+const deleteBudgetByID = `-- name: DeleteBudgetByID :exec
+DELETE FROM budgets
+WHERE id = $1
+`
+
+func (q *Queries) DeleteBudgetByID(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteBudgetByID, id)
+	return err
+}
+
 const deleteBudgetCategoriesByBudgetID = `-- name: DeleteBudgetCategoriesByBudgetID :exec
 DELETE FROM budget_categories
 WHERE budget_id = $1
@@ -68,6 +78,59 @@ func (q *Queries) GetBudgetByUserID(ctx context.Context, userID uuid.UUID) (Budg
 		&i.UserID,
 	)
 	return i, err
+}
+
+const getBudgetWithCategoriesByUserID = `-- name: GetBudgetWithCategoriesByUserID :many
+SELECT budgets.id, budgets.amount, budgets.created_at, budgets.updated_at, budgets.user_id,
+  budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.budget_id, budget_categories.category_id,
+  categories.id, categories.external_id, categories.name, categories.created_at, categories.updated_at
+FROM budgets
+  JOIN budget_categories ON budgets.id = budget_categories.budget_id
+  JOIN categories ON budget_categories.category_id = categories.id
+WHERE user_id = $1
+`
+
+type GetBudgetWithCategoriesByUserIDRow struct {
+	Budget         Budget         `json:"budget"`
+	BudgetCategory BudgetCategory `json:"budget_category"`
+	Category       Category       `json:"category"`
+}
+
+func (q *Queries) GetBudgetWithCategoriesByUserID(ctx context.Context, userID uuid.UUID) ([]GetBudgetWithCategoriesByUserIDRow, error) {
+	rows, err := q.db.Query(ctx, getBudgetWithCategoriesByUserID, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetBudgetWithCategoriesByUserIDRow
+	for rows.Next() {
+		var i GetBudgetWithCategoriesByUserIDRow
+		if err := rows.Scan(
+			&i.Budget.ID,
+			&i.Budget.Amount,
+			&i.Budget.CreatedAt,
+			&i.Budget.UpdatedAt,
+			&i.Budget.UserID,
+			&i.BudgetCategory.ID,
+			&i.BudgetCategory.Amount,
+			&i.BudgetCategory.CreatedAt,
+			&i.BudgetCategory.UpdatedAt,
+			&i.BudgetCategory.BudgetID,
+			&i.BudgetCategory.CategoryID,
+			&i.Category.ID,
+			&i.Category.ExternalID,
+			&i.Category.Name,
+			&i.Category.CreatedAt,
+			&i.Category.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updateBudget = `-- name: UpdateBudget :exec

@@ -16,6 +16,7 @@ type BudgetRepo interface {
 		ctx context.Context,
 		params []CreateBudgetCategoriesParams,
 	) error
+	DeleteBudgetByID(ctx context.Context, id uuid.UUID) error
 	DeleteBudgetCategoriesByBudgetID(
 		ctx context.Context,
 		budgetID uuid.UUID,
@@ -24,5 +25,9 @@ type BudgetRepo interface {
 		ctx context.Context,
 		userID uuid.UUID,
 	) (*entity.Budget, error)
+	GetBudgetWithCategoriesByUserID(
+		ctx context.Context,
+		userID uuid.UUID,
+	) (*entity.Budget, []entity.BudgetCategory, []entity.Category, error)
 	UpdateBudget(ctx context.Context, arg UpdateBudgetParams) error
 }

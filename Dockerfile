@@ -1,11 +1,9 @@
-FROM golang:1.23.4-alpine as builder
+FROM golang:latest as builder
 WORKDIR /app
 COPY . .
-# Migrate
 RUN go install github.com/steebchen/prisma-client-go@latest
-RUN prisma-client-go migrate deploy --schema=sql/schema.prisma
-# Build
-RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o ./tmp/restapi ./cmd/restapi
+RUN make migrate
+RUN make build
 
 FROM alpine:latest
 COPY --from=builder /app/tmp/restapi .

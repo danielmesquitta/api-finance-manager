@@ -74,6 +74,29 @@ definitions:
       message:
         type: string
     type: object
+  dto.GetBudgetResponse:
+    properties:
+      amount:
+        type: number
+      available:
+        type: number
+      available_per_day:
+        type: number
+      budget_categories:
+        items:
+          $ref: '#/definitions/usecase.GetBudgetBudgetCategory'
+        type: array
+      created_at:
+        type: string
+      id:
+        type: string
+      spent:
+        type: number
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
   dto.HealthResponse:
     properties:
       ok:
@@ -297,6 +320,25 @@ definitions:
       total_interest:
         type: number
     type: object
+  usecase.GetBudgetBudgetCategory:
+    properties:
+      amount:
+        type: number
+      budget_id:
+        type: string
+      category:
+        $ref: '#/definitions/entity.Category'
+      category_id:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      spent:
+        type: number
+      updated_at:
+        type: string
+    type: object
   usecase.SimpleInterestResult:
     properties:
       total_amount:
@@ -447,6 +489,66 @@ paths:
       tags:
       - Auth
   /v1/budgets:
+    delete:
+      consumes:
+      - application/json
+      description: Delete budget
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete budget
+      tags:
+      - Budget
+    get:
+      consumes:
+      - application/json
+      description: Get budget
+      parameters:
+      - description: Month
+        format: 1-12
+        in: query
+        name: month
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetBudgetResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get budget
+      tags:
+      - Budget
     post:
       consumes:
       - application/json
@@ -637,11 +739,11 @@ paths:
       - description: Page
         in: query
         name: page
-        type: string
+        type: integer
       - description: Page size
         in: query
         name: page_size
-        type: string
+        type: integer
       produces:
       - application/json
       responses:

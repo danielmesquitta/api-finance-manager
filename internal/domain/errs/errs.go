@@ -109,6 +109,10 @@ var (
 		"O valor total das categorias do orçamento deve ser menor ou igual ao valor do orçamento",
 		ErrTypeValidation,
 	)
+	ErrBudgetNotFound = newErr(
+		"Você não possui um orçamento cadastrado",
+		ErrTypeNotFound,
+	)
 )
 
 var _ error = (*Err)(nil)
