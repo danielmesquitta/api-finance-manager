@@ -8,17 +8,17 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-type PgxTx struct {
+type PgxTX struct {
 	db *pgx.Conn
 }
 
-func NewPgxTx(db *pgx.Conn) *PgxTx {
-	return &PgxTx{
+func NewPgxTX(db *pgx.Conn) *PgxTX {
+	return &PgxTX{
 		db: db,
 	}
 }
 
-func (t *PgxTx) Do(
+func (t *PgxTX) Do(
 	ctx context.Context,
 	fn func(context.Context) error,
 ) error {

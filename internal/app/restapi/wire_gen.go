@@ -13,6 +13,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
@@ -50,7 +51,11 @@ func New() *App {
 	syncCategoriesUseCase := usecase.NewSyncCategoriesUseCase(client, categoryPgRepo)
 	listCategoriesUseCase := usecase.NewListCategoriesUseCase(categoryPgRepo)
 	categoryHandler := handler.NewCategoryHandler(syncCategoriesUseCase, listCategoriesUseCase)
-	routerRouter := router.NewRouter(env, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler)
+	pgxTX := tx.NewPgxTX(conn)
+	budgetPgRepo := pgrepo.NewBudgetPgRepo(queries)
+	upsertBudgetUseCase := usecase.NewUpsertBudgetUseCase(validatorValidator, pgxTX, budgetPgRepo)
+	budgetHandler := handler.NewBudgetHandler(upsertBudgetUseCase)
+	routerRouter := router.NewRouter(env, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler)
 	app := newApp(env, middlewareMiddleware, routerRouter)
 	return app
 }

@@ -15,7 +15,7 @@ type Account struct {
 	ID            uuid.UUID `json:"id"`
 	ExternalID    string    `json:"external_id"`
 	Name          string    `json:"name"`
-	Balance       int64     `json:"balance"`
+	Balance       float64   `json:"balance"`
 	Type          string    `json:"type"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
@@ -25,7 +25,7 @@ type Account struct {
 
 type Budget struct {
 	ID        uuid.UUID `json:"id"`
-	Amount    int64     `json:"amount"`
+	Amount    float64   `json:"amount"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	UserID    uuid.UUID `json:"user_id"`
@@ -33,7 +33,7 @@ type Budget struct {
 
 type BudgetCategory struct {
 	ID         uuid.UUID `json:"id"`
-	Amount     int64     `json:"amount"`
+	Amount     float64   `json:"amount"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 	BudgetID   uuid.UUID `json:"budget_id"`
@@ -52,8 +52,8 @@ type CreditCard struct {
 	ID             uuid.UUID `json:"id"`
 	Level          string    `json:"level"`
 	Brand          string    `json:"brand"`
-	Limit          int64     `json:"limit"`
-	AvailableLimit int64     `json:"available_limit"`
+	Limit          float64   `json:"limit"`
+	AvailableLimit float64   `json:"available_limit"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
 	AccountID      uuid.UUID `json:"account_id"`
@@ -72,9 +72,9 @@ type Investment struct {
 	ID         uuid.UUID `json:"id"`
 	ExternalID string    `json:"external_id"`
 	Name       string    `json:"name"`
-	Amount     int64     `json:"amount"`
+	Amount     float64   `json:"amount"`
 	Type       string    `json:"type"`
-	Rate       int64     `json:"rate"`
+	Rate       float64   `json:"rate"`
 	RateType   string    `json:"rateType"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
@@ -86,7 +86,7 @@ type Transaction struct {
 	ExternalID    string      `json:"external_id"`
 	Name          string      `json:"name"`
 	Description   pgtype.Text `json:"description"`
-	Amount        int64       `json:"amount"`
+	Amount        float64     `json:"amount"`
 	PaymentMethod string      `json:"payment_method"`
 	IsIgnored     bool        `json:"is_ignored"`
 	Date          time.Time   `json:"date"`

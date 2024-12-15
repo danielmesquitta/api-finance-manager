@@ -205,6 +205,20 @@ definitions:
       total_interest:
         type: number
     type: object
+  dto.UpsertBudgetRequest:
+    properties:
+      amount:
+        type: number
+      categories:
+        items:
+          $ref: '#/definitions/usecase.UpsertBudgetCategoryInput'
+        type: array
+      user_id:
+        type: string
+    required:
+    - amount
+    - user_id
+    type: object
   entity.Category:
     properties:
       created_at:
@@ -294,6 +308,16 @@ definitions:
         type: number
       total_interest:
         type: number
+    type: object
+  usecase.UpsertBudgetCategoryInput:
+    properties:
+      amount:
+        type: number
+      category_id:
+        type: string
+    required:
+    - amount
+    - category_id
     type: object
 info:
   contact:
@@ -425,6 +449,40 @@ paths:
       summary: Sign in
       tags:
       - Auth
+  /v1/budgets:
+    post:
+      consumes:
+      - application/json
+      description: Create or update budget
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpsertBudgetRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create or update budget
+      tags:
+      - Budget
   /v1/calculator/compound-interest:
     post:
       consumes:

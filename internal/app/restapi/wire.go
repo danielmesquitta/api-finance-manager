@@ -12,6 +12,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
@@ -25,19 +26,20 @@ import (
 func New() *App {
 	wire.Build(
 		validator.NewValidator,
-
 		jwtutil.NewJWT,
-
 		config.LoadEnv,
-
-		db.NewPGXConn,
-		db.NewQueries,
 
 		googleoauth.NewGoogleOAuth,
 		mockoauth.NewMockOAuth,
 
 		wire.Bind(new(openfinance.Client), new(*pluggy.Client)),
 		pluggy.NewClient,
+
+		db.NewPGXConn,
+		db.NewQueries,
+
+		wire.Bind(new(tx.TX), new(*tx.PgxTX)),
+		tx.NewPgxTX,
 
 		wire.Bind(new(repo.UserRepo), new(*pgrepo.UserPgRepo)),
 		pgrepo.NewUserPgRepo,
@@ -48,6 +50,9 @@ func New() *App {
 		wire.Bind(new(repo.CategoryRepo), new(*pgrepo.CategoryPgRepo)),
 		pgrepo.NewCategoryPgRepo,
 
+		wire.Bind(new(repo.BudgetRepo), new(*pgrepo.BudgetPgRepo)),
+		pgrepo.NewBudgetPgRepo,
+
 		usecase.NewSignInUseCase,
 		usecase.NewRefreshTokenUseCase,
 		usecase.NewCalculateCompoundInterestUseCase,
@@ -57,12 +62,14 @@ func New() *App {
 		usecase.NewSyncInstitutionsUseCase,
 		usecase.NewSyncCategoriesUseCase,
 		usecase.NewListCategoriesUseCase,
+		usecase.NewUpsertBudgetUseCase,
 
 		handler.NewAuthHandler,
 		handler.NewHealthHandler,
 		handler.NewCalculatorHandler,
 		handler.NewInstitutionHandler,
 		handler.NewCategoryHandler,
+		handler.NewBudgetHandler,
 
 		middleware.NewMiddleware,
 

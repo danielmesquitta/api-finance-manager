@@ -10,9 +10,9 @@ type CategoryRepo interface {
 	ListCategories(
 		ctx context.Context,
 	) ([]entity.Category, error)
-	CreateManyCategories(
+	CreateCategories(
 		ctx context.Context,
-		params []CreateManyCategoriesParams,
+		params []CreateCategoriesParams,
 	) error
 	SearchCategories(
 		ctx context.Context,

@@ -9,13 +9,13 @@ import (
 	"context"
 )
 
-// iteratorForCreateManyCategories implements pgx.CopyFromSource.
-type iteratorForCreateManyCategories struct {
-	rows                 []CreateManyCategoriesParams
+// iteratorForCreateBudgetCategories implements pgx.CopyFromSource.
+type iteratorForCreateBudgetCategories struct {
+	rows                 []CreateBudgetCategoriesParams
 	skippedFirstNextCall bool
 }
 
-func (r *iteratorForCreateManyCategories) Next() bool {
+func (r *iteratorForCreateBudgetCategories) Next() bool {
 	if len(r.rows) == 0 {
 		return false
 	}
@@ -27,28 +27,62 @@ func (r *iteratorForCreateManyCategories) Next() bool {
 	return len(r.rows) > 0
 }
 
-func (r iteratorForCreateManyCategories) Values() ([]interface{}, error) {
+func (r iteratorForCreateBudgetCategories) Values() ([]interface{}, error) {
+	return []interface{}{
+		r.rows[0].Amount,
+		r.rows[0].BudgetID,
+		r.rows[0].CategoryID,
+	}, nil
+}
+
+func (r iteratorForCreateBudgetCategories) Err() error {
+	return nil
+}
+
+func (q *Queries) CreateBudgetCategories(ctx context.Context, arg []CreateBudgetCategoriesParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"budget_categories"}, []string{"amount", "budget_id", "category_id"}, &iteratorForCreateBudgetCategories{rows: arg})
+}
+
+// iteratorForCreateCategories implements pgx.CopyFromSource.
+type iteratorForCreateCategories struct {
+	rows                 []CreateCategoriesParams
+	skippedFirstNextCall bool
+}
+
+func (r *iteratorForCreateCategories) Next() bool {
+	if len(r.rows) == 0 {
+		return false
+	}
+	if !r.skippedFirstNextCall {
+		r.skippedFirstNextCall = true
+		return true
+	}
+	r.rows = r.rows[1:]
+	return len(r.rows) > 0
+}
+
+func (r iteratorForCreateCategories) Values() ([]interface{}, error) {
 	return []interface{}{
 		r.rows[0].ExternalID,
 		r.rows[0].Name,
 	}, nil
 }
 
-func (r iteratorForCreateManyCategories) Err() error {
+func (r iteratorForCreateCategories) Err() error {
 	return nil
 }
 
-func (q *Queries) CreateManyCategories(ctx context.Context, arg []CreateManyCategoriesParams) (int64, error) {
-	return q.db.CopyFrom(ctx, []string{"categories"}, []string{"external_id", "name"}, &iteratorForCreateManyCategories{rows: arg})
+func (q *Queries) CreateCategories(ctx context.Context, arg []CreateCategoriesParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"categories"}, []string{"external_id", "name"}, &iteratorForCreateCategories{rows: arg})
 }
 
-// iteratorForCreateManyInstitutions implements pgx.CopyFromSource.
-type iteratorForCreateManyInstitutions struct {
-	rows                 []CreateManyInstitutionsParams
+// iteratorForCreateInstitutions implements pgx.CopyFromSource.
+type iteratorForCreateInstitutions struct {
+	rows                 []CreateInstitutionsParams
 	skippedFirstNextCall bool
 }
 
-func (r *iteratorForCreateManyInstitutions) Next() bool {
+func (r *iteratorForCreateInstitutions) Next() bool {
 	if len(r.rows) == 0 {
 		return false
 	}
@@ -60,7 +94,7 @@ func (r *iteratorForCreateManyInstitutions) Next() bool {
 	return len(r.rows) > 0
 }
 
-func (r iteratorForCreateManyInstitutions) Values() ([]interface{}, error) {
+func (r iteratorForCreateInstitutions) Values() ([]interface{}, error) {
 	return []interface{}{
 		r.rows[0].ExternalID,
 		r.rows[0].Name,
@@ -68,10 +102,10 @@ func (r iteratorForCreateManyInstitutions) Values() ([]interface{}, error) {
 	}, nil
 }
 
-func (r iteratorForCreateManyInstitutions) Err() error {
+func (r iteratorForCreateInstitutions) Err() error {
 	return nil
 }
 
-func (q *Queries) CreateManyInstitutions(ctx context.Context, arg []CreateManyInstitutionsParams) (int64, error) {
-	return q.db.CopyFrom(ctx, []string{"institutions"}, []string{"external_id", "name", "logo"}, &iteratorForCreateManyInstitutions{rows: arg})
+func (q *Queries) CreateInstitutions(ctx context.Context, arg []CreateInstitutionsParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"institutions"}, []string{"external_id", "name", "logo"}, &iteratorForCreateInstitutions{rows: arg})
 }

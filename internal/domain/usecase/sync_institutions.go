@@ -54,19 +54,19 @@ func (uc *SyncInstitutionsUseCase) Execute(ctx context.Context) error {
 		institutionsByExternalID[i.ExternalID] = i
 	}
 
-	params := []repo.CreateManyInstitutionsParams{}
+	params := []repo.CreateInstitutionsParams{}
 	for _, i := range openFinanceInstitutions {
 		if _, ok := institutionsByExternalID[i.ExternalID]; ok {
 			continue
 		}
-		param := repo.CreateManyInstitutionsParams{}
+		param := repo.CreateInstitutionsParams{}
 		if err := copier.Copy(&param, i); err != nil {
 			return errs.New(err)
 		}
 		params = append(params, param)
 	}
 
-	if err := uc.ir.CreateManyInstitutions(ctx, params); err != nil {
+	if err := uc.ir.CreateInstitutions(ctx, params); err != nil {
 		return errs.New(err)
 	}
 

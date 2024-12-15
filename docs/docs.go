@@ -212,6 +212,60 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/budgets": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create or update budget",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Budget"
+                ],
+                "summary": "Create or update budget",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpsertBudgetRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/calculator/compound-interest": {
             "post": {
                 "security": [
@@ -800,6 +854,27 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.UpsertBudgetRequest": {
+            "type": "object",
+            "required": [
+                "amount",
+                "user_id"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecase.UpsertBudgetCategoryInput"
+                    }
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Category": {
             "type": "object",
             "properties": {
@@ -928,6 +1003,21 @@ const docTemplate = `{
                 },
                 "total_interest": {
                     "type": "number"
+                }
+            }
+        },
+        "usecase.UpsertBudgetCategoryInput": {
+            "type": "object",
+            "required": [
+                "amount",
+                "category_id"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "category_id": {
+                    "type": "string"
                 }
             }
         }

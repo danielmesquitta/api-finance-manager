@@ -39,7 +39,7 @@ model Transaction {
   external_id    String   @unique
   name           String
   description    String?
-  amount         BigInt
+  amount         Float
   payment_method String   @default("UNKNOWN")
   is_ignored     Boolean  @default(false)
   date           DateTime @db.Timestamptz()
@@ -63,9 +63,9 @@ model Investment {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id String   @unique
   name        String
-  amount      BigInt
+  amount      Float
   type        String   @default("UNKNOWN")
-  rate        BigInt
+  rate        Float
   rateType    String   @default("UNKNOWN")
   created_at  DateTime @default(now()) @db.Timestamptz()
   updated_at  DateTime @default(now()) @db.Timestamptz()
@@ -94,7 +94,7 @@ model Account {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id String   @unique
   name        String
-  balance     BigInt
+  balance     Float
   type        String   @default("UNKNOWN")
   created_at  DateTime @default(now()) @db.Timestamptz()
   updated_at  DateTime @default(now()) @db.Timestamptz()
@@ -116,8 +116,8 @@ model CreditCard {
   id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   level           String
   brand           String
-  limit           BigInt
-  available_limit BigInt
+  limit           Float
+  available_limit Float
   created_at      DateTime @default(now()) @db.Timestamptz()
   updated_at      DateTime @default(now()) @db.Timestamptz()
 
@@ -142,7 +142,7 @@ model Institution {
 
 model Budget {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  amount     BigInt
+  amount     Float
   created_at DateTime @default(now()) @db.Timestamptz()
   updated_at DateTime @default(now()) @db.Timestamptz()
 
@@ -156,7 +156,7 @@ model Budget {
 
 model BudgetCategory {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  amount     BigInt
+  amount     Float
   created_at DateTime @default(now()) @db.Timestamptz()
   updated_at DateTime @default(now()) @db.Timestamptz()
 

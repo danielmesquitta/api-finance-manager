@@ -10,8 +10,8 @@ type InstitutionRepo interface {
 	ListInstitutions(
 		ctx context.Context,
 	) ([]entity.Institution, error)
-	CreateManyInstitutions(
+	CreateInstitutions(
 		ctx context.Context,
-		params []CreateManyInstitutionsParams,
+		params []CreateInstitutionsParams,
 	) error
 }

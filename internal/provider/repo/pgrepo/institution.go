@@ -37,17 +37,17 @@ func (r *InstitutionPgRepo) ListInstitutions(
 	return results, nil
 }
 
-func (r *InstitutionPgRepo) CreateManyInstitutions(
+func (r *InstitutionPgRepo) CreateInstitutions(
 	ctx context.Context,
-	params []repo.CreateManyInstitutionsParams,
+	params []repo.CreateInstitutionsParams,
 ) error {
-	dbParams := make([]sqlc.CreateManyInstitutionsParams, len(params))
+	dbParams := make([]sqlc.CreateInstitutionsParams, len(params))
 	if err := copier.Copy(&dbParams, params); err != nil {
 		return errs.New(err)
 	}
 
 	tx := r.q.UseTx(ctx)
-	_, err := tx.CreateManyInstitutions(ctx, dbParams)
+	_, err := tx.CreateInstitutions(ctx, dbParams)
 	if err != nil {
 		return errs.New(err)
 	}

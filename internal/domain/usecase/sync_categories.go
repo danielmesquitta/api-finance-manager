@@ -54,19 +54,19 @@ func (uc *SyncCategoriesUseCase) Execute(ctx context.Context) error {
 		institutionsByExternalID[i.ExternalID] = i
 	}
 
-	params := []repo.CreateManyCategoriesParams{}
+	params := []repo.CreateCategoriesParams{}
 	for _, i := range openFinanceCategories {
 		if _, ok := institutionsByExternalID[i.ExternalID]; ok {
 			continue
 		}
-		param := repo.CreateManyCategoriesParams{}
+		param := repo.CreateCategoriesParams{}
 		if err := copier.Copy(&param, i); err != nil {
 			return errs.New(err)
 		}
 		params = append(params, param)
 	}
 
-	if err := uc.ir.CreateManyCategories(ctx, params); err != nil {
+	if err := uc.ir.CreateCategories(ctx, params); err != nil {
 		return errs.New(err)
 	}
 

@@ -105,6 +105,10 @@ var (
 		"Pelo menos um dos valores de depósito inicial e mensal deve ser diferente de 0",
 		ErrTypeValidation,
 	)
+	ErrInvalidTotalBudgetCategoryAmount = newErr(
+		"O valor total das categorias do orçamento deve ser menor ou igual ao valor do orçamento",
+		ErrTypeValidation,
+	)
 )
 
 var _ error = (*Err)(nil)

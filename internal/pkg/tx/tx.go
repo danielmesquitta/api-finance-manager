@@ -8,6 +8,6 @@ type key byte
 
 var Key key
 
-type Tx interface {
+type TX interface {
 	Do(ctx context.Context, fn func(context.Context) error) error
 }

@@ -37,17 +37,17 @@ func (r *CategoryPgRepo) ListCategories(
 	return results, nil
 }
 
-func (r *CategoryPgRepo) CreateManyCategories(
+func (r *CategoryPgRepo) CreateCategories(
 	ctx context.Context,
-	params []repo.CreateManyCategoriesParams,
+	params []repo.CreateCategoriesParams,
 ) error {
-	dbParams := make([]sqlc.CreateManyCategoriesParams, len(params))
+	dbParams := make([]sqlc.CreateCategoriesParams, len(params))
 	if err := copier.Copy(&dbParams, params); err != nil {
 		return errs.New(err)
 	}
 
 	tx := r.q.UseTx(ctx)
-	_, err := tx.CreateManyCategories(ctx, dbParams)
+	_, err := tx.CreateCategories(ctx, dbParams)
 	if err != nil {
 		return errs.New(err)
 	}

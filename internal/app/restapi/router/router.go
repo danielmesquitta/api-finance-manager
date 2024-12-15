@@ -18,6 +18,7 @@ type Router struct {
 	ch  *handler.CalculatorHandler
 	ih  *handler.InstitutionHandler
 	cth *handler.CategoryHandler
+	bh  *handler.BudgetHandler
 }
 
 func NewRouter(
@@ -28,6 +29,7 @@ func NewRouter(
 	ch *handler.CalculatorHandler,
 	ih *handler.InstitutionHandler,
 	cth *handler.CategoryHandler,
+	bh *handler.BudgetHandler,
 ) *Router {
 	return &Router{
 		e:   e,
@@ -37,6 +39,7 @@ func NewRouter(
 		ch:  ch,
 		ih:  ih,
 		cth: cth,
+		bh:  bh,
 	}
 }
 
@@ -64,4 +67,6 @@ func (r *Router) Register(
 	usersApiV1.POST("/calculator/simple-interest", r.ch.SimpleInterest)
 
 	usersApiV1.GET("/categories", r.cth.List)
+
+	usersApiV1.POST("/budgets", r.bh.Upsert)
 }

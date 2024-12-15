@@ -11,7 +11,23 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type CreateManyCategoriesParams struct {
+type CreateBudgetParams struct {
+	Amount float64   `json:"amount"`
+	UserID uuid.UUID `json:"user_id"`
+}
+
+type CreateBudgetCategoriesParams struct {
+	Amount     float64   `json:"amount"`
+	BudgetID   uuid.UUID `json:"budget_id"`
+	CategoryID uuid.UUID `json:"category_id"`
+}
+
+type UpdateBudgetParams struct {
+	Amount float64   `json:"amount"`
+	UserID uuid.UUID `json:"user_id"`
+}
+
+type CreateCategoriesParams struct {
 	ExternalID string `json:"external_id"`
 	Name       string `json:"name"`
 }
@@ -22,7 +38,7 @@ type SearchCategoriesParams struct {
 	Search string `json:"search"`
 }
 
-type CreateManyInstitutionsParams struct {
+type CreateInstitutionsParams struct {
 	ExternalID string      `json:"external_id"`
 	Name       string      `json:"name"`
 	Logo       pgtype.Text `json:"logo"`
