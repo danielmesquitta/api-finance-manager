@@ -39,15 +39,15 @@ type UserClaims struct {
 // to account for requests that may take longer to process
 
 type JWT struct {
-	keys map[TokenType]string
+	keys map[TokenType][]byte
 }
 
 func NewJWT(
 	e *config.Env,
 ) *JWT {
-	keys := map[TokenType]string{
-		TokenTypeAccess:  e.JWTAccessTokenSecretKey,
-		TokenTypeRefresh: e.JWTRefreshTokenSecretKey,
+	keys := map[TokenType][]byte{
+		TokenTypeAccess:  []byte(e.JWTAccessTokenSecretKey),
+		TokenTypeRefresh: []byte(e.JWTRefreshTokenSecretKey),
 	}
 
 	return &JWT{
