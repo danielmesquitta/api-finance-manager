@@ -122,7 +122,7 @@ func (r *CategoryPgRepo) CountSearchCategories(
 	ctx context.Context,
 	search string,
 ) (int64, error) {
-	query := goqu.From("categories")
+	query := goqu.From(TableCategory)
 	search = strings.TrimSpace(search)
 	if search != "" {
 		searchPlaceholder := goqu.L("?", search)
