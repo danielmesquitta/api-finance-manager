@@ -115,6 +115,10 @@ var (
 		"Você não possui um orçamento cadastrado",
 		ErrTypeNotFound,
 	)
+	ErrInvalidDate = newErr(
+		`Data inválida, utilize uma data no formato "2006-01-02T15:04:05+07:00"`,
+		ErrTypeValidation,
+	)
 )
 
 var _ error = (*Err)(nil)

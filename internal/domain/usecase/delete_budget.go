@@ -28,20 +28,12 @@ func (uc *DeleteBudgetUseCase) Execute(
 	ctx context.Context,
 	userID uuid.UUID,
 ) error {
-	budget, err := uc.br.GetBudgetByUserID(ctx, userID)
-	if err != nil {
-		return err
-	}
-	if budget == nil {
-		return errs.ErrBudgetNotFound
-	}
-
-	err = uc.tx.Do(ctx, func(ctx context.Context) error {
-		if err := uc.br.DeleteBudgetCategoriesByBudgetID(ctx, budget.ID); err != nil {
+	err := uc.tx.Do(ctx, func(ctx context.Context) error {
+		if err := uc.br.DeleteBudgetCategories(ctx, userID); err != nil {
 			return errs.New(err)
 		}
 
-		if err := uc.br.DeleteBudgetByID(ctx, budget.ID); err != nil {
+		if err := uc.br.DeleteBudgets(ctx, userID); err != nil {
 			return errs.New(err)
 		}
 

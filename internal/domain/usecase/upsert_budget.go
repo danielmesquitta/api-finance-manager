@@ -29,14 +29,15 @@ func NewUpsertBudgetUseCase(
 }
 
 type UpsertBudgetCategoryInput struct {
-	Amount     float64   `json:"amount,omitempty"      validate:"required,gt=0"`
-	CategoryID uuid.UUID `json:"category_id,omitempty" validate:"required"`
+	Amount     float64   `json:"amount"      validate:"required,gt=0"`
+	CategoryID uuid.UUID `json:"category_id" validate:"required"`
 }
 
 type UpsertBudgetUseCaseInput struct {
-	Amount     float64                     `json:"amount,omitempty"     validate:"required,gt=0"`
-	UserID     uuid.UUID                   `json:"-"                    validate:"required"`
-	Categories []UpsertBudgetCategoryInput `json:"categories,omitempty" validate:"dive"`
+	Amount     float64                     `json:"amount"     validate:"required,gt=0"`
+	UserID     uuid.UUID                   `json:"-"          validate:"required"`
+	Date       string                      `json:"date"       validate:"required"`
+	Categories []UpsertBudgetCategoryInput `json:"categories" validate:"dive"`
 }
 
 func (u *UpsertBudgetUseCase) Execute(
@@ -47,7 +48,15 @@ func (u *UpsertBudgetUseCase) Execute(
 		return errs.New(err)
 	}
 
-	budget, err := u.br.GetBudgetByUserID(ctx, in.UserID)
+	monthStart, err := parseDateToMonthStart(in.Date)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	budget, err := u.br.GetBudget(ctx, repo.GetBudgetParams{
+		UserID: in.UserID,
+		Date:   monthStart,
+	})
 	if err != nil {
 		return errs.New(err)
 	}
@@ -55,6 +64,7 @@ func (u *UpsertBudgetUseCase) Execute(
 	if err := u.tx.Do(ctx, func(ctx context.Context) error {
 		if budgetDoesNotExists := budget == nil; budgetDoesNotExists {
 			budget, err = u.br.CreateBudget(ctx, repo.CreateBudgetParams{
+				Date:   monthStart,
 				Amount: in.Amount,
 				UserID: in.UserID,
 			})
@@ -63,6 +73,7 @@ func (u *UpsertBudgetUseCase) Execute(
 			}
 		} else {
 			if err := u.br.UpdateBudget(ctx, repo.UpdateBudgetParams{
+				Date:   monthStart,
 				UserID: in.UserID,
 				Amount: in.Amount,
 			}); err != nil {
@@ -70,7 +81,7 @@ func (u *UpsertBudgetUseCase) Execute(
 			}
 		}
 
-		if err := u.br.DeleteBudgetCategoriesByBudgetID(ctx, budget.ID); err != nil {
+		if err := u.br.DeleteBudgetCategories(ctx, in.UserID); err != nil {
 			return errs.New(err)
 		}
 

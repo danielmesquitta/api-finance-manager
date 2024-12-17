@@ -232,10 +232,9 @@ const docTemplate = `{
                 "summary": "Get budget",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "format": "1-12",
-                        "description": "Month",
-                        "name": "month",
+                        "type": "string",
+                        "description": "Date",
+                        "name": "date",
                         "in": "query"
                     }
                 ],
@@ -777,6 +776,9 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "date": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
@@ -986,7 +988,8 @@ const docTemplate = `{
         "dto.UpsertBudgetRequest": {
             "type": "object",
             "required": [
-                "amount"
+                "amount",
+                "date"
             ],
             "properties": {
                 "amount": {
@@ -997,6 +1000,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/usecase.UpsertBudgetCategoryInput"
                     }
+                },
+                "date": {
+                    "type": "string"
                 }
             }
         },

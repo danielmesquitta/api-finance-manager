@@ -23,7 +23,7 @@ model User {
   created_at              DateTime  @default(now()) @db.Timestamptz()
   updated_at              DateTime  @default(now()) @db.Timestamptz()
 
-  budget Budget?
+  budgets Budget[]
 
   transactions Transaction[]
 
@@ -143,11 +143,12 @@ model Institution {
 model Budget {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   amount     Float
+  date       DateTime @db.Timestamptz()
   created_at DateTime @default(now()) @db.Timestamptz()
   updated_at DateTime @default(now()) @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user_id String @unique @db.Uuid
+  user_id String @db.Uuid
 
   budget_categories BudgetCategory[]
 

@@ -7,23 +7,25 @@ package sqlc
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
 
 const createBudget = `-- name: CreateBudget :one
-INSERT INTO budgets (amount, user_id)
-VALUES ($1, $2)
-RETURNING id, amount, created_at, updated_at, user_id
+INSERT INTO budgets (amount, date, user_id)
+VALUES ($1, $2, $3)
+RETURNING id, amount, created_at, updated_at, user_id, date
 `
 
 type CreateBudgetParams struct {
 	Amount float64   `json:"amount"`
+	Date   time.Time `json:"date"`
 	UserID uuid.UUID `json:"user_id"`
 }
 
 func (q *Queries) CreateBudget(ctx context.Context, arg CreateBudgetParams) (Budget, error) {
-	row := q.db.QueryRow(ctx, createBudget, arg.Amount, arg.UserID)
+	row := q.db.QueryRow(ctx, createBudget, arg.Amount, arg.Date, arg.UserID)
 	var i Budget
 	err := row.Scan(
 		&i.ID,
@@ -31,6 +33,7 @@ func (q *Queries) CreateBudget(ctx context.Context, arg CreateBudgetParams) (Bud
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.UserID,
+		&i.Date,
 	)
 	return i, err
 }
@@ -41,34 +44,43 @@ type CreateBudgetCategoriesParams struct {
 	CategoryID uuid.UUID `json:"category_id"`
 }
 
-const deleteBudgetByID = `-- name: DeleteBudgetByID :exec
+const deleteBudgetCategories = `-- name: DeleteBudgetCategories :exec
+DELETE FROM budget_categories USING budgets
+WHERE budget_categories.budget_id = budgets.id
+  AND budgets.user_id = $1
+`
+
+func (q *Queries) DeleteBudgetCategories(ctx context.Context, userID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteBudgetCategories, userID)
+	return err
+}
+
+const deleteBudgets = `-- name: DeleteBudgets :exec
 DELETE FROM budgets
-WHERE id = $1
-`
-
-func (q *Queries) DeleteBudgetByID(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteBudgetByID, id)
-	return err
-}
-
-const deleteBudgetCategoriesByBudgetID = `-- name: DeleteBudgetCategoriesByBudgetID :exec
-DELETE FROM budget_categories
-WHERE budget_id = $1
-`
-
-func (q *Queries) DeleteBudgetCategoriesByBudgetID(ctx context.Context, budgetID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteBudgetCategoriesByBudgetID, budgetID)
-	return err
-}
-
-const getBudgetByUserID = `-- name: GetBudgetByUserID :one
-SELECT id, amount, created_at, updated_at, user_id
-FROM budgets
 WHERE user_id = $1
 `
 
-func (q *Queries) GetBudgetByUserID(ctx context.Context, userID uuid.UUID) (Budget, error) {
-	row := q.db.QueryRow(ctx, getBudgetByUserID, userID)
+func (q *Queries) DeleteBudgets(ctx context.Context, userID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteBudgets, userID)
+	return err
+}
+
+const getBudget = `-- name: GetBudget :one
+SELECT id, amount, created_at, updated_at, user_id, date
+FROM budgets
+WHERE user_id = $1
+  AND date <= $2
+ORDER BY date ASC
+LIMIT 1
+`
+
+type GetBudgetParams struct {
+	UserID uuid.UUID `json:"user_id"`
+	Date   time.Time `json:"date"`
+}
+
+func (q *Queries) GetBudget(ctx context.Context, arg GetBudgetParams) (Budget, error) {
+	row := q.db.QueryRow(ctx, getBudget, arg.UserID, arg.Date)
 	var i Budget
 	err := row.Scan(
 		&i.ID,
@@ -76,41 +88,35 @@ func (q *Queries) GetBudgetByUserID(ctx context.Context, userID uuid.UUID) (Budg
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.UserID,
+		&i.Date,
 	)
 	return i, err
 }
 
-const getBudgetWithCategoriesByUserID = `-- name: GetBudgetWithCategoriesByUserID :many
-SELECT budgets.id, budgets.amount, budgets.created_at, budgets.updated_at, budgets.user_id,
-  budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.budget_id, budget_categories.category_id,
+const getBudgetCategories = `-- name: GetBudgetCategories :many
+SELECT budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.budget_id, budget_categories.category_id,
   categories.id, categories.external_id, categories.name, categories.created_at, categories.updated_at
-FROM budgets
-  JOIN budget_categories ON budgets.id = budget_categories.budget_id
+FROM budget_categories
   JOIN categories ON budget_categories.category_id = categories.id
-WHERE user_id = $1
+WHERE budget_id = $1
+ORDER BY categories.name ASC
 `
 
-type GetBudgetWithCategoriesByUserIDRow struct {
-	Budget         Budget         `json:"budget"`
+type GetBudgetCategoriesRow struct {
 	BudgetCategory BudgetCategory `json:"budget_category"`
 	Category       Category       `json:"category"`
 }
 
-func (q *Queries) GetBudgetWithCategoriesByUserID(ctx context.Context, userID uuid.UUID) ([]GetBudgetWithCategoriesByUserIDRow, error) {
-	rows, err := q.db.Query(ctx, getBudgetWithCategoriesByUserID, userID)
+func (q *Queries) GetBudgetCategories(ctx context.Context, budgetID uuid.UUID) ([]GetBudgetCategoriesRow, error) {
+	rows, err := q.db.Query(ctx, getBudgetCategories, budgetID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetBudgetWithCategoriesByUserIDRow
+	var items []GetBudgetCategoriesRow
 	for rows.Next() {
-		var i GetBudgetWithCategoriesByUserIDRow
+		var i GetBudgetCategoriesRow
 		if err := rows.Scan(
-			&i.Budget.ID,
-			&i.Budget.Amount,
-			&i.Budget.CreatedAt,
-			&i.Budget.UpdatedAt,
-			&i.Budget.UserID,
 			&i.BudgetCategory.ID,
 			&i.BudgetCategory.Amount,
 			&i.BudgetCategory.CreatedAt,
@@ -137,14 +143,16 @@ const updateBudget = `-- name: UpdateBudget :exec
 UPDATE budgets
 SET amount = $1
 WHERE user_id = $2
+  AND date = $3
 `
 
 type UpdateBudgetParams struct {
 	Amount float64   `json:"amount"`
 	UserID uuid.UUID `json:"user_id"`
+	Date   time.Time `json:"date"`
 }
 
 func (q *Queries) UpdateBudget(ctx context.Context, arg UpdateBudgetParams) error {
-	_, err := q.db.Exec(ctx, updateBudget, arg.Amount, arg.UserID)
+	_, err := q.db.Exec(ctx, updateBudget, arg.Amount, arg.UserID, arg.Date)
 	return err
 }

@@ -2,10 +2,10 @@ package usecase
 
 import (
 	"context"
-	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
 )
@@ -15,20 +15,23 @@ import (
  */
 
 type GetBudgetUseCase struct {
+	v  *validator.Validator
 	br repo.BudgetRepo
 }
 
 func NewGetBudgetUseCase(
+	v *validator.Validator,
 	br repo.BudgetRepo,
 ) *GetBudgetUseCase {
 	return &GetBudgetUseCase{
+		v:  v,
 		br: br,
 	}
 }
 
 type GetBudgetUseCaseInput struct {
-	UserID uuid.UUID  `json:"-"     validate:"required"`
-	Month  time.Month `json:"month" validate:"required,min=1,max=12"`
+	UserID uuid.UUID `json:"-"    validate:"required"`
+	Date   string    `json:"date" validate:"required"`
 }
 
 type GetBudgetBudgetCategory struct {
@@ -49,15 +52,32 @@ func (uc *GetBudgetUseCase) Execute(
 	ctx context.Context,
 	in GetBudgetUseCaseInput,
 ) (*GetBudgetUseCaseOutput, error) {
-	budget, budgetCategories, categories, err := uc.br.GetBudgetWithCategoriesByUserID(
-		ctx,
-		in.UserID,
-	)
+	if err := uc.v.Validate(in); err != nil {
+		return nil, errs.New(err)
+	}
+
+	monthStart, err := parseDateToMonthStart(in.Date)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	budget, err := uc.br.GetBudget(ctx, repo.GetBudgetParams{
+		UserID: in.UserID,
+		Date:   monthStart,
+	})
 	if err != nil {
 		return nil, errs.New(err)
 	}
 	if budget == nil {
 		return nil, errs.ErrBudgetNotFound
+	}
+
+	budgetCategories, categories, err := uc.br.GetBudgetCategories(
+		ctx,
+		budget.ID,
+	)
+	if err != nil {
+		return nil, errs.New(err)
 	}
 
 	out := GetBudgetUseCaseOutput{

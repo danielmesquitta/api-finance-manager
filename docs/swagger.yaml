@@ -88,6 +88,8 @@ definitions:
         type: array
       created_at:
         type: string
+      date:
+        type: string
       id:
         type: string
       spent:
@@ -236,8 +238,11 @@ definitions:
         items:
           $ref: '#/definitions/usecase.UpsertBudgetCategoryInput'
         type: array
+      date:
+        type: string
     required:
     - amount
+    - date
     type: object
   entity.Category:
     properties:
@@ -520,11 +525,10 @@ paths:
       - application/json
       description: Get budget
       parameters:
-      - description: Month
-        format: 1-12
+      - description: Date
         in: query
-        name: month
-        type: integer
+        name: date
+        type: string
       produces:
       - application/json
       responses:

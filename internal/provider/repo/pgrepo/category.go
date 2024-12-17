@@ -108,31 +108,6 @@ func (r *CategoryPgRepo) SearchCategories(
 	return categories, nil
 }
 
-func (r *CategoryPgRepo) buildSearchCategoriesWhere(
-	search string,
-) (exp.Expression, exp.SQLFunctionExpression) {
-	searchPlaceholder := goqu.L("?", search)
-	unaccentedColumn := goqu.Func("lower", goqu.Func(
-		"unaccent",
-		goqu.I(string(ColumnCategoryName)),
-	))
-	unaccentedSearch := goqu.Func(
-		"lower",
-		goqu.Func("unaccent", searchPlaceholder),
-	)
-	distanceExp := goqu.Func(
-		"levenshtein",
-		unaccentedColumn,
-		unaccentedSearch,
-	)
-	likeInput := goqu.Func("concat", "%", unaccentedSearch, "%")
-	whereExp := goqu.Or(
-		unaccentedColumn.Like(likeInput),
-		distanceExp.Lte(r.e.LevenshteinDistance),
-	)
-	return whereExp, distanceExp
-}
-
 func (r *CategoryPgRepo) CountSearchCategories(
 	ctx context.Context,
 	search string,
@@ -160,6 +135,35 @@ func (r *CategoryPgRepo) CountSearchCategories(
 	}
 
 	return count, nil
+}
+
+func (r *CategoryPgRepo) buildSearchCategoriesWhere(
+	search string,
+) (exp.Expression, exp.SQLFunctionExpression) {
+	unaccentedColumn := goqu.Func("lower", goqu.Func(
+		"unaccent",
+		goqu.I(string(ColumnCategoryName)),
+	))
+	searchPlaceholder := goqu.L("?", search)
+	unaccentedSearch := goqu.Func(
+		"lower",
+		goqu.Func("unaccent", searchPlaceholder),
+	)
+	distanceExp := goqu.Func(
+		"levenshtein",
+		unaccentedColumn,
+		unaccentedSearch,
+	)
+	maxLevenshteinDistance := calculateMaxLevenshteinDistance(
+		search,
+		r.e.MaxLevenshteinDistancePercentage,
+	)
+	likeInput := goqu.Func("concat", "%", unaccentedSearch, "%")
+	whereExp := goqu.Or(
+		unaccentedColumn.Like(likeInput),
+		distanceExp.Lte(maxLevenshteinDistance),
+	)
+	return whereExp, distanceExp
 }
 
 var _ repo.CategoryRepo = &CategoryPgRepo{}
