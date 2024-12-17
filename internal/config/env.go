@@ -32,6 +32,7 @@ type Env struct {
 	PluggyClientSecret       string      `mapstructure:"PLUGGY_CLIENT_SECRET"         validate:"required"`
 	BasicAuthUsername        string      `mapstructure:"BASIC_AUTH_USERNAME"          validate:"required"`
 	BasicAuthPassword        string      `mapstructure:"BASIC_AUTH_PASSWORD"          validate:"required"`
+	LevenshteinDistance      int         `mapstructure:"LEVENSHTEIN_DISTANCE"         validate:"required,min=0"`
 }
 
 func LoadEnv(v *validator.Validator) *Env {

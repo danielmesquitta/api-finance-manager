@@ -47,7 +47,7 @@ func New() *App {
 	institutionPgRepo := pgrepo.NewInstitutionPgRepo(queries)
 	syncInstitutionsUseCase := usecase.NewSyncInstitutionsUseCase(client, institutionPgRepo)
 	institutionHandler := handler.NewInstitutionHandler(syncInstitutionsUseCase)
-	categoryPgRepo := pgrepo.NewCategoryPgRepo(queries)
+	categoryPgRepo := pgrepo.NewCategoryPgRepo(env, queries)
 	syncCategoriesUseCase := usecase.NewSyncCategoriesUseCase(client, categoryPgRepo)
 	listCategoriesUseCase := usecase.NewListCategoriesUseCase(categoryPgRepo)
 	categoryHandler := handler.NewCategoryHandler(syncCategoriesUseCase, listCategoriesUseCase)

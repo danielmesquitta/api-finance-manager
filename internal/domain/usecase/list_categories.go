@@ -41,8 +41,8 @@ func (uc *ListCategoriesUseCase) Execute(
 			ctx,
 			repo.SearchCategoriesParams{
 				Search: in.Search,
-				Offset: int32(offset),
-				Limit:  int32(in.PageSize),
+				Offset: uint(offset),
+				Limit:  uint(in.PageSize),
 			},
 		)
 		errCh <- errs.New(err)

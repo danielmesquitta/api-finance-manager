@@ -31,10 +31,14 @@ func NewPGXConn(e *config.Env) *pgx.Conn {
 
 type Queries struct {
 	*sqlc.Queries
+	*pgx.Conn
 }
 
 func NewQueries(conn *pgx.Conn) *Queries {
-	return &Queries{sqlc.New(conn)}
+	return &Queries{
+		Queries: sqlc.New(conn),
+		Conn:    conn,
+	}
 }
 
 func (q *Queries) UseTx(

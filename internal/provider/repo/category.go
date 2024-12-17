@@ -6,6 +6,12 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 )
 
+type SearchCategoriesParams struct {
+	Limit  uint   `json:"limit"`
+	Offset uint   `json:"offset"`
+	Search string `json:"search"`
+}
+
 type CategoryRepo interface {
 	ListCategories(
 		ctx context.Context,
@@ -16,7 +22,7 @@ type CategoryRepo interface {
 	) error
 	SearchCategories(
 		ctx context.Context,
-		arg SearchCategoriesParams,
+		params SearchCategoriesParams,
 	) ([]entity.Category, error)
 	CountSearchCategories(
 		ctx context.Context,
