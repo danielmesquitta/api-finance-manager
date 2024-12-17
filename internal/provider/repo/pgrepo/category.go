@@ -2,6 +2,7 @@ package pgrepo
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
@@ -10,9 +11,10 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
-	"github.com/doug-martin/goqu/v9"
-	"github.com/georgysavva/scany/v2/pgxscan"
 
+	"github.com/doug-martin/goqu/v9"
+	"github.com/doug-martin/goqu/v9/exp"
+	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jinzhu/copier"
 )
 
@@ -69,24 +71,16 @@ func (r *CategoryPgRepo) SearchCategories(
 	ctx context.Context,
 	params repo.SearchCategoriesParams,
 ) ([]entity.Category, error) {
-	query := goqu.From(TableCategory)
+	query := goqu.From(string(TableCategory))
 	search := strings.TrimSpace(params.Search)
 
 	if search != "" {
-		distanceColumn := "distance"
-		searchPlaceholder := goqu.L("?", search)
-		distanceExp := goqu.Func(
-			"levenshtein",
-			goqu.Func("unaccent", goqu.C(string(ColumnCategoryName))),
-			goqu.Func("unaccent", searchPlaceholder),
-		)
+		whereExp, distanceExp := r.buildSearchCategoriesWhere(search)
 		query = query.
-			SelectAppend("*", distanceExp.As(distanceColumn)).
-			Where(
-				distanceExp.Lte(r.e.LevenshteinDistance),
-			).
+			Select("*").
+			Where(whereExp).
 			Order(
-				goqu.I(distanceColumn).Asc(),
+				distanceExp.Asc(),
 				goqu.I(string(ColumnCategoryName)).Asc(),
 			).
 			Limit(params.Limit).
@@ -104,11 +98,7 @@ func (r *CategoryPgRepo) SearchCategories(
 		return nil, errs.New(err)
 	}
 
-	rows, err := r.q.Query(ctx, sql, args...)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-	defer rows.Close()
+	fmt.Println(sql)
 
 	var categories []entity.Category
 	if err := pgxscan.Select(ctx, r.q, &categories, sql, args...); err != nil {
@@ -118,22 +108,42 @@ func (r *CategoryPgRepo) SearchCategories(
 	return categories, nil
 }
 
+func (r *CategoryPgRepo) buildSearchCategoriesWhere(
+	search string,
+) (exp.Expression, exp.SQLFunctionExpression) {
+	searchPlaceholder := goqu.L("?", search)
+	unaccentedColumn := goqu.Func("lower", goqu.Func(
+		"unaccent",
+		goqu.I(string(ColumnCategoryName)),
+	))
+	unaccentedSearch := goqu.Func(
+		"lower",
+		goqu.Func("unaccent", searchPlaceholder),
+	)
+	distanceExp := goqu.Func(
+		"levenshtein",
+		unaccentedColumn,
+		unaccentedSearch,
+	)
+	likeInput := goqu.Func("concat", "%", unaccentedSearch, "%")
+	whereExp := goqu.Or(
+		unaccentedColumn.Like(likeInput),
+		distanceExp.Lte(r.e.LevenshteinDistance),
+	)
+	return whereExp, distanceExp
+}
+
 func (r *CategoryPgRepo) CountSearchCategories(
 	ctx context.Context,
 	search string,
 ) (int64, error) {
-	query := goqu.From(TableCategory)
+	query := goqu.From(string(TableCategory))
 	search = strings.TrimSpace(search)
 	if search != "" {
-		searchPlaceholder := goqu.L("?", search)
-		distanceExp := goqu.Func(
-			"levenshtein",
-			goqu.Func("unaccent", goqu.C(string(ColumnCategoryName))),
-			goqu.Func("unaccent", searchPlaceholder),
-		)
+		where, _ := r.buildSearchCategoriesWhere(search)
 		query = query.
 			Select(goqu.COUNT("*")).
-			Where(distanceExp.Lte(r.e.LevenshteinDistance))
+			Where(where)
 	} else {
 		query = query.Select(goqu.COUNT("*"))
 	}

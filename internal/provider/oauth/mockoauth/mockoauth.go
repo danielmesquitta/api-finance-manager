@@ -1,6 +1,8 @@
 package mockoauth
 
 import (
+	"context"
+
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
@@ -43,7 +45,10 @@ func (m *MockOAuth) validate() error {
 	return nil
 }
 
-func (m *MockOAuth) GetUser(token string) (*entity.User, error) {
+func (m *MockOAuth) GetUser(
+	ctx context.Context,
+	token string,
+) (*entity.User, error) {
 	if err := m.validate(); err != nil {
 		return nil, errs.New(err)
 	}

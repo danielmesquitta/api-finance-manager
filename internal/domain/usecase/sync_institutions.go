@@ -34,13 +34,13 @@ func (uc *SyncInstitutionsUseCase) Execute(ctx context.Context) error {
 	go func() {
 		var err error
 		openFinanceInstitutions, err = uc.o.ListInstitutions(ctx)
-		errCh <- errs.New(err)
+		errCh <- err
 	}()
 
 	go func() {
 		var err error
 		institutions, err = uc.ir.ListInstitutions(ctx)
-		errCh <- errs.New(err)
+		errCh <- err
 	}()
 
 	for i := 0; i < cap(errCh); i++ {

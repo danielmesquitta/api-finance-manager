@@ -1,6 +1,7 @@
 package googleoauth
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
@@ -20,9 +21,11 @@ type UserInfo struct {
 }
 
 func (g *GoogleOAuth) GetUser(
+	ctx context.Context,
 	token string,
 ) (*entity.User, error) {
 	res, err := g.c.R().
+		SetContext(ctx).
 		SetHeader(authorizationHeaderKey, "Bearer "+token).
 		SetQueryParam("alt", "json").
 		Get("/oauth2/v1/userinfo")

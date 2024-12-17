@@ -80,7 +80,7 @@ func (uc *SignInUseCase) signInWithGoogle(
 ) (*SignInUseCaseOutput, error) {
 	token = strings.TrimPrefix(token, "Bearer ")
 
-	oauthUser, err := uc.g.GetUser(token)
+	oauthUser, err := uc.g.GetUser(ctx, token)
 	if err != nil {
 		slog.Info("failed to get user from google", "error", err)
 		return nil, errs.ErrUnauthorized
@@ -112,7 +112,7 @@ func (uc *SignInUseCase) signInWithMock(
 	ctx context.Context,
 	token string,
 ) (*SignInUseCaseOutput, error) {
-	oauthUser, err := uc.m.GetUser(token)
+	oauthUser, err := uc.m.GetUser(ctx, token)
 	if err != nil {
 		slog.Info("failed to get user from mock", "error", err)
 		return nil, errs.ErrUnauthorized

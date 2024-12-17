@@ -9,35 +9,36 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func NewPGXConn(e *config.Env) *pgx.Conn {
+func NewPGXPool(e *config.Env) *pgxpool.Pool {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	conn, err := pgx.Connect(ctx, e.DatabaseURL)
+	pool, err := pgxpool.New(ctx, e.DatabaseURL)
 	if err != nil {
-		log.Fatalf("could not connect to the database: %v", err)
+		log.Fatalf("could not poolect to the database: %v", err)
 		return nil
 	}
 
-	if err := conn.Ping(ctx); err != nil {
+	if err := pool.Ping(ctx); err != nil {
 		log.Fatalf("could not ping the database: %v", err)
 		return nil
 	}
 
-	return conn
+	return pool
 }
 
 type Queries struct {
 	*sqlc.Queries
-	*pgx.Conn
+	*pgxpool.Pool
 }
 
-func NewQueries(conn *pgx.Conn) *Queries {
+func NewQueries(pool *pgxpool.Pool) *Queries {
 	return &Queries{
-		Queries: sqlc.New(conn),
-		Conn:    conn,
+		Queries: sqlc.New(pool),
+		Pool:    pool,
 	}
 }
 

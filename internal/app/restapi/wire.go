@@ -35,7 +35,7 @@ func New() *App {
 		wire.Bind(new(openfinance.Client), new(*pluggy.Client)),
 		pluggy.NewClient,
 
-		db.NewPGXConn,
+		db.NewPGXPool,
 		db.NewQueries,
 
 		wire.Bind(new(tx.TX), new(*tx.PgxTX)),

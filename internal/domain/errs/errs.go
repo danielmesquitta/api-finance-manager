@@ -23,6 +23,9 @@ const (
 )
 
 func newErr(err any, t Type) *Err {
+	if err == nil {
+		return nil
+	}
 	switch v := err.(type) {
 	case *Err:
 		return v
@@ -44,8 +47,7 @@ func newErr(err any, t Type) *Err {
 			StackTrace: string(debug.Stack()),
 			Type:       t,
 		}
-	case nil:
-		return nil
+
 	default:
 		jsonData, err := json.Marshal(v)
 		if err != nil {

@@ -1,7 +1,11 @@
 package oauth
 
-import "github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
+import (
+	"context"
+
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
+)
 
 type Provider interface {
-	GetUser(token string) (*entity.User, error)
+	GetUser(ctx context.Context, token string) (*entity.User, error)
 }

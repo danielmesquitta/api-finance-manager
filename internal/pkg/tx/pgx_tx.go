@@ -6,13 +6,14 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type PgxTX struct {
-	db *pgx.Conn
+	db *pgxpool.Pool
 }
 
-func NewPgxTX(db *pgx.Conn) *PgxTX {
+func NewPgxTX(db *pgxpool.Pool) *PgxTX {
 	return &PgxTX{
 		db: db,
 	}

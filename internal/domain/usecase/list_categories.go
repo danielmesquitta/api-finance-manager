@@ -45,7 +45,7 @@ func (uc *ListCategoriesUseCase) Execute(
 				Limit:  uint(in.PageSize),
 			},
 		)
-		errCh <- errs.New(err)
+		errCh <- err
 	}()
 
 	go func() {
@@ -54,7 +54,7 @@ func (uc *ListCategoriesUseCase) Execute(
 			ctx,
 			in.Search,
 		)
-		errCh <- errs.New(err)
+		errCh <- err
 	}()
 
 	for i := 0; i < cap(errCh); i++ {
