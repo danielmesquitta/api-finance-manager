@@ -15,12 +15,12 @@ import (
 )
 
 type BudgetPgRepo struct {
-	q *db.Queries
+	db *db.DB
 }
 
-func NewBudgetPgRepo(q *db.Queries) *BudgetPgRepo {
+func NewBudgetPgRepo(db *db.DB) *BudgetPgRepo {
 	return &BudgetPgRepo{
-		q: q,
+		db: db,
 	}
 }
 
@@ -33,7 +33,7 @@ func (r *BudgetPgRepo) CreateBudget(
 		return nil, errs.New(err)
 	}
 
-	tx := r.q.UseTx(ctx)
+	tx := r.db.UseTx(ctx)
 	budget, err := tx.CreateBudget(ctx, dbParams)
 	if err != nil {
 		return nil, errs.New(err)
@@ -51,7 +51,7 @@ func (r *BudgetPgRepo) DeleteBudgetCategories(
 	ctx context.Context,
 	userID uuid.UUID,
 ) error {
-	tx := r.q.UseTx(ctx)
+	tx := r.db.UseTx(ctx)
 	return tx.DeleteBudgetCategories(ctx, userID)
 }
 
@@ -59,7 +59,7 @@ func (r *BudgetPgRepo) DeleteBudgets(
 	ctx context.Context,
 	userID uuid.UUID,
 ) error {
-	tx := r.q.UseTx(ctx)
+	tx := r.db.UseTx(ctx)
 	return tx.DeleteBudgets(ctx, userID)
 }
 
@@ -72,7 +72,7 @@ func (r *BudgetPgRepo) GetBudget(
 		return nil, errs.New(err)
 	}
 
-	budget, err := r.q.GetBudget(ctx, dbParams)
+	budget, err := r.db.GetBudget(ctx, dbParams)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -97,7 +97,7 @@ func (r *BudgetPgRepo) CreateBudgetCategories(
 		return errs.New(err)
 	}
 
-	tx := r.q.UseTx(ctx)
+	tx := r.db.UseTx(ctx)
 	_, err := tx.CreateBudgetCategories(ctx, dbParams)
 	if err != nil {
 		return errs.New(err)
@@ -110,7 +110,7 @@ func (r *BudgetPgRepo) GetBudgetCategories(
 	ctx context.Context,
 	budgetID uuid.UUID,
 ) ([]entity.BudgetCategory, []entity.Category, error) {
-	rows, err := r.q.GetBudgetCategories(ctx, budgetID)
+	rows, err := r.db.GetBudgetCategories(ctx, budgetID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil, nil
@@ -146,7 +146,7 @@ func (r *BudgetPgRepo) UpdateBudget(
 		return errs.New(err)
 	}
 
-	tx := r.q.UseTx(ctx)
+	tx := r.db.UseTx(ctx)
 	return tx.UpdateBudget(ctx, dbParams)
 }
 

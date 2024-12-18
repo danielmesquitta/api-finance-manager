@@ -16,6 +16,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/pluggy"
@@ -31,8 +32,8 @@ func New() *App {
 	middlewareMiddleware := middleware.NewMiddleware(env, jwt)
 	healthHandler := handler.NewHealthHandler()
 	pool := db.NewPGXPool(env)
-	queries := db.NewQueries(pool)
-	userPgRepo := pgrepo.NewUserPgRepo(queries)
+	dbDB := db.NewQueries(pool)
+	userPgRepo := pgrepo.NewUserPgRepo(dbDB)
 	googleOAuth := googleoauth.NewGoogleOAuth()
 	mockOAuth := mockoauth.NewMockOAuth(env)
 	signInUseCase := usecase.NewSignInUseCase(validatorValidator, userPgRepo, jwt, googleOAuth, mockOAuth)
@@ -44,15 +45,16 @@ func New() *App {
 	calculateSimpleInterestUseCase := usecase.NewCalculateSimpleInterestUseCase(validatorValidator)
 	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterestUseCase, calculateEmergencyReserveUseCase, calculateRetirementUseCase, calculateSimpleInterestUseCase)
 	client := pluggy.NewClient(env, jwt)
-	institutionPgRepo := pgrepo.NewInstitutionPgRepo(queries)
+	institutionPgRepo := pgrepo.NewInstitutionPgRepo(dbDB)
 	syncInstitutionsUseCase := usecase.NewSyncInstitutionsUseCase(client, institutionPgRepo)
 	institutionHandler := handler.NewInstitutionHandler(syncInstitutionsUseCase)
-	categoryPgRepo := pgrepo.NewCategoryPgRepo(env, queries)
+	queryBuilder := query.NewQueryBuilder(env, dbDB)
+	categoryPgRepo := pgrepo.NewCategoryPgRepo(dbDB, queryBuilder)
 	syncCategoriesUseCase := usecase.NewSyncCategoriesUseCase(client, categoryPgRepo)
 	listCategoriesUseCase := usecase.NewListCategoriesUseCase(categoryPgRepo)
 	categoryHandler := handler.NewCategoryHandler(syncCategoriesUseCase, listCategoriesUseCase)
 	pgxTX := tx.NewPgxTX(pool)
-	budgetPgRepo := pgrepo.NewBudgetPgRepo(queries)
+	budgetPgRepo := pgrepo.NewBudgetPgRepo(dbDB)
 	upsertBudgetUseCase := usecase.NewUpsertBudgetUseCase(validatorValidator, pgxTX, budgetPgRepo)
 	getBudgetUseCase := usecase.NewGetBudgetUseCase(validatorValidator, budgetPgRepo)
 	deleteBudgetUseCase := usecase.NewDeleteBudgetUseCase(pgxTX, budgetPgRepo)

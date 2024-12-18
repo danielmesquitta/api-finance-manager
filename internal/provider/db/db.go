@@ -30,26 +30,27 @@ func NewPGXPool(e *config.Env) *pgxpool.Pool {
 	return pool
 }
 
-type Queries struct {
+type DB struct {
 	*sqlc.Queries
 	*pgxpool.Pool
 }
 
-func NewQueries(pool *pgxpool.Pool) *Queries {
-	return &Queries{
+func NewQueries(pool *pgxpool.Pool) *DB {
+	return &DB{
 		Queries: sqlc.New(pool),
 		Pool:    pool,
 	}
 }
 
-func (q *Queries) UseTx(
+func (db *DB) UseTx(
 	ctx context.Context,
-) *Queries {
+) *DB {
 	t, ok := ctx.Value(tx.Key).(pgx.Tx)
 	if ok {
-		return &Queries{
-			Queries: q.WithTx(t),
+		return &DB{
+			Queries: db.WithTx(t),
+			Pool:    db.Pool,
 		}
 	}
-	return q
+	return db
 }

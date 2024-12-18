@@ -15,6 +15,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
@@ -37,6 +38,7 @@ func New() *App {
 
 		db.NewPGXPool,
 		db.NewQueries,
+		query.NewQueryBuilder,
 
 		wire.Bind(new(tx.TX), new(*tx.PgxTX)),
 		tx.NewPgxTX,

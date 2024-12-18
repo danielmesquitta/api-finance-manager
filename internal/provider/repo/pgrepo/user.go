@@ -15,12 +15,12 @@ import (
 )
 
 type UserPgRepo struct {
-	q *db.Queries
+	db *db.DB
 }
 
-func NewUserPgRepo(q *db.Queries) *UserPgRepo {
+func NewUserPgRepo(db *db.DB) *UserPgRepo {
 	return &UserPgRepo{
-		q: q,
+		db: db,
 	}
 }
 
@@ -33,7 +33,7 @@ func (r *UserPgRepo) CreateUser(
 		return nil, errs.New(err)
 	}
 
-	tx := r.q.UseTx(ctx)
+	tx := r.db.UseTx(ctx)
 	user, err := tx.CreateUser(ctx, dbParams)
 	if err != nil {
 		return nil, errs.New(err)
@@ -51,7 +51,7 @@ func (r *UserPgRepo) GetUserByEmail(
 	ctx context.Context,
 	email string,
 ) (*entity.User, error) {
-	user, err := r.q.GetUserByEmail(ctx, email)
+	user, err := r.db.GetUserByEmail(ctx, email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -71,7 +71,7 @@ func (r *UserPgRepo) GetUserByID(
 	ctx context.Context,
 	id uuid.UUID,
 ) (*entity.User, error) {
-	user, err := r.q.GetUserByID(ctx, id)
+	user, err := r.db.GetUserByID(ctx, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -96,7 +96,7 @@ func (r *UserPgRepo) UpdateUser(
 		return nil, errs.New(err)
 	}
 
-	tx := r.q.UseTx(ctx)
+	tx := r.db.UseTx(ctx)
 	user, err := tx.UpdateUser(ctx, dbParams)
 	if err != nil {
 		return nil, errs.New(err)

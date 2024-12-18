@@ -12,12 +12,12 @@ import (
 )
 
 type AccountPgRepo struct {
-	q *db.Queries
+	db *db.DB
 }
 
-func NewAccountPgRepo(q *db.Queries) *AccountPgRepo {
+func NewAccountPgRepo(db *db.DB) *AccountPgRepo {
 	return &AccountPgRepo{
-		q: q,
+		db: db,
 	}
 }
 
@@ -25,7 +25,7 @@ func (r *AccountPgRepo) ListAccountsByUserID(
 	ctx context.Context,
 	userID uuid.UUID,
 ) ([]entity.Account, error) {
-	accounts, err := r.q.ListAccountsByUserID(ctx, userID)
+	accounts, err := r.db.ListAccountsByUserID(ctx, userID)
 	if err != nil {
 		return nil, errs.New(err)
 	}

@@ -12,19 +12,19 @@ import (
 )
 
 type InstitutionPgRepo struct {
-	q *db.Queries
+	db *db.DB
 }
 
-func NewInstitutionPgRepo(q *db.Queries) *InstitutionPgRepo {
+func NewInstitutionPgRepo(db *db.DB) *InstitutionPgRepo {
 	return &InstitutionPgRepo{
-		q: q,
+		db: db,
 	}
 }
 
 func (r *InstitutionPgRepo) ListInstitutions(
 	ctx context.Context,
 ) ([]entity.Institution, error) {
-	institutions, err := r.q.ListInstitutions(ctx)
+	institutions, err := r.db.ListInstitutions(ctx)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -46,7 +46,7 @@ func (r *InstitutionPgRepo) CreateInstitutions(
 		return errs.New(err)
 	}
 
-	tx := r.q.UseTx(ctx)
+	tx := r.db.UseTx(ctx)
 	_, err := tx.CreateInstitutions(ctx, dbParams)
 	if err != nil {
 		return errs.New(err)
