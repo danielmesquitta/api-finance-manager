@@ -19,6 +19,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/mockpluggy"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/pluggy"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo/pgrepo"
 )
@@ -45,12 +46,13 @@ func New() *App {
 	calculateSimpleInterestUseCase := usecase.NewCalculateSimpleInterestUseCase(validatorValidator)
 	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterestUseCase, calculateEmergencyReserveUseCase, calculateRetirementUseCase, calculateSimpleInterestUseCase)
 	client := pluggy.NewClient(env, jwt)
+	mockpluggyClient := mockpluggy.NewClient(client)
 	institutionPgRepo := pgrepo.NewInstitutionPgRepo(dbDB)
-	syncInstitutionsUseCase := usecase.NewSyncInstitutionsUseCase(client, institutionPgRepo)
+	syncInstitutionsUseCase := usecase.NewSyncInstitutionsUseCase(mockpluggyClient, institutionPgRepo)
 	institutionHandler := handler.NewInstitutionHandler(syncInstitutionsUseCase)
 	queryBuilder := query.NewQueryBuilder(env, dbDB)
 	categoryPgRepo := pgrepo.NewCategoryPgRepo(dbDB, queryBuilder)
-	syncCategoriesUseCase := usecase.NewSyncCategoriesUseCase(client, categoryPgRepo)
+	syncCategoriesUseCase := usecase.NewSyncCategoriesUseCase(mockpluggyClient, categoryPgRepo)
 	listCategoriesUseCase := usecase.NewListCategoriesUseCase(categoryPgRepo)
 	categoryHandler := handler.NewCategoryHandler(syncCategoriesUseCase, listCategoriesUseCase)
 	pgxTX := tx.NewPgxTX(pool)

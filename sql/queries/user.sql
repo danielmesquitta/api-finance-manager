@@ -13,9 +13,10 @@ INSERT INTO users (
     name,
     email,
     verified_email,
+    tier,
     avatar
   )
-VALUES ($1, $2, $3, $4, $5, $6)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING *;
 -- name: UpdateUser :one
 UPDATE users

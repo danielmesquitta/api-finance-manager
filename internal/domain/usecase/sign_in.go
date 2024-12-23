@@ -200,7 +200,9 @@ func (uc *SignInUseCase) createUser(
 	ctx context.Context,
 	oauthUser *entity.User,
 ) (*entity.User, error) {
-	params := repo.CreateUserParams{}
+	params := repo.CreateUserParams{
+		Tier: string(entity.TierFree),
+	}
 	if err := copier.CopyWithOption(
 		&params,
 		oauthUser,

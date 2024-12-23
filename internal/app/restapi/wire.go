@@ -19,6 +19,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/mockpluggy"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/pluggy"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo/pgrepo"
@@ -33,8 +34,9 @@ func New() *App {
 		googleoauth.NewGoogleOAuth,
 		mockoauth.NewMockOAuth,
 
-		wire.Bind(new(openfinance.Client), new(*pluggy.Client)),
+		wire.Bind(new(openfinance.Client), new(*mockpluggy.Client)),
 		pluggy.NewClient,
+		mockpluggy.NewClient,
 
 		db.NewPGXPool,
 		db.NewQueries,

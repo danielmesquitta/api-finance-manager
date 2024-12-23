@@ -33,7 +33,12 @@ func (uc *SyncInstitutionsUseCase) Execute(ctx context.Context) error {
 
 	go func() {
 		var err error
-		openFinanceInstitutions, err = uc.o.ListInstitutions(ctx)
+		openFinanceInstitutions, err = uc.o.ListInstitutions(
+			ctx,
+			openfinance.ListInstitutionsParams{
+				Types: []string{"PERSONAL_BANK", "INVESTMENT"},
+			},
+		)
 		errCh <- err
 	}()
 

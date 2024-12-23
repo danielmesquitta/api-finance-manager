@@ -20,9 +20,10 @@ INSERT INTO users (
     name,
     email,
     verified_email,
+    tier,
     avatar
   )
-VALUES ($1, $2, $3, $4, $5, $6)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
 RETURNING id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at
 `
 
@@ -32,6 +33,7 @@ type CreateUserParams struct {
 	Name          string      `json:"name"`
 	Email         string      `json:"email"`
 	VerifiedEmail bool        `json:"verified_email"`
+	Tier          string      `json:"tier"`
 	Avatar        pgtype.Text `json:"avatar"`
 }
 
@@ -42,6 +44,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Name,
 		arg.Email,
 		arg.VerifiedEmail,
+		arg.Tier,
 		arg.Avatar,
 	)
 	var i User

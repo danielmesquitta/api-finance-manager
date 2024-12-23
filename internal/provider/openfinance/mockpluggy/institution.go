@@ -1,60 +1,45 @@
-package pluggy
+package mockpluggy
 
 import (
 	"context"
 	"encoding/json"
+	"os"
+	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/pluggy"
 )
-
-type ConnectorsResponse struct {
-	Results []ConnectorsResult `json:"results"`
-}
-
-type ConnectorsResult struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	ImageURL string `json:"imageUrl"`
-	Type     string `json:"type"`
-}
 
 func (c *Client) ListInstitutions(
 	ctx context.Context,
 	params openfinance.ListInstitutionsParams,
 ) ([]entity.Institution, error) {
-	if err := c.refreshAccessToken(ctx); err != nil {
-		return nil, errs.New(err)
-	}
+	filePath := filepath.Join("data", "connectors.json")
 
-	req := c.c.R().SetContext(ctx)
-	if len(params.Types) > 0 {
-		req.SetQueryParam("types", strings.Join(params.Types, ","))
-	}
-	if params.Search != "" {
-		req.SetQueryParam("name", params.Search)
-	}
-
-	res, err := req.
-		Get("/connectors")
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, errs.New(err)
 	}
-	body := res.Body()
-	if statusCode := res.StatusCode(); statusCode < 200 || statusCode >= 300 {
-		return nil, errs.New(body)
-	}
 
-	connectors := ConnectorsResponse{}
-	if err := json.Unmarshal(body, &connectors); err != nil {
+	connectors := pluggy.ConnectorsResponse{}
+	if err := json.Unmarshal(data, &connectors); err != nil {
 		return nil, errs.New(err)
 	}
 
 	var institutions []entity.Institution
 	for _, r := range connectors.Results {
+		if len(params.Types) > 0 && !slices.Contains(params.Types, r.Type) {
+			continue
+		}
+		if params.Search != "" && !strings.Contains(r.Name, params.Search) {
+			continue
+		}
+
 		var logo *string
 		if r.ImageURL != "" {
 			logo = &r.ImageURL

@@ -51,6 +51,7 @@ type CreateUserParams struct {
 	Name          string      `json:"name"`
 	Email         string      `json:"email"`
 	VerifiedEmail bool        `json:"verified_email"`
+	Tier          string      `json:"tier"`
 	Avatar        pgtype.Text `json:"avatar"`
 }
 

@@ -16,7 +16,7 @@ model User {
   name                    String
   email                   String    @unique
   verified_email          Boolean   @default(false)
-  tier                    String    @default("FREE")
+  tier                    String
   avatar                  String?
   subscription_expires_at DateTime? @db.Timestamptz()
   synchronized_at         DateTime? @default(now()) @db.Timestamptz()
@@ -40,7 +40,7 @@ model Transaction {
   name           String
   description    String?
   amount         Float
-  payment_method String   @default("UNKNOWN")
+  payment_method String
   is_ignored     Boolean  @default(false)
   date           DateTime @db.Timestamptz()
   created_at     DateTime @default(now()) @db.Timestamptz()
@@ -64,9 +64,9 @@ model Investment {
   external_id String   @unique
   name        String
   amount      Float
-  type        String   @default("UNKNOWN")
+  type        String
   rate        Float
-  rateType    String   @default("UNKNOWN")
+  rateType    String
   created_at  DateTime @default(now()) @db.Timestamptz()
   updated_at  DateTime @default(now()) @db.Timestamptz()
 
@@ -95,7 +95,7 @@ model Account {
   external_id String   @unique
   name        String
   balance     Float
-  type        String   @default("UNKNOWN")
+  type        String
   created_at  DateTime @default(now()) @db.Timestamptz()
   updated_at  DateTime @default(now()) @db.Timestamptz()
 
