@@ -1359,6 +1359,11 @@
                         "description": "Internal Server Error"
                     }
                 },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "summary": "Get logged-in user profile",
                 "tags": [
                     "User"

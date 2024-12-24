@@ -861,6 +861,8 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/dto.ErrorResponse'
                     description: Internal Server Error
+            security:
+                - BearerAuth: []
             summary: Get logged-in user profile
             tags:
                 - User

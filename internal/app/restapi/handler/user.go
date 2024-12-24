@@ -25,6 +25,7 @@ func NewUserHandler(
 // @Summary Get logged-in user profile
 // @Description Get logged-in user profile
 // @Tags User
+// @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Success 200 {object} dto.UserProfileResponse

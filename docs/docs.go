@@ -643,6 +643,11 @@ const docTemplate = `{
         },
         "/v1/users/profile": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get logged-in user profile",
                 "consumes": [
                     "application/json"
