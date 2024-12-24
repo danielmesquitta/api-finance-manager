@@ -1,4 +1,4 @@
-.PHONY: default install update run clear generate build lint create_migration migrate
+.PHONY: default install update run clear generate build lint create_migration migrate docs
 
 include .env
 schema=sql/schema.prisma
@@ -15,6 +15,8 @@ clear:
 	@find ./tmp -mindepth 1 ! -name '.gitkeep' -delete
 generate:
 	@go generate ./...
+docs:
+	@swag init -g ./cmd/restapi/main.go -o ./docs && swag2op init -g cmd/restapi/main.go --openapiOutputDir ./tmp && mv ./tmp/swagger.json ./docs/openapi.json && mv ./tmp/swagger.yaml ./docs/openapi.yaml
 build:
 	@GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o ./tmp/restapi ./cmd/restapi
 lint:

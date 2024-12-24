@@ -1,0 +1,1287 @@
+{
+    "components": {
+        "schemas": {
+            "dto.CompoundInterestRequest": {
+                "properties": {
+                    "initial_deposit": {
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "interest": {
+                        "maximum": 100,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "interest_type": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/entity.InterestType"
+                            }
+                        ],
+                        "enum": [
+                            "MONTHLY",
+                            "ANNUAL"
+                        ]
+                    },
+                    "monthly_deposit": {
+                        "type": "number"
+                    },
+                    "period_in_months": {
+                        "minimum": 1,
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "interest",
+                    "interest_type",
+                    "period_in_months"
+                ],
+                "type": "object"
+            },
+            "dto.CompoundInterestResponse": {
+                "properties": {
+                    "by_month": {
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/usecase.CompoundInterestResult"
+                        },
+                        "type": "object"
+                    },
+                    "total_amount": {
+                        "type": "number"
+                    },
+                    "total_deposit": {
+                        "type": "number"
+                    },
+                    "total_interest": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.EmergencyReserveRequest": {
+                "properties": {
+                    "jobType": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/entity.JobType"
+                            }
+                        ],
+                        "enum": [
+                            "ENTREPRENEUR",
+                            "EMPLOYEE",
+                            "CIVIL_SERVANT"
+                        ]
+                    },
+                    "monthlyExpenses": {
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "monthlyIncome": {
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "monthlySavingsPercentage": {
+                        "maximum": 100,
+                        "minimum": 0,
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "jobType"
+                ],
+                "type": "object"
+            },
+            "dto.EmergencyReserveResponse": {
+                "properties": {
+                    "monthsToAchieveEmergencyReserve": {
+                        "type": "integer"
+                    },
+                    "recommendedReserveInMonths": {
+                        "type": "integer"
+                    },
+                    "recommendedReserveInValue": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.ErrorResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.GetBudgetResponse": {
+                "properties": {
+                    "amount": {
+                        "type": "number"
+                    },
+                    "available": {
+                        "type": "number"
+                    },
+                    "available_per_day": {
+                        "type": "number"
+                    },
+                    "budget_categories": {
+                        "items": {
+                            "$ref": "#/components/schemas/usecase.GetBudgetBudgetCategory"
+                        },
+                        "type": "array"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "spent": {
+                        "type": "number"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.HealthResponse": {
+                "properties": {
+                    "ok": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.ListCategoriesResponse": {
+                "properties": {
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/entity.Category"
+                        },
+                        "type": "array"
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "page_size": {
+                        "type": "integer"
+                    },
+                    "total_items": {
+                        "type": "integer"
+                    },
+                    "total_pages": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.RetirementRequest": {
+                "properties": {
+                    "age": {
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "goal_income": {
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "goal_patrimony": {
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "income_investment_percentage": {
+                        "maximum": 100,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "initial_deposit": {
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "interest": {
+                        "maximum": 100,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "interest_type": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/entity.InterestType"
+                            }
+                        ],
+                        "enum": [
+                            "MONTHLY",
+                            "ANNUAL"
+                        ]
+                    },
+                    "life_expectancy": {
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "monthly_income": {
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "retirement_age": {
+                        "minimum": 1,
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "age",
+                    "goal_income",
+                    "goal_patrimony",
+                    "income_investment_percentage",
+                    "initial_deposit",
+                    "interest",
+                    "interest_type",
+                    "monthly_income",
+                    "retirement_age"
+                ],
+                "type": "object"
+            },
+            "dto.RetirementResponse": {
+                "properties": {
+                    "achieved_goal_income": {
+                        "type": "boolean"
+                    },
+                    "achieved_goal_patrimony": {
+                        "type": "boolean"
+                    },
+                    "heritage": {
+                        "type": "number"
+                    },
+                    "max_monthly_expenses": {
+                        "type": "number"
+                    },
+                    "property_on_retirement": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.SignInRequest": {
+                "properties": {
+                    "provider": {
+                        "$ref": "#/components/schemas/entity.Provider"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.SignInResponse": {
+                "properties": {
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/entity.User"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.SimpleInterestRequest": {
+                "properties": {
+                    "initialDeposit": {
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "interest": {
+                        "maximum": 100,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "interestType": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/entity.InterestType"
+                            }
+                        ],
+                        "enum": [
+                            "MONTHLY",
+                            "ANNUAL"
+                        ]
+                    },
+                    "periodInMonths": {
+                        "minimum": 1,
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "interest",
+                    "interestType",
+                    "periodInMonths"
+                ],
+                "type": "object"
+            },
+            "dto.SimpleInterestResponse": {
+                "properties": {
+                    "by_month": {
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/usecase.SimpleInterestResult"
+                        },
+                        "type": "object"
+                    },
+                    "total_amount": {
+                        "type": "number"
+                    },
+                    "total_deposit": {
+                        "type": "number"
+                    },
+                    "total_interest": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.UpsertBudgetRequest": {
+                "properties": {
+                    "amount": {
+                        "type": "number"
+                    },
+                    "categories": {
+                        "items": {
+                            "$ref": "#/components/schemas/usecase.UpsertBudgetCategoryInput"
+                        },
+                        "type": "array"
+                    },
+                    "date": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "amount",
+                    "date"
+                ],
+                "type": "object"
+            },
+            "entity.Category": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "external_id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "entity.InterestType": {
+                "enum": [
+                    "MONTHLY",
+                    "ANNUAL"
+                ],
+                "type": "string",
+                "x-enum-varnames": [
+                    "InterestTypeMonthly",
+                    "InterestTypeAnnual"
+                ]
+            },
+            "entity.JobType": {
+                "enum": [
+                    "ENTREPRENEUR",
+                    "EMPLOYEE",
+                    "CIVIL_SERVANT"
+                ],
+                "type": "string",
+                "x-enum-varnames": [
+                    "JobTypeEntrepreneur",
+                    "JobTypeEmployee",
+                    "JobTypeCivilServant"
+                ]
+            },
+            "entity.Provider": {
+                "enum": [
+                    "GOOGLE",
+                    "APPLE",
+                    "REFRESH",
+                    "MOCK"
+                ],
+                "type": "string",
+                "x-enum-varnames": [
+                    "ProviderGoogle",
+                    "ProviderApple",
+                    "ProviderRefresh",
+                    "ProviderMock"
+                ]
+            },
+            "entity.User": {
+                "properties": {
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "external_id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "provider": {
+                        "type": "string"
+                    },
+                    "subscription_expires_at": {
+                        "type": "string"
+                    },
+                    "synchronized_at": {
+                        "type": "string"
+                    },
+                    "tier": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "verified_email": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "usecase.CompoundInterestResult": {
+                "properties": {
+                    "monthly_interest": {
+                        "type": "number"
+                    },
+                    "total_amount": {
+                        "type": "number"
+                    },
+                    "total_deposit": {
+                        "type": "number"
+                    },
+                    "total_interest": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "usecase.GetBudgetBudgetCategory": {
+                "properties": {
+                    "amount": {
+                        "type": "number"
+                    },
+                    "budget_id": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/entity.Category"
+                    },
+                    "category_id": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "spent": {
+                        "type": "number"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "usecase.SimpleInterestResult": {
+                "properties": {
+                    "total_amount": {
+                        "type": "number"
+                    },
+                    "total_deposit": {
+                        "type": "number"
+                    },
+                    "total_interest": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "usecase.UpsertBudgetCategoryInput": {
+                "properties": {
+                    "amount": {
+                        "type": "number"
+                    },
+                    "category_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "amount",
+                    "category_id"
+                ],
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "BasicAuth": {
+                "scheme": "basic",
+                "type": "http"
+            },
+            "BearerAuth": {
+                "description": "Type \"Bearer\" followed by a space and JWT token.",
+                "in": "header",
+                "name": "Authorization",
+                "type": "apiKey"
+            }
+        }
+    },
+    "info": {
+        "contact": {
+            "email": "danielmesquitta123@gmail.com",
+            "name": "Daniel Mesquita"
+        },
+        "description": "API Finance Manager",
+        "title": "API Finance Manager",
+        "version": "1.0"
+    },
+    "openapi": "3.0.3",
+    "paths": {
+        "/health": {
+            "get": {
+                "description": "Health check",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.HealthResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Health check",
+                "tags": [
+                    "Health"
+                ]
+            }
+        },
+        "/v1/admin/categories/sync": {
+            "post": {
+                "description": "Sync categories from open finance",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "summary": "Sync categories from open finance",
+                "tags": [
+                    "Category"
+                ]
+            }
+        },
+        "/v1/admin/institutions/sync": {
+            "post": {
+                "description": "Sync institutions from open finance",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "summary": "Sync institutions from open finance",
+                "tags": [
+                    "Institution"
+                ]
+            }
+        },
+        "/v1/auth/refresh": {
+            "post": {
+                "description": "Use refresh token to generate new access token",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.SignInResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Refresh token",
+                "tags": [
+                    "Auth"
+                ]
+            }
+        },
+        "/v1/auth/sign-in": {
+            "post": {
+                "description": "Authenticate user through Google or Apple token",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.SignInRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body",
+                    "required": true,
+                    "x-originalParamName": "request"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.SignInResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Sign in",
+                "tags": [
+                    "Auth"
+                ]
+            }
+        },
+        "/v1/budgets": {
+            "delete": {
+                "description": "Delete budget",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Delete budget",
+                "tags": [
+                    "Budget"
+                ]
+            },
+            "get": {
+                "description": "Get budget",
+                "parameters": [
+                    {
+                        "description": "Date",
+                        "in": "query",
+                        "name": "date",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.GetBudgetResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Get budget",
+                "tags": [
+                    "Budget"
+                ]
+            },
+            "post": {
+                "description": "Create or update budget",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.UpsertBudgetRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body",
+                    "required": true,
+                    "x-originalParamName": "request"
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Create or update budget",
+                "tags": [
+                    "Budget"
+                ]
+            }
+        },
+        "/v1/calculator/compound-interest": {
+            "post": {
+                "description": "Calculate compound interest",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.CompoundInterestRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body",
+                    "required": true,
+                    "x-originalParamName": "request"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.CompoundInterestResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Calculate compound interest",
+                "tags": [
+                    "Calculator"
+                ]
+            }
+        },
+        "/v1/calculator/emergency-reserve": {
+            "post": {
+                "description": "Calculate emergency reserve",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.EmergencyReserveRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body",
+                    "required": true,
+                    "x-originalParamName": "request"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.EmergencyReserveResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Calculate emergency reserve",
+                "tags": [
+                    "Calculator"
+                ]
+            }
+        },
+        "/v1/calculator/retirement": {
+            "post": {
+                "description": "Calculate investments needed for retirement",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.RetirementRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body",
+                    "required": true,
+                    "x-originalParamName": "request"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.RetirementResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Calculate retirement",
+                "tags": [
+                    "Calculator"
+                ]
+            }
+        },
+        "/v1/calculator/simple-interest": {
+            "post": {
+                "description": "Calculate simple interest",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.SimpleInterestRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body",
+                    "required": true,
+                    "x-originalParamName": "request"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.SimpleInterestResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Calculate simple interest",
+                "tags": [
+                    "Calculator"
+                ]
+            }
+        },
+        "/v1/categories": {
+            "get": {
+                "description": "List categories",
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "in": "query",
+                        "name": "search",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Page",
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Page size",
+                        "in": "query",
+                        "name": "page_size",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ListCategoriesResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "List categories",
+                "tags": [
+                    "Category"
+                ]
+            }
+        }
+    }
+}

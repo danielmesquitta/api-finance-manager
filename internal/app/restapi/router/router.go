@@ -49,8 +49,12 @@ func (r *Router) Register(
 	basePath := "/api"
 
 	api := app.Group(basePath)
-	api.GET("/docs/*", echoSwagger.WrapHandler)
+
 	api.GET("/health", r.hh.Health)
+
+	api.File("/docs/openapi.json", "docs/openapi.json")
+	api.File("/docs/openapi.yaml", "docs/openapi.yaml")
+	api.GET("/docs/*", echoSwagger.WrapHandler)
 
 	apiV1 := app.Group(basePath + "/v1")
 	apiV1.POST("/auth/sign-in", r.ah.SignIn)
