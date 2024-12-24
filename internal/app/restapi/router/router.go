@@ -1,9 +1,13 @@
 package router
 
 import (
+	"io/fs"
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
 
+	root "github.com/danielmesquitta/api-finance-manager"
 	_ "github.com/danielmesquitta/api-finance-manager/docs" // swagger docs
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
@@ -52,8 +56,17 @@ func (r *Router) Register(
 
 	api.GET("/health", r.hh.Health)
 
-	api.File("/docs/openapi.json", "docs/openapi.json")
-	api.File("/docs/openapi.yaml", "docs/openapi.yaml")
+	staticFiles, _ := fs.Sub(root.StaticFiles, "docs")
+	staticFilesHandler := http.FileServer(http.FS(staticFiles))
+	for _, ext := range []string{".json", ".yaml"} {
+		api.GET(
+			"/docs/openapi"+ext,
+			echo.WrapHandler(
+				http.StripPrefix("/api/docs/", staticFilesHandler),
+			),
+		)
+	}
+
 	api.GET("/docs/*", echoSwagger.WrapHandler)
 
 	apiV1 := app.Group(basePath + "/v1")
