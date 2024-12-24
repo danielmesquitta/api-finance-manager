@@ -417,29 +417,6 @@ paths:
       summary: Health check
       tags:
       - Health
-  /users/profile:
-    get:
-      consumes:
-      - application/json
-      description: Get logged-in user profile
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/dto.UserProfileResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/dto.ErrorResponse'
-      summary: Get logged-in user profile
-      tags:
-      - User
   /v1/admin/categories/sync:
     post:
       consumes:
@@ -814,6 +791,29 @@ paths:
       summary: List categories
       tags:
       - Category
+  /v1/users/profile:
+    get:
+      consumes:
+      - application/json
+      description: Get logged-in user profile
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserProfileResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Get logged-in user profile
+      tags:
+      - User
 securityDefinitions:
   BasicAuth:
     type: basic

@@ -636,47 +636,6 @@
                 ]
             }
         },
-        "/users/profile": {
-            "get": {
-                "description": "Get logged-in user profile",
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.UserProfileResponse"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
-                "summary": "Get logged-in user profile",
-                "tags": [
-                    "User"
-                ]
-            }
-        },
         "/v1/admin/categories/sync": {
             "post": {
                 "description": "Sync categories from open finance",
@@ -1362,6 +1321,47 @@
                 "summary": "List categories",
                 "tags": [
                     "Category"
+                ]
+            }
+        },
+        "/v1/users/profile": {
+            "get": {
+                "description": "Get logged-in user profile",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.UserProfileResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Get logged-in user profile",
+                "tags": [
+                    "User"
                 ]
             }
         }

@@ -30,7 +30,7 @@ func NewUserHandler(
 // @Success 200 {object} dto.UserProfileResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /users/profile [get]
+// @Router /v1/users/profile [get]
 func (h UserHandler) Profile(c echo.Context) error {
 	claims := getUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
