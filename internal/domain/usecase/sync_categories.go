@@ -10,22 +10,22 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type SyncCategoriesUseCase struct {
+type SyncCategories struct {
 	o  openfinance.Client
 	ir repo.CategoryRepo
 }
 
-func NewSyncCategoriesUseCase(
+func NewSyncCategories(
 	o openfinance.Client,
 	ir repo.CategoryRepo,
-) *SyncCategoriesUseCase {
-	return &SyncCategoriesUseCase{
+) *SyncCategories {
+	return &SyncCategories{
 		o:  o,
 		ir: ir,
 	}
 }
 
-func (uc *SyncCategoriesUseCase) Execute(ctx context.Context) error {
+func (uc *SyncCategories) Execute(ctx context.Context) error {
 	var openFinanceCategories, institutions []entity.Category
 
 	var errCh = make(chan error, 2)

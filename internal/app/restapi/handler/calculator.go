@@ -10,17 +10,17 @@ import (
 )
 
 type CalculatorHandler struct {
-	cci *usecase.CalculateCompoundInterestUseCase
-	cer *usecase.CalculateEmergencyReserveUseCase
-	cr  *usecase.CalculateRetirementUseCase
-	csi *usecase.CalculateSimpleInterestUseCase
+	cci *usecase.CalculateCompoundInterest
+	cer *usecase.CalculateEmergencyReserve
+	cr  *usecase.CalculateRetirement
+	csi *usecase.CalculateSimpleInterest
 }
 
 func NewCalculatorHandler(
-	cci *usecase.CalculateCompoundInterestUseCase,
-	cer *usecase.CalculateEmergencyReserveUseCase,
-	cr *usecase.CalculateRetirementUseCase,
-	csi *usecase.CalculateSimpleInterestUseCase,
+	cci *usecase.CalculateCompoundInterest,
+	cer *usecase.CalculateEmergencyReserve,
+	cr *usecase.CalculateRetirement,
+	csi *usecase.CalculateSimpleInterest,
 ) *CalculatorHandler {
 	return &CalculatorHandler{
 		cci: cci,
@@ -50,14 +50,14 @@ func (h CalculatorHandler) CompoundInterest(c echo.Context) error {
 
 	output, err := h.cci.Execute(
 		c.Request().Context(),
-		body.CalculateCompoundInterestUseCaseInput,
+		body.CalculateCompoundInterestInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
 	return c.JSON(http.StatusOK, dto.CompoundInterestResponse{
-		CalculateCompoundInterestUseCaseOutput: *output,
+		CalculateCompoundInterestOutput: *output,
 	})
 }
 
@@ -81,14 +81,14 @@ func (h CalculatorHandler) EmergencyReserve(c echo.Context) error {
 
 	output, err := h.cer.Execute(
 		c.Request().Context(),
-		body.CalculateEmergencyReserveUseCaseInput,
+		body.CalculateEmergencyReserveInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
 	return c.JSON(http.StatusOK, dto.EmergencyReserveResponse{
-		CalculateEmergencyReserveUseCaseOutput: *output,
+		CalculateEmergencyReserveOutput: *output,
 	})
 }
 
@@ -112,14 +112,14 @@ func (h CalculatorHandler) Retirement(c echo.Context) error {
 
 	output, err := h.cr.Execute(
 		c.Request().Context(),
-		body.CalculateRetirementUseCaseInput,
+		body.CalculateRetirementInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
 	return c.JSON(http.StatusOK, dto.RetirementResponse{
-		CalculateRetirementUseCaseOutput: *output,
+		CalculateRetirementOutput: *output,
 	})
 }
 
@@ -143,13 +143,13 @@ func (h CalculatorHandler) SimpleInterest(c echo.Context) error {
 
 	output, err := h.csi.Execute(
 		c.Request().Context(),
-		body.CalculateSimpleInterestUseCaseInput,
+		body.CalculateSimpleInterestInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
 	return c.JSON(http.StatusOK, dto.SimpleInterestResponse{
-		CalculateSimpleInterestUseCaseOutput: *output,
+		CalculateSimpleInterestOutput: *output,
 	})
 }

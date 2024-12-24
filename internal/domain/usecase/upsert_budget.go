@@ -10,18 +10,18 @@ import (
 	"github.com/google/uuid"
 )
 
-type UpsertBudgetUseCase struct {
+type UpsertBudget struct {
 	v  *validator.Validator
 	tx tx.TX
 	br repo.BudgetRepo
 }
 
-func NewUpsertBudgetUseCase(
+func NewUpsertBudget(
 	v *validator.Validator,
 	tx tx.TX,
 	br repo.BudgetRepo,
-) *UpsertBudgetUseCase {
-	return &UpsertBudgetUseCase{
+) *UpsertBudget {
+	return &UpsertBudget{
 		v:  v,
 		tx: tx,
 		br: br,
@@ -33,16 +33,16 @@ type UpsertBudgetCategoryInput struct {
 	CategoryID uuid.UUID `json:"category_id" validate:"required"`
 }
 
-type UpsertBudgetUseCaseInput struct {
+type UpsertBudgetInput struct {
 	Amount     float64                     `json:"amount"     validate:"required,gt=0"`
 	UserID     uuid.UUID                   `json:"-"          validate:"required"`
 	Date       string                      `json:"date"       validate:"required"`
 	Categories []UpsertBudgetCategoryInput `json:"categories" validate:"dive"`
 }
 
-func (u *UpsertBudgetUseCase) Execute(
+func (u *UpsertBudget) Execute(
 	ctx context.Context,
-	in UpsertBudgetUseCaseInput,
+	in UpsertBudgetInput,
 ) error {
 	if err := u.validate(in); err != nil {
 		return errs.New(err)
@@ -106,7 +106,7 @@ func (u *UpsertBudgetUseCase) Execute(
 	return nil
 }
 
-func (u *UpsertBudgetUseCase) validate(in UpsertBudgetUseCaseInput) error {
+func (u *UpsertBudget) validate(in UpsertBudgetInput) error {
 	if err := u.v.Validate(in); err != nil {
 		return errs.New(err)
 	}

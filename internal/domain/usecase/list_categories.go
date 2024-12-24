@@ -8,25 +8,25 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 )
 
-type ListCategoriesUseCase struct {
+type ListCategories struct {
 	cr repo.CategoryRepo
 }
 
-func NewListCategoriesUseCase(
+func NewListCategories(
 	cr repo.CategoryRepo,
-) *ListCategoriesUseCase {
-	return &ListCategoriesUseCase{
+) *ListCategories {
+	return &ListCategories{
 		cr: cr,
 	}
 }
 
-type ListCategoriesUseCaseInput struct {
+type ListCategoriesInput struct {
 	PaginationInput
 }
 
-func (uc *ListCategoriesUseCase) Execute(
+func (uc *ListCategories) Execute(
 	ctx context.Context,
-	in ListCategoriesUseCaseInput,
+	in ListCategoriesInput,
 ) (*entity.PaginatedList[entity.Category], error) {
 	offset := preparePaginationInput(&in.PaginationInput)
 

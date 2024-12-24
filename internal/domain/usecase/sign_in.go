@@ -18,7 +18,7 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type SignInUseCase struct {
+type SignIn struct {
 	v  *validator.Validator
 	ur repo.UserRepo
 	j  *jwtutil.JWT
@@ -26,14 +26,14 @@ type SignInUseCase struct {
 	m  *mockoauth.MockOAuth
 }
 
-func NewSignInUseCase(
+func NewSignIn(
 	v *validator.Validator,
 	ur repo.UserRepo,
 	j *jwtutil.JWT,
 	g *googleoauth.GoogleOAuth,
 	m *mockoauth.MockOAuth,
-) *SignInUseCase {
-	return &SignInUseCase{
+) *SignIn {
+	return &SignIn{
 		v:  v,
 		ur: ur,
 		j:  j,
@@ -42,22 +42,22 @@ func NewSignInUseCase(
 	}
 }
 
-type SignInUseCaseInput struct {
+type SignInInput struct {
 	Provider entity.Provider `json:"provider,omitempty" validate:"required,oneof=GOOGLE APPLE REFRESH MOCK"`
 	Token    string          `json:"token,omitempty"    validate:"required_without=UserID"`
 	UserID   uuid.UUID       `json:"-"                  validate:"required_without=Token"`
 }
 
-type SignInUseCaseOutput struct {
+type SignInOutput struct {
 	User         entity.User `json:"user,omitempty"`
 	AccessToken  string      `json:"access_token,omitempty"`
 	RefreshToken string      `json:"refresh_token,omitempty"`
 }
 
-func (uc *SignInUseCase) Execute(
+func (uc *SignIn) Execute(
 	ctx context.Context,
-	in SignInUseCaseInput,
-) (*SignInUseCaseOutput, error) {
+	in SignInInput,
+) (*SignInOutput, error) {
 	if err := uc.v.Validate(in); err != nil {
 		return nil, errs.New(err)
 	}
@@ -74,10 +74,10 @@ func (uc *SignInUseCase) Execute(
 	}
 }
 
-func (uc *SignInUseCase) signInWithGoogle(
+func (uc *SignIn) signInWithGoogle(
 	ctx context.Context,
 	token string,
-) (*SignInUseCaseOutput, error) {
+) (*SignInOutput, error) {
 	token = strings.TrimPrefix(token, "Bearer ")
 
 	oauthUser, err := uc.g.GetUser(ctx, token)
@@ -108,10 +108,10 @@ func (uc *SignInUseCase) signInWithGoogle(
 	return uc.signIn(ctx, user)
 }
 
-func (uc *SignInUseCase) signInWithMock(
+func (uc *SignIn) signInWithMock(
 	ctx context.Context,
 	token string,
-) (*SignInUseCaseOutput, error) {
+) (*SignInOutput, error) {
 	oauthUser, err := uc.m.GetUser(ctx, token)
 	if err != nil {
 		slog.Info("failed to get user from mock", "error", err)
@@ -140,10 +140,10 @@ func (uc *SignInUseCase) signInWithMock(
 	return uc.signIn(ctx, user)
 }
 
-func (uc *SignInUseCase) refreshToken(
+func (uc *SignIn) refreshToken(
 	ctx context.Context,
 	userID uuid.UUID,
-) (*SignInUseCaseOutput, error) {
+) (*SignInOutput, error) {
 	user, err := uc.ur.GetUserByID(ctx, userID)
 	if err != nil {
 		return nil, errs.New(err)
@@ -155,10 +155,10 @@ func (uc *SignInUseCase) refreshToken(
 	return uc.signIn(ctx, user)
 }
 
-func (uc *SignInUseCase) signIn(
+func (uc *SignIn) signIn(
 	ctx context.Context,
 	user *entity.User,
-) (*SignInUseCaseOutput, error) {
+) (*SignInOutput, error) {
 	select {
 	case <-ctx.Done():
 		return nil, errs.New(ctx.Err())
@@ -189,14 +189,14 @@ func (uc *SignInUseCase) signIn(
 		return nil, errs.New(err)
 	}
 
-	return &SignInUseCaseOutput{
+	return &SignInOutput{
 		User:         *user,
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 	}, nil
 }
 
-func (uc *SignInUseCase) createUser(
+func (uc *SignIn) createUser(
 	ctx context.Context,
 	oauthUser *entity.User,
 ) (*entity.User, error) {
@@ -219,7 +219,7 @@ func (uc *SignInUseCase) createUser(
 	return user, nil
 }
 
-func (uc *SignInUseCase) updateUser(
+func (uc *SignIn) updateUser(
 	ctx context.Context,
 	user *entity.User,
 	oauthUser *entity.User,

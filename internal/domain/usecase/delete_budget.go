@@ -9,22 +9,22 @@ import (
 	"github.com/google/uuid"
 )
 
-type DeleteBudgetUseCase struct {
+type DeleteBudget struct {
 	tx tx.TX
 	br repo.BudgetRepo
 }
 
-func NewDeleteBudgetUseCase(
+func NewDeleteBudget(
 	tx tx.TX,
 	br repo.BudgetRepo,
-) *DeleteBudgetUseCase {
-	return &DeleteBudgetUseCase{
+) *DeleteBudget {
+	return &DeleteBudget{
 		tx: tx,
 		br: br,
 	}
 }
 
-func (uc *DeleteBudgetUseCase) Execute(
+func (uc *DeleteBudget) Execute(
 	ctx context.Context,
 	userID uuid.UUID,
 ) error {

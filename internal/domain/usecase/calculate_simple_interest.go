@@ -9,26 +9,26 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
 
-type CalculateSimpleInterestUseCase struct {
+type CalculateSimpleInterest struct {
 	v *validator.Validator
 }
 
-func NewCalculateSimpleInterestUseCase(
+func NewCalculateSimpleInterest(
 	v *validator.Validator,
-) *CalculateSimpleInterestUseCase {
-	return &CalculateSimpleInterestUseCase{
+) *CalculateSimpleInterest {
+	return &CalculateSimpleInterest{
 		v: v,
 	}
 }
 
-type CalculateSimpleInterestUseCaseInput struct {
+type CalculateSimpleInterestInput struct {
 	InitialDeposit float64             `validate:"min=0"`
 	Interest       float64             `validate:"required,min=0,max=100"`
 	InterestType   entity.InterestType `validate:"required,oneof=MONTHLY ANNUAL"`
 	PeriodInMonths int                 `validate:"required,min=1"`
 }
 
-type CalculateSimpleInterestUseCaseOutput struct {
+type CalculateSimpleInterestOutput struct {
 	SimpleInterestResult
 	ByMonth map[int]SimpleInterestResult `json:"by_month,omitempty"`
 }
@@ -39,10 +39,10 @@ type SimpleInterestResult struct {
 	TotalDeposit  float64 `json:"total_deposit,omitempty"`
 }
 
-func (uc *CalculateSimpleInterestUseCase) Execute(
+func (uc *CalculateSimpleInterest) Execute(
 	ctx context.Context,
-	in CalculateSimpleInterestUseCaseInput,
-) (*CalculateSimpleInterestUseCaseOutput, error) {
+	in CalculateSimpleInterestInput,
+) (*CalculateSimpleInterestOutput, error) {
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
@@ -53,7 +53,7 @@ func (uc *CalculateSimpleInterestUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
-	output := &CalculateSimpleInterestUseCaseOutput{
+	output := &CalculateSimpleInterestOutput{
 		ByMonth: make(map[int]SimpleInterestResult, in.PeriodInMonths),
 	}
 

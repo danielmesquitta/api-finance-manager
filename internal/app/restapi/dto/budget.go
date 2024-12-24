@@ -5,9 +5,9 @@ import (
 )
 
 type UpsertBudgetRequest struct {
-	usecase.UpsertBudgetUseCaseInput
+	usecase.UpsertBudgetInput
 }
 
 type GetBudgetResponse struct {
-	usecase.GetBudgetUseCaseOutput
+	usecase.GetBudgetOutput
 }

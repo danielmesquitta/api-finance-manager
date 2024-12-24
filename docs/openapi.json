@@ -364,6 +364,47 @@
                 ],
                 "type": "object"
             },
+            "dto.UserProfileResponse": {
+                "properties": {
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "external_id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "provider": {
+                        "type": "string"
+                    },
+                    "subscription_expires_at": {
+                        "type": "string"
+                    },
+                    "synchronized_at": {
+                        "type": "string"
+                    },
+                    "tier": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "verified_email": {
+                        "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
             "entity.Category": {
                 "properties": {
                     "created_at": {
@@ -592,6 +633,47 @@
                 "summary": "Health check",
                 "tags": [
                     "Health"
+                ]
+            }
+        },
+        "/users/profile": {
+            "get": {
+                "description": "Get logged-in user profile",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.UserProfileResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Get logged-in user profile",
+                "tags": [
+                    "User"
                 ]
             }
         },

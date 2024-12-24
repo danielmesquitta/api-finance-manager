@@ -7,23 +7,23 @@ import (
 	"github.com/google/uuid"
 )
 
-type RefreshTokenUseCase struct {
-	si *SignInUseCase
+type RefreshToken struct {
+	si *SignIn
 }
 
-func NewRefreshTokenUseCase(
-	si *SignInUseCase,
-) *RefreshTokenUseCase {
-	return &RefreshTokenUseCase{
+func NewRefreshToken(
+	si *SignIn,
+) *RefreshToken {
+	return &RefreshToken{
 		si: si,
 	}
 }
 
-func (uc *RefreshTokenUseCase) Execute(
+func (uc *RefreshToken) Execute(
 	ctx context.Context,
 	userID uuid.UUID,
-) (*SignInUseCaseOutput, error) {
-	return uc.si.Execute(ctx, SignInUseCaseInput{
+) (*SignInOutput, error) {
+	return uc.si.Execute(ctx, SignInInput{
 		Provider: entity.ProviderRefresh,
 		UserID:   userID,
 	})

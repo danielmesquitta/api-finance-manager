@@ -14,22 +14,22 @@ import (
  * @TODO calculate spent, available and available per day
  */
 
-type GetBudgetUseCase struct {
+type GetBudget struct {
 	v  *validator.Validator
 	br repo.BudgetRepo
 }
 
-func NewGetBudgetUseCase(
+func NewGetBudget(
 	v *validator.Validator,
 	br repo.BudgetRepo,
-) *GetBudgetUseCase {
-	return &GetBudgetUseCase{
+) *GetBudget {
+	return &GetBudget{
 		v:  v,
 		br: br,
 	}
 }
 
-type GetBudgetUseCaseInput struct {
+type GetBudgetInput struct {
 	UserID uuid.UUID `json:"-"    validate:"required"`
 	Date   string    `json:"date" validate:"required"`
 }
@@ -40,7 +40,7 @@ type GetBudgetBudgetCategory struct {
 	Category entity.Category `json:"category,omitempty"`
 }
 
-type GetBudgetUseCaseOutput struct {
+type GetBudgetOutput struct {
 	entity.Budget
 	Spent            float64                   `json:"spent,omitempty"`
 	Available        float64                   `json:"available,omitempty"`
@@ -48,10 +48,10 @@ type GetBudgetUseCaseOutput struct {
 	BudgetCategories []GetBudgetBudgetCategory `json:"budget_categories,omitempty"`
 }
 
-func (uc *GetBudgetUseCase) Execute(
+func (uc *GetBudget) Execute(
 	ctx context.Context,
-	in GetBudgetUseCaseInput,
-) (*GetBudgetUseCaseOutput, error) {
+	in GetBudgetInput,
+) (*GetBudgetOutput, error) {
 	if err := uc.v.Validate(in); err != nil {
 		return nil, errs.New(err)
 	}
@@ -80,7 +80,7 @@ func (uc *GetBudgetUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
-	out := GetBudgetUseCaseOutput{
+	out := GetBudgetOutput{
 		Budget: *budget,
 	}
 

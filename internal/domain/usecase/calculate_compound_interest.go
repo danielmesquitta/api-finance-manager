@@ -10,19 +10,19 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
 
-type CalculateCompoundInterestUseCase struct {
+type CalculateCompoundInterest struct {
 	v *validator.Validator
 }
 
-func NewCalculateCompoundInterestUseCase(
+func NewCalculateCompoundInterest(
 	v *validator.Validator,
-) *CalculateCompoundInterestUseCase {
-	return &CalculateCompoundInterestUseCase{
+) *CalculateCompoundInterest {
+	return &CalculateCompoundInterest{
 		v: v,
 	}
 }
 
-type CalculateCompoundInterestUseCaseInput struct {
+type CalculateCompoundInterestInput struct {
 	InitialDeposit float64             `validate:"min=0"                         json:"initial_deposit,omitempty"`
 	MonthlyDeposit float64             `                                         json:"monthly_deposit,omitempty"`
 	Interest       float64             `validate:"required,min=0,max=100"        json:"interest,omitempty"`
@@ -30,7 +30,7 @@ type CalculateCompoundInterestUseCaseInput struct {
 	PeriodInMonths int                 `validate:"required,min=1"                json:"period_in_months,omitempty"`
 }
 
-type CalculateCompoundInterestUseCaseOutput struct {
+type CalculateCompoundInterestOutput struct {
 	TotalAmount   float64                        `json:"total_amount,omitempty"`
 	TotalInterest float64                        `json:"total_interest,omitempty"`
 	TotalDeposit  float64                        `json:"total_deposit,omitempty"`
@@ -44,10 +44,10 @@ type CompoundInterestResult struct {
 	MonthlyInterest float64 `json:"monthly_interest,omitempty"`
 }
 
-func (uc *CalculateCompoundInterestUseCase) Execute(
+func (uc *CalculateCompoundInterest) Execute(
 	ctx context.Context,
-	in CalculateCompoundInterestUseCaseInput,
-) (*CalculateCompoundInterestUseCaseOutput, error) {
+	in CalculateCompoundInterestInput,
+) (*CalculateCompoundInterestOutput, error) {
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
@@ -58,7 +58,7 @@ func (uc *CalculateCompoundInterestUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
-	output := &CalculateCompoundInterestUseCaseOutput{
+	output := &CalculateCompoundInterestOutput{
 		ByMonth: make(map[int]CompoundInterestResult, in.PeriodInMonths),
 	}
 
@@ -95,13 +95,13 @@ func (uc *CalculateCompoundInterestUseCase) Execute(
 	output.TotalInterest = money.Round(totalInterest)
 	output.TotalDeposit = money.Round(totalDeposit)
 
-	slog.Info("CalculateCompoundInterestUseCase.Execute", "output", output)
+	slog.Info("CalculateCompoundInterest.Execute", "output", output)
 
 	return output, nil
 }
 
-func (uc *CalculateCompoundInterestUseCase) validate(
-	in CalculateCompoundInterestUseCaseInput,
+func (uc *CalculateCompoundInterest) validate(
+	in CalculateCompoundInterestInput,
 ) error {
 	if err := uc.v.Validate(in); err != nil {
 		return errs.New(err)

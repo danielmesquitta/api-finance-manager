@@ -8,22 +8,22 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
 
-type CalculateRetirementUseCase struct {
+type CalculateRetirement struct {
 	v   *validator.Validator
-	cci *CalculateCompoundInterestUseCase
+	cci *CalculateCompoundInterest
 }
 
-func NewCalculateRetirementUseCase(
+func NewCalculateRetirement(
 	v *validator.Validator,
-	cci *CalculateCompoundInterestUseCase,
-) *CalculateRetirementUseCase {
-	return &CalculateRetirementUseCase{
+	cci *CalculateCompoundInterest,
+) *CalculateRetirement {
+	return &CalculateRetirement{
 		v:   v,
 		cci: cci,
 	}
 }
 
-type CalculateRetirementUseCaseInput struct {
+type CalculateRetirementInput struct {
 	MonthlyIncome              float64             `validate:"required,min=0"                json:"monthly_income,omitempty"`
 	IncomeInvestmentPercentage float64             `validate:"required,min=0,max=100"        json:"income_investment_percentage,omitempty"`
 	InitialDeposit             float64             `validate:"required,min=0"                json:"initial_deposit,omitempty"`
@@ -36,7 +36,7 @@ type CalculateRetirementUseCaseInput struct {
 	LifeExpectancy             int                 `validate:"min=1"                         json:"life_expectancy,omitempty"`
 }
 
-type CalculateRetirementUseCaseOutput struct {
+type CalculateRetirementOutput struct {
 	PropertyOnRetirement  float64 `json:"property_on_retirement,omitempty"`
 	Heritage              float64 `json:"heritage,omitempty"`
 	MaxMonthlyExpenses    float64 `json:"max_monthly_expenses,omitempty"`
@@ -44,10 +44,10 @@ type CalculateRetirementUseCaseOutput struct {
 	AchievedGoalIncome    bool    `json:"achieved_goal_income,omitempty"`
 }
 
-func (uc *CalculateRetirementUseCase) Execute(
+func (uc *CalculateRetirement) Execute(
 	ctx context.Context,
-	in CalculateRetirementUseCaseInput,
-) (*CalculateRetirementUseCaseOutput, error) {
+	in CalculateRetirementInput,
+) (*CalculateRetirementOutput, error) {
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
@@ -62,7 +62,7 @@ func (uc *CalculateRetirementUseCase) Execute(
 
 	resultsOnRetirementDate, err := uc.cci.Execute(
 		ctx,
-		CalculateCompoundInterestUseCaseInput{
+		CalculateCompoundInterestInput{
 			InitialDeposit: in.InitialDeposit,
 			MonthlyDeposit: in.MonthlyIncome * in.IncomeInvestmentPercentage / 100,
 			Interest:       in.Interest,
@@ -76,7 +76,7 @@ func (uc *CalculateRetirementUseCase) Execute(
 
 	resultsOnExpectedDeathDate, err := uc.cci.Execute(
 		ctx,
-		CalculateCompoundInterestUseCaseInput{
+		CalculateCompoundInterestInput{
 			InitialDeposit: resultsOnRetirementDate.TotalAmount,
 			MonthlyDeposit: -1 * in.GoalIncome,
 			Interest:       in.Interest,
@@ -90,7 +90,7 @@ func (uc *CalculateRetirementUseCase) Execute(
 
 	maxMonthlyExpenses := resultsOnRetirementDate.ByMonth[len(resultsOnRetirementDate.ByMonth)-1].MonthlyInterest
 
-	out := &CalculateRetirementUseCaseOutput{
+	out := &CalculateRetirementOutput{
 		PropertyOnRetirement:  resultsOnRetirementDate.TotalAmount,
 		Heritage:              resultsOnExpectedDeathDate.TotalAmount,
 		MaxMonthlyExpenses:    maxMonthlyExpenses,
@@ -101,16 +101,16 @@ func (uc *CalculateRetirementUseCase) Execute(
 	return out, nil
 }
 
-func (uc *CalculateRetirementUseCase) prepare(
-	in *CalculateRetirementUseCaseInput,
+func (uc *CalculateRetirement) prepare(
+	in *CalculateRetirementInput,
 ) {
 	if in.LifeExpectancy == 0 {
 		in.LifeExpectancy = 72
 	}
 }
 
-func (uc *CalculateRetirementUseCase) validate(
-	in CalculateRetirementUseCaseInput,
+func (uc *CalculateRetirement) validate(
+	in CalculateRetirementInput,
 ) error {
 	if err := uc.v.Validate(in); err != nil {
 		return errs.New(err)

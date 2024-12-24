@@ -11,15 +11,15 @@ import (
 )
 
 type BudgetHandler struct {
-	ub *usecase.UpsertBudgetUseCase
-	gb *usecase.GetBudgetUseCase
-	db *usecase.DeleteBudgetUseCase
+	ub *usecase.UpsertBudget
+	gb *usecase.GetBudget
+	db *usecase.DeleteBudget
 }
 
 func NewBudgetHandler(
-	ub *usecase.UpsertBudgetUseCase,
-	gb *usecase.GetBudgetUseCase,
-	db *usecase.DeleteBudgetUseCase,
+	ub *usecase.UpsertBudget,
+	gb *usecase.GetBudget,
+	db *usecase.DeleteBudget,
 ) *BudgetHandler {
 	return &BudgetHandler{
 		ub: ub,
@@ -52,7 +52,7 @@ func (h BudgetHandler) Upsert(c echo.Context) error {
 	ctx := c.Request().Context()
 	if err := h.ub.Execute(
 		ctx,
-		body.UpsertBudgetUseCaseInput,
+		body.UpsertBudgetInput,
 	); err != nil {
 		return errs.New(err)
 	}
@@ -74,12 +74,12 @@ func (h BudgetHandler) Upsert(c echo.Context) error {
 // @Router /v1/budgets [get]
 func (h BudgetHandler) Get(c echo.Context) error {
 	claims := getUserClaims(c)
-	userID := uuid.Must(uuid.Parse(claims.Issuer))
+	userID := uuid.MustParse(claims.Issuer)
 
 	date := c.QueryParam("date")
 
 	ctx := c.Request().Context()
-	out, err := h.gb.Execute(ctx, usecase.GetBudgetUseCaseInput{
+	out, err := h.gb.Execute(ctx, usecase.GetBudgetInput{
 		UserID: userID,
 		Date:   date,
 	})
@@ -88,7 +88,7 @@ func (h BudgetHandler) Get(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, dto.GetBudgetResponse{
-		GetBudgetUseCaseOutput: *out,
+		GetBudgetOutput: *out,
 	})
 }
 

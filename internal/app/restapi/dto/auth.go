@@ -10,5 +10,5 @@ type SignInRequest struct {
 }
 
 type SignInResponse struct {
-	usecase.SignInUseCaseOutput
+	usecase.SignInOutput
 }

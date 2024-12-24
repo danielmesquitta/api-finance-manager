@@ -9,11 +9,11 @@ import (
 )
 
 type InstitutionHandler struct {
-	si *usecase.SyncInstitutionsUseCase
+	si *usecase.SyncInstitutions
 }
 
 func NewInstitutionHandler(
-	si *usecase.SyncInstitutionsUseCase,
+	si *usecase.SyncInstitutions,
 ) *InstitutionHandler {
 	return &InstitutionHandler{
 		si: si,

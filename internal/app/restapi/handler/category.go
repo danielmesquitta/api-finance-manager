@@ -9,13 +9,13 @@ import (
 )
 
 type CategoryHandler struct {
-	sc *usecase.SyncCategoriesUseCase
-	lc *usecase.ListCategoriesUseCase
+	sc *usecase.SyncCategories
+	lc *usecase.ListCategories
 }
 
 func NewCategoryHandler(
-	sc *usecase.SyncCategoriesUseCase,
-	lc *usecase.ListCategoriesUseCase,
+	sc *usecase.SyncCategories,
+	lc *usecase.ListCategories,
 ) *CategoryHandler {
 	return &CategoryHandler{
 		sc: sc,
@@ -54,7 +54,7 @@ func (h CategoryHandler) Sync(c echo.Context) error {
 // @Router /v1/categories [get]
 func (h CategoryHandler) List(c echo.Context) error {
 	search, page, pageSize := getPaginationParams(c)
-	in := usecase.ListCategoriesUseCaseInput{
+	in := usecase.ListCategoriesInput{
 		PaginationInput: usecase.PaginationInput{
 			Search:   search,
 			Page:     page,

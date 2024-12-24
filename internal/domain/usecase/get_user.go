@@ -23,14 +23,9 @@ func NewGetUser(
 
 func (uc *GetUser) Execute(
 	ctx context.Context,
-	id string,
+	id uuid.UUID,
 ) (*entity.User, error) {
-	uuidID, err := uuid.Parse(id)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	user, err := uc.ur.GetUserByID(ctx, uuidID)
+	user, err := uc.ur.GetUserByID(ctx, id)
 	if err != nil {
 		return nil, errs.New(err)
 	}

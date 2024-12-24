@@ -10,35 +10,35 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
 
-type CalculateEmergencyReserveUseCase struct {
+type CalculateEmergencyReserve struct {
 	v *validator.Validator
 }
 
-func NewCalculateEmergencyReserveUseCase(
+func NewCalculateEmergencyReserve(
 	v *validator.Validator,
-) *CalculateEmergencyReserveUseCase {
-	return &CalculateEmergencyReserveUseCase{
+) *CalculateEmergencyReserve {
+	return &CalculateEmergencyReserve{
 		v: v,
 	}
 }
 
-type CalculateEmergencyReserveUseCaseInput struct {
+type CalculateEmergencyReserveInput struct {
 	JobType                  entity.JobType `validate:"required,oneof=ENTREPRENEUR EMPLOYEE CIVIL_SERVANT"`
 	MonthlyExpenses          float64        `validate:"min=0"`
 	MonthlyIncome            float64        `validate:"min=0"`
 	MonthlySavingsPercentage float64        `validate:"min=0,max=100"`
 }
 
-type CalculateEmergencyReserveUseCaseOutput struct {
+type CalculateEmergencyReserveOutput struct {
 	RecommendedReserveInMonths      int
 	RecommendedReserveInValue       float64
 	MonthsToAchieveEmergencyReserve int
 }
 
-func (uc *CalculateEmergencyReserveUseCase) Execute(
+func (uc *CalculateEmergencyReserve) Execute(
 	ctx context.Context,
-	in CalculateEmergencyReserveUseCaseInput,
-) (*CalculateEmergencyReserveUseCaseOutput, error) {
+	in CalculateEmergencyReserveInput,
+) (*CalculateEmergencyReserveOutput, error) {
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
@@ -49,7 +49,7 @@ func (uc *CalculateEmergencyReserveUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
-	out := &CalculateEmergencyReserveUseCaseOutput{}
+	out := &CalculateEmergencyReserveOutput{}
 
 	switch in.JobType {
 	case entity.JobTypeCivilServant:

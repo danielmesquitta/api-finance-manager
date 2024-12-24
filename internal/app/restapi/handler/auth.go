@@ -11,13 +11,13 @@ import (
 )
 
 type AuthHandler struct {
-	si *usecase.SignInUseCase
-	rt *usecase.RefreshTokenUseCase
+	si *usecase.SignIn
+	rt *usecase.RefreshToken
 }
 
 func NewAuthHandler(
-	si *usecase.SignInUseCase,
-	rt *usecase.RefreshTokenUseCase,
+	si *usecase.SignIn,
+	rt *usecase.RefreshToken,
 ) *AuthHandler {
 	return &AuthHandler{
 		si: si,
@@ -51,7 +51,7 @@ func (h AuthHandler) SignIn(c echo.Context) error {
 	ctx := c.Request().Context()
 	out, err := h.si.Execute(
 		ctx,
-		usecase.SignInUseCaseInput{Token: token, Provider: body.Provider},
+		usecase.SignInInput{Token: token, Provider: body.Provider},
 	)
 	if err != nil {
 		return errs.New(err)

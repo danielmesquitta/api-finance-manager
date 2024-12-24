@@ -10,22 +10,22 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type SyncInstitutionsUseCase struct {
+type SyncInstitutions struct {
 	o  openfinance.Client
 	ir repo.InstitutionRepo
 }
 
-func NewSyncInstitutionsUseCase(
+func NewSyncInstitutions(
 	o openfinance.Client,
 	ir repo.InstitutionRepo,
-) *SyncInstitutionsUseCase {
-	return &SyncInstitutionsUseCase{
+) *SyncInstitutions {
+	return &SyncInstitutions{
 		o:  o,
 		ir: ir,
 	}
 }
 
-func (uc *SyncInstitutionsUseCase) Execute(ctx context.Context) error {
+func (uc *SyncInstitutions) Execute(ctx context.Context) error {
 	var openFinanceInstitutions, institutions []entity.Institution
 
 	var errCh = make(chan error, 2)
