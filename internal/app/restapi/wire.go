@@ -25,11 +25,12 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo/pgrepo"
 )
 
-func New() *App {
+func New(
+	v *validator.Validator,
+	e *config.Env,
+) *App {
 	wire.Build(
-		validator.NewValidator,
 		jwtutil.NewJWT,
-		config.LoadEnv,
 
 		googleoauth.NewGoogleOAuth,
 		mockoauth.NewMockOAuth,

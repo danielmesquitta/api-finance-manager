@@ -3,7 +3,6 @@ package restapi
 import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/router"
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/labstack/echo/v4"
 	echoMiddleware "github.com/labstack/echo/v4/middleware"
 	"golang.org/x/time/rate"
@@ -11,11 +10,9 @@ import (
 
 type App struct {
 	*echo.Echo
-	Env *config.Env
 }
 
 func newApp(
-	e *config.Env,
 	m *middleware.Middleware,
 	r *router.Router,
 ) *App {
@@ -40,6 +37,5 @@ func newApp(
 
 	return &App{
 		Echo: app,
-		Env:  e,
 	}
 }

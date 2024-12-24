@@ -4,6 +4,8 @@ import (
 	"log"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi"
+	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
 
 // @title API Finance Manager
@@ -18,8 +20,11 @@ import (
 // @description Type "Bearer" followed by a space and JWT token.
 // @securityDefinitions.basic BasicAuth
 func main() {
-	app := restapi.New()
-	if err := app.Start(":" + app.Env.Port); err != nil {
+	v := validator.NewValidator()
+	e := config.LoadEnv(v)
+
+	app := restapi.New(v, e)
+	if err := app.Start(":" + e.Port); err != nil {
 		log.Fatalf("failed to start server: %v", err)
 	}
 }
