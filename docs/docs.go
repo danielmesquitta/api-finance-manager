@@ -692,8 +692,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "initial_deposit": {
-                    "type": "number",
-                    "minimum": 0
+                    "type": "number"
                 },
                 "interest": {
                     "type": "number",
@@ -743,10 +742,10 @@ const docTemplate = `{
         "dto.EmergencyReserveRequest": {
             "type": "object",
             "required": [
-                "jobType"
+                "job_type"
             ],
             "properties": {
-                "jobType": {
+                "job_type": {
                     "enum": [
                         "ENTREPRENEUR",
                         "EMPLOYEE",
@@ -758,15 +757,15 @@ const docTemplate = `{
                         }
                     ]
                 },
-                "monthlyExpenses": {
+                "monthly_expenses": {
                     "type": "number",
                     "minimum": 0
                 },
-                "monthlyIncome": {
+                "monthly_income": {
                     "type": "number",
                     "minimum": 0
                 },
-                "monthlySavingsPercentage": {
+                "monthly_savings_percentage": {
                     "type": "number",
                     "maximum": 100,
                     "minimum": 0
@@ -871,9 +870,9 @@ const docTemplate = `{
                 "goal_income",
                 "goal_patrimony",
                 "income_investment_percentage",
-                "initial_deposit",
                 "interest",
                 "interest_type",
+                "life_expectancy",
                 "monthly_income",
                 "retirement_age"
             ],
@@ -896,8 +895,7 @@ const docTemplate = `{
                     "minimum": 0
                 },
                 "initial_deposit": {
-                    "type": "number",
-                    "minimum": 0
+                    "type": "number"
                 },
                 "interest": {
                     "type": "number",
@@ -938,6 +936,12 @@ const docTemplate = `{
                 "achieved_goal_patrimony": {
                     "type": "boolean"
                 },
+                "exceeded_goal": {
+                    "type": "boolean"
+                },
+                "exceeded_goal_amount": {
+                    "type": "number"
+                },
                 "heritage": {
                     "type": "number"
                 },
@@ -975,11 +979,11 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "interest",
-                "interestType",
-                "periodInMonths"
+                "interest_type",
+                "period_in_months"
             ],
             "properties": {
-                "initialDeposit": {
+                "initial_deposit": {
                     "type": "number",
                     "minimum": 0
                 },
@@ -988,7 +992,7 @@ const docTemplate = `{
                     "maximum": 100,
                     "minimum": 0
                 },
-                "interestType": {
+                "interest_type": {
                     "enum": [
                         "MONTHLY",
                         "ANNUAL"
@@ -999,7 +1003,7 @@ const docTemplate = `{
                         }
                     ]
                 },
-                "periodInMonths": {
+                "period_in_months": {
                     "type": "integer",
                     "minimum": 1
                 }

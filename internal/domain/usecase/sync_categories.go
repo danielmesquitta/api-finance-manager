@@ -12,16 +12,16 @@ import (
 
 type SyncCategories struct {
 	o  openfinance.Client
-	ir repo.CategoryRepo
+	cr repo.CategoryRepo
 }
 
 func NewSyncCategories(
 	o openfinance.Client,
-	ir repo.CategoryRepo,
+	cr repo.CategoryRepo,
 ) *SyncCategories {
 	return &SyncCategories{
 		o:  o,
-		ir: ir,
+		cr: cr,
 	}
 }
 
@@ -39,7 +39,7 @@ func (uc *SyncCategories) Execute(ctx context.Context) error {
 
 	go func() {
 		var err error
-		institutions, err = uc.ir.ListCategories(ctx)
+		institutions, err = uc.cr.ListCategories(ctx)
 		errCh <- err
 	}()
 
@@ -66,7 +66,7 @@ func (uc *SyncCategories) Execute(ctx context.Context) error {
 		params = append(params, param)
 	}
 
-	if err := uc.ir.CreateCategories(ctx, params); err != nil {
+	if err := uc.cr.CreateCategories(ctx, params); err != nil {
 		return errs.New(err)
 	}
 

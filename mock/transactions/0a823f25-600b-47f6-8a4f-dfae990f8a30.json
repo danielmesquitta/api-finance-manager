@@ -1,0 +1,212 @@
+{
+  "total": 5,
+  "totalPages": 1,
+  "page": 1,
+  "results": [
+    {
+      "id": "6f4e06d6-b640-4181-bc71-fdc8318facb8",
+      "description": "CONTA REMUNERADA - RESGATE APLICAÇÃO",
+      "descriptionRaw": "CONTA REMUNERADA - RESGATE APLICAÇÃO",
+      "currencyCode": "BRL",
+      "amount": 8939.12,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-12T03:26:40.131Z",
+      "category": "Investments",
+      "categoryId": "03000000",
+      "balance": null,
+      "accountId": "0a823f25-600b-47f6-8a4f-dfae990f8a30",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": null,
+        "paymentMethod": "OTHER",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "RESGATE_APLIC_FINANCEIRA",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-12T20:40:23.885Z",
+      "updatedAt": "2024-11-12T20:40:23.885Z"
+    },
+    {
+      "id": "dc9c6d6a-f80a-4aeb-aac2-229488db34b3",
+      "description": "ENVIO TRANSFERÊNCIA",
+      "descriptionRaw": "ENVIO TRANSFERÊNCIA",
+      "currencyCode": "BRL",
+      "amount": -8939.12,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-11T10:38:19.137Z",
+      "category": "Transfers",
+      "categoryId": "05000000",
+      "balance": null,
+      "accountId": "0a823f25-600b-47f6-8a4f-dfae990f8a30",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "OTHER",
+        "reason": null,
+        "receiver": null,
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "DEBIT",
+      "operationType": "OUTROS",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-11T20:39:33.572Z",
+      "updatedAt": "2024-11-11T20:39:33.572Z"
+    },
+    {
+      "id": "faaab570-8a45-4c48-9692-d264b3c0b4c2",
+      "description": "RECEBIMENTO TRANSFERÊNCIA",
+      "descriptionRaw": "RECEBIMENTO TRANSFERÊNCIA",
+      "currencyCode": "BRL",
+      "amount": 3500,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-07T20:33:36.167Z",
+      "category": "Transfers",
+      "categoryId": "05000000",
+      "balance": null,
+      "accountId": "0a823f25-600b-47f6-8a4f-dfae990f8a30",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": null,
+        "paymentMethod": "OTHER",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "OUTROS",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.426Z",
+      "updatedAt": "2024-11-09T20:30:12.426Z"
+    },
+    {
+      "id": "fa51e113-34eb-4522-8512-82ca4f24fe1a",
+      "description": "RECEBIMENTO TRANSFERÊNCIA",
+      "descriptionRaw": "RECEBIMENTO TRANSFERÊNCIA",
+      "currencyCode": "BRL",
+      "amount": 20000,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-06T19:25:23.368Z",
+      "category": "Transfers",
+      "categoryId": "05000000",
+      "balance": null,
+      "accountId": "0a823f25-600b-47f6-8a4f-dfae990f8a30",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": null,
+        "paymentMethod": "OTHER",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "OUTROS",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.426Z",
+      "updatedAt": "2024-11-09T20:30:12.426Z"
+    },
+    {
+      "id": "c089851f-f4ab-4b87-8c29-177d41479afc",
+      "description": "RECEBIMENTO TRANSFERÊNCIA",
+      "descriptionRaw": "RECEBIMENTO TRANSFERÊNCIA",
+      "currencyCode": "BRL",
+      "amount": 10000,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-06T19:21:04.443Z",
+      "category": "Transfers",
+      "categoryId": "05000000",
+      "balance": null,
+      "accountId": "0a823f25-600b-47f6-8a4f-dfae990f8a30",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": null,
+        "paymentMethod": "OTHER",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "OUTROS",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.426Z",
+      "updatedAt": "2024-11-09T20:30:12.426Z"
+    }
+  ]
+}

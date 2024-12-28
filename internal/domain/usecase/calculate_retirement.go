@@ -24,24 +24,26 @@ func NewCalculateRetirement(
 }
 
 type CalculateRetirementInput struct {
-	MonthlyIncome              float64             `validate:"required,min=0"                json:"monthly_income,omitempty"`
-	IncomeInvestmentPercentage float64             `validate:"required,min=0,max=100"        json:"income_investment_percentage,omitempty"`
-	InitialDeposit             float64             `validate:"required,min=0"                json:"initial_deposit,omitempty"`
-	Interest                   float64             `validate:"required,min=0,max=100"        json:"interest,omitempty"`
-	InterestType               entity.InterestType `validate:"required,oneof=MONTHLY ANNUAL" json:"interest_type,omitempty"`
-	GoalPatrimony              float64             `validate:"required,min=0"                json:"goal_patrimony,omitempty"`
-	GoalIncome                 float64             `validate:"required,min=0"                json:"goal_income,omitempty"`
-	Age                        int                 `validate:"required,min=0"                json:"age,omitempty"`
-	RetirementAge              int                 `validate:"required,min=1"                json:"retirement_age,omitempty"`
-	LifeExpectancy             int                 `validate:"min=1"                         json:"life_expectancy,omitempty"`
+	MonthlyIncome              float64             `json:"monthly_income,omitempty"               validate:"required,min=0"`
+	IncomeInvestmentPercentage float64             `json:"income_investment_percentage,omitempty" validate:"required,min=0,max=100"`
+	InitialDeposit             float64             `json:"initial_deposit,omitempty"`
+	Interest                   float64             `json:"interest,omitempty"                     validate:"required,min=0,max=100"`
+	InterestType               entity.InterestType `json:"interest_type,omitempty"                validate:"required,oneof=MONTHLY ANNUAL"`
+	GoalPatrimony              float64             `json:"goal_patrimony,omitempty"               validate:"required,min=0"`
+	GoalIncome                 float64             `json:"goal_income,omitempty"                  validate:"required,min=0"`
+	Age                        int                 `json:"age,omitempty"                          validate:"required,min=0"`
+	RetirementAge              int                 `json:"retirement_age,omitempty"               validate:"required,min=1"`
+	LifeExpectancy             int                 `json:"life_expectancy,omitempty"              validate:"required,min=1"`
 }
 
 type CalculateRetirementOutput struct {
 	PropertyOnRetirement  float64 `json:"property_on_retirement,omitempty"`
 	Heritage              float64 `json:"heritage,omitempty"`
-	MaxMonthlyExpenses    float64 `json:"max_monthly_expenses,omitempty"`
 	AchievedGoalPatrimony bool    `json:"achieved_goal_patrimony,omitempty"`
+	MaxMonthlyExpenses    float64 `json:"max_monthly_expenses,omitempty"`
 	AchievedGoalIncome    bool    `json:"achieved_goal_income,omitempty"`
+	ExceededGoalAmount    float64 `json:"exceeded_goal_amount,omitempty"`
+	ExceededGoal          bool    `json:"exceeded_goal,omitempty"`
 }
 
 func (uc *CalculateRetirement) Execute(
@@ -53,8 +55,6 @@ func (uc *CalculateRetirement) Execute(
 		return nil, ctx.Err()
 	default:
 	}
-
-	uc.prepare(&in)
 
 	if err := uc.validate(in); err != nil {
 		return nil, errs.New(err)
@@ -90,23 +90,21 @@ func (uc *CalculateRetirement) Execute(
 
 	maxMonthlyExpenses := resultsOnRetirementDate.ByMonth[len(resultsOnRetirementDate.ByMonth)-1].MonthlyInterest
 
+	heritage := resultsOnExpectedDeathDate.TotalAmount
+
+	exceededGoalAmount := heritage - in.GoalPatrimony
+
 	out := &CalculateRetirementOutput{
 		PropertyOnRetirement:  resultsOnRetirementDate.TotalAmount,
-		Heritage:              resultsOnExpectedDeathDate.TotalAmount,
+		Heritage:              heritage,
 		MaxMonthlyExpenses:    maxMonthlyExpenses,
 		AchievedGoalPatrimony: resultsOnRetirementDate.TotalAmount >= in.GoalPatrimony,
 		AchievedGoalIncome:    maxMonthlyExpenses >= in.GoalIncome,
+		ExceededGoalAmount:    exceededGoalAmount,
+		ExceededGoal:          exceededGoalAmount > 0,
 	}
 
 	return out, nil
-}
-
-func (uc *CalculateRetirement) prepare(
-	in *CalculateRetirementInput,
-) {
-	if in.LifeExpectancy == 0 {
-		in.LifeExpectancy = 72
-	}
 }
 
 func (uc *CalculateRetirement) validate(

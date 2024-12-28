@@ -35,9 +35,9 @@ func (uc *SyncInstitutions) Execute(ctx context.Context) error {
 		var err error
 		openFinanceInstitutions, err = uc.o.ListInstitutions(
 			ctx,
-			openfinance.ListInstitutionsParams{
-				Types: []string{"PERSONAL_BANK", "INVESTMENT"},
-			},
+			openfinance.WithInstitutionTypes(
+				[]string{"PERSONAL_BANK", "INVESTMENT"},
+			),
 		)
 		errCh <- err
 	}()

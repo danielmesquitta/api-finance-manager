@@ -83,19 +83,18 @@ type Investment struct {
 }
 
 type Transaction struct {
-	ID            uuid.UUID   `json:"id"`
-	ExternalID    string      `json:"external_id"`
-	Name          string      `json:"name"`
-	Description   pgtype.Text `json:"description"`
-	Amount        float64     `json:"amount"`
-	PaymentMethod string      `json:"payment_method"`
-	IsIgnored     bool        `json:"is_ignored"`
-	Date          time.Time   `json:"date"`
-	CreatedAt     time.Time   `json:"created_at"`
-	UpdatedAt     time.Time   `json:"updated_at"`
-	UserID        uuid.UUID   `json:"user_id"`
-	AccountID     *uuid.UUID  `json:"account_id"`
-	CategoryID    *uuid.UUID  `json:"category_id"`
+	ID            uuid.UUID  `json:"id"`
+	ExternalID    string     `json:"external_id"`
+	Name          string     `json:"name"`
+	Amount        float64    `json:"amount"`
+	PaymentMethod string     `json:"payment_method"`
+	IsIgnored     bool       `json:"is_ignored"`
+	Date          time.Time  `json:"date"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+	UserID        uuid.UUID  `json:"user_id"`
+	AccountID     *uuid.UUID `json:"account_id"`
+	CategoryID    *uuid.UUID `json:"category_id"`
 }
 
 type User struct {

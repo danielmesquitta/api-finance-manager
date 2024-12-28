@@ -1,0 +1,844 @@
+{
+  "total": 17,
+  "totalPages": 1,
+  "page": 1,
+  "results": [
+    {
+      "id": "7ace9ee0-5521-40b2-a4e5-74468c4a5040",
+      "description": "DEBITO PAGAMENTO",
+      "descriptionRaw": "DEBITO PAGAMENTO",
+      "currencyCode": "BRL",
+      "amount": -16.42,
+      "amountInAccountCurrency": null,
+      "date": "2024-12-11T08:22:23.728Z",
+      "category": "Transfers",
+      "categoryId": "05000000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "OTHER",
+        "reason": null,
+        "receiver": null,
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "DEBIT",
+      "operationType": "CARTAO",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-12-11T21:28:11.798Z",
+      "updatedAt": "2024-12-11T21:28:11.798Z"
+    },
+    {
+      "id": "1ac2522d-ce24-4140-bb95-1eef87708022",
+      "description": "PIX CASH IN EXTERNO",
+      "descriptionRaw": "PIX CASH IN EXTERNO",
+      "currencyCode": "BRL",
+      "amount": 16.42,
+      "amountInAccountCurrency": null,
+      "date": "2024-12-11T08:21:52.769Z",
+      "category": "Non-recurring income",
+      "categoryId": "01050000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": "099125117-4",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "PIX",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "PIX",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-12-11T21:28:11.798Z",
+      "updatedAt": "2024-12-11T21:28:11.798Z"
+    },
+    {
+      "id": "e51fb22a-04fd-4af0-a524-e436cf044693",
+      "description": "DEBITO PAGAMENTO",
+      "descriptionRaw": "DEBITO PAGAMENTO",
+      "currencyCode": "BRL",
+      "amount": -5741.8,
+      "amountInAccountCurrency": null,
+      "date": "2024-12-10T09:06:44.774Z",
+      "category": "Transfers",
+      "categoryId": "05000000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "OTHER",
+        "reason": null,
+        "receiver": null,
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "DEBIT",
+      "operationType": "CARTAO",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-12-10T21:27:13.169Z",
+      "updatedAt": "2024-12-10T21:27:13.169Z"
+    },
+    {
+      "id": "417499bf-bb83-47d0-b73a-c27b5b20f57c",
+      "description": "PIX CASH IN EXTERNO",
+      "descriptionRaw": "PIX CASH IN EXTERNO",
+      "currencyCode": "BRL",
+      "amount": 5741.8,
+      "amountInAccountCurrency": null,
+      "date": "2024-12-10T09:06:18.529Z",
+      "category": "Non-recurring income",
+      "categoryId": "01050000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": "099125117-4",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "PIX",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "PIX",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-12-10T21:27:13.169Z",
+      "updatedAt": "2024-12-10T21:27:13.169Z"
+    },
+    {
+      "id": "25f34fbe-1a7c-42c2-9754-2fe2d217ea73",
+      "description": "PIX CASH OUT EXTERNO",
+      "descriptionRaw": "PIX CASH OUT EXTERNO",
+      "currencyCode": "BRL",
+      "amount": -8939.12,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-11T07:46:38.068Z",
+      "category": "Transfer - PIX",
+      "categoryId": "05070000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "PIX",
+        "reason": null,
+        "receiver": {
+          "accountNumber": "099125117-4",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": "260",
+          "routingNumberISPB": "18236120"
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "DEBIT",
+      "operationType": "PIX",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-11T20:39:33.909Z",
+      "updatedAt": "2024-11-11T20:39:33.909Z"
+    },
+    {
+      "id": "7fa78d86-b19f-46ba-a115-332f58be4922",
+      "description": "TEF CASH IN",
+      "descriptionRaw": "TEF CASH IN",
+      "currencyCode": "BRL",
+      "amount": 8939.12,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-11T07:38:19.519Z",
+      "category": "Same person transfer",
+      "categoryId": "04000000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": "000804035-0",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": "208",
+          "routingNumberISPB": "30306294"
+        },
+        "paymentMethod": "TEF",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "TRANSFERENCIA_MESMA_INSTITUICAO",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-11T20:39:33.909Z",
+      "updatedAt": "2024-11-11T20:39:33.909Z"
+    },
+    {
+      "id": "02159326-e9fc-4772-a82d-13352df296d3",
+      "description": "PIX CASH OUT EXTERNO",
+      "descriptionRaw": "PIX CASH OUT EXTERNO",
+      "currencyCode": "BRL",
+      "amount": -114.03,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-07T20:33:16.555Z",
+      "category": "Transfer - PIX",
+      "categoryId": "05070000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "PIX",
+        "reason": null,
+        "receiver": {
+          "accountNumber": "099125117-4",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": "260",
+          "routingNumberISPB": "18236120"
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "DEBIT",
+      "operationType": "PIX",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    },
+    {
+      "id": "8eb08879-b0f4-41a9-a645-8f7c9d5f2b45",
+      "description": "TEF CASH OUT",
+      "descriptionRaw": "TEF CASH OUT",
+      "currencyCode": "BRL",
+      "amount": -3500,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-07T17:33:35.833Z",
+      "category": "Same person transfer",
+      "categoryId": "04000000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "TEF",
+        "reason": null,
+        "receiver": {
+          "accountNumber": "000804035-0",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": "208",
+          "routingNumberISPB": "30306294"
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "DEBIT",
+      "operationType": "TRANSFERENCIA_MESMA_INSTITUICAO",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    },
+    {
+      "id": "05e4b858-a004-463e-b357-cb42b6e9d2cd",
+      "description": "PIX CASH IN EXTERNO",
+      "descriptionRaw": "PIX CASH IN EXTERNO",
+      "currencyCode": "BRL",
+      "amount": 3614.03,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-07T17:31:39.779Z",
+      "category": "Non-recurring income",
+      "categoryId": "01050000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": "099125117-4",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "PIX",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "PIX",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    },
+    {
+      "id": "ade0ff24-46f5-4b56-98ad-1460f066a52b",
+      "description": "TEF CASH OUT",
+      "descriptionRaw": "TEF CASH OUT",
+      "currencyCode": "BRL",
+      "amount": -5439,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-07T16:46:08.164Z",
+      "category": "Same person transfer",
+      "categoryId": "04000000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "TEF",
+        "reason": null,
+        "receiver": {
+          "accountNumber": "000804035-0",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": "208",
+          "routingNumberISPB": "30306294"
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "DEBIT",
+      "operationType": "TRANSFERENCIA_MESMA_INSTITUICAO",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    },
+    {
+      "id": "602c08b5-007f-4a34-a467-c125685e46eb",
+      "description": "PIX CASH IN EXTERNO",
+      "descriptionRaw": "PIX CASH IN EXTERNO",
+      "currencyCode": "BRL",
+      "amount": 5439,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-07T16:41:42.667Z",
+      "category": "Non-recurring income",
+      "categoryId": "01050000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": "099125117-4",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "PIX",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "PIX",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    },
+    {
+      "id": "96b0de06-9b89-4daa-b025-16b461ff9de0",
+      "description": "TEF CASH OUT",
+      "descriptionRaw": "TEF CASH OUT",
+      "currencyCode": "BRL",
+      "amount": -20000,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-06T16:25:23.056Z",
+      "category": "Same person transfer",
+      "categoryId": "04000000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "TEF",
+        "reason": null,
+        "receiver": {
+          "accountNumber": "000804035-0",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": "208",
+          "routingNumberISPB": "30306294"
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "DEBIT",
+      "operationType": "TRANSFERENCIA_MESMA_INSTITUICAO",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    },
+    {
+      "id": "648a9d3a-6400-4cce-99b5-9bedfb55e14d",
+      "description": "PIX CASH IN EXTERNO",
+      "descriptionRaw": "PIX CASH IN EXTERNO",
+      "currencyCode": "BRL",
+      "amount": 20000,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-06T16:24:42.236Z",
+      "category": "Non-recurring income",
+      "categoryId": "01050000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": "099125117-4",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "PIX",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "PIX",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    },
+    {
+      "id": "61c066ac-11a6-4ae4-a453-1d97a12b1f03",
+      "description": "TEF CASH OUT",
+      "descriptionRaw": "TEF CASH OUT",
+      "currencyCode": "BRL",
+      "amount": -10000,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-06T16:21:04.097Z",
+      "category": "Same person transfer",
+      "categoryId": "04000000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "TEF",
+        "reason": null,
+        "receiver": {
+          "accountNumber": "000804035-0",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": "208",
+          "routingNumberISPB": "30306294"
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "DEBIT",
+      "operationType": "TRANSFERENCIA_MESMA_INSTITUICAO",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    },
+    {
+      "id": "bfeaa38b-41e9-4172-82f5-0f7fc77b8e44",
+      "description": "PIX CASH IN EXTERNO",
+      "descriptionRaw": "PIX CASH IN EXTERNO",
+      "currencyCode": "BRL",
+      "amount": 10000,
+      "amountInAccountCurrency": null,
+      "date": "2024-11-06T16:05:07.150Z",
+      "category": "Non-recurring income",
+      "categoryId": "01050000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": "099125117-4",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "PIX",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "PIX",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    },
+    {
+      "id": "cf65bd07-5d98-4941-8640-6e97cc3d6074",
+      "description": "PIX CASH OUT EXTERNO",
+      "descriptionRaw": "PIX CASH OUT EXTERNO",
+      "currencyCode": "BRL",
+      "amount": -249.67,
+      "amountInAccountCurrency": null,
+      "date": "2024-10-29T17:55:06.768Z",
+      "category": "Transfer - PIX",
+      "categoryId": "05070000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "paymentMethod": "PIX",
+        "reason": null,
+        "receiver": {
+          "accountNumber": "099125117-4",
+          "branchNumber": "0001",
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": "260",
+          "routingNumberISPB": "18236120"
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "DEBIT",
+      "operationType": "PIX",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    },
+    {
+      "id": "0838ba1d-85e5-40bd-8671-be962de537ca",
+      "description": "VALOR DE RENDIMENTO",
+      "descriptionRaw": "VALOR DE RENDIMENTO",
+      "currencyCode": "BRL",
+      "amount": 0.01,
+      "amountInAccountCurrency": null,
+      "date": "2024-10-29T05:09:14.010Z",
+      "category": "Investments",
+      "categoryId": "03000000",
+      "balance": null,
+      "accountId": "46f860c6-5010-41e1-aee3-e3905a51793a",
+      "providerCode": null,
+      "status": "POSTED",
+      "paymentData": {
+        "payer": null,
+        "paymentMethod": "OTHER",
+        "reason": null,
+        "receiver": {
+          "accountNumber": null,
+          "branchNumber": null,
+          "documentNumber": {
+            "type": "CPF",
+            "value": "128.287.416-05"
+          },
+          "name": null,
+          "routingNumber": null,
+          "routingNumberISPB": null
+        },
+        "receiverReferenceId": null,
+        "referenceNumber": null,
+        "boletoMetadata": null
+      },
+      "type": "CREDIT",
+      "operationType": "RENDIMENTO_APLIC_FINANCEIRA",
+      "creditCardMetadata": null,
+      "acquirerData": null,
+      "merchant": null,
+      "createdAt": "2024-11-09T20:30:12.858Z",
+      "updatedAt": "2024-11-09T20:30:12.858Z"
+    }
+  ]
+}

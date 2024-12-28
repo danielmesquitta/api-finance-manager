@@ -23,11 +23,11 @@ func NewCalculateCompoundInterest(
 }
 
 type CalculateCompoundInterestInput struct {
-	InitialDeposit float64             `validate:"min=0"                         json:"initial_deposit,omitempty"`
-	MonthlyDeposit float64             `                                         json:"monthly_deposit,omitempty"`
-	Interest       float64             `validate:"required,min=0,max=100"        json:"interest,omitempty"`
-	InterestType   entity.InterestType `validate:"required,oneof=MONTHLY ANNUAL" json:"interest_type,omitempty"`
-	PeriodInMonths int                 `validate:"required,min=1"                json:"period_in_months,omitempty"`
+	InitialDeposit float64             `json:"initial_deposit,omitempty"`
+	MonthlyDeposit float64             `json:"monthly_deposit,omitempty"`
+	Interest       float64             `json:"interest,omitempty"         validate:"required,min=0,max=100"`
+	InterestType   entity.InterestType `json:"interest_type,omitempty"    validate:"required,oneof=MONTHLY ANNUAL"`
+	PeriodInMonths int                 `json:"period_in_months,omitempty" validate:"required,min=1"`
 }
 
 type CalculateCompoundInterestOutput struct {

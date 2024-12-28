@@ -28,7 +28,6 @@ type Transaction struct {
 	ID            uuid.UUID  `json:"id,omitempty"`
 	ExternalID    string     `json:"external_id,omitempty"`
 	Name          string     `json:"name,omitempty"`
-	Description   *string    `json:"description,omitempty"`
 	Amount        float64    `json:"amount,omitempty"`
 	PaymentMethod string     `json:"payment_method,omitempty"`
 	IsIgnored     bool       `json:"is_ignored,omitempty"`

@@ -3,7 +3,6 @@ components:
         dto.CompoundInterestRequest:
             properties:
                 initial_deposit:
-                    minimum: 0
                     type: number
                 interest:
                     maximum: 100
@@ -40,25 +39,25 @@ components:
             type: object
         dto.EmergencyReserveRequest:
             properties:
-                jobType:
+                job_type:
                     allOf:
                         - $ref: '#/components/schemas/entity.JobType'
                     enum:
                         - ENTREPRENEUR
                         - EMPLOYEE
                         - CIVIL_SERVANT
-                monthlyExpenses:
+                monthly_expenses:
                     minimum: 0
                     type: number
-                monthlyIncome:
+                monthly_income:
                     minimum: 0
                     type: number
-                monthlySavingsPercentage:
+                monthly_savings_percentage:
                     maximum: 100
                     minimum: 0
                     type: number
             required:
-                - jobType
+                - job_type
             type: object
         dto.EmergencyReserveResponse:
             properties:
@@ -135,7 +134,6 @@ components:
                     minimum: 0
                     type: number
                 initial_deposit:
-                    minimum: 0
                     type: number
                 interest:
                     maximum: 100
@@ -161,9 +159,9 @@ components:
                 - goal_income
                 - goal_patrimony
                 - income_investment_percentage
-                - initial_deposit
                 - interest
                 - interest_type
+                - life_expectancy
                 - monthly_income
                 - retirement_age
             type: object
@@ -173,6 +171,10 @@ components:
                     type: boolean
                 achieved_goal_patrimony:
                     type: boolean
+                exceeded_goal:
+                    type: boolean
+                exceeded_goal_amount:
+                    type: number
                 heritage:
                     type: number
                 max_monthly_expenses:
@@ -196,26 +198,26 @@ components:
             type: object
         dto.SimpleInterestRequest:
             properties:
-                initialDeposit:
+                initial_deposit:
                     minimum: 0
                     type: number
                 interest:
                     maximum: 100
                     minimum: 0
                     type: number
-                interestType:
+                interest_type:
                     allOf:
                         - $ref: '#/components/schemas/entity.InterestType'
                     enum:
                         - MONTHLY
                         - ANNUAL
-                periodInMonths:
+                period_in_months:
                     minimum: 1
                     type: integer
             required:
                 - interest
-                - interestType
-                - periodInMonths
+                - interest_type
+                - period_in_months
             type: object
         dto.SimpleInterestResponse:
             properties:

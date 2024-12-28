@@ -17,9 +17,14 @@ import (
 
 func (c *Client) ListInstitutions(
 	ctx context.Context,
-	params openfinance.ListInstitutionsParams,
+	options ...openfinance.ListInstitutionsOption,
 ) ([]entity.Institution, error) {
-	filePath := filepath.Join("data", "connectors.json")
+	opts := openfinance.ListInstitutionsOptions{}
+	for _, opt := range options {
+		opt(&opts)
+	}
+
+	filePath := filepath.Join("mock", "connectors.json")
 
 	data, err := os.ReadFile(filePath)
 	if err != nil {
@@ -33,10 +38,10 @@ func (c *Client) ListInstitutions(
 
 	var institutions []entity.Institution
 	for _, r := range connectors.Results {
-		if len(params.Types) > 0 && !slices.Contains(params.Types, r.Type) {
+		if len(opts.Types) > 0 && !slices.Contains(opts.Types, r.Type) {
 			continue
 		}
-		if params.Search != "" && !strings.Contains(r.Name, params.Search) {
+		if opts.Search != "" && !strings.Contains(r.Name, opts.Search) {
 			continue
 		}
 

@@ -685,8 +685,7 @@
             ],
             "properties": {
                 "initial_deposit": {
-                    "type": "number",
-                    "minimum": 0
+                    "type": "number"
                 },
                 "interest": {
                     "type": "number",
@@ -736,10 +735,10 @@
         "dto.EmergencyReserveRequest": {
             "type": "object",
             "required": [
-                "jobType"
+                "job_type"
             ],
             "properties": {
-                "jobType": {
+                "job_type": {
                     "enum": [
                         "ENTREPRENEUR",
                         "EMPLOYEE",
@@ -751,15 +750,15 @@
                         }
                     ]
                 },
-                "monthlyExpenses": {
+                "monthly_expenses": {
                     "type": "number",
                     "minimum": 0
                 },
-                "monthlyIncome": {
+                "monthly_income": {
                     "type": "number",
                     "minimum": 0
                 },
-                "monthlySavingsPercentage": {
+                "monthly_savings_percentage": {
                     "type": "number",
                     "maximum": 100,
                     "minimum": 0
@@ -864,9 +863,9 @@
                 "goal_income",
                 "goal_patrimony",
                 "income_investment_percentage",
-                "initial_deposit",
                 "interest",
                 "interest_type",
+                "life_expectancy",
                 "monthly_income",
                 "retirement_age"
             ],
@@ -889,8 +888,7 @@
                     "minimum": 0
                 },
                 "initial_deposit": {
-                    "type": "number",
-                    "minimum": 0
+                    "type": "number"
                 },
                 "interest": {
                     "type": "number",
@@ -931,6 +929,12 @@
                 "achieved_goal_patrimony": {
                     "type": "boolean"
                 },
+                "exceeded_goal": {
+                    "type": "boolean"
+                },
+                "exceeded_goal_amount": {
+                    "type": "number"
+                },
                 "heritage": {
                     "type": "number"
                 },
@@ -968,11 +972,11 @@
             "type": "object",
             "required": [
                 "interest",
-                "interestType",
-                "periodInMonths"
+                "interest_type",
+                "period_in_months"
             ],
             "properties": {
-                "initialDeposit": {
+                "initial_deposit": {
                     "type": "number",
                     "minimum": 0
                 },
@@ -981,7 +985,7 @@
                     "maximum": 100,
                     "minimum": 0
                 },
-                "interestType": {
+                "interest_type": {
                     "enum": [
                         "MONTHLY",
                         "ANNUAL"
@@ -992,7 +996,7 @@
                         }
                     ]
                 },
-                "periodInMonths": {
+                "period_in_months": {
                     "type": "integer",
                     "minimum": 1
                 }

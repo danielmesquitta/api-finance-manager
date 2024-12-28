@@ -23,10 +23,10 @@ func NewCalculateEmergencyReserve(
 }
 
 type CalculateEmergencyReserveInput struct {
-	JobType                  entity.JobType `validate:"required,oneof=ENTREPRENEUR EMPLOYEE CIVIL_SERVANT"`
-	MonthlyExpenses          float64        `validate:"min=0"`
-	MonthlyIncome            float64        `validate:"min=0"`
-	MonthlySavingsPercentage float64        `validate:"min=0,max=100"`
+	JobType                  entity.JobType `validate:"required,oneof=ENTREPRENEUR EMPLOYEE CIVIL_SERVANT" json:"job_type,omitempty"`
+	MonthlyExpenses          float64        `validate:"min=0"                                              json:"monthly_expenses,omitempty"`
+	MonthlyIncome            float64        `validate:"min=0"                                              json:"monthly_income,omitempty"`
+	MonthlySavingsPercentage float64        `validate:"min=0,max=100"                                      json:"monthly_savings_percentage,omitempty"`
 }
 
 type CalculateEmergencyReserveOutput struct {
@@ -53,7 +53,7 @@ func (uc *CalculateEmergencyReserve) Execute(
 
 	switch in.JobType {
 	case entity.JobTypeCivilServant:
-		out.RecommendedReserveInMonths = 6
+		out.RecommendedReserveInMonths = 3
 	case entity.JobTypeEmployee:
 		out.RecommendedReserveInMonths = 6
 	case entity.JobTypeEntrepreneur:

@@ -24,18 +24,23 @@ type ConnectorsResult struct {
 
 func (c *Client) ListInstitutions(
 	ctx context.Context,
-	params openfinance.ListInstitutionsParams,
+	options ...openfinance.ListInstitutionsOption,
 ) ([]entity.Institution, error) {
+	opts := openfinance.ListInstitutionsOptions{}
+	for _, opt := range options {
+		opt(&opts)
+	}
+
 	if err := c.refreshAccessToken(ctx); err != nil {
 		return nil, errs.New(err)
 	}
 
 	req := c.c.R().SetContext(ctx)
-	if len(params.Types) > 0 {
-		req.SetQueryParam("types", strings.Join(params.Types, ","))
+	if len(opts.Types) > 0 {
+		req.SetQueryParam("types", strings.Join(opts.Types, ","))
 	}
-	if params.Search != "" {
-		req.SetQueryParam("name", params.Search)
+	if opts.Search != "" {
+		req.SetQueryParam("name", opts.Search)
 	}
 
 	res, err := req.
