@@ -1,56 +1,182 @@
-{
-  "id": "8e7b5824-e232-4f90-b5ee-da347fd659c9",
-  "connector": {
-    "id": 200,
-    "name": "MeuPluggy",
-    "primaryColor": "ef294b",
-    "institutionUrl": "https://meu.pluggy.ai/",
-    "country": "BR",
-    "type": "PERSONAL_BANK",
-    "credentials": [],
-    "imageUrl": "https://cdn.pluggy.ai/assets/connector-icons/sandbox.svg",
-    "hasMFA": false,
-    "oauth": true,
-    "health": {
-      "status": "ONLINE",
-      "stage": null
-    },
-    "products": [
-      "ACCOUNTS",
-      "TRANSACTIONS",
-      "CREDIT_CARDS",
-      "INVESTMENTS",
-      "INVESTMENTS_TRANSACTIONS",
-      "PAYMENT_DATA",
-      "IDENTITY",
-      "BROKERAGE_NOTE"
-    ],
-    "createdAt": "2023-09-12T16:44:13.900Z",
-    "isSandbox": false,
-    "isOpenFinance": false,
-    "updatedAt": "2024-12-11T19:33:43.654Z",
-    "supportsPaymentInitiation": false,
-    "supportsScheduledPayments": false,
-    "supportsSmartTransfers": false
+[
+  {
+    "id": "8e7b5824-e232-4f90-b5ee-da347fd659c9",
+    "connector": {
+      "id": 612,
+      "name": "Nubank",
+      "primaryColor": "8a0fbe",
+      "institutionUrl": "https://nuapp.nubank.com.br/open-banking/logo.svg",
+      "country": "BR",
+      "type": "PERSONAL_BANK",
+      "credentials": [
+        {
+          "validation": "^\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}$",
+          "validationMessage": "CPF deve ter 11 números.",
+          "label": "CPF",
+          "name": "cpf",
+          "type": "number",
+          "placeholder": "",
+          "optional": false
+        }
+      ],
+      "imageUrl": "https://cdn.pluggy.ai/assets/connector-icons/212.svg",
+      "hasMFA": false,
+      "oauth": true,
+      "health": {
+        "status": "ONLINE",
+        "stage": null
+      },
+      "products": [
+        "ACCOUNTS",
+        "TRANSACTIONS",
+        "IDENTITY",
+        "CREDIT_CARDS",
+        "PAYMENT_DATA",
+        "LOANS",
+        "INVESTMENTS"
+      ],
+      "createdAt": "2023-09-01T18:05:09.145Z",
+      "isSandbox": false,
+      "isOpenFinance": true,
+      "updatedAt": "2024-12-18T12:35:15.132Z",
+      "supportsPaymentInitiation": true,
+      "supportsScheduledPayments": true,
+      "supportsSmartTransfers": true
+    }
   },
-  "createdAt": "2024-10-29T21:37:05.513Z",
-  "updatedAt": "2024-12-11T12:19:15.458Z",
-  "status": "UPDATED",
-  "executionStatus": "SUCCESS",
-  "lastUpdatedAt": "2024-12-11T12:19:15.407Z",
-  "webhookUrl": null,
-  "error": null,
-  "clientUserId": "demo:danielmesquitta123@gmail.com",
-  "consecutiveFailedLoginAttempts": 0,
-  "statusDetail": null,
-  "parameter": null,
-  "userAction": null,
-  "nextAutoSyncAt": "2024-12-12T12:19:15.407Z",
-  "consentExpiresAt": null,
-  "products": [
-    "ACCOUNTS",
-    "CREDIT_CARDS",
-    "TRANSACTIONS"
-  ],
-  "oauthRedirectUri": null
-}
+  {
+    "id": "5de68b44-d82b-482a-a3b6-b2189f201e6b",
+    "connector": {
+      "id": 675,
+      "name": "BTGPactual",
+      "primaryColor": "66768f",
+      "institutionUrl": "https://banking-public-prd.s3.sa-east-1.amazonaws.com/open-finance/logo/btgbanking/btgbanking.svg",
+      "country": "BR",
+      "type": "PERSONAL_BANK",
+      "credentials": [
+        {
+          "validation": "^\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}$",
+          "validationMessage": "CPF deve ter 11 números.",
+          "label": "CPF",
+          "name": "cpf",
+          "type": "number",
+          "placeholder": "",
+          "optional": false
+        }
+      ],
+      "imageUrl": "https://cdn.pluggy.ai/assets/connector-icons/214.svg",
+      "hasMFA": false,
+      "oauth": true,
+      "health": {
+        "status": "ONLINE",
+        "stage": null
+      },
+      "products": [
+        "ACCOUNTS",
+        "TRANSACTIONS",
+        "IDENTITY",
+        "CREDIT_CARDS",
+        "PAYMENT_DATA",
+        "LOANS",
+        "INVESTMENTS"
+      ],
+      "createdAt": "2023-10-19T07:18:53.593Z",
+      "isSandbox": false,
+      "isOpenFinance": true,
+      "updatedAt": "2024-12-18T12:35:21.104Z",
+      "supportsPaymentInitiation": true,
+      "supportsScheduledPayments": true,
+      "supportsSmartTransfers": false
+    }
+  },
+  {
+    "id": "dd5d7f78-f37b-4d00-9a5f-bd1ff0b63cee",
+    "connector": {
+      "id": 612,
+      "name": "Nubank",
+      "primaryColor": "8a0fbe",
+      "institutionUrl": "https://nuapp.nubank.com.br/open-banking/logo.svg",
+      "country": "BR",
+      "type": "PERSONAL_BANK",
+      "credentials": [
+        {
+          "validation": "^\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}$",
+          "validationMessage": "CPF deve ter 11 números.",
+          "label": "CPF",
+          "name": "cpf",
+          "type": "number",
+          "placeholder": "",
+          "optional": false
+        }
+      ],
+      "imageUrl": "https://cdn.pluggy.ai/assets/connector-icons/212.svg",
+      "hasMFA": false,
+      "oauth": true,
+      "health": {
+        "status": "ONLINE",
+        "stage": null
+      },
+      "products": [
+        "ACCOUNTS",
+        "TRANSACTIONS",
+        "IDENTITY",
+        "CREDIT_CARDS",
+        "PAYMENT_DATA",
+        "LOANS",
+        "INVESTMENTS"
+      ],
+      "createdAt": "2023-09-01T18:05:09.145Z",
+      "isSandbox": false,
+      "isOpenFinance": true,
+      "updatedAt": "2024-12-18T12:35:15.132Z",
+      "supportsPaymentInitiation": true,
+      "supportsScheduledPayments": true,
+      "supportsSmartTransfers": true
+    }
+  },
+  {
+    "id": "3d6f5c11-885c-4b07-bf78-51c16df442d3",
+    "connector": {
+      "id": 611,
+      "name": "Banco do Brasil",
+      "primaryColor": "1194F6",
+      "institutionUrl": "https://www.bb.com.br/docs/pub/inst/img/LogoBB.svg",
+      "country": "BR",
+      "type": "PERSONAL_BANK",
+      "credentials": [
+        {
+          "validation": "^\\d{3}\\.?\\d{3}\\.?\\d{3}-?\\d{2}$",
+          "validationMessage": "CPF deve ter 11 números.",
+          "label": "CPF",
+          "name": "cpf",
+          "type": "number",
+          "placeholder": "",
+          "optional": false
+        }
+      ],
+      "imageUrl": "https://cdn.pluggy.ai/assets/connector-icons/211.svg",
+      "hasMFA": false,
+      "oauth": true,
+      "health": {
+        "status": "ONLINE",
+        "stage": null
+      },
+      "products": [
+        "ACCOUNTS",
+        "TRANSACTIONS",
+        "IDENTITY",
+        "CREDIT_CARDS",
+        "PAYMENT_DATA",
+        "LOANS",
+        "INVESTMENTS"
+      ],
+      "createdAt": "2023-09-01T18:05:09.145Z",
+      "isSandbox": false,
+      "isOpenFinance": true,
+      "updatedAt": "2024-12-18T12:35:28.401Z",
+      "supportsPaymentInitiation": true,
+      "supportsScheduledPayments": true,
+      "supportsSmartTransfers": false
+    }
+  }
+]

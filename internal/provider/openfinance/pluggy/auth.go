@@ -56,9 +56,8 @@ func (c *Client) authenticate(ctx context.Context) error {
 	if err != nil {
 		return errs.New(err)
 	}
-	body := res.Body()
-	if statusCode := res.StatusCode(); statusCode < 200 || statusCode >= 300 {
-		return errs.New(body)
+	if err := res.Error(); err != nil {
+		return errs.New(err)
 	}
 
 	data := authResponse{}

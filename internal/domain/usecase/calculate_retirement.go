@@ -5,6 +5,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
 
@@ -24,26 +25,26 @@ func NewCalculateRetirement(
 }
 
 type CalculateRetirementInput struct {
-	MonthlyIncome              float64             `json:"monthly_income,omitempty"               validate:"required,min=0"`
+	MonthlyIncome              int64               `json:"monthly_income,omitempty"               validate:"required,min=0"`
 	IncomeInvestmentPercentage float64             `json:"income_investment_percentage,omitempty" validate:"required,min=0,max=100"`
-	InitialDeposit             float64             `json:"initial_deposit,omitempty"`
+	InitialDeposit             int64               `json:"initial_deposit,omitempty"`
 	Interest                   float64             `json:"interest,omitempty"                     validate:"required,min=0,max=100"`
 	InterestType               entity.InterestType `json:"interest_type,omitempty"                validate:"required,oneof=MONTHLY ANNUAL"`
-	GoalPatrimony              float64             `json:"goal_patrimony,omitempty"               validate:"required,min=0"`
-	GoalIncome                 float64             `json:"goal_income,omitempty"                  validate:"required,min=0"`
+	GoalPatrimony              int64               `json:"goal_patrimony,omitempty"               validate:"required,min=0"`
+	GoalIncome                 int64               `json:"goal_income,omitempty"                  validate:"required,min=0"`
 	Age                        int                 `json:"age,omitempty"                          validate:"required,min=0"`
 	RetirementAge              int                 `json:"retirement_age,omitempty"               validate:"required,min=1"`
 	LifeExpectancy             int                 `json:"life_expectancy,omitempty"              validate:"required,min=1"`
 }
 
 type CalculateRetirementOutput struct {
-	PropertyOnRetirement  float64 `json:"property_on_retirement,omitempty"`
-	Heritage              float64 `json:"heritage,omitempty"`
-	AchievedGoalPatrimony bool    `json:"achieved_goal_patrimony,omitempty"`
-	MaxMonthlyExpenses    float64 `json:"max_monthly_expenses,omitempty"`
-	AchievedGoalIncome    bool    `json:"achieved_goal_income,omitempty"`
-	ExceededGoalAmount    float64 `json:"exceeded_goal_amount,omitempty"`
-	ExceededGoal          bool    `json:"exceeded_goal,omitempty"`
+	PropertyOnRetirement  int64 `json:"property_on_retirement,omitempty"`
+	Heritage              int64 `json:"heritage,omitempty"`
+	AchievedGoalPatrimony bool  `json:"achieved_goal_patrimony,omitempty"`
+	MaxMonthlyExpenses    int64 `json:"max_monthly_expenses,omitempty"`
+	AchievedGoalIncome    bool  `json:"achieved_goal_income,omitempty"`
+	ExceededGoalAmount    int64 `json:"exceeded_goal_amount,omitempty"`
+	ExceededGoal          bool  `json:"exceeded_goal,omitempty"`
 }
 
 func (uc *CalculateRetirement) Execute(
@@ -60,11 +61,15 @@ func (uc *CalculateRetirement) Execute(
 		return nil, errs.New(err)
 	}
 
+	monthlyDeposit := money.FromCents(
+		in.MonthlyIncome,
+	) * (in.IncomeInvestmentPercentage / 100)
+
 	resultsOnRetirementDate, err := uc.cci.Execute(
 		ctx,
 		CalculateCompoundInterestInput{
 			InitialDeposit: in.InitialDeposit,
-			MonthlyDeposit: in.MonthlyIncome * in.IncomeInvestmentPercentage / 100,
+			MonthlyDeposit: money.ToCents(monthlyDeposit),
 			Interest:       in.Interest,
 			InterestType:   in.InterestType,
 			PeriodInMonths: (in.RetirementAge - in.Age) * 12,

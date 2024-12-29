@@ -38,7 +38,7 @@ model Transaction {
   id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id    String   @unique
   name           String
-  amount         Float
+  amount         BigInt
   payment_method String
   is_ignored     Boolean  @default(false)
   date           DateTime @db.Timestamptz()
@@ -62,14 +62,14 @@ model Investment {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id String   @unique
   name        String
-  amount      Float
+  amount      BigInt
   type        String
   rate        Float
   rateType    String
   created_at  DateTime @default(now()) @db.Timestamptz()
   updated_at  DateTime @default(now()) @db.Timestamptz()
 
-  user    User   @relation(fields: [user_id], references: [id])
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
 
   @@map("investments")
@@ -93,7 +93,6 @@ model Account {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id String   @unique
   name        String
-  balance     Float
   type        String
   created_at  DateTime @default(now()) @db.Timestamptz()
   updated_at  DateTime @default(now()) @db.Timestamptz()
@@ -104,26 +103,9 @@ model Account {
   institution    Institution @relation(fields: [institution_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   institution_id String      @db.Uuid
 
-  creditCard CreditCard?
-
   transactions Transaction[]
 
   @@map("accounts")
-}
-
-model CreditCard {
-  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  level           String
-  brand           String
-  limit           Float
-  available_limit Float
-  created_at      DateTime @default(now()) @db.Timestamptz()
-  updated_at      DateTime @default(now()) @db.Timestamptz()
-
-  account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  account_id String  @unique @db.Uuid
-
-  @@map("credit_cards")
 }
 
 model Institution {
@@ -141,7 +123,7 @@ model Institution {
 
 model Budget {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  amount     Float
+  amount     BigInt
   date       DateTime @db.Timestamptz()
   created_at DateTime @default(now()) @db.Timestamptz()
   updated_at DateTime @default(now()) @db.Timestamptz()
@@ -156,7 +138,7 @@ model Budget {
 
 model BudgetCategory {
   id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  amount     Float
+  amount     BigInt
   created_at DateTime @default(now()) @db.Timestamptz()
   updated_at DateTime @default(now()) @db.Timestamptz()
 

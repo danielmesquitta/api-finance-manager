@@ -12,13 +12,13 @@ import (
 )
 
 type CreateBudgetParams struct {
-	Amount float64   `json:"amount"`
+	Amount int64     `json:"amount"`
 	Date   time.Time `json:"date"`
 	UserID uuid.UUID `json:"user_id"`
 }
 
 type CreateBudgetCategoriesParams struct {
-	Amount     float64   `json:"amount"`
+	Amount     int64     `json:"amount"`
 	BudgetID   uuid.UUID `json:"budget_id"`
 	CategoryID uuid.UUID `json:"category_id"`
 }
@@ -29,7 +29,7 @@ type GetBudgetParams struct {
 }
 
 type UpdateBudgetParams struct {
-	Amount float64   `json:"amount"`
+	Amount int64     `json:"amount"`
 	UserID uuid.UUID `json:"user_id"`
 	Date   time.Time `json:"date"`
 }

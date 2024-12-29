@@ -29,12 +29,12 @@ func NewUpsertBudget(
 }
 
 type UpsertBudgetCategoryInput struct {
-	Amount     float64   `json:"amount"      validate:"required,gt=0"`
+	Amount     int64     `json:"amount"      validate:"required,gt=0"`
 	CategoryID uuid.UUID `json:"category_id" validate:"required"`
 }
 
 type UpsertBudgetInput struct {
-	Amount     float64                     `json:"amount"     validate:"required,gt=0"`
+	Amount     int64                       `json:"amount"     validate:"required,gt=0"`
 	UserID     uuid.UUID                   `json:"-"          validate:"required"`
 	Date       string                      `json:"date"       validate:"required"`
 	Categories []UpsertBudgetCategoryInput `json:"categories" validate:"dive"`
@@ -111,7 +111,7 @@ func (u *UpsertBudget) validate(in UpsertBudgetInput) error {
 		return errs.New(err)
 	}
 
-	totalAmount := 0.0
+	var totalAmount int64
 	for _, c := range in.Categories {
 		totalAmount += c.Amount
 	}

@@ -24,15 +24,15 @@ func NewCalculateEmergencyReserve(
 
 type CalculateEmergencyReserveInput struct {
 	JobType                  entity.JobType `validate:"required,oneof=ENTREPRENEUR EMPLOYEE CIVIL_SERVANT" json:"job_type,omitempty"`
-	MonthlyExpenses          float64        `validate:"min=0"                                              json:"monthly_expenses,omitempty"`
-	MonthlyIncome            float64        `validate:"min=0"                                              json:"monthly_income,omitempty"`
+	MonthlyExpenses          int64          `validate:"min=0"                                              json:"monthly_expenses,omitempty"`
+	MonthlyIncome            int64          `validate:"min=0"                                              json:"monthly_income,omitempty"`
 	MonthlySavingsPercentage float64        `validate:"min=0,max=100"                                      json:"monthly_savings_percentage,omitempty"`
 }
 
 type CalculateEmergencyReserveOutput struct {
-	RecommendedReserveInMonths      int
-	RecommendedReserveInValue       float64
-	MonthsToAchieveEmergencyReserve int
+	RecommendedReserveInMonths      int   `json:"recommended_reserve_in_months,omitempty"`
+	RecommendedReserveInValue       int64 `json:"recommended_reserve_in_value,omitempty"`
+	MonthsToAchieveEmergencyReserve int   `json:"months_to_achieve_emergency_reserve,omitempty"`
 }
 
 func (uc *CalculateEmergencyReserve) Execute(
@@ -60,14 +60,17 @@ func (uc *CalculateEmergencyReserve) Execute(
 		out.RecommendedReserveInMonths = 12
 	}
 
-	monthlySavings := in.MonthlyIncome * in.MonthlySavingsPercentage / 100
+	monthlySavings := money.FromCents(
+		in.MonthlyIncome,
+	) * in.MonthlySavingsPercentage / 100
 
-	out.RecommendedReserveInValue = money.Round(
-		in.MonthlyExpenses * float64(out.RecommendedReserveInMonths),
-	)
+	out.RecommendedReserveInValue =
+		in.MonthlyExpenses * int64(out.RecommendedReserveInMonths)
 
 	out.MonthsToAchieveEmergencyReserve = int(
-		math.Ceil(out.RecommendedReserveInValue / monthlySavings),
+		math.Ceil(
+			money.FromCents(out.RecommendedReserveInValue) / monthlySavings,
+		),
 	)
 
 	return out, nil

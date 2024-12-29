@@ -63,4 +63,8 @@ type Client interface {
 		accountID uuid.UUID,
 		options ...ListTransactionsOption,
 	) ([]Transaction, error)
+	ListAccounts(
+		ctx context.Context,
+		connectionID uuid.UUID,
+	) ([]entity.Account, error)
 }

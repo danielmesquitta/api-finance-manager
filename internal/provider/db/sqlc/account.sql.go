@@ -12,7 +12,7 @@ import (
 )
 
 const listAccountsByUserID = `-- name: ListAccountsByUserID :many
-SELECT id, external_id, name, balance, type, created_at, updated_at, user_id, institution_id
+SELECT id, external_id, name, type, created_at, updated_at, user_id, institution_id
 FROM accounts
 WHERE user_id = $1
 `
@@ -30,7 +30,6 @@ func (q *Queries) ListAccountsByUserID(ctx context.Context, userID uuid.UUID) ([
 			&i.ID,
 			&i.ExternalID,
 			&i.Name,
-			&i.Balance,
 			&i.Type,
 			&i.CreatedAt,
 			&i.UpdatedAt,

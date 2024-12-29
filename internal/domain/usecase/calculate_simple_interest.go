@@ -22,7 +22,7 @@ func NewCalculateSimpleInterest(
 }
 
 type CalculateSimpleInterestInput struct {
-	InitialDeposit float64             `validate:"min=0"                         json:"initial_deposit,omitempty"`
+	InitialDeposit int64               `validate:"min=0"                         json:"initial_deposit,omitempty"`
 	Interest       float64             `validate:"required,min=0,max=100"        json:"interest,omitempty"`
 	InterestType   entity.InterestType `validate:"required,oneof=MONTHLY ANNUAL" json:"interest_type,omitempty"`
 	PeriodInMonths int                 `validate:"required,min=1"                json:"period_in_months,omitempty"`
@@ -34,9 +34,9 @@ type CalculateSimpleInterestOutput struct {
 }
 
 type SimpleInterestResult struct {
-	TotalAmount   float64 `json:"total_amount,omitempty"`
-	TotalInterest float64 `json:"total_interest,omitempty"`
-	TotalDeposit  float64 `json:"total_deposit,omitempty"`
+	TotalAmount   int64 `json:"total_amount,omitempty"`
+	TotalInterest int64 `json:"total_interest,omitempty"`
+	TotalDeposit  int64 `json:"total_deposit,omitempty"`
 }
 
 func (uc *CalculateSimpleInterest) Execute(
@@ -65,26 +65,26 @@ func (uc *CalculateSimpleInterest) Execute(
 		monthlyInterestRate = in.Interest / 100 / 12
 	}
 
-	currentBalance := in.InitialDeposit
-	totalDeposit := in.InitialDeposit
+	currentBalance := money.FromCents(in.InitialDeposit)
+	totalDeposit := currentBalance
 	totalInterest := 0.0
 
-	monthlyInterest := in.InitialDeposit * monthlyInterestRate
+	monthlyInterest := money.FromCents(in.InitialDeposit) * monthlyInterestRate
 
 	for month := 1; month <= in.PeriodInMonths; month++ {
 		currentBalance += monthlyInterest
 		totalInterest += monthlyInterest
 
 		output.ByMonth[month] = SimpleInterestResult{
-			TotalAmount:   money.Round(currentBalance),
-			TotalInterest: money.Round(totalInterest),
-			TotalDeposit:  money.Round(totalDeposit),
+			TotalAmount:   money.ToCents(currentBalance),
+			TotalInterest: money.ToCents(totalInterest),
+			TotalDeposit:  money.ToCents(totalDeposit),
 		}
 	}
 
-	output.TotalAmount = money.Round(currentBalance)
-	output.TotalInterest = money.Round(totalInterest)
-	output.TotalDeposit = money.Round(totalDeposit)
+	output.TotalAmount = money.ToCents(currentBalance)
+	output.TotalInterest = money.ToCents(totalInterest)
+	output.TotalDeposit = money.ToCents(totalDeposit)
 
 	return output, nil
 }

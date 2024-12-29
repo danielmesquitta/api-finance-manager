@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"log/slog"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
@@ -23,25 +22,25 @@ func NewCalculateCompoundInterest(
 }
 
 type CalculateCompoundInterestInput struct {
-	InitialDeposit float64             `json:"initial_deposit,omitempty"`
-	MonthlyDeposit float64             `json:"monthly_deposit,omitempty"`
+	InitialDeposit int64               `json:"initial_deposit,omitempty"`
+	MonthlyDeposit int64               `json:"monthly_deposit,omitempty"`
 	Interest       float64             `json:"interest,omitempty"         validate:"required,min=0,max=100"`
 	InterestType   entity.InterestType `json:"interest_type,omitempty"    validate:"required,oneof=MONTHLY ANNUAL"`
 	PeriodInMonths int                 `json:"period_in_months,omitempty" validate:"required,min=1"`
 }
 
 type CalculateCompoundInterestOutput struct {
-	TotalAmount   float64                        `json:"total_amount,omitempty"`
-	TotalInterest float64                        `json:"total_interest,omitempty"`
-	TotalDeposit  float64                        `json:"total_deposit,omitempty"`
+	TotalAmount   int64                          `json:"total_amount,omitempty"`
+	TotalInterest int64                          `json:"total_interest,omitempty"`
+	TotalDeposit  int64                          `json:"total_deposit,omitempty"`
 	ByMonth       map[int]CompoundInterestResult `json:"by_month,omitempty"`
 }
 
 type CompoundInterestResult struct {
-	TotalAmount     float64 `json:"total_amount,omitempty"`
-	TotalInterest   float64 `json:"total_interest,omitempty"`
-	TotalDeposit    float64 `json:"total_deposit,omitempty"`
-	MonthlyInterest float64 `json:"monthly_interest,omitempty"`
+	TotalAmount     int64 `json:"total_amount,omitempty"`
+	TotalInterest   int64 `json:"total_interest,omitempty"`
+	TotalDeposit    int64 `json:"total_deposit,omitempty"`
+	MonthlyInterest int64 `json:"monthly_interest,omitempty"`
 }
 
 func (uc *CalculateCompoundInterest) Execute(
@@ -68,34 +67,31 @@ func (uc *CalculateCompoundInterest) Execute(
 	case entity.InterestTypeMonthly:
 		monthlyInterestRate = interestRate
 	case entity.InterestTypeAnnual:
-		monthlyInterestRate = money.CompoundInterestAnnualToMonthlyRate(
-			interestRate,
-		)
+		monthlyInterestRate = money.ToMonthlyInterestRate(interestRate)
 	}
 
-	currentBalance := in.InitialDeposit
-	totalDeposit := in.InitialDeposit
+	currentBalance := money.FromCents(in.InitialDeposit)
+	totalDeposit := currentBalance
 	totalInterest := 0.0
 
 	for month := 1; month <= in.PeriodInMonths; month++ {
+		monthlyDeposit := money.FromCents(in.MonthlyDeposit)
 		monthlyInterest := currentBalance * monthlyInterestRate
-		currentBalance += monthlyInterest + in.MonthlyDeposit
-		totalDeposit += in.MonthlyDeposit
+		currentBalance += monthlyInterest + monthlyDeposit
+		totalDeposit += monthlyDeposit
 		totalInterest += monthlyInterest
 
 		output.ByMonth[month] = CompoundInterestResult{
-			TotalAmount:     money.Round(currentBalance),
-			TotalInterest:   money.Round(totalInterest),
-			TotalDeposit:    money.Round(totalDeposit),
-			MonthlyInterest: money.Round(monthlyInterest),
+			TotalAmount:     money.ToCents(currentBalance),
+			TotalInterest:   money.ToCents(totalInterest),
+			TotalDeposit:    money.ToCents(totalDeposit),
+			MonthlyInterest: money.ToCents(monthlyInterest),
 		}
 	}
 
-	output.TotalAmount = money.Round(currentBalance)
-	output.TotalInterest = money.Round(totalInterest)
-	output.TotalDeposit = money.Round(totalDeposit)
-
-	slog.Info("CalculateCompoundInterest.Execute", "output", output)
+	output.TotalAmount = money.ToCents(currentBalance)
+	output.TotalInterest = money.ToCents(totalInterest)
+	output.TotalDeposit = money.ToCents(totalDeposit)
 
 	return output, nil
 }

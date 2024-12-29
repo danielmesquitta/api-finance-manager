@@ -10,6 +10,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
 	"github.com/google/uuid"
 )
@@ -238,12 +239,12 @@ func (c *Client) setTransactionAmount(
 	r Result,
 ) error {
 	if r.CurrencyCode == CurrencyCodeBRL {
-		t.Amount = r.Amount
+		t.Amount = money.ToCents(r.Amount)
 		return nil
 	}
 
 	if r.AmountInAccountCurrency != nil {
-		t.Amount = *r.AmountInAccountCurrency
+		t.Amount = money.ToCents(*r.AmountInAccountCurrency)
 		return nil
 	}
 

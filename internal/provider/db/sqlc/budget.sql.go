@@ -15,11 +15,11 @@ import (
 const createBudget = `-- name: CreateBudget :one
 INSERT INTO budgets (amount, date, user_id)
 VALUES ($1, $2, $3)
-RETURNING id, amount, created_at, updated_at, user_id, date
+RETURNING id, amount, date, created_at, updated_at, user_id
 `
 
 type CreateBudgetParams struct {
-	Amount float64   `json:"amount"`
+	Amount int64     `json:"amount"`
 	Date   time.Time `json:"date"`
 	UserID uuid.UUID `json:"user_id"`
 }
@@ -30,16 +30,16 @@ func (q *Queries) CreateBudget(ctx context.Context, arg CreateBudgetParams) (Bud
 	err := row.Scan(
 		&i.ID,
 		&i.Amount,
+		&i.Date,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.UserID,
-		&i.Date,
 	)
 	return i, err
 }
 
 type CreateBudgetCategoriesParams struct {
-	Amount     float64   `json:"amount"`
+	Amount     int64     `json:"amount"`
 	BudgetID   uuid.UUID `json:"budget_id"`
 	CategoryID uuid.UUID `json:"category_id"`
 }
@@ -66,7 +66,7 @@ func (q *Queries) DeleteBudgets(ctx context.Context, userID uuid.UUID) error {
 }
 
 const getBudget = `-- name: GetBudget :one
-SELECT id, amount, created_at, updated_at, user_id, date
+SELECT id, amount, date, created_at, updated_at, user_id
 FROM budgets
 WHERE user_id = $1
   AND date <= $2
@@ -85,10 +85,10 @@ func (q *Queries) GetBudget(ctx context.Context, arg GetBudgetParams) (Budget, e
 	err := row.Scan(
 		&i.ID,
 		&i.Amount,
+		&i.Date,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.UserID,
-		&i.Date,
 	)
 	return i, err
 }
@@ -147,7 +147,7 @@ WHERE user_id = $2
 `
 
 type UpdateBudgetParams struct {
-	Amount float64   `json:"amount"`
+	Amount int64     `json:"amount"`
 	UserID uuid.UUID `json:"user_id"`
 	Date   time.Time `json:"date"`
 }
