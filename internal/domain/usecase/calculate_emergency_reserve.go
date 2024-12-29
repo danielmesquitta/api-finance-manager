@@ -23,10 +23,10 @@ func NewCalculateEmergencyReserve(
 }
 
 type CalculateEmergencyReserveInput struct {
-	JobType                  entity.JobType `validate:"required,oneof=ENTREPRENEUR EMPLOYEE CIVIL_SERVANT" json:"job_type,omitempty"`
-	MonthlyExpenses          int64          `validate:"min=0"                                              json:"monthly_expenses,omitempty"`
-	MonthlyIncome            int64          `validate:"min=0"                                              json:"monthly_income,omitempty"`
-	MonthlySavingsPercentage float64        `validate:"min=0,max=100"                                      json:"monthly_savings_percentage,omitempty"`
+	JobType                  entity.JobType `json:"job_type,omitempty"                   validate:"required,oneof=ENTREPRENEUR EMPLOYEE CIVIL_SERVANT"`
+	MonthlyExpenses          int64          `json:"monthly_expenses,omitempty"           validate:"min=0"`
+	MonthlyIncome            int64          `json:"monthly_income,omitempty"             validate:"min=0"`
+	MonthlySavingsPercentage float64        `json:"monthly_savings_percentage,omitempty" validate:"min=0,max=100"`
 }
 
 type CalculateEmergencyReserveOutput struct {

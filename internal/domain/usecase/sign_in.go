@@ -45,7 +45,7 @@ func NewSignIn(
 type SignInInput struct {
 	Provider entity.Provider `json:"provider,omitempty" validate:"required,oneof=GOOGLE APPLE REFRESH MOCK"`
 	Token    string          `json:"token,omitempty"    validate:"required_without=UserID"`
-	UserID   uuid.UUID       `json:"-"                  validate:"required_without=Token"`
+	UserID   uuid.UUID       `json:"user_id,omitempty"  validate:"required_without=Token"`
 }
 
 type SignInOutput struct {

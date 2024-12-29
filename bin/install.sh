@@ -12,6 +12,7 @@ packages=(
     "github.com/danielmesquitta/copy-sqlc-params@latest"
     "github.com/swaggo/swag/cmd/swag@latest"
     "github.com/zxmfke/swagger2openapi3/cmd/swag2op@latest"
+    "github.com/momaek/formattag@latest"
 )
 
 echo "Installing and updating Go packages..."

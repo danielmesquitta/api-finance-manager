@@ -685,7 +685,7 @@
             ],
             "properties": {
                 "initial_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "interest": {
                     "type": "number",
@@ -704,7 +704,7 @@
                     ]
                 },
                 "monthly_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "period_in_months": {
                     "type": "integer",
@@ -722,13 +722,13 @@
                     }
                 },
                 "total_amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_interest": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -751,11 +751,11 @@
                     ]
                 },
                 "monthly_expenses": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "monthly_income": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "monthly_savings_percentage": {
@@ -768,14 +768,14 @@
         "dto.EmergencyReserveResponse": {
             "type": "object",
             "properties": {
-                "monthsToAchieveEmergencyReserve": {
+                "months_to_achieve_emergency_reserve": {
                     "type": "integer"
                 },
-                "recommendedReserveInMonths": {
+                "recommended_reserve_in_months": {
                     "type": "integer"
                 },
-                "recommendedReserveInValue": {
-                    "type": "number"
+                "recommended_reserve_in_value": {
+                    "type": "integer"
                 }
             }
         },
@@ -791,7 +791,7 @@
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "available": {
                     "type": "number"
@@ -875,11 +875,11 @@
                     "minimum": 0
                 },
                 "goal_income": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "goal_patrimony": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "income_investment_percentage": {
@@ -888,7 +888,7 @@
                     "minimum": 0
                 },
                 "initial_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "interest": {
                     "type": "number",
@@ -911,7 +911,7 @@
                     "minimum": 1
                 },
                 "monthly_income": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "retirement_age": {
@@ -933,16 +933,16 @@
                     "type": "boolean"
                 },
                 "exceeded_goal_amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "heritage": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "max_monthly_expenses": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "property_on_retirement": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -977,7 +977,7 @@
             ],
             "properties": {
                 "initial_deposit": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "interest": {
@@ -1012,13 +1012,13 @@
                     }
                 },
                 "total_amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_interest": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1026,11 +1026,12 @@
             "type": "object",
             "required": [
                 "amount",
-                "date"
+                "date",
+                "user_id"
             ],
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "categories": {
                     "type": "array",
@@ -1039,6 +1040,9 @@
                     }
                 },
                 "date": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -1188,16 +1192,16 @@
             "type": "object",
             "properties": {
                 "monthly_interest": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_interest": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1205,7 +1209,7 @@
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "budget_id": {
                     "type": "string"
@@ -1234,13 +1238,13 @@
             "type": "object",
             "properties": {
                 "total_amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_interest": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1252,7 +1256,7 @@
             ],
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "category_id": {
                     "type": "string"

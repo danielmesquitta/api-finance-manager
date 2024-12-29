@@ -30,8 +30,8 @@ func NewGetBudget(
 }
 
 type GetBudgetInput struct {
-	UserID uuid.UUID `json:"-"    validate:"required"`
-	Date   string    `json:"date" validate:"required"`
+	UserID uuid.UUID `json:"user_id,omitempty" validate:"required"`
+	Date   string    `json:"date,omitempty"    validate:"required"`
 }
 
 type GetBudgetBudgetCategory struct {

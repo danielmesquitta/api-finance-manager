@@ -3,7 +3,7 @@ components:
         dto.CompoundInterestRequest:
             properties:
                 initial_deposit:
-                    type: number
+                    type: integer
                 interest:
                     maximum: 100
                     minimum: 0
@@ -15,7 +15,7 @@ components:
                         - MONTHLY
                         - ANNUAL
                 monthly_deposit:
-                    type: number
+                    type: integer
                 period_in_months:
                     minimum: 1
                     type: integer
@@ -31,11 +31,11 @@ components:
                         $ref: '#/components/schemas/usecase.CompoundInterestResult'
                     type: object
                 total_amount:
-                    type: number
+                    type: integer
                 total_deposit:
-                    type: number
+                    type: integer
                 total_interest:
-                    type: number
+                    type: integer
             type: object
         dto.EmergencyReserveRequest:
             properties:
@@ -48,10 +48,10 @@ components:
                         - CIVIL_SERVANT
                 monthly_expenses:
                     minimum: 0
-                    type: number
+                    type: integer
                 monthly_income:
                     minimum: 0
-                    type: number
+                    type: integer
                 monthly_savings_percentage:
                     maximum: 100
                     minimum: 0
@@ -61,12 +61,12 @@ components:
             type: object
         dto.EmergencyReserveResponse:
             properties:
-                monthsToAchieveEmergencyReserve:
+                months_to_achieve_emergency_reserve:
                     type: integer
-                recommendedReserveInMonths:
+                recommended_reserve_in_months:
                     type: integer
-                recommendedReserveInValue:
-                    type: number
+                recommended_reserve_in_value:
+                    type: integer
             type: object
         dto.ErrorResponse:
             properties:
@@ -76,7 +76,7 @@ components:
         dto.GetBudgetResponse:
             properties:
                 amount:
-                    type: number
+                    type: integer
                 available:
                     type: number
                 available_per_day:
@@ -125,16 +125,16 @@ components:
                     type: integer
                 goal_income:
                     minimum: 0
-                    type: number
+                    type: integer
                 goal_patrimony:
                     minimum: 0
-                    type: number
+                    type: integer
                 income_investment_percentage:
                     maximum: 100
                     minimum: 0
                     type: number
                 initial_deposit:
-                    type: number
+                    type: integer
                 interest:
                     maximum: 100
                     minimum: 0
@@ -150,7 +150,7 @@ components:
                     type: integer
                 monthly_income:
                     minimum: 0
-                    type: number
+                    type: integer
                 retirement_age:
                     minimum: 1
                     type: integer
@@ -174,13 +174,13 @@ components:
                 exceeded_goal:
                     type: boolean
                 exceeded_goal_amount:
-                    type: number
+                    type: integer
                 heritage:
-                    type: number
+                    type: integer
                 max_monthly_expenses:
-                    type: number
+                    type: integer
                 property_on_retirement:
-                    type: number
+                    type: integer
             type: object
         dto.SignInRequest:
             properties:
@@ -200,7 +200,7 @@ components:
             properties:
                 initial_deposit:
                     minimum: 0
-                    type: number
+                    type: integer
                 interest:
                     maximum: 100
                     minimum: 0
@@ -226,25 +226,28 @@ components:
                         $ref: '#/components/schemas/usecase.SimpleInterestResult'
                     type: object
                 total_amount:
-                    type: number
+                    type: integer
                 total_deposit:
-                    type: number
+                    type: integer
                 total_interest:
-                    type: number
+                    type: integer
             type: object
         dto.UpsertBudgetRequest:
             properties:
                 amount:
-                    type: number
+                    type: integer
                 categories:
                     items:
                         $ref: '#/components/schemas/usecase.UpsertBudgetCategoryInput'
                     type: array
                 date:
                     type: string
+                user_id:
+                    type: string
             required:
                 - amount
                 - date
+                - user_id
             type: object
         dto.UserProfileResponse:
             properties:
@@ -346,18 +349,18 @@ components:
         usecase.CompoundInterestResult:
             properties:
                 monthly_interest:
-                    type: number
+                    type: integer
                 total_amount:
-                    type: number
+                    type: integer
                 total_deposit:
-                    type: number
+                    type: integer
                 total_interest:
-                    type: number
+                    type: integer
             type: object
         usecase.GetBudgetBudgetCategory:
             properties:
                 amount:
-                    type: number
+                    type: integer
                 budget_id:
                     type: string
                 category:
@@ -376,16 +379,16 @@ components:
         usecase.SimpleInterestResult:
             properties:
                 total_amount:
-                    type: number
+                    type: integer
                 total_deposit:
-                    type: number
+                    type: integer
                 total_interest:
-                    type: number
+                    type: integer
             type: object
         usecase.UpsertBudgetCategoryInput:
             properties:
                 amount:
-                    type: number
+                    type: integer
                 category_id:
                     type: string
             required:

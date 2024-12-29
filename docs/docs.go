@@ -692,7 +692,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "initial_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "interest": {
                     "type": "number",
@@ -711,7 +711,7 @@ const docTemplate = `{
                     ]
                 },
                 "monthly_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "period_in_months": {
                     "type": "integer",
@@ -729,13 +729,13 @@ const docTemplate = `{
                     }
                 },
                 "total_amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_interest": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -758,11 +758,11 @@ const docTemplate = `{
                     ]
                 },
                 "monthly_expenses": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "monthly_income": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "monthly_savings_percentage": {
@@ -775,14 +775,14 @@ const docTemplate = `{
         "dto.EmergencyReserveResponse": {
             "type": "object",
             "properties": {
-                "monthsToAchieveEmergencyReserve": {
+                "months_to_achieve_emergency_reserve": {
                     "type": "integer"
                 },
-                "recommendedReserveInMonths": {
+                "recommended_reserve_in_months": {
                     "type": "integer"
                 },
-                "recommendedReserveInValue": {
-                    "type": "number"
+                "recommended_reserve_in_value": {
+                    "type": "integer"
                 }
             }
         },
@@ -798,7 +798,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "available": {
                     "type": "number"
@@ -882,11 +882,11 @@ const docTemplate = `{
                     "minimum": 0
                 },
                 "goal_income": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "goal_patrimony": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "income_investment_percentage": {
@@ -895,7 +895,7 @@ const docTemplate = `{
                     "minimum": 0
                 },
                 "initial_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "interest": {
                     "type": "number",
@@ -918,7 +918,7 @@ const docTemplate = `{
                     "minimum": 1
                 },
                 "monthly_income": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "retirement_age": {
@@ -940,16 +940,16 @@ const docTemplate = `{
                     "type": "boolean"
                 },
                 "exceeded_goal_amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "heritage": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "max_monthly_expenses": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "property_on_retirement": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -984,7 +984,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "initial_deposit": {
-                    "type": "number",
+                    "type": "integer",
                     "minimum": 0
                 },
                 "interest": {
@@ -1019,13 +1019,13 @@ const docTemplate = `{
                     }
                 },
                 "total_amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_interest": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1033,11 +1033,12 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "amount",
-                "date"
+                "date",
+                "user_id"
             ],
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "categories": {
                     "type": "array",
@@ -1046,6 +1047,9 @@ const docTemplate = `{
                     }
                 },
                 "date": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -1195,16 +1199,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "monthly_interest": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_interest": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1212,7 +1216,7 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "budget_id": {
                     "type": "string"
@@ -1241,13 +1245,13 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "total_amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_deposit": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "total_interest": {
-                    "type": "number"
+                    "type": "integer"
                 }
             }
         },
@@ -1259,7 +1263,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "amount": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "category_id": {
                     "type": "string"
