@@ -22,21 +22,21 @@ func NewCalculateSimpleInterest(
 }
 
 type CalculateSimpleInterestInput struct {
-	InitialDeposit int64               `json:"initial_deposit,omitempty"  validate:"min=0"`
-	Interest       float64             `json:"interest,omitempty"         validate:"required,min=0,max=100"`
-	InterestType   entity.InterestType `json:"interest_type,omitempty"    validate:"required,oneof=MONTHLY ANNUAL"`
-	PeriodInMonths int                 `json:"period_in_months,omitempty" validate:"required,min=1"`
+	InitialDeposit int64               `json:"initial_deposit"  validate:"min=0"`
+	Interest       float64             `json:"interest"         validate:"required,min=0,max=100"`
+	InterestType   entity.InterestType `json:"interest_type"    validate:"required,oneof=MONTHLY ANNUAL"`
+	PeriodInMonths int                 `json:"period_in_months" validate:"required,min=1"`
 }
 
 type CalculateSimpleInterestOutput struct {
 	SimpleInterestResult
-	ByMonth map[int]SimpleInterestResult `json:"by_month,omitempty"`
+	ByMonth map[int]SimpleInterestResult `json:"by_month"`
 }
 
 type SimpleInterestResult struct {
-	TotalAmount   int64 `json:"total_amount,omitempty"`
-	TotalInterest int64 `json:"total_interest,omitempty"`
-	TotalDeposit  int64 `json:"total_deposit,omitempty"`
+	TotalAmount   int64 `json:"total_amount"`
+	TotalInterest int64 `json:"total_interest"`
+	TotalDeposit  int64 `json:"total_deposit"`
 }
 
 func (uc *CalculateSimpleInterest) Execute(

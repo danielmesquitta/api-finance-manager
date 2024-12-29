@@ -7,9 +7,9 @@ import (
 )
 
 type PaginationInput struct {
-	Search   string `json:"search,omitempty"`
-	Page     int    `json:"page,omitempty"`
-	PageSize int    `json:"page_size,omitempty"`
+	Search   string `json:"search"`
+	Page     int    `json:"page"`
+	PageSize int    `json:"page_size"`
 }
 
 func preparePaginationInput(in *PaginationInput) (offset int) {

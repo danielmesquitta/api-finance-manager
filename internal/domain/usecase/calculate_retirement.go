@@ -25,26 +25,26 @@ func NewCalculateRetirement(
 }
 
 type CalculateRetirementInput struct {
-	MonthlyIncome              int64               `json:"monthly_income,omitempty"               validate:"required,min=0"`
-	IncomeInvestmentPercentage float64             `json:"income_investment_percentage,omitempty" validate:"required,min=0,max=100"`
-	InitialDeposit             int64               `json:"initial_deposit,omitempty"`
-	Interest                   float64             `json:"interest,omitempty"                     validate:"required,min=0,max=100"`
-	InterestType               entity.InterestType `json:"interest_type,omitempty"                validate:"required,oneof=MONTHLY ANNUAL"`
-	GoalPatrimony              int64               `json:"goal_patrimony,omitempty"               validate:"required,min=0"`
-	GoalIncome                 int64               `json:"goal_income,omitempty"                  validate:"required,min=0"`
-	Age                        int                 `json:"age,omitempty"                          validate:"required,min=0"`
-	RetirementAge              int                 `json:"retirement_age,omitempty"               validate:"required,min=1"`
-	LifeExpectancy             int                 `json:"life_expectancy,omitempty"              validate:"required,min=1"`
+	MonthlyIncome              int64               `json:"monthly_income"               validate:"required,min=0"`
+	IncomeInvestmentPercentage float64             `json:"income_investment_percentage" validate:"required,min=0,max=100"`
+	InitialDeposit             int64               `json:"initial_deposit"`
+	Interest                   float64             `json:"interest"                     validate:"required,min=0,max=100"`
+	InterestType               entity.InterestType `json:"interest_type"                validate:"required,oneof=MONTHLY ANNUAL"`
+	GoalPatrimony              int64               `json:"goal_patrimony"               validate:"required,min=0"`
+	GoalIncome                 int64               `json:"goal_income"                  validate:"required,min=0"`
+	Age                        int                 `json:"age"                          validate:"required,min=0"`
+	RetirementAge              int                 `json:"retirement_age"               validate:"required,min=1"`
+	LifeExpectancy             int                 `json:"life_expectancy"              validate:"required,min=1"`
 }
 
 type CalculateRetirementOutput struct {
-	PropertyOnRetirement  int64 `json:"property_on_retirement,omitempty"`
-	Heritage              int64 `json:"heritage,omitempty"`
-	AchievedGoalPatrimony bool  `json:"achieved_goal_patrimony,omitempty"`
-	MaxMonthlyExpenses    int64 `json:"max_monthly_expenses,omitempty"`
-	AchievedGoalIncome    bool  `json:"achieved_goal_income,omitempty"`
-	ExceededGoalAmount    int64 `json:"exceeded_goal_amount,omitempty"`
-	ExceededGoal          bool  `json:"exceeded_goal,omitempty"`
+	PropertyOnRetirement  int64 `json:"property_on_retirement"`
+	Heritage              int64 `json:"heritage"`
+	AchievedGoalPatrimony bool  `json:"achieved_goal_patrimony"`
+	MaxMonthlyExpenses    int64 `json:"max_monthly_expenses"`
+	AchievedGoalIncome    bool  `json:"achieved_goal_income"`
+	ExceededGoalAmount    int64 `json:"exceeded_goal_amount"`
+	ExceededGoal          bool  `json:"exceeded_goal"`
 }
 
 func (uc *CalculateRetirement) Execute(

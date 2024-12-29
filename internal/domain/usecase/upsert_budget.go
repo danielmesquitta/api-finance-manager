@@ -29,15 +29,15 @@ func NewUpsertBudget(
 }
 
 type UpsertBudgetCategoryInput struct {
-	Amount     int64     `json:"amount,omitempty"      validate:"required,gt=0"`
-	CategoryID uuid.UUID `json:"category_id,omitempty" validate:"required"`
+	Amount     int64     `json:"amount"      validate:"required,gt=0"`
+	CategoryID uuid.UUID `json:"category_id" validate:"required"`
 }
 
 type UpsertBudgetInput struct {
-	Amount     int64                       `json:"amount,omitempty"     validate:"required,gt=0"`
-	UserID     uuid.UUID                   `json:"user_id,omitempty"    validate:"required"`
-	Date       string                      `json:"date,omitempty"       validate:"required"`
-	Categories []UpsertBudgetCategoryInput `json:"categories,omitempty" validate:"dive"`
+	Amount     int64                       `json:"amount"     validate:"required,gt=0"`
+	UserID     uuid.UUID                   `json:"-"          validate:"required"`
+	Date       string                      `json:"date"       validate:"required"`
+	Categories []UpsertBudgetCategoryInput `json:"categories" validate:"dive"`
 }
 
 func (u *UpsertBudget) Execute(

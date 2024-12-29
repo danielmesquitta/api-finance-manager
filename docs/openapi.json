@@ -360,15 +360,11 @@
                     },
                     "date": {
                         "type": "string"
-                    },
-                    "user_id": {
-                        "type": "string"
                     }
                 },
                 "required": [
                     "amount",
-                    "date",
-                    "user_id"
+                    "date"
                 ],
                 "type": "object"
             },

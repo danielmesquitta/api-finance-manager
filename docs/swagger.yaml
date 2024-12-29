@@ -242,12 +242,9 @@ definitions:
         type: array
       date:
         type: string
-      user_id:
-        type: string
     required:
     - amount
     - date
-    - user_id
     type: object
   dto.UserProfileResponse:
     properties:

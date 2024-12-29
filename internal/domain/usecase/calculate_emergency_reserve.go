@@ -23,16 +23,16 @@ func NewCalculateEmergencyReserve(
 }
 
 type CalculateEmergencyReserveInput struct {
-	JobType                  entity.JobType `json:"job_type,omitempty"                   validate:"required,oneof=ENTREPRENEUR EMPLOYEE CIVIL_SERVANT"`
-	MonthlyExpenses          int64          `json:"monthly_expenses,omitempty"           validate:"min=0"`
-	MonthlyIncome            int64          `json:"monthly_income,omitempty"             validate:"min=0"`
-	MonthlySavingsPercentage float64        `json:"monthly_savings_percentage,omitempty" validate:"min=0,max=100"`
+	JobType                  entity.JobType `json:"job_type"                   validate:"required,oneof=ENTREPRENEUR EMPLOYEE CIVIL_SERVANT"`
+	MonthlyExpenses          int64          `json:"monthly_expenses"           validate:"min=0"`
+	MonthlyIncome            int64          `json:"monthly_income"             validate:"min=0"`
+	MonthlySavingsPercentage float64        `json:"monthly_savings_percentage" validate:"min=0,max=100"`
 }
 
 type CalculateEmergencyReserveOutput struct {
-	RecommendedReserveInMonths      int   `json:"recommended_reserve_in_months,omitempty"`
-	RecommendedReserveInValue       int64 `json:"recommended_reserve_in_value,omitempty"`
-	MonthsToAchieveEmergencyReserve int   `json:"months_to_achieve_emergency_reserve,omitempty"`
+	RecommendedReserveInMonths      int   `json:"recommended_reserve_in_months"`
+	RecommendedReserveInValue       int64 `json:"recommended_reserve_in_value"`
+	MonthsToAchieveEmergencyReserve int   `json:"months_to_achieve_emergency_reserve"`
 }
 
 func (uc *CalculateEmergencyReserve) Execute(

@@ -47,7 +47,7 @@ func (h BudgetHandler) Upsert(c echo.Context) error {
 	}
 
 	claims := getUserClaims(c)
-	body.UpsertBudgetInput.UserID = uuid.Must(uuid.Parse(claims.Issuer))
+	body.UserID = uuid.Must(uuid.Parse(claims.Issuer))
 
 	ctx := c.Request().Context()
 	if err := h.ub.Execute(

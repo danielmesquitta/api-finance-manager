@@ -43,15 +43,15 @@ func NewSignIn(
 }
 
 type SignInInput struct {
-	Provider entity.Provider `json:"provider,omitempty" validate:"required,oneof=GOOGLE APPLE REFRESH MOCK"`
-	Token    string          `json:"token,omitempty"    validate:"required_without=UserID"`
-	UserID   uuid.UUID       `json:"user_id,omitempty"  validate:"required_without=Token"`
+	Provider entity.Provider `json:"provider" validate:"required,oneof=GOOGLE APPLE REFRESH MOCK"`
+	Token    string          `json:"-"        validate:"required_without=UserID"`
+	UserID   uuid.UUID       `json:"-"        validate:"required_without=Token"`
 }
 
 type SignInOutput struct {
-	User         entity.User `json:"user,omitempty"`
-	AccessToken  string      `json:"access_token,omitempty"`
-	RefreshToken string      `json:"refresh_token,omitempty"`
+	User         entity.User `json:"user"`
+	AccessToken  string      `json:"access_token"`
+	RefreshToken string      `json:"refresh_token"`
 }
 
 func (uc *SignIn) Execute(

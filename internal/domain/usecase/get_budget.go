@@ -30,22 +30,22 @@ func NewGetBudget(
 }
 
 type GetBudgetInput struct {
-	UserID uuid.UUID `json:"user_id,omitempty" validate:"required"`
-	Date   string    `json:"date,omitempty"    validate:"required"`
+	UserID uuid.UUID `json:"-"    validate:"required"`
+	Date   string    `json:"date" validate:"required"`
 }
 
 type GetBudgetBudgetCategory struct {
 	entity.BudgetCategory
-	Spent    float64         `json:"spent,omitempty"`
-	Category entity.Category `json:"category,omitempty"`
+	Spent    float64         `json:"spent"`
+	Category entity.Category `json:"category"`
 }
 
 type GetBudgetOutput struct {
 	entity.Budget
-	Spent            float64                   `json:"spent,omitempty"`
-	Available        float64                   `json:"available,omitempty"`
-	AvailablePerDay  float64                   `json:"available_per_day,omitempty"`
-	BudgetCategories []GetBudgetBudgetCategory `json:"budget_categories,omitempty"`
+	Spent            float64                   `json:"spent"`
+	Available        float64                   `json:"available"`
+	AvailablePerDay  float64                   `json:"available_per_day"`
+	BudgetCategories []GetBudgetBudgetCategory `json:"budget_categories"`
 }
 
 func (uc *GetBudget) Execute(

@@ -1033,8 +1033,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "amount",
-                "date",
-                "user_id"
+                "date"
             ],
             "properties": {
                 "amount": {
@@ -1047,9 +1046,6 @@ const docTemplate = `{
                     }
                 },
                 "date": {
-                    "type": "string"
-                },
-                "user_id": {
                     "type": "string"
                 }
             }

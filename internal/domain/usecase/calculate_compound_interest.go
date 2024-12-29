@@ -22,25 +22,25 @@ func NewCalculateCompoundInterest(
 }
 
 type CalculateCompoundInterestInput struct {
-	InitialDeposit int64               `json:"initial_deposit,omitempty"`
-	MonthlyDeposit int64               `json:"monthly_deposit,omitempty"`
-	Interest       float64             `json:"interest,omitempty"         validate:"required,min=0,max=100"`
-	InterestType   entity.InterestType `json:"interest_type,omitempty"    validate:"required,oneof=MONTHLY ANNUAL"`
-	PeriodInMonths int                 `json:"period_in_months,omitempty" validate:"required,min=1"`
+	InitialDeposit int64               `json:"initial_deposit"`
+	MonthlyDeposit int64               `json:"monthly_deposit"`
+	Interest       float64             `json:"interest"         validate:"required,min=0,max=100"`
+	InterestType   entity.InterestType `json:"interest_type"    validate:"required,oneof=MONTHLY ANNUAL"`
+	PeriodInMonths int                 `json:"period_in_months" validate:"required,min=1"`
 }
 
 type CalculateCompoundInterestOutput struct {
-	TotalAmount   int64                          `json:"total_amount,omitempty"`
-	TotalInterest int64                          `json:"total_interest,omitempty"`
-	TotalDeposit  int64                          `json:"total_deposit,omitempty"`
-	ByMonth       map[int]CompoundInterestResult `json:"by_month,omitempty"`
+	TotalAmount   int64                          `json:"total_amount"`
+	TotalInterest int64                          `json:"total_interest"`
+	TotalDeposit  int64                          `json:"total_deposit"`
+	ByMonth       map[int]CompoundInterestResult `json:"by_month"`
 }
 
 type CompoundInterestResult struct {
-	TotalAmount     int64 `json:"total_amount,omitempty"`
-	TotalInterest   int64 `json:"total_interest,omitempty"`
-	TotalDeposit    int64 `json:"total_deposit,omitempty"`
-	MonthlyInterest int64 `json:"monthly_interest,omitempty"`
+	TotalAmount     int64 `json:"total_amount"`
+	TotalInterest   int64 `json:"total_interest"`
+	TotalDeposit    int64 `json:"total_deposit"`
+	MonthlyInterest int64 `json:"monthly_interest"`
 }
 
 func (uc *CalculateCompoundInterest) Execute(
