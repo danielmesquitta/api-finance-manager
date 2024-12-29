@@ -20,7 +20,7 @@ docs:
 build:
 	@GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o ./tmp/restapi ./cmd/restapi
 lint:
-	@golangci-lint run && nilaway ./... && golines **/*.go -w -m 80
+	@golangci-lint run && nilaway ./...
 lint-fix:
 	@golangci-lint run --fix && golines **/*.go -w -m 80 && go run cmd/lintfix/main.go
 create_migration:

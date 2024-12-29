@@ -3,7 +3,7 @@
 packages=(
     "github.com/golangci/golangci-lint/cmd/golangci-lint@latest"
     "go.uber.org/nilaway/cmd/nilaway@latest"
-    "go install github.com/segmentio/golines@latest"
+    "github.com/segmentio/golines@latest"
     "github.com/air-verse/air@latest"
     "github.com/steebchen/prisma-client-go@latest"
     "github.com/sqlc-dev/sqlc/cmd/sqlc@latest"
