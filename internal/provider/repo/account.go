@@ -12,4 +12,8 @@ type AccountRepo interface {
 		ctx context.Context,
 		userID uuid.UUID,
 	) ([]entity.Account, error)
+	CreateAccounts(
+		ctx context.Context,
+		params []CreateAccountsParams,
+	) error
 }

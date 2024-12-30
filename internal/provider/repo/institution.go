@@ -14,4 +14,8 @@ type InstitutionRepo interface {
 		ctx context.Context,
 		params []CreateInstitutionsParams,
 	) error
+	GetInstitutionByExternalID(
+		ctx context.Context,
+		externalID string,
+	) (*entity.Institution, error)
 }

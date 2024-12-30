@@ -31,3 +31,13 @@ SET external_id = $2,
   synchronized_at = $10
 WHERE id = $1
 RETURNING *;
+-- name: ListUsers :many
+SELECT *
+FROM users;
+-- name: ListPremiumActiveUsersWithAccounts :many
+SELECT sqlc.embed(users),
+  sqlc.embed(accounts)
+FROM users
+  JOIN accounts ON accounts.user_id = users.id
+WHERE tier IN ('PREMIUM', 'TRIAL')
+  AND subscription_expires_at > NOW();

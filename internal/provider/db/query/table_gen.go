@@ -91,6 +91,7 @@ const (
 	ColumnTransactionDate          Column = "date"
 	ColumnTransactionExternalID    Column = "external_id"
 	ColumnTransactionID            Column = "id"
+	ColumnTransactionInstitutionID Column = "institution_id"
 	ColumnTransactionIsIgnored     Column = "is_ignored"
 	ColumnTransactionName          Column = "name"
 	ColumnTransactionPaymentMethod Column = "payment_method"

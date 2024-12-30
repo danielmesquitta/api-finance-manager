@@ -58,6 +58,9 @@ func New(
 		wire.Bind(new(repo.BudgetRepo), new(*pgrepo.BudgetPgRepo)),
 		pgrepo.NewBudgetPgRepo,
 
+		wire.Bind(new(repo.AccountRepo), new(*pgrepo.AccountPgRepo)),
+		pgrepo.NewAccountPgRepo,
+
 		usecase.NewSignIn,
 		usecase.NewRefreshToken,
 		usecase.NewCalculateCompoundInterest,
@@ -71,6 +74,7 @@ func New(
 		usecase.NewGetBudget,
 		usecase.NewDeleteBudget,
 		usecase.NewGetUser,
+		usecase.NewSyncAccounts,
 
 		handler.NewAuthHandler,
 		handler.NewHealthHandler,
@@ -79,6 +83,7 @@ func New(
 		handler.NewCategoryHandler,
 		handler.NewBudgetHandler,
 		handler.NewUserHandler,
+		handler.NewAccountHandler,
 
 		middleware.NewMiddleware,
 

@@ -47,6 +47,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/admin/accounts/sync": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Webhook to sync accounts from open finance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "Sync accounts from open finance",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.SyncAccountsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/admin/categories/sync": {
             "post": {
                 "security": [
@@ -955,9 +1003,22 @@ const docTemplate = `{
         },
         "dto.SignInRequest": {
             "type": "object",
+            "required": [
+                "provider"
+            ],
             "properties": {
                 "provider": {
-                    "$ref": "#/definitions/entity.Provider"
+                    "enum": [
+                        "GOOGLE",
+                        "APPLE",
+                        "REFRESH",
+                        "MOCK"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.Provider"
+                        }
+                    ]
                 }
             }
         },
@@ -1026,6 +1087,29 @@ const docTemplate = `{
                 },
                 "total_interest": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.SyncAccountsRequest": {
+            "type": "object",
+            "required": [
+                "clientUserId",
+                "connector",
+                "executionStatus",
+                "id"
+            ],
+            "properties": {
+                "clientUserId": {
+                    "type": "string"
+                },
+                "connector": {
+                    "$ref": "#/definitions/usecase.Institution"
+                },
+                "executionStatus": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
                 }
             }
         },
@@ -1234,6 +1318,17 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "usecase.Institution": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
                 }
             }
         },

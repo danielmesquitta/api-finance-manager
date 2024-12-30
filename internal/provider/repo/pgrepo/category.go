@@ -30,18 +30,21 @@ func NewCategoryPgRepo(
 
 func (r *CategoryPgRepo) ListCategories(
 	ctx context.Context,
+	opts ...repo.ListCategoriesOption,
 ) ([]entity.Category, error) {
-	categories, err := r.db.ListCategories(ctx)
+	categories, err := r.qb.ListCategories(ctx, opts...)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	results := []entity.Category{}
-	if err := copier.Copy(&results, categories); err != nil {
-		return nil, errs.New(err)
-	}
+	return categories, nil
+}
 
-	return results, nil
+func (r *CategoryPgRepo) CountCategories(
+	ctx context.Context,
+	opts ...repo.ListCategoriesOption,
+) (int64, error) {
+	return r.qb.CountCategories(ctx, opts...)
 }
 
 func (r *CategoryPgRepo) CreateCategories(
@@ -62,18 +65,21 @@ func (r *CategoryPgRepo) CreateCategories(
 	return nil
 }
 
-func (r *CategoryPgRepo) SearchCategories(
+func (r *CategoryPgRepo) ListCategoriesByExternalIDs(
 	ctx context.Context,
-	params repo.SearchCategoriesParams,
+	externalIDs []string,
 ) ([]entity.Category, error) {
-	return r.qb.SearchCategories(ctx, params)
-}
+	categories, err := r.db.ListCategoriesByExternalIDs(ctx, externalIDs)
+	if err != nil {
+		return nil, errs.New(err)
+	}
 
-func (r *CategoryPgRepo) CountSearchCategories(
-	ctx context.Context,
-	search string,
-) (int64, error) {
-	return r.qb.CountSearchCategories(ctx, search)
+	results := []entity.Category{}
+	if err := copier.Copy(&results, categories); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return results, nil
 }
 
 var _ repo.CategoryRepo = &CategoryPgRepo{}

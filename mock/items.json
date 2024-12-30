@@ -42,7 +42,27 @@
       "supportsPaymentInitiation": true,
       "supportsScheduledPayments": true,
       "supportsSmartTransfers": true
-    }
+    },
+    "createdAt": "2024-10-29T21:37:05.513Z",
+    "updatedAt": "2024-12-30T12:57:05.946Z",
+    "status": "UPDATED",
+    "executionStatus": "SUCCESS",
+    "lastUpdatedAt": "2024-12-30T12:57:05.872Z",
+    "webhookUrl": null,
+    "error": null,
+    "clientUserId": "demo:danielmesquitta123@gmail.com",
+    "consecutiveFailedLoginAttempts": 0,
+    "statusDetail": null,
+    "parameter": null,
+    "userAction": null,
+    "nextAutoSyncAt": "2024-12-31T12:57:05.872Z",
+    "consentExpiresAt": null,
+    "products": [
+      "ACCOUNTS",
+      "CREDIT_CARDS",
+      "TRANSACTIONS"
+    ],
+    "oauthRedirectUri": null
   },
   {
     "id": "5de68b44-d82b-482a-a3b6-b2189f201e6b",
@@ -87,7 +107,27 @@
       "supportsPaymentInitiation": true,
       "supportsScheduledPayments": true,
       "supportsSmartTransfers": false
-    }
+    },
+    "createdAt": "2024-10-29T21:37:05.513Z",
+    "updatedAt": "2024-12-30T12:57:05.946Z",
+    "status": "UPDATED",
+    "executionStatus": "SUCCESS",
+    "lastUpdatedAt": "2024-12-30T12:57:05.872Z",
+    "webhookUrl": null,
+    "error": null,
+    "clientUserId": "demo:danielmesquitta123@gmail.com",
+    "consecutiveFailedLoginAttempts": 0,
+    "statusDetail": null,
+    "parameter": null,
+    "userAction": null,
+    "nextAutoSyncAt": "2024-12-31T12:57:05.872Z",
+    "consentExpiresAt": null,
+    "products": [
+      "ACCOUNTS",
+      "CREDIT_CARDS",
+      "TRANSACTIONS"
+    ],
+    "oauthRedirectUri": null
   },
   {
     "id": "dd5d7f78-f37b-4d00-9a5f-bd1ff0b63cee",
@@ -132,7 +172,27 @@
       "supportsPaymentInitiation": true,
       "supportsScheduledPayments": true,
       "supportsSmartTransfers": true
-    }
+    },
+    "createdAt": "2024-10-29T21:37:05.513Z",
+    "updatedAt": "2024-12-30T12:57:05.946Z",
+    "status": "UPDATED",
+    "executionStatus": "SUCCESS",
+    "lastUpdatedAt": "2024-12-30T12:57:05.872Z",
+    "webhookUrl": null,
+    "error": null,
+    "clientUserId": "demo:danielmesquitta123@gmail.com",
+    "consecutiveFailedLoginAttempts": 0,
+    "statusDetail": null,
+    "parameter": null,
+    "userAction": null,
+    "nextAutoSyncAt": "2024-12-31T12:57:05.872Z",
+    "consentExpiresAt": null,
+    "products": [
+      "ACCOUNTS",
+      "CREDIT_CARDS",
+      "TRANSACTIONS"
+    ],
+    "oauthRedirectUri": null
   },
   {
     "id": "3d6f5c11-885c-4b07-bf78-51c16df442d3",
@@ -177,6 +237,26 @@
       "supportsPaymentInitiation": true,
       "supportsScheduledPayments": true,
       "supportsSmartTransfers": false
-    }
+    },
+    "createdAt": "2024-10-29T21:37:05.513Z",
+    "updatedAt": "2024-12-30T12:57:05.946Z",
+    "status": "UPDATED",
+    "executionStatus": "SUCCESS",
+    "lastUpdatedAt": "2024-12-30T12:57:05.872Z",
+    "webhookUrl": null,
+    "error": null,
+    "clientUserId": "demo:danielmesquitta123@gmail.com",
+    "consecutiveFailedLoginAttempts": 0,
+    "statusDetail": null,
+    "parameter": null,
+    "userAction": null,
+    "nextAutoSyncAt": "2024-12-31T12:57:05.872Z",
+    "consentExpiresAt": null,
+    "products": [
+      "ACCOUNTS",
+      "CREDIT_CARDS",
+      "TRANSACTIONS"
+    ],
+    "oauthRedirectUri": null
   }
 ]

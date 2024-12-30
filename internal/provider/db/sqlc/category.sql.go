@@ -44,3 +44,35 @@ func (q *Queries) ListCategories(ctx context.Context) ([]Category, error) {
 	}
 	return items, nil
 }
+
+const listCategoriesByExternalIDs = `-- name: ListCategoriesByExternalIDs :many
+SELECT id, external_id, name, created_at, updated_at
+FROM categories
+WHERE external_id = ANY($1::text [])
+`
+
+func (q *Queries) ListCategoriesByExternalIDs(ctx context.Context, ids []string) ([]Category, error) {
+	rows, err := q.db.Query(ctx, listCategoriesByExternalIDs, ids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Category
+	for rows.Next() {
+		var i Category
+		if err := rows.Scan(
+			&i.ID,
+			&i.ExternalID,
+			&i.Name,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

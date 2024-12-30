@@ -16,7 +16,7 @@ type Validator struct {
 	t ut.Translator
 }
 
-func NewValidator() *Validator {
+func New() *Validator {
 	validate := validator.New()
 	portuguese := pt_BR.New()
 	uni := ut.New(portuguese, portuguese)

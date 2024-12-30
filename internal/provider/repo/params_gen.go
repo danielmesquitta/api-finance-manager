@@ -11,6 +11,14 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type CreateAccountsParams struct {
+	ExternalID    string    `json:"external_id"`
+	Name          string    `json:"name"`
+	Type          string    `json:"type"`
+	UserID        uuid.UUID `json:"user_id"`
+	InstitutionID uuid.UUID `json:"institution_id"`
+}
+
 type CreateBudgetParams struct {
 	Amount int64     `json:"amount"`
 	Date   time.Time `json:"date"`
@@ -43,6 +51,18 @@ type CreateInstitutionsParams struct {
 	ExternalID string      `json:"external_id"`
 	Name       string      `json:"name"`
 	Logo       pgtype.Text `json:"logo"`
+}
+
+type CreateTransactionsParams struct {
+	ExternalID    string     `json:"external_id"`
+	Name          string     `json:"name"`
+	Amount        int64      `json:"amount"`
+	PaymentMethod string     `json:"payment_method"`
+	Date          time.Time  `json:"date"`
+	UserID        uuid.UUID  `json:"user_id"`
+	AccountID     *uuid.UUID `json:"account_id"`
+	InstitutionID *uuid.UUID `json:"institution_id"`
+	CategoryID    *uuid.UUID `json:"category_id"`
 }
 
 type CreateUserParams struct {

@@ -2,6 +2,8 @@ package pgrepo
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
@@ -53,6 +55,26 @@ func (r *InstitutionPgRepo) CreateInstitutions(
 	}
 
 	return nil
+}
+
+func (r *InstitutionPgRepo) GetInstitutionByExternalID(
+	ctx context.Context,
+	externalID string,
+) (*entity.Institution, error) {
+	institution, err := r.db.GetInstitutionByExternalID(ctx, externalID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, errs.New(err)
+	}
+
+	result := entity.Institution{}
+	if err := copier.Copy(&result, institution); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return &result, nil
 }
 
 var _ repo.InstitutionRepo = &InstitutionPgRepo{}

@@ -185,7 +185,15 @@ definitions:
   dto.SignInRequest:
     properties:
       provider:
-        $ref: '#/definitions/entity.Provider'
+        allOf:
+        - $ref: '#/definitions/entity.Provider'
+        enum:
+        - GOOGLE
+        - APPLE
+        - REFRESH
+        - MOCK
+    required:
+    - provider
     type: object
   dto.SignInResponse:
     properties:
@@ -231,6 +239,22 @@ definitions:
         type: integer
       total_interest:
         type: integer
+    type: object
+  dto.SyncAccountsRequest:
+    properties:
+      clientUserId:
+        type: string
+      connector:
+        $ref: '#/definitions/usecase.Institution'
+      executionStatus:
+        type: string
+      id:
+        type: string
+    required:
+    - clientUserId
+    - connector
+    - executionStatus
+    - id
     type: object
   dto.UpsertBudgetRequest:
     properties:
@@ -373,6 +397,13 @@ definitions:
       updated_at:
         type: string
     type: object
+  usecase.Institution:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
   usecase.SimpleInterestResult:
     properties:
       total_amount:
@@ -419,6 +450,36 @@ paths:
       summary: Health check
       tags:
       - Health
+  /v1/admin/accounts/sync:
+    post:
+      consumes:
+      - application/json
+      description: Webhook to sync accounts from open finance
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SyncAccountsRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BasicAuth: []
+      summary: Sync accounts from open finance
+      tags:
+      - Account
   /v1/admin/categories/sync:
     post:
       consumes:

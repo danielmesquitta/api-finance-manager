@@ -17,6 +17,26 @@ type CreateInstitutionsParams struct {
 	Logo       pgtype.Text `json:"logo"`
 }
 
+const getInstitutionByExternalID = `-- name: GetInstitutionByExternalID :one
+SELECT id, external_id, name, logo, created_at, updated_at
+FROM institutions
+WHERE external_id = $1
+`
+
+func (q *Queries) GetInstitutionByExternalID(ctx context.Context, externalID string) (Institution, error) {
+	row := q.db.QueryRow(ctx, getInstitutionByExternalID, externalID)
+	var i Institution
+	err := row.Scan(
+		&i.ID,
+		&i.ExternalID,
+		&i.Name,
+		&i.Logo,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listInstitutions = `-- name: ListInstitutions :many
 SELECT id, external_id, name, logo, created_at, updated_at
 FROM institutions

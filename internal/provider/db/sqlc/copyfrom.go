@@ -9,6 +9,42 @@ import (
 	"context"
 )
 
+// iteratorForCreateAccounts implements pgx.CopyFromSource.
+type iteratorForCreateAccounts struct {
+	rows                 []CreateAccountsParams
+	skippedFirstNextCall bool
+}
+
+func (r *iteratorForCreateAccounts) Next() bool {
+	if len(r.rows) == 0 {
+		return false
+	}
+	if !r.skippedFirstNextCall {
+		r.skippedFirstNextCall = true
+		return true
+	}
+	r.rows = r.rows[1:]
+	return len(r.rows) > 0
+}
+
+func (r iteratorForCreateAccounts) Values() ([]interface{}, error) {
+	return []interface{}{
+		r.rows[0].ExternalID,
+		r.rows[0].Name,
+		r.rows[0].Type,
+		r.rows[0].UserID,
+		r.rows[0].InstitutionID,
+	}, nil
+}
+
+func (r iteratorForCreateAccounts) Err() error {
+	return nil
+}
+
+func (q *Queries) CreateAccounts(ctx context.Context, arg []CreateAccountsParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"accounts"}, []string{"external_id", "name", "type", "user_id", "institution_id"}, &iteratorForCreateAccounts{rows: arg})
+}
+
 // iteratorForCreateBudgetCategories implements pgx.CopyFromSource.
 type iteratorForCreateBudgetCategories struct {
 	rows                 []CreateBudgetCategoriesParams
@@ -108,4 +144,44 @@ func (r iteratorForCreateInstitutions) Err() error {
 
 func (q *Queries) CreateInstitutions(ctx context.Context, arg []CreateInstitutionsParams) (int64, error) {
 	return q.db.CopyFrom(ctx, []string{"institutions"}, []string{"external_id", "name", "logo"}, &iteratorForCreateInstitutions{rows: arg})
+}
+
+// iteratorForCreateTransactions implements pgx.CopyFromSource.
+type iteratorForCreateTransactions struct {
+	rows                 []CreateTransactionsParams
+	skippedFirstNextCall bool
+}
+
+func (r *iteratorForCreateTransactions) Next() bool {
+	if len(r.rows) == 0 {
+		return false
+	}
+	if !r.skippedFirstNextCall {
+		r.skippedFirstNextCall = true
+		return true
+	}
+	r.rows = r.rows[1:]
+	return len(r.rows) > 0
+}
+
+func (r iteratorForCreateTransactions) Values() ([]interface{}, error) {
+	return []interface{}{
+		r.rows[0].ExternalID,
+		r.rows[0].Name,
+		r.rows[0].Amount,
+		r.rows[0].PaymentMethod,
+		r.rows[0].Date,
+		r.rows[0].UserID,
+		r.rows[0].AccountID,
+		r.rows[0].InstitutionID,
+		r.rows[0].CategoryID,
+	}, nil
+}
+
+func (r iteratorForCreateTransactions) Err() error {
+	return nil
+}
+
+func (q *Queries) CreateTransactions(ctx context.Context, arg []CreateTransactionsParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"transactions"}, []string{"external_id", "name", "amount", "payment_method", "date", "user_id", "account_id", "institution_id", "category_id"}, &iteratorForCreateTransactions{rows: arg})
 }

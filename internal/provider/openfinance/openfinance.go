@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/google/uuid"
 )
 
 type ListInstitutionsOptions struct {
@@ -34,13 +33,13 @@ type ListTransactionsOptions struct {
 
 type ListTransactionsOption func(*ListTransactionsOptions)
 
-func WithTransactionStartDate(startDate time.Time) ListTransactionsOption {
+func WithTransactionDateAfter(startDate time.Time) ListTransactionsOption {
 	return func(o *ListTransactionsOptions) {
 		o.StartDate = startDate
 	}
 }
 
-func WithTransactionEndDate(endDate time.Time) ListTransactionsOption {
+func WithTransactionDateBefore(endDate time.Time) ListTransactionsOption {
 	return func(o *ListTransactionsOptions) {
 		o.EndDate = endDate
 	}
@@ -60,11 +59,11 @@ type Client interface {
 	) ([]entity.Category, error)
 	ListTransactions(
 		ctx context.Context,
-		accountID uuid.UUID,
+		accountID string,
 		options ...ListTransactionsOption,
 	) ([]Transaction, error)
 	ListAccounts(
 		ctx context.Context,
-		connectionID uuid.UUID,
+		connectionID string,
 	) ([]entity.Account, error)
 }

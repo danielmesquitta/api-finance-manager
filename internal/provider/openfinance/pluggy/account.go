@@ -6,7 +6,6 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/google/uuid"
 )
 
 type accountsResponse struct {
@@ -21,14 +20,14 @@ type accountsResult struct {
 
 func (c *Client) ListAccounts(
 	ctx context.Context,
-	connectionID uuid.UUID,
+	connectionID string,
 ) ([]entity.Account, error) {
 	if err := c.refreshAccessToken(ctx); err != nil {
 		return nil, errs.New(err)
 	}
 
 	queryParams := map[string]string{
-		"itemId": connectionID.String(),
+		"itemId": connectionID,
 	}
 
 	res, err := c.c.R().

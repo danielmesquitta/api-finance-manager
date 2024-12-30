@@ -20,7 +20,7 @@ import (
 // @description Type "Bearer" followed by a space and JWT token.
 // @securityDefinitions.basic BasicAuth
 func main() {
-	v := validator.NewValidator()
+	v := validator.New()
 	e := config.LoadEnv(v)
 
 	app := restapi.New(v, e)

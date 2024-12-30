@@ -28,7 +28,7 @@ func (uc *DeleteBudget) Execute(
 	ctx context.Context,
 	userID uuid.UUID,
 ) error {
-	err := uc.tx.Do(ctx, func(ctx context.Context) error {
+	err := uc.tx.Begin(ctx, func(ctx context.Context) error {
 		if err := uc.br.DeleteBudgetCategories(ctx, userID); err != nil {
 			return errs.New(err)
 		}

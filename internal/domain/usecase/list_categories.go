@@ -37,22 +37,18 @@ func (uc *ListCategories) Execute(
 
 	go func() {
 		var err error
-		categories, err = uc.cr.SearchCategories(
+		categories, err = uc.cr.ListCategories(
 			ctx,
-			repo.SearchCategoriesParams{
-				Search: in.Search,
-				Offset: uint(offset),
-				Limit:  uint(in.PageSize),
-			},
+			repo.WithCategoriesPagination(uint(in.PageSize), uint(offset)),
 		)
 		errCh <- err
 	}()
 
 	go func() {
 		var err error
-		count, err = uc.cr.CountSearchCategories(
+		count, err = uc.cr.CountCategories(
 			ctx,
-			in.Search,
+			repo.WithCategoriesSearch(in.Search),
 		)
 		errCh <- err
 	}()

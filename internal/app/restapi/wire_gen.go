@@ -61,7 +61,10 @@ func New(v *validator.Validator, e *config.Env) *App {
 	budgetHandler := handler.NewBudgetHandler(upsertBudget, getBudget, deleteBudget)
 	getUser := usecase.NewGetUser(userPgRepo)
 	userHandler := handler.NewUserHandler(getUser)
-	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler)
+	accountPgRepo := pgrepo.NewAccountPgRepo(dbDB)
+	syncAccounts := usecase.NewSyncAccounts(v, mockpluggyClient, userPgRepo, accountPgRepo, institutionPgRepo)
+	accountHandler := handler.NewAccountHandler(syncAccounts)
+	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler)
 	app := newApp(middlewareMiddleware, routerRouter)
 	return app
 }

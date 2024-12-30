@@ -134,7 +134,7 @@ const (
 
 func (c *Client) ListTransactions(
 	ctx context.Context,
-	accountID uuid.UUID,
+	accountID string,
 	options ...openfinance.ListTransactionsOption,
 ) ([]openfinance.Transaction, error) {
 	opts := openfinance.ListTransactionsOptions{}
@@ -148,7 +148,7 @@ func (c *Client) ListTransactions(
 
 	page := 1
 	queryParams := map[string]string{
-		"accountId": accountID.String(),
+		"accountId": accountID,
 		"pageSize":  "500",
 		"page":      strconv.Itoa(page),
 	}
@@ -202,7 +202,8 @@ func (c *Client) ListTransactions(
 			continue
 		}
 
-		transaction.AccountID = &accountID
+		accountUUID := uuid.MustParse(accountID)
+		transaction.AccountID = &accountUUID
 
 		transactions = append(transactions, *transaction)
 	}

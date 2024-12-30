@@ -34,6 +34,7 @@ type Transaction struct {
 	UpdatedAt     time.Time  `json:"updated_at,omitempty"`
 	UserID        uuid.UUID  `json:"user_id,omitempty"`
 	AccountID     *uuid.UUID `json:"account_id,omitempty"`
+	InstitutionID *uuid.UUID `json:"institution_id,omitempty"`
 	CategoryID    *uuid.UUID `json:"category_id,omitempty"`
 }
 

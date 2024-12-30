@@ -19,7 +19,7 @@ func NewPgxTX(db *pgxpool.Pool) *PgxTX {
 	}
 }
 
-func (t *PgxTX) Do(
+func (t *PgxTX) Begin(
 	ctx context.Context,
 	fn func(context.Context) error,
 ) error {

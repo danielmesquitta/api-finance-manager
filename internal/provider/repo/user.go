@@ -18,4 +18,8 @@ type UserRepo interface {
 	) (*entity.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (*entity.User, error)
+	ListUsers(ctx context.Context) ([]entity.User, error)
+	ListPremiumActiveUsersWithAccounts(
+		ctx context.Context,
+	) ([]entity.User, []entity.Account, error)
 }

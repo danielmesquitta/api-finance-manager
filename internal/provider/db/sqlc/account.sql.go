@@ -11,6 +11,14 @@ import (
 	"github.com/google/uuid"
 )
 
+type CreateAccountsParams struct {
+	ExternalID    string    `json:"external_id"`
+	Name          string    `json:"name"`
+	Type          string    `json:"type"`
+	UserID        uuid.UUID `json:"user_id"`
+	InstitutionID uuid.UUID `json:"institution_id"`
+}
+
 const listAccountsByUserID = `-- name: ListAccountsByUserID :many
 SELECT id, external_id, name, type, created_at, updated_at, user_id, institution_id
 FROM accounts

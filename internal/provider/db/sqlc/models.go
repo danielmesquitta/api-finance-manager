@@ -83,6 +83,7 @@ type Transaction struct {
 	UserID        uuid.UUID  `json:"user_id"`
 	AccountID     *uuid.UUID `json:"account_id"`
 	CategoryID    *uuid.UUID `json:"category_id"`
+	InstitutionID *uuid.UUID `json:"institution_id"`
 }
 
 type User struct {

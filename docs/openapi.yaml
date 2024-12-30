@@ -185,7 +185,15 @@ components:
         dto.SignInRequest:
             properties:
                 provider:
-                    $ref: '#/components/schemas/entity.Provider'
+                    allOf:
+                        - $ref: '#/components/schemas/entity.Provider'
+                    enum:
+                        - GOOGLE
+                        - APPLE
+                        - REFRESH
+                        - MOCK
+            required:
+                - provider
             type: object
         dto.SignInResponse:
             properties:
@@ -231,6 +239,22 @@ components:
                     type: integer
                 total_interest:
                     type: integer
+            type: object
+        dto.SyncAccountsRequest:
+            properties:
+                clientUserId:
+                    type: string
+                connector:
+                    $ref: '#/components/schemas/usecase.Institution'
+                executionStatus:
+                    type: string
+                id:
+                    type: string
+            required:
+                - clientUserId
+                - connector
+                - executionStatus
+                - id
             type: object
         dto.UpsertBudgetRequest:
             properties:
@@ -373,6 +397,13 @@ components:
                 updated_at:
                     type: string
             type: object
+        usecase.Institution:
+            properties:
+                id:
+                    type: integer
+            required:
+                - id
+            type: object
         usecase.SimpleInterestResult:
             properties:
                 total_amount:
@@ -429,6 +460,37 @@ paths:
             summary: Health check
             tags:
                 - Health
+    /v1/admin/accounts/sync:
+        post:
+            description: Webhook to sync accounts from open finance
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.SyncAccountsRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BasicAuth: []
+            summary: Sync accounts from open finance
+            tags:
+                - Account
     /v1/admin/categories/sync:
         post:
             description: Sync categories from open finance

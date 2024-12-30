@@ -27,3 +27,5 @@ create_migration:
 	@prisma-client-go migrate dev --schema=$(schema) --skip-generate
 migrate:
 	@prisma-client-go migrate deploy --schema=$(schema)
+studio:
+	@npx prisma studio --schema=$(schema)

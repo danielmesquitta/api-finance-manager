@@ -2,7 +2,6 @@ package query
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
@@ -13,38 +12,61 @@ import (
 	"github.com/georgysavva/scany/v2/pgxscan"
 )
 
-func (qb *QueryBuilder) SearchCategories(
+func (qb *QueryBuilder) ListCategories(
 	ctx context.Context,
-	params repo.SearchCategoriesParams,
+	opts ...repo.ListCategoriesOption,
 ) ([]entity.Category, error) {
-	query := goqu.From(string(TableCategory))
-	search := strings.TrimSpace(params.Search)
+	options := repo.ListCategoriesOptions{}
+	for _, opt := range opts {
+		opt(&options)
+	}
 
-	if search != "" {
-		whereExp, distanceExp := qb.buildSearchCategoriesWhere(search)
-		query = query.
-			Select("*").
-			Where(whereExp).
-			Order(
-				distanceExp.Asc(),
-				goqu.I(string(ColumnCategoryName)).Asc(),
-			).
-			Limit(params.Limit).
-			Offset(params.Offset)
-	} else {
-		query = query.
-			Select("*").
-			Order(goqu.I(string(ColumnCategoryName)).Asc()).
-			Limit(params.Limit).
-			Offset(params.Offset)
+	query := goqu.
+		From(string(TableCategory)).
+		Select("*")
+
+	var whereExps []goqu.Expression
+	var orderedExps []exp.OrderedExpression
+
+	options.Search = strings.TrimSpace(options.Search)
+	if options.Search != "" {
+		searchExp, distanceExp := qb.buildSearch(
+			options.Search,
+			ColumnCategoryName,
+		)
+		whereExps = append(whereExps, searchExp)
+		orderedExps = append(orderedExps, distanceExp.Asc())
+	}
+
+	orderedExps = append(
+		orderedExps,
+		goqu.I(string(ColumnCategoryName)).Asc(),
+	)
+
+	if len(whereExps) == 1 {
+		query.
+			Where(whereExps[0])
+	} else if len(whereExps) > 0 {
+		query.
+			Where(goqu.And(whereExps...))
+	}
+
+	if len(orderedExps) > 0 {
+		query.Order(orderedExps...)
+	}
+
+	if options.Limit > 0 {
+		query.Limit(options.Limit)
+	}
+
+	if options.Offset > 0 {
+		query.Offset(options.Offset)
 	}
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
 		return nil, errs.New(err)
 	}
-
-	fmt.Println(sql)
 
 	var categories []entity.Category
 	if err := pgxscan.Select(ctx, qb.db, &categories, sql, args...); err != nil {
@@ -54,19 +76,33 @@ func (qb *QueryBuilder) SearchCategories(
 	return categories, nil
 }
 
-func (qb *QueryBuilder) CountSearchCategories(
+func (qb *QueryBuilder) CountCategories(
 	ctx context.Context,
-	search string,
+	opts ...repo.ListCategoriesOption,
 ) (int64, error) {
-	query := goqu.From(string(TableCategory))
-	search = strings.TrimSpace(search)
-	if search != "" {
-		where, _ := qb.buildSearchCategoriesWhere(search)
-		query = query.
-			Select(goqu.COUNT("*")).
-			Where(where)
-	} else {
-		query = query.Select(goqu.COUNT("*"))
+	options := repo.ListCategoriesOptions{}
+	for _, opt := range opts {
+		opt(&options)
+	}
+
+	query := goqu.
+		From(string(TableCategory)).
+		Select(goqu.COUNT("*"))
+
+	var whereExps []goqu.Expression
+
+	options.Search = strings.TrimSpace(options.Search)
+	if options.Search != "" {
+		searchExp, _ := qb.buildSearch(options.Search, ColumnCategoryName)
+		whereExps = append(whereExps, searchExp)
+	}
+
+	if len(whereExps) == 1 {
+		query.
+			Where(whereExps[0])
+	} else if len(whereExps) > 0 {
+		query.
+			Where(goqu.And(whereExps...))
 	}
 
 	sql, args, err := query.ToSQL()
@@ -81,30 +117,4 @@ func (qb *QueryBuilder) CountSearchCategories(
 	}
 
 	return count, nil
-}
-
-func (qb *QueryBuilder) buildSearchCategoriesWhere(
-	search string,
-) (exp.Expression, exp.SQLFunctionExpression) {
-	unaccentedColumn := goqu.Func("lower", goqu.Func(
-		"unaccent",
-		goqu.I(string(ColumnCategoryName)),
-	))
-	searchPlaceholder := goqu.L("?", search)
-	unaccentedSearch := goqu.Func(
-		"lower",
-		goqu.Func("unaccent", searchPlaceholder),
-	)
-	distanceExp := goqu.Func(
-		"levenshtein",
-		unaccentedColumn,
-		unaccentedSearch,
-	)
-	maxLevenshteinDistance := qb.calculateMaxLevenshteinDistance(search)
-	likeInput := goqu.Func("concat", "%", unaccentedSearch, "%")
-	whereExp := goqu.Or(
-		unaccentedColumn.Like(likeInput),
-		distanceExp.Lte(maxLevenshteinDistance),
-	)
-	return whereExp, distanceExp
 }
