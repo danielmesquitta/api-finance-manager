@@ -1,74 +1,33 @@
 package money
 
 import (
-	"github.com/shopspring/decimal"
+	"math"
 )
 
-// FromCents converts an int64 value (representing cents) to a
-// decimal.Decimal value (representing the major unit from a currency).
-func FromCents(value int64) decimal.Decimal {
-	return decimal.New(value, -2)
+func decimalRound(value float64) float64 {
+	return math.Round(value*100) / 100
 }
 
-type FloatOrDecimal interface {
-	~float64 | decimal.Decimal
+// ToCents converts a float64 to cents.
+func ToPercentage(value int64) float64 {
+	return float64(value) / 10000
 }
 
-// ToCents converts a float64 or decimal.Decimal value to an int64 value
-// representing cents. It is equivalent to math.Round(value * 100), but using decimal.Decimal
-func ToCents[T FloatOrDecimal](value T) int64 {
-	oneHundred := decimal.New(100, 0)
-
-	switch v := any(value).(type) {
-	case decimal.Decimal:
-		return v.
-			Mul(oneHundred).
-			Round(0).
-			IntPart()
-
-	case float64:
-		return decimal.
-			NewFromFloat(v).
-			Mul(oneHundred).
-			Round(0).
-			IntPart()
-
-	default:
-		panic("unsupported type")
-	}
+// ToCents converts a float64 to cents.
+func ToCents(value float64) int64 {
+	return int64(decimalRound(value) * 100)
 }
 
-// ToMonthlyInterestRate converts an annual to a monthly interest rate,
-// it is equivalent to math.Pow(1+annualInterestRate, 1.0/12) - 1, but using decimal.Decimal
-func ToMonthlyInterestRate(annualInterestRate decimal.Decimal) decimal.Decimal {
-	// Add 1 to the annual interest rate
-	one := decimal.New(1, 0)
-	base := one.Add(annualInterestRate)
-
-	// Compute the 1/12th power
-	twelve := decimal.New(12, 0)
-	exponent := one.Div(twelve)
-	monthlyRate := base.Pow(exponent)
-
-	// Subtract 1 to get the monthly interest rate
-	monthlyRate = monthlyRate.Sub(one)
-
-	return monthlyRate
+// FromCents converts cents to a float64.
+func FromCents(value int64) float64 {
+	return float64(value) / 100
 }
 
-// ToAnnualInterestRate converts a monthly to an annual interest rate,
-// it is equivalent to math.Pow(1+monthlyInterestRate, 12) - 1, but using decimal.Decimal
-func ToAnnualInterestRate(monthlyInterestRate decimal.Decimal) decimal.Decimal {
-	// Add 1 to the monthly interest rate
-	one := decimal.New(1, 0)
-	base := one.Add(monthlyInterestRate)
+// ToMonthlyInterestRate converts an annual interest rate to a monthly interest rate.
+func ToMonthlyInterestRate(annualInterestRate float64) float64 {
+	return math.Pow(1+annualInterestRate, 1.0/12) - 1
+}
 
-	// Compute the 12th power
-	exponent := decimal.New(12, 0)
-	annualRate := base.Pow(exponent)
-
-	// Subtract 1 to get the annual interest rate
-	annualRate = annualRate.Sub(one)
-
-	return annualRate
+func ToAnnualInterestRate(monthlyInterestRate float64) float64 {
+	return math.Pow(1+monthlyInterestRate, 12) - 1
 }

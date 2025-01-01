@@ -3,8 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/shopspring/decimal"
-
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
@@ -63,11 +61,11 @@ func (uc *CalculateRetirement) Execute(
 		return nil, errs.New(err)
 	}
 
-	incomeInvestmentPercentage := decimal.New(in.IncomeInvestmentPercentage, -4)
-
-	monthlyDeposit := money.
-		FromCents(in.MonthlyIncome).
-		Mul(incomeInvestmentPercentage)
+	incomeInvestmentPercentage := money.ToPercentage(
+		in.IncomeInvestmentPercentage,
+	)
+	monthlyIncome := money.FromCents(in.MonthlyIncome)
+	monthlyDeposit := monthlyIncome * incomeInvestmentPercentage
 
 	resultsOnRetirementDate, err := uc.cci.Execute(
 		ctx,

@@ -1,4 +1,4 @@
-.PHONY: default install update run clear generate build lint create_migration migrate docs
+.PHONY: default install update run clear generate build lint create_migration migrate docs test
 
 include .env
 schema=sql/schema.prisma
@@ -29,3 +29,5 @@ migrate:
 	@prisma-client-go migrate deploy --schema=$(schema)
 studio:
 	@npx prisma studio --schema=$(schema)
+test:
+	@go test ./test/integration/...

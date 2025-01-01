@@ -3,8 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/shopspring/decimal"
-
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
@@ -59,28 +57,24 @@ func (uc *CalculateSimpleInterest) Execute(
 		ByMonth: make(map[int]SimpleInterestResult, in.PeriodInMonths),
 	}
 
-	interest := decimal.New(in.Interest, -4)
-	var monthlyInterestRate decimal.Decimal
-
+	monthlyInterestRate := 0.0
+	interest := money.ToPercentage(in.Interest)
 	switch in.InterestType {
 	case entity.InterestTypeMonthly:
 		monthlyInterestRate = interest
-
 	case entity.InterestTypeAnnual:
-		monthlyInterestRate = money.ToMonthlyInterestRate(interest)
+		monthlyInterestRate = interest / 12
 	}
 
 	currentBalance := money.FromCents(in.InitialDeposit)
 	totalDeposit := currentBalance
-	var totalInterest decimal.Decimal
+	totalInterest := 0.0
 
-	monthlyInterest := money.
-		FromCents(in.InitialDeposit).
-		Mul(monthlyInterestRate)
+	monthlyInterest := money.FromCents(in.InitialDeposit) * monthlyInterestRate
 
 	for month := 1; month <= in.PeriodInMonths; month++ {
-		currentBalance = currentBalance.Add(monthlyInterest)
-		totalInterest = totalInterest.Add(monthlyInterest)
+		currentBalance += monthlyInterest
+		totalInterest += monthlyInterest
 
 		output.ByMonth[month] = SimpleInterestResult{
 			TotalAmount:   money.ToCents(currentBalance),

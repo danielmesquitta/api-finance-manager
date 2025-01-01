@@ -11,5 +11,5 @@ var Env []byte
 //go:embed docs/openapi.yaml docs/openapi.json
 var StaticFiles embed.FS
 
-//go:embed mock
-var MockData embed.FS
+//go:embed test/data
+var TestData embed.FS

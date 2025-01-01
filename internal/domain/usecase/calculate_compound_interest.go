@@ -3,8 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/shopspring/decimal"
-
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
@@ -63,32 +61,25 @@ func (uc *CalculateCompoundInterest) Execute(
 		ByMonth: make(map[int]CompoundInterestResult, in.PeriodInMonths),
 	}
 
-	interest := decimal.New(in.Interest, -4)
-	var monthlyInterestRate decimal.Decimal
-
+	interestRate := money.ToPercentage(in.Interest)
+	monthlyInterestRate := 0.0
 	switch in.InterestType {
 	case entity.InterestTypeMonthly:
-		monthlyInterestRate = interest
-
+		monthlyInterestRate = interestRate
 	case entity.InterestTypeAnnual:
-		monthlyInterestRate = money.ToMonthlyInterestRate(interest)
+		monthlyInterestRate = money.ToMonthlyInterestRate(interestRate)
 	}
 
 	currentBalance := money.FromCents(in.InitialDeposit)
 	totalDeposit := currentBalance
-	var totalInterest decimal.Decimal
+	totalInterest := 0.0
 
 	for month := 1; month <= in.PeriodInMonths; month++ {
 		monthlyDeposit := money.FromCents(in.MonthlyDeposit)
-		monthlyInterest := currentBalance.Mul(monthlyInterestRate)
-
-		currentBalance = currentBalance.
-			Add(monthlyDeposit).
-			Add(monthlyInterest)
-
-		totalDeposit = totalDeposit.Add(monthlyDeposit)
-
-		totalInterest = totalInterest.Add(monthlyInterest)
+		monthlyInterest := currentBalance * monthlyInterestRate
+		currentBalance += monthlyInterest + monthlyDeposit
+		totalDeposit += monthlyDeposit
+		totalInterest += monthlyInterest
 
 		output.ByMonth[month] = CompoundInterestResult{
 			TotalAmount:     money.ToCents(currentBalance),

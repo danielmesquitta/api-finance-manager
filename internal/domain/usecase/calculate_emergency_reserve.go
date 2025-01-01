@@ -2,8 +2,7 @@ package usecase
 
 import (
 	"context"
-
-	"github.com/shopspring/decimal"
+	"math"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
@@ -61,25 +60,16 @@ func (uc *CalculateEmergencyReserve) Execute(
 		out.RecommendedReserveInMonths = 12
 	}
 
-	monthlySavingsPercentage := decimal.New(in.MonthlySavingsPercentage, -4)
+	monthlyIncome := money.FromCents(in.MonthlyIncome)
+	monthlySavingsPercentage := money.ToPercentage(in.MonthlySavingsPercentage)
+	monthlySavings := monthlyIncome * monthlySavingsPercentage
 
-	monthlySavings := money.
-		FromCents(in.MonthlyIncome).
-		Mul(monthlySavingsPercentage)
+	out.RecommendedReserveInValue = in.MonthlyExpenses * out.RecommendedReserveInMonths
+	recommendedReserveInValue := money.FromCents(out.RecommendedReserveInValue)
 
-	recommendedReserveInMonths := decimal.New(out.RecommendedReserveInMonths, 0)
-
-	recommendedReserveInValue := money.
-		FromCents(in.MonthlyIncome).
-		Mul(recommendedReserveInMonths)
-
-	out.RecommendedReserveInValue = money.ToCents(recommendedReserveInValue)
-
-	out.MonthsToAchieveEmergencyReserve = money.
-		FromCents(out.RecommendedReserveInValue).
-		Div(monthlySavings).
-		Ceil().
-		IntPart()
+	out.MonthsToAchieveEmergencyReserve = int64(math.Ceil(
+		recommendedReserveInValue / monthlySavings,
+	))
 
 	return out, nil
 }

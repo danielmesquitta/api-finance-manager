@@ -18,7 +18,7 @@ func NewPGXPool(e *config.Env) *pgxpool.Pool {
 
 	pool, err := pgxpool.New(ctx, e.DatabaseURL)
 	if err != nil {
-		log.Fatalf("could not poolect to the database: %v", err)
+		log.Fatalf("could not connect to the database: %v", err)
 		return nil
 	}
 

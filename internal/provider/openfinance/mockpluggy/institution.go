@@ -24,7 +24,7 @@ func (c *Client) ListInstitutions(
 		opt(&opts)
 	}
 
-	filePath := filepath.Join("mock", "connectors.json")
+	filePath := filepath.Join("test", "data", "pluggy", "connectors.json")
 
 	data, err := os.ReadFile(filePath)
 	if err != nil {
