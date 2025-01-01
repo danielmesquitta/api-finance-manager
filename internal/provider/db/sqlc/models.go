@@ -12,40 +12,44 @@ import (
 )
 
 type Account struct {
-	ID            uuid.UUID `json:"id"`
-	ExternalID    string    `json:"external_id"`
-	Name          string    `json:"name"`
-	Type          string    `json:"type"`
-	CreatedAt     time.Time `json:"created_at"`
-	UpdatedAt     time.Time `json:"updated_at"`
-	UserID        uuid.UUID `json:"user_id"`
-	InstitutionID uuid.UUID `json:"institution_id"`
+	ID            uuid.UUID  `json:"id"`
+	ExternalID    string     `json:"external_id"`
+	Name          string     `json:"name"`
+	Type          string     `json:"type"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+	UserID        uuid.UUID  `json:"user_id"`
+	InstitutionID uuid.UUID  `json:"institution_id"`
+	DeletedAt     *time.Time `json:"deleted_at"`
 }
 
 type Budget struct {
-	ID        uuid.UUID `json:"id"`
-	Amount    int64     `json:"amount"`
-	Date      time.Time `json:"date"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
-	UserID    uuid.UUID `json:"user_id"`
+	ID        uuid.UUID  `json:"id"`
+	Amount    int64      `json:"amount"`
+	Date      time.Time  `json:"date"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	UserID    uuid.UUID  `json:"user_id"`
+	DeletedAt *time.Time `json:"deleted_at"`
 }
 
 type BudgetCategory struct {
-	ID         uuid.UUID `json:"id"`
-	Amount     int64     `json:"amount"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
-	BudgetID   uuid.UUID `json:"budget_id"`
-	CategoryID uuid.UUID `json:"category_id"`
+	ID         uuid.UUID  `json:"id"`
+	Amount     int64      `json:"amount"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	BudgetID   uuid.UUID  `json:"budget_id"`
+	CategoryID uuid.UUID  `json:"category_id"`
+	DeletedAt  *time.Time `json:"deleted_at"`
 }
 
 type Category struct {
-	ID         uuid.UUID `json:"id"`
-	ExternalID string    `json:"external_id"`
-	Name       string    `json:"name"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	ID         uuid.UUID  `json:"id"`
+	ExternalID string     `json:"external_id"`
+	Name       string     `json:"name"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
 }
 
 type Institution struct {
@@ -55,19 +59,21 @@ type Institution struct {
 	Logo       pgtype.Text `json:"logo"`
 	CreatedAt  time.Time   `json:"created_at"`
 	UpdatedAt  time.Time   `json:"updated_at"`
+	DeletedAt  *time.Time  `json:"deleted_at"`
 }
 
 type Investment struct {
-	ID         uuid.UUID `json:"id"`
-	ExternalID string    `json:"external_id"`
-	Name       string    `json:"name"`
-	Amount     int64     `json:"amount"`
-	Type       string    `json:"type"`
-	Rate       float64   `json:"rate"`
-	RateType   string    `json:"rateType"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
-	UserID     uuid.UUID `json:"user_id"`
+	ID         uuid.UUID  `json:"id"`
+	ExternalID string     `json:"external_id"`
+	Name       string     `json:"name"`
+	Amount     int64      `json:"amount"`
+	Type       string     `json:"type"`
+	Rate       float64    `json:"rate"`
+	RateType   string     `json:"rateType"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	UserID     uuid.UUID  `json:"user_id"`
+	DeletedAt  *time.Time `json:"deleted_at"`
 }
 
 type Transaction struct {
@@ -84,6 +90,7 @@ type Transaction struct {
 	AccountID     *uuid.UUID `json:"account_id"`
 	CategoryID    *uuid.UUID `json:"category_id"`
 	InstitutionID *uuid.UUID `json:"institution_id"`
+	DeletedAt     *time.Time `json:"deleted_at"`
 }
 
 type User struct {
@@ -99,4 +106,5 @@ type User struct {
 	SynchronizedAt        *time.Time  `json:"synchronized_at"`
 	CreatedAt             time.Time   `json:"created_at"`
 	UpdatedAt             time.Time   `json:"updated_at"`
+	DeletedAt             *time.Time  `json:"deleted_at"`
 }

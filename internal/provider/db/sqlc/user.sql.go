@@ -24,7 +24,7 @@ INSERT INTO users (
     avatar
   )
 VALUES ($1, $2, $3, $4, $5, $6, $7)
-RETURNING id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at
+RETURNING id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 `
 
 type CreateUserParams struct {
@@ -61,12 +61,13 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.SynchronizedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at
+SELECT id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 FROM users
 WHERE email = $1
 `
@@ -87,12 +88,13 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.SynchronizedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at
+SELECT id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 FROM users
 WHERE id = $1
 `
@@ -113,17 +115,20 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.SynchronizedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const listPremiumActiveUsersWithAccounts = `-- name: ListPremiumActiveUsersWithAccounts :many
-SELECT users.id, users.external_id, users.provider, users.name, users.email, users.verified_email, users.tier, users.avatar, users.subscription_expires_at, users.synchronized_at, users.created_at, users.updated_at,
-  accounts.id, accounts.external_id, accounts.name, accounts.type, accounts.created_at, accounts.updated_at, accounts.user_id, accounts.institution_id
+SELECT users.id, users.external_id, users.provider, users.name, users.email, users.verified_email, users.tier, users.avatar, users.subscription_expires_at, users.synchronized_at, users.created_at, users.updated_at, users.deleted_at,
+  accounts.id, accounts.external_id, accounts.name, accounts.type, accounts.created_at, accounts.updated_at, accounts.user_id, accounts.institution_id, accounts.deleted_at
 FROM users
   JOIN accounts ON accounts.user_id = users.id
 WHERE tier IN ('PREMIUM', 'TRIAL')
   AND subscription_expires_at > NOW()
+  AND users.deleted_at IS NULL
+  AND accounts.deleted_at IS NULL
 `
 
 type ListPremiumActiveUsersWithAccountsRow struct {
@@ -153,6 +158,7 @@ func (q *Queries) ListPremiumActiveUsersWithAccounts(ctx context.Context) ([]Lis
 			&i.User.SynchronizedAt,
 			&i.User.CreatedAt,
 			&i.User.UpdatedAt,
+			&i.User.DeletedAt,
 			&i.Account.ID,
 			&i.Account.ExternalID,
 			&i.Account.Name,
@@ -161,6 +167,7 @@ func (q *Queries) ListPremiumActiveUsersWithAccounts(ctx context.Context) ([]Lis
 			&i.Account.UpdatedAt,
 			&i.Account.UserID,
 			&i.Account.InstitutionID,
+			&i.Account.DeletedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -173,8 +180,9 @@ func (q *Queries) ListPremiumActiveUsersWithAccounts(ctx context.Context) ([]Lis
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at
+SELECT id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 FROM users
+WHERE deleted_at IS NULL
 `
 
 func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
@@ -199,6 +207,7 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 			&i.SynchronizedAt,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.DeletedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -222,7 +231,7 @@ SET external_id = $2,
   subscription_expires_at = $9,
   synchronized_at = $10
 WHERE id = $1
-RETURNING id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at
+RETURNING id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 `
 
 type UpdateUserParams struct {
@@ -265,6 +274,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.SynchronizedAt,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }

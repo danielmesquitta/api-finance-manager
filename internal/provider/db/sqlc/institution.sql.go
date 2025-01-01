@@ -18,9 +18,10 @@ type CreateInstitutionsParams struct {
 }
 
 const getInstitutionByExternalID = `-- name: GetInstitutionByExternalID :one
-SELECT id, external_id, name, logo, created_at, updated_at
+SELECT id, external_id, name, logo, created_at, updated_at, deleted_at
 FROM institutions
 WHERE external_id = $1
+  AND deleted_at IS NULL
 `
 
 func (q *Queries) GetInstitutionByExternalID(ctx context.Context, externalID string) (Institution, error) {
@@ -33,13 +34,15 @@ func (q *Queries) GetInstitutionByExternalID(ctx context.Context, externalID str
 		&i.Logo,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.DeletedAt,
 	)
 	return i, err
 }
 
 const listInstitutions = `-- name: ListInstitutions :many
-SELECT id, external_id, name, logo, created_at, updated_at
+SELECT id, external_id, name, logo, created_at, updated_at, deleted_at
 FROM institutions
+WHERE deleted_at IS NULL
 `
 
 func (q *Queries) ListInstitutions(ctx context.Context) ([]Institution, error) {
@@ -58,6 +61,7 @@ func (q *Queries) ListInstitutions(ctx context.Context) ([]Institution, error) {
 			&i.Logo,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.DeletedAt,
 		); err != nil {
 			return nil, err
 		}

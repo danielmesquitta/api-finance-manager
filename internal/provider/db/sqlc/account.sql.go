@@ -20,9 +20,10 @@ type CreateAccountsParams struct {
 }
 
 const listAccountsByUserID = `-- name: ListAccountsByUserID :many
-SELECT id, external_id, name, type, created_at, updated_at, user_id, institution_id
+SELECT id, external_id, name, type, created_at, updated_at, user_id, institution_id, deleted_at
 FROM accounts
 WHERE user_id = $1
+  AND deleted_at IS NULL
 `
 
 func (q *Queries) ListAccountsByUserID(ctx context.Context, userID uuid.UUID) ([]Account, error) {
@@ -43,6 +44,7 @@ func (q *Queries) ListAccountsByUserID(ctx context.Context, userID uuid.UUID) ([
 			&i.UpdatedAt,
 			&i.UserID,
 			&i.InstitutionID,
+			&i.DeletedAt,
 		); err != nil {
 			return nil, err
 		}

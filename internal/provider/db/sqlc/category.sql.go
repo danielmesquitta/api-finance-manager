@@ -15,8 +15,9 @@ type CreateCategoriesParams struct {
 }
 
 const listCategories = `-- name: ListCategories :many
-SELECT id, external_id, name, created_at, updated_at
+SELECT id, external_id, name, created_at, updated_at, deleted_at
 FROM categories
+WHERE deleted_at IS NULL
 `
 
 func (q *Queries) ListCategories(ctx context.Context) ([]Category, error) {
@@ -34,6 +35,7 @@ func (q *Queries) ListCategories(ctx context.Context) ([]Category, error) {
 			&i.Name,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.DeletedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -46,9 +48,10 @@ func (q *Queries) ListCategories(ctx context.Context) ([]Category, error) {
 }
 
 const listCategoriesByExternalIDs = `-- name: ListCategoriesByExternalIDs :many
-SELECT id, external_id, name, created_at, updated_at
+SELECT id, external_id, name, created_at, updated_at, deleted_at
 FROM categories
 WHERE external_id = ANY($1::text [])
+  AND deleted_at IS NULL
 `
 
 func (q *Queries) ListCategoriesByExternalIDs(ctx context.Context, ids []string) ([]Category, error) {
@@ -66,6 +69,7 @@ func (q *Queries) ListCategoriesByExternalIDs(ctx context.Context, ids []string)
 			&i.Name,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.DeletedAt,
 		); err != nil {
 			return nil, err
 		}

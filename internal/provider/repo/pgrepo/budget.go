@@ -106,11 +106,11 @@ func (r *BudgetPgRepo) CreateBudgetCategories(
 	return nil
 }
 
-func (r *BudgetPgRepo) GetBudgetCategories(
+func (r *BudgetPgRepo) ListBudgetCategories(
 	ctx context.Context,
 	budgetID uuid.UUID,
 ) ([]entity.BudgetCategory, []entity.Category, error) {
-	rows, err := r.db.GetBudgetCategories(ctx, budgetID)
+	rows, err := r.db.ListBudgetCategories(ctx, budgetID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil, nil

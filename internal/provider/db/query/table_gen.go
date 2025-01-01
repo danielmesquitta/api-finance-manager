@@ -20,6 +20,7 @@ type Column string
 // Columns for table Account
 const (
 	ColumnAccountCreatedAt     Column = "created_at"
+	ColumnAccountDeletedAt     Column = "deleted_at"
 	ColumnAccountExternalID    Column = "external_id"
 	ColumnAccountID            Column = "id"
 	ColumnAccountInstitutionID Column = "institution_id"
@@ -34,6 +35,7 @@ const (
 	ColumnBudgetAmount    Column = "amount"
 	ColumnBudgetCreatedAt Column = "created_at"
 	ColumnBudgetDate      Column = "date"
+	ColumnBudgetDeletedAt Column = "deleted_at"
 	ColumnBudgetID        Column = "id"
 	ColumnBudgetUpdatedAt Column = "updated_at"
 	ColumnBudgetUserID    Column = "user_id"
@@ -45,6 +47,7 @@ const (
 	ColumnBudgetCategoryBudgetID   Column = "budget_id"
 	ColumnBudgetCategoryCategoryID Column = "category_id"
 	ColumnBudgetCategoryCreatedAt  Column = "created_at"
+	ColumnBudgetCategoryDeletedAt  Column = "deleted_at"
 	ColumnBudgetCategoryID         Column = "id"
 	ColumnBudgetCategoryUpdatedAt  Column = "updated_at"
 )
@@ -52,6 +55,7 @@ const (
 // Columns for table Category
 const (
 	ColumnCategoryCreatedAt  Column = "created_at"
+	ColumnCategoryDeletedAt  Column = "deleted_at"
 	ColumnCategoryExternalID Column = "external_id"
 	ColumnCategoryID         Column = "id"
 	ColumnCategoryName       Column = "name"
@@ -61,6 +65,7 @@ const (
 // Columns for table Institution
 const (
 	ColumnInstitutionCreatedAt  Column = "created_at"
+	ColumnInstitutionDeletedAt  Column = "deleted_at"
 	ColumnInstitutionExternalID Column = "external_id"
 	ColumnInstitutionID         Column = "id"
 	ColumnInstitutionLogo       Column = "logo"
@@ -72,6 +77,7 @@ const (
 const (
 	ColumnInvestmentAmount     Column = "amount"
 	ColumnInvestmentCreatedAt  Column = "created_at"
+	ColumnInvestmentDeletedAt  Column = "deleted_at"
 	ColumnInvestmentExternalID Column = "external_id"
 	ColumnInvestmentID         Column = "id"
 	ColumnInvestmentName       Column = "name"
@@ -89,6 +95,7 @@ const (
 	ColumnTransactionCategoryID    Column = "category_id"
 	ColumnTransactionCreatedAt     Column = "created_at"
 	ColumnTransactionDate          Column = "date"
+	ColumnTransactionDeletedAt     Column = "deleted_at"
 	ColumnTransactionExternalID    Column = "external_id"
 	ColumnTransactionID            Column = "id"
 	ColumnTransactionInstitutionID Column = "institution_id"
@@ -103,6 +110,7 @@ const (
 const (
 	ColumnUserAvatar                Column = "avatar"
 	ColumnUserCreatedAt             Column = "created_at"
+	ColumnUserDeletedAt             Column = "deleted_at"
 	ColumnUserEmail                 Column = "email"
 	ColumnUserExternalID            Column = "external_id"
 	ColumnUserID                    Column = "id"

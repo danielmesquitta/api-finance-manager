@@ -72,7 +72,7 @@ func (uc *GetBudget) Execute(
 		return nil, errs.ErrBudgetNotFound
 	}
 
-	budgetCategories, categories, err := uc.br.GetBudgetCategories(
+	budgetCategories, categories, err := uc.br.ListBudgetCategories(
 		ctx,
 		budget.ID,
 	)
