@@ -3,7 +3,6 @@ module github.com/danielmesquitta/api-finance-manager
 go 1.23.4
 
 require (
-	github.com/Rhymond/go-money v1.0.14
 	github.com/doug-martin/goqu/v9 v9.19.0
 	github.com/georgysavva/scany/v2 v2.1.3
 	github.com/go-playground/locales v0.14.1
@@ -16,7 +15,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/jinzhu/copier v0.4.0
 	github.com/labstack/echo/v4 v4.13.3
-	github.com/leekchan/accounting v1.0.0
+	github.com/shopspring/decimal v1.4.0
 	github.com/spf13/viper v1.19.0
 	github.com/swaggo/echo-swagger v1.4.1
 	github.com/swaggo/swag v1.16.4
@@ -25,7 +24,6 @@ require (
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
-	github.com/cockroachdb/apd v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.8.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.7 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
@@ -46,17 +44,15 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.3 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/sagikazarmark/locafero v0.6.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
-	github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24 // indirect
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
-	github.com/swaggo/files/v2 v2.0.1 // indirect
+	github.com/swaggo/files/v2 v2.0.2 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
