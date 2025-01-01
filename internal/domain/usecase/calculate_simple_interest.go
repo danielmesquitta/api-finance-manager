@@ -3,6 +3,8 @@ package usecase
 import (
 	"context"
 
+	"github.com/shopspring/decimal"
+
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
@@ -23,7 +25,7 @@ func NewCalculateSimpleInterest(
 
 type CalculateSimpleInterestInput struct {
 	InitialDeposit int64               `json:"initial_deposit"  validate:"min=0"`
-	Interest       float64             `json:"interest"         validate:"required,min=0,max=100"`
+	Interest       int64               `json:"interest"         validate:"required,min=0,max=10000"`
 	InterestType   entity.InterestType `json:"interest_type"    validate:"required,oneof=MONTHLY ANNUAL"`
 	PeriodInMonths int                 `json:"period_in_months" validate:"required,min=1"`
 }
@@ -57,23 +59,28 @@ func (uc *CalculateSimpleInterest) Execute(
 		ByMonth: make(map[int]SimpleInterestResult, in.PeriodInMonths),
 	}
 
-	monthlyInterestRate := 0.0
+	interest := decimal.New(in.Interest, -4)
+	var monthlyInterestRate decimal.Decimal
+
 	switch in.InterestType {
 	case entity.InterestTypeMonthly:
-		monthlyInterestRate = in.Interest / 100
+		monthlyInterestRate = interest
+
 	case entity.InterestTypeAnnual:
-		monthlyInterestRate = in.Interest / 100 / 12
+		monthlyInterestRate = money.ToMonthlyInterestRate(interest)
 	}
 
 	currentBalance := money.FromCents(in.InitialDeposit)
 	totalDeposit := currentBalance
-	totalInterest := 0.0
+	var totalInterest decimal.Decimal
 
-	monthlyInterest := money.FromCents(in.InitialDeposit) * monthlyInterestRate
+	monthlyInterest := money.
+		FromCents(in.InitialDeposit).
+		Mul(monthlyInterestRate)
 
 	for month := 1; month <= in.PeriodInMonths; month++ {
-		currentBalance += monthlyInterest
-		totalInterest += monthlyInterest
+		currentBalance = currentBalance.Add(monthlyInterest)
+		totalInterest = totalInterest.Add(monthlyInterest)
 
 		output.ByMonth[month] = SimpleInterestResult{
 			TotalAmount:   money.ToCents(currentBalance),

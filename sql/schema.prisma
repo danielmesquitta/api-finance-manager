@@ -22,6 +22,7 @@ model User {
   synchronized_at         DateTime? @default(now()) @db.Timestamptz()
   created_at              DateTime  @default(now()) @db.Timestamptz()
   updated_at              DateTime  @default(now()) @db.Timestamptz()
+  deleted_at              DateTime? @db.Timestamptz()
 
   budgets Budget[]
 
@@ -35,15 +36,16 @@ model User {
 }
 
 model Transaction {
-  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id    String   @unique
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id    String    @unique
   name           String
   amount         BigInt
   payment_method String
-  is_ignored     Boolean  @default(false)
-  date           DateTime @db.Timestamptz()
-  created_at     DateTime @default(now()) @db.Timestamptz()
-  updated_at     DateTime @default(now()) @db.Timestamptz()
+  is_ignored     Boolean   @default(false)
+  date           DateTime  @db.Timestamptz()
+  created_at     DateTime  @default(now()) @db.Timestamptz()
+  updated_at     DateTime  @default(now()) @db.Timestamptz()
+  deleted_at     DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
@@ -62,15 +64,16 @@ model Transaction {
 
 // @TODO: Add more fields to Investment model
 model Investment {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String   @unique
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String    @unique
   name        String
   amount      BigInt
   type        String
   rate        Float
   rateType    String
-  created_at  DateTime @default(now()) @db.Timestamptz()
-  updated_at  DateTime @default(now()) @db.Timestamptz()
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
@@ -79,11 +82,12 @@ model Investment {
 }
 
 model Category {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String   @unique
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String    @unique
   name        String
-  created_at  DateTime @default(now()) @db.Timestamptz()
-  updated_at  DateTime @default(now()) @db.Timestamptz()
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
 
   transactions Transaction[]
 
@@ -93,12 +97,13 @@ model Category {
 }
 
 model Account {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String   @unique
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String    @unique
   name        String
   type        String
-  created_at  DateTime @default(now()) @db.Timestamptz()
-  updated_at  DateTime @default(now()) @db.Timestamptz()
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
@@ -112,12 +117,13 @@ model Account {
 }
 
 model Institution {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String   @unique
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String    @unique
   name        String
   logo        String?
-  created_at  DateTime @default(now()) @db.Timestamptz()
-  updated_at  DateTime @default(now()) @db.Timestamptz()
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
 
   accounts Account[]
 
@@ -127,11 +133,12 @@ model Institution {
 }
 
 model Budget {
-  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   amount     BigInt
-  date       DateTime @db.Timestamptz()
-  created_at DateTime @default(now()) @db.Timestamptz()
-  updated_at DateTime @default(now()) @db.Timestamptz()
+  date       DateTime  @db.Timestamptz()
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
@@ -142,10 +149,11 @@ model Budget {
 }
 
 model BudgetCategory {
-  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   amount     BigInt
-  created_at DateTime @default(now()) @db.Timestamptz()
-  updated_at DateTime @default(now()) @db.Timestamptz()
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
 
   budget    Budget @relation(fields: [budget_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   budget_id String @db.Uuid

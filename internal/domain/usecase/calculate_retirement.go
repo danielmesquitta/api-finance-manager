@@ -3,6 +3,8 @@ package usecase
 import (
 	"context"
 
+	"github.com/shopspring/decimal"
+
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
@@ -26,9 +28,9 @@ func NewCalculateRetirement(
 
 type CalculateRetirementInput struct {
 	MonthlyIncome              int64               `json:"monthly_income"               validate:"required,min=0"`
-	IncomeInvestmentPercentage float64             `json:"income_investment_percentage" validate:"required,min=0,max=100"`
+	IncomeInvestmentPercentage int64               `json:"income_investment_percentage" validate:"required,min=0,max=10000"`
 	InitialDeposit             int64               `json:"initial_deposit"`
-	Interest                   float64             `json:"interest"                     validate:"required,min=0,max=100"`
+	Interest                   int64               `json:"interest"                     validate:"required,min=0,max=10000"`
 	InterestType               entity.InterestType `json:"interest_type"                validate:"required,oneof=MONTHLY ANNUAL"`
 	GoalPatrimony              int64               `json:"goal_patrimony"               validate:"required,min=0"`
 	GoalIncome                 int64               `json:"goal_income"                  validate:"required,min=0"`
@@ -61,9 +63,11 @@ func (uc *CalculateRetirement) Execute(
 		return nil, errs.New(err)
 	}
 
-	monthlyDeposit := money.FromCents(
-		in.MonthlyIncome,
-	) * (in.IncomeInvestmentPercentage / 100)
+	incomeInvestmentPercentage := decimal.New(in.IncomeInvestmentPercentage, -4)
+
+	monthlyDeposit := money.
+		FromCents(in.MonthlyIncome).
+		Mul(incomeInvestmentPercentage)
 
 	resultsOnRetirementDate, err := uc.cci.Execute(
 		ctx,

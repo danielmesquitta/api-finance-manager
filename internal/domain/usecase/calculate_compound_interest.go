@@ -3,6 +3,8 @@ package usecase
 import (
 	"context"
 
+	"github.com/shopspring/decimal"
+
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
@@ -24,7 +26,7 @@ func NewCalculateCompoundInterest(
 type CalculateCompoundInterestInput struct {
 	InitialDeposit int64               `json:"initial_deposit"`
 	MonthlyDeposit int64               `json:"monthly_deposit"`
-	Interest       float64             `json:"interest"         validate:"required,min=0,max=100"`
+	Interest       int64               `json:"interest"         validate:"required,min=0,max=10000"`
 	InterestType   entity.InterestType `json:"interest_type"    validate:"required,oneof=MONTHLY ANNUAL"`
 	PeriodInMonths int                 `json:"period_in_months" validate:"required,min=1"`
 }
@@ -61,25 +63,32 @@ func (uc *CalculateCompoundInterest) Execute(
 		ByMonth: make(map[int]CompoundInterestResult, in.PeriodInMonths),
 	}
 
-	interestRate := in.Interest / 100
-	monthlyInterestRate := 0.0
+	interest := decimal.New(in.Interest, -4)
+	var monthlyInterestRate decimal.Decimal
+
 	switch in.InterestType {
 	case entity.InterestTypeMonthly:
-		monthlyInterestRate = interestRate
+		monthlyInterestRate = interest
+
 	case entity.InterestTypeAnnual:
-		monthlyInterestRate = money.ToMonthlyInterestRate(interestRate)
+		monthlyInterestRate = money.ToMonthlyInterestRate(interest)
 	}
 
 	currentBalance := money.FromCents(in.InitialDeposit)
 	totalDeposit := currentBalance
-	totalInterest := 0.0
+	var totalInterest decimal.Decimal
 
 	for month := 1; month <= in.PeriodInMonths; month++ {
 		monthlyDeposit := money.FromCents(in.MonthlyDeposit)
-		monthlyInterest := currentBalance * monthlyInterestRate
-		currentBalance += monthlyInterest + monthlyDeposit
-		totalDeposit += monthlyDeposit
-		totalInterest += monthlyInterest
+		monthlyInterest := currentBalance.Mul(monthlyInterestRate)
+
+		currentBalance = currentBalance.
+			Add(monthlyDeposit).
+			Add(monthlyInterest)
+
+		totalDeposit = totalDeposit.Add(monthlyDeposit)
+
+		totalInterest = totalInterest.Add(monthlyInterest)
 
 		output.ByMonth[month] = CompoundInterestResult{
 			TotalAmount:     money.ToCents(currentBalance),

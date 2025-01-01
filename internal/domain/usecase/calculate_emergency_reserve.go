@@ -2,7 +2,8 @@ package usecase
 
 import (
 	"context"
-	"math"
+
+	"github.com/shopspring/decimal"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
@@ -26,13 +27,13 @@ type CalculateEmergencyReserveInput struct {
 	JobType                  entity.JobType `json:"job_type"                   validate:"required,oneof=ENTREPRENEUR EMPLOYEE CIVIL_SERVANT"`
 	MonthlyExpenses          int64          `json:"monthly_expenses"           validate:"min=0"`
 	MonthlyIncome            int64          `json:"monthly_income"             validate:"min=0"`
-	MonthlySavingsPercentage float64        `json:"monthly_savings_percentage" validate:"min=0,max=100"`
+	MonthlySavingsPercentage int64          `json:"monthly_savings_percentage" validate:"min=0,max=10000"`
 }
 
 type CalculateEmergencyReserveOutput struct {
-	RecommendedReserveInMonths      int   `json:"recommended_reserve_in_months"`
+	RecommendedReserveInMonths      int64 `json:"recommended_reserve_in_months"`
 	RecommendedReserveInValue       int64 `json:"recommended_reserve_in_value"`
-	MonthsToAchieveEmergencyReserve int   `json:"months_to_achieve_emergency_reserve"`
+	MonthsToAchieveEmergencyReserve int64 `json:"months_to_achieve_emergency_reserve"`
 }
 
 func (uc *CalculateEmergencyReserve) Execute(
@@ -60,18 +61,25 @@ func (uc *CalculateEmergencyReserve) Execute(
 		out.RecommendedReserveInMonths = 12
 	}
 
-	monthlySavings := money.FromCents(
-		in.MonthlyIncome,
-	) * in.MonthlySavingsPercentage / 100
+	monthlySavingsPercentage := decimal.New(in.MonthlySavingsPercentage, -4)
 
-	out.RecommendedReserveInValue =
-		in.MonthlyExpenses * int64(out.RecommendedReserveInMonths)
+	monthlySavings := money.
+		FromCents(in.MonthlyIncome).
+		Mul(monthlySavingsPercentage)
 
-	out.MonthsToAchieveEmergencyReserve = int(
-		math.Ceil(
-			money.FromCents(out.RecommendedReserveInValue) / monthlySavings,
-		),
-	)
+	recommendedReserveInMonths := decimal.New(out.RecommendedReserveInMonths, 0)
+
+	recommendedReserveInValue := money.
+		FromCents(in.MonthlyIncome).
+		Mul(recommendedReserveInMonths)
+
+	out.RecommendedReserveInValue = money.ToCents(recommendedReserveInValue)
+
+	out.MonthsToAchieveEmergencyReserve = money.
+		FromCents(out.RecommendedReserveInValue).
+		Div(monthlySavings).
+		Ceil().
+		IntPart()
 
 	return out, nil
 }
