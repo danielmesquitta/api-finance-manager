@@ -26,7 +26,8 @@ import (
 
 // Injectors from wire.go:
 
-func New(v *validator.Validator, e *config.Env) *App {
+// NewDev wires up the application in development mode.
+func NewDev(v *validator.Validator, e *config.Env) *App {
 	jwt := jwtutil.NewJWT(e)
 	middlewareMiddleware := middleware.NewMiddleware(e, jwt)
 	healthHandler := handler.NewHealthHandler()
@@ -68,3 +69,50 @@ func New(v *validator.Validator, e *config.Env) *App {
 	app := newApp(middlewareMiddleware, routerRouter)
 	return app
 }
+
+// NewProd wires up the application in production mode.
+func NewProd(v *validator.Validator, e *config.Env) *App {
+	jwt := jwtutil.NewJWT(e)
+	middlewareMiddleware := middleware.NewMiddleware(e, jwt)
+	healthHandler := handler.NewHealthHandler()
+	pool := db.NewPGXPool(e)
+	dbDB := db.NewQueries(pool)
+	userPgRepo := pgrepo.NewUserPgRepo(dbDB)
+	googleOAuth := googleoauth.NewGoogleOAuth()
+	mockOAuth := _wireMockOAuthValue
+	signIn := usecase.NewSignIn(v, userPgRepo, jwt, googleOAuth, mockOAuth)
+	refreshToken := usecase.NewRefreshToken(signIn)
+	authHandler := handler.NewAuthHandler(signIn, refreshToken)
+	calculateCompoundInterest := usecase.NewCalculateCompoundInterest(v)
+	calculateEmergencyReserve := usecase.NewCalculateEmergencyReserve(v)
+	calculateRetirement := usecase.NewCalculateRetirement(v, calculateCompoundInterest)
+	calculateSimpleInterest := usecase.NewCalculateSimpleInterest(v)
+	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterest, calculateEmergencyReserve, calculateRetirement, calculateSimpleInterest)
+	client := pluggy.NewClient(e, jwt)
+	institutionPgRepo := pgrepo.NewInstitutionPgRepo(dbDB)
+	syncInstitutions := usecase.NewSyncInstitutions(client, institutionPgRepo)
+	institutionHandler := handler.NewInstitutionHandler(syncInstitutions)
+	queryBuilder := query.NewQueryBuilder(e, dbDB)
+	categoryPgRepo := pgrepo.NewCategoryPgRepo(dbDB, queryBuilder)
+	syncCategories := usecase.NewSyncCategories(client, categoryPgRepo)
+	listCategories := usecase.NewListCategories(categoryPgRepo)
+	categoryHandler := handler.NewCategoryHandler(syncCategories, listCategories)
+	pgxTX := tx.NewPgxTX(pool)
+	budgetPgRepo := pgrepo.NewBudgetPgRepo(dbDB)
+	upsertBudget := usecase.NewUpsertBudget(v, pgxTX, budgetPgRepo)
+	getBudget := usecase.NewGetBudget(v, budgetPgRepo)
+	deleteBudget := usecase.NewDeleteBudget(pgxTX, budgetPgRepo)
+	budgetHandler := handler.NewBudgetHandler(upsertBudget, getBudget, deleteBudget)
+	getUser := usecase.NewGetUser(userPgRepo)
+	userHandler := handler.NewUserHandler(getUser)
+	accountPgRepo := pgrepo.NewAccountPgRepo(dbDB)
+	syncAccounts := usecase.NewSyncAccounts(v, client, userPgRepo, accountPgRepo, institutionPgRepo)
+	accountHandler := handler.NewAccountHandler(syncAccounts)
+	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler)
+	app := newApp(middlewareMiddleware, routerRouter)
+	return app
+}
+
+var (
+	_wireMockOAuthValue = (*mockoauth.MockOAuth)(nil)
+)

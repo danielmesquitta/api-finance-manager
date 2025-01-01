@@ -14,10 +14,10 @@ import (
 type Environment string
 
 const (
-	EnvDevelopment Environment = "development"
-	EnvProduction  Environment = "production"
-	EnvStaging     Environment = "staging"
-	EnvTest        Environment = "test"
+	EnvironmentDevelopment Environment = "development"
+	EnvironmentProduction  Environment = "production"
+	EnvironmentStaging     Environment = "staging"
+	EnvironmentTest        Environment = "test"
 )
 
 type Env struct {
@@ -72,7 +72,7 @@ func (e *Env) validate() error {
 		return err
 	}
 	if e.Environment == "" {
-		e.Environment = EnvDevelopment
+		e.Environment = EnvironmentDevelopment
 	}
 	if e.Port == "" {
 		e.Port = "8080"

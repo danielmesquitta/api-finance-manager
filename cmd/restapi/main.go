@@ -23,7 +23,13 @@ func main() {
 	v := validator.New()
 	e := config.LoadEnv(v)
 
-	app := restapi.New(v, e)
+	var app *restapi.App
+	if e.Environment == config.EnvironmentProduction {
+		app = restapi.NewProd(v, e)
+	} else {
+		app = restapi.NewDev(v, e)
+	}
+
 	if err := app.Start(":" + e.Port); err != nil {
 		log.Fatalf("failed to start server: %v", err)
 	}

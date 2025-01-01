@@ -20,6 +20,10 @@ const ValidUserToken = "valid_user_token"
 func NewMockOAuth(
 	e *config.Env,
 ) *MockOAuth {
+	if e.Environment == config.EnvironmentProduction {
+		panic("mock oauth not allowed in production")
+	}
+
 	avatar := "https://avatars.githubusercontent.com/u/60039311"
 	user := entity.User{
 		ExternalID:    "6c2342aa-bdac-4efe-a31b-3a018072cff9",
@@ -38,21 +42,10 @@ func NewMockOAuth(
 	}
 }
 
-func (m *MockOAuth) validate() error {
-	if m.e.Environment == config.EnvProduction {
-		return errs.New("mock oauth not allowed in production")
-	}
-	return nil
-}
-
 func (m *MockOAuth) GetUser(
 	ctx context.Context,
 	token string,
 ) (*entity.User, error) {
-	if err := m.validate(); err != nil {
-		return nil, errs.New(err)
-	}
-
 	if user, ok := m.users[token]; ok {
 		return user, nil
 	}
