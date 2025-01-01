@@ -736,8 +736,8 @@
                     "type": "integer"
                 },
                 "interest": {
-                    "type": "number",
-                    "maximum": 100,
+                    "type": "integer",
+                    "maximum": 10000,
                     "minimum": 0
                 },
                 "interest_type": {
@@ -807,8 +807,8 @@
                     "minimum": 0
                 },
                 "monthly_savings_percentage": {
-                    "type": "number",
-                    "maximum": 100,
+                    "type": "integer",
+                    "maximum": 10000,
                     "minimum": 0
                 }
             }
@@ -857,6 +857,9 @@
                     "type": "string"
                 },
                 "date": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "id": {
@@ -931,16 +934,16 @@
                     "minimum": 0
                 },
                 "income_investment_percentage": {
-                    "type": "number",
-                    "maximum": 100,
+                    "type": "integer",
+                    "maximum": 10000,
                     "minimum": 0
                 },
                 "initial_deposit": {
                     "type": "integer"
                 },
                 "interest": {
-                    "type": "number",
-                    "maximum": 100,
+                    "type": "integer",
+                    "maximum": 10000,
                     "minimum": 0
                 },
                 "interest_type": {
@@ -1042,8 +1045,8 @@
                     "minimum": 0
                 },
                 "interest": {
-                    "type": "number",
-                    "maximum": 100,
+                    "type": "integer",
+                    "maximum": 10000,
                     "minimum": 0
                 },
                 "interest_type": {
@@ -1136,6 +1139,9 @@
                 "created_at": {
                     "type": "string"
                 },
+                "deleted_at": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -1172,6 +1178,9 @@
             "type": "object",
             "properties": {
                 "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "external_id": {
@@ -1234,6 +1243,9 @@
                     "type": "string"
                 },
                 "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "email": {
@@ -1301,6 +1313,9 @@
                     "type": "string"
                 },
                 "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "id": {

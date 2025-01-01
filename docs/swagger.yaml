@@ -5,9 +5,9 @@ definitions:
       initial_deposit:
         type: integer
       interest:
-        maximum: 100
+        maximum: 10000
         minimum: 0
-        type: number
+        type: integer
       interest_type:
         allOf:
         - $ref: '#/definitions/entity.InterestType'
@@ -53,9 +53,9 @@ definitions:
         minimum: 0
         type: integer
       monthly_savings_percentage:
-        maximum: 100
+        maximum: 10000
         minimum: 0
-        type: number
+        type: integer
     required:
     - job_type
     type: object
@@ -88,6 +88,8 @@ definitions:
       created_at:
         type: string
       date:
+        type: string
+      deleted_at:
         type: string
       id:
         type: string
@@ -130,15 +132,15 @@ definitions:
         minimum: 0
         type: integer
       income_investment_percentage:
-        maximum: 100
+        maximum: 10000
         minimum: 0
-        type: number
+        type: integer
       initial_deposit:
         type: integer
       interest:
-        maximum: 100
+        maximum: 10000
         minimum: 0
-        type: number
+        type: integer
       interest_type:
         allOf:
         - $ref: '#/definitions/entity.InterestType'
@@ -210,9 +212,9 @@ definitions:
         minimum: 0
         type: integer
       interest:
-        maximum: 100
+        maximum: 10000
         minimum: 0
-        type: number
+        type: integer
       interest_type:
         allOf:
         - $ref: '#/definitions/entity.InterestType'
@@ -276,6 +278,8 @@ definitions:
         type: string
       created_at:
         type: string
+      deleted_at:
+        type: string
       email:
         type: string
       external_id:
@@ -300,6 +304,8 @@ definitions:
   entity.Category:
     properties:
       created_at:
+        type: string
+      deleted_at:
         type: string
       external_id:
         type: string
@@ -346,6 +352,8 @@ definitions:
         type: string
       created_at:
         type: string
+      deleted_at:
+        type: string
       email:
         type: string
       external_id:
@@ -389,6 +397,8 @@ definitions:
       category_id:
         type: string
       created_at:
+        type: string
+      deleted_at:
         type: string
       id:
         type: string

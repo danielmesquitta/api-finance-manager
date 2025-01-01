@@ -7,9 +7,9 @@
                         "type": "integer"
                     },
                     "interest": {
-                        "maximum": 100,
+                        "maximum": 10000,
                         "minimum": 0,
-                        "type": "number"
+                        "type": "integer"
                     },
                     "interest_type": {
                         "allOf": [
@@ -80,9 +80,9 @@
                         "type": "integer"
                     },
                     "monthly_savings_percentage": {
-                        "maximum": 100,
+                        "maximum": 10000,
                         "minimum": 0,
-                        "type": "number"
+                        "type": "integer"
                     }
                 },
                 "required": [
@@ -133,6 +133,9 @@
                         "type": "string"
                     },
                     "date": {
+                        "type": "string"
+                    },
+                    "deleted_at": {
                         "type": "string"
                     },
                     "id": {
@@ -196,17 +199,17 @@
                         "type": "integer"
                     },
                     "income_investment_percentage": {
-                        "maximum": 100,
+                        "maximum": 10000,
                         "minimum": 0,
-                        "type": "number"
+                        "type": "integer"
                     },
                     "initial_deposit": {
                         "type": "integer"
                     },
                     "interest": {
-                        "maximum": 100,
+                        "maximum": 10000,
                         "minimum": 0,
-                        "type": "number"
+                        "type": "integer"
                     },
                     "interest_type": {
                         "allOf": [
@@ -313,9 +316,9 @@
                         "type": "integer"
                     },
                     "interest": {
-                        "maximum": 100,
+                        "maximum": 10000,
                         "minimum": 0,
-                        "type": "number"
+                        "type": "integer"
                     },
                     "interest_type": {
                         "allOf": [
@@ -412,6 +415,9 @@
                     "created_at": {
                         "type": "string"
                     },
+                    "deleted_at": {
+                        "type": "string"
+                    },
                     "email": {
                         "type": "string"
                     },
@@ -448,6 +454,9 @@
             "entity.Category": {
                 "properties": {
                     "created_at": {
+                        "type": "string"
+                    },
+                    "deleted_at": {
                         "type": "string"
                     },
                     "external_id": {
@@ -510,6 +519,9 @@
                         "type": "string"
                     },
                     "created_at": {
+                        "type": "string"
+                    },
+                    "deleted_at": {
                         "type": "string"
                     },
                     "email": {
@@ -577,6 +589,9 @@
                         "type": "string"
                     },
                     "created_at": {
+                        "type": "string"
+                    },
+                    "deleted_at": {
                         "type": "string"
                     },
                     "id": {

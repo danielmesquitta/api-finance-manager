@@ -743,8 +743,8 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "interest": {
-                    "type": "number",
-                    "maximum": 100,
+                    "type": "integer",
+                    "maximum": 10000,
                     "minimum": 0
                 },
                 "interest_type": {
@@ -814,8 +814,8 @@ const docTemplate = `{
                     "minimum": 0
                 },
                 "monthly_savings_percentage": {
-                    "type": "number",
-                    "maximum": 100,
+                    "type": "integer",
+                    "maximum": 10000,
                     "minimum": 0
                 }
             }
@@ -864,6 +864,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "date": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "id": {
@@ -938,16 +941,16 @@ const docTemplate = `{
                     "minimum": 0
                 },
                 "income_investment_percentage": {
-                    "type": "number",
-                    "maximum": 100,
+                    "type": "integer",
+                    "maximum": 10000,
                     "minimum": 0
                 },
                 "initial_deposit": {
                     "type": "integer"
                 },
                 "interest": {
-                    "type": "number",
-                    "maximum": 100,
+                    "type": "integer",
+                    "maximum": 10000,
                     "minimum": 0
                 },
                 "interest_type": {
@@ -1049,8 +1052,8 @@ const docTemplate = `{
                     "minimum": 0
                 },
                 "interest": {
-                    "type": "number",
-                    "maximum": 100,
+                    "type": "integer",
+                    "maximum": 10000,
                     "minimum": 0
                 },
                 "interest_type": {
@@ -1143,6 +1146,9 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "deleted_at": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -1179,6 +1185,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "external_id": {
@@ -1241,6 +1250,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "email": {
@@ -1308,6 +1320,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
                     "type": "string"
                 },
                 "id": {
