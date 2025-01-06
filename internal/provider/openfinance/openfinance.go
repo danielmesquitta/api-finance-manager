@@ -57,6 +57,10 @@ type Client interface {
 	ListCategories(
 		ctx context.Context,
 	) ([]entity.Category, error)
+	GetParentCategoryExternalID(
+		externalCategoryID string,
+		categoriesByExternalID map[string]entity.Category,
+	) (parentExternalID string, ok bool)
 	ListTransactions(
 		ctx context.Context,
 		accountID string,

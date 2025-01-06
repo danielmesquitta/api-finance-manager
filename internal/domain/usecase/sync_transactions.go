@@ -171,23 +171,13 @@ func (uc *SyncTransactions) syncUserTransactions(
 		)
 	}
 
-	err = uc.tx.Begin(ctx, func(ctx context.Context) error {
-		errCh := make(chan error, 2)
+	err = uc.tx.Do(ctx, func(ctx context.Context) error {
+		if err := uc.tr.CreateTransactions(ctx, params); err != nil {
+			return errs.New(err)
+		}
 
-		go func() {
-			err := uc.tr.CreateTransactions(ctx, params)
-			errCh <- err
-		}()
-
-		go func() {
-			err := uc.updateUserSynchronizedAt(ctx, user)
-			errCh <- err
-		}()
-
-		for i := 0; i < cap(errCh); i++ {
-			if err := <-errCh; err != nil {
-				return errs.New(err)
-			}
+		if err := uc.updateUserSynchronizedAt(ctx, user); err != nil {
+			return errs.New(err)
 		}
 
 		return nil
@@ -213,11 +203,10 @@ func (uc *SyncTransactions) setCreateTransactionsParams(
 			continue
 		}
 
-		var categoryID *uuid.UUID
-		category, ok := categoriesByExternalID[openFinanceTransaction.CategoryExternalID]
-		if ok {
-			categoryID = &category.ID
-		}
+		categoryID := uc.getCategoryID(
+			openFinanceTransaction.CategoryExternalID,
+			categoriesByExternalID,
+		)
 
 		param := repo.CreateTransactionsParams{
 			ExternalID:    openFinanceTransaction.ExternalID,
@@ -329,4 +318,24 @@ func (uc *SyncTransactions) getStartOfDay(date time.Time) time.Time {
 	)
 
 	return startOfDay
+}
+
+func (uc *SyncTransactions) getCategoryID(
+	categoryExternalID string,
+	categoriesByExternalID map[string]entity.Category,
+) *uuid.UUID {
+	parentCategoryExternalID, ok := uc.o.GetParentCategoryExternalID(
+		categoryExternalID,
+		categoriesByExternalID,
+	)
+	if !ok {
+		return nil
+	}
+
+	category, ok := categoriesByExternalID[parentCategoryExternalID]
+	if !ok {
+		return nil
+	}
+
+	return &category.ID
 }

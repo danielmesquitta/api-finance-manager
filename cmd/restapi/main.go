@@ -25,8 +25,10 @@ func main() {
 
 	var app *restapi.App
 	if e.Environment == config.EnvironmentProduction {
+		log.Println("starting production server")
 		app = restapi.NewProd(v, e)
 	} else {
+		log.Println("starting development server")
 		app = restapi.NewDev(v, e)
 	}
 

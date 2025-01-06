@@ -25,6 +25,7 @@ type Router struct {
 	bh  *handler.BudgetHandler
 	uh  *handler.UserHandler
 	ach *handler.AccountHandler
+	th  *handler.TransactionHandler
 }
 
 func NewRouter(
@@ -38,6 +39,7 @@ func NewRouter(
 	bh *handler.BudgetHandler,
 	uh *handler.UserHandler,
 	ach *handler.AccountHandler,
+	th *handler.TransactionHandler,
 ) *Router {
 	return &Router{
 		e:   e,
@@ -50,6 +52,7 @@ func NewRouter(
 		bh:  bh,
 		uh:  uh,
 		ach: ach,
+		th:  th,
 	}
 }
 
@@ -83,6 +86,7 @@ func (r *Router) Register(
 	adminApiV1.POST("/institutions/sync", r.ih.Sync)
 	adminApiV1.POST("/categories/sync", r.cth.Sync)
 	adminApiV1.POST("/accounts/sync", r.ach.Sync)
+	adminApiV1.POST("/transactions/sync", r.th.Sync)
 
 	usersApiV1 := apiV1.Group("", r.m.BearerAuthAccessToken())
 

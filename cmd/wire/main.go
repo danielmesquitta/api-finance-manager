@@ -65,8 +65,8 @@ func NewProd(
 `
 
 func main() {
-	wireConfigFilename := "internal/app/restapi/wire_config.go" // Source
-	wireOutputFilename := "internal/app/restapi/wire.go"        // Destination
+	wireConfigFilename := "internal/app/restapi/wire_config.go"     // Source
+	wireOutputFilename := "internal/app/restapi/wire_config_gen.go" // Destination
 
 	data, err := parseWireConfig(wireConfigFilename)
 	if err != nil {

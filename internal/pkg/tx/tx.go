@@ -9,5 +9,5 @@ type key byte
 var Key key
 
 type TX interface {
-	Begin(ctx context.Context, fn func(context.Context) error) error
+	Do(ctx context.Context, fn func(context.Context) error) error
 }

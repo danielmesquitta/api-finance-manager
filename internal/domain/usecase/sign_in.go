@@ -82,7 +82,7 @@ func (uc *SignIn) signInWithGoogle(
 
 	oauthUser, err := uc.g.GetUser(ctx, token)
 	if err != nil {
-		slog.Info("failed to get user from google", "error", err)
+		slog.Error("failed to get user from google", "error", err)
 		return nil, errs.ErrUnauthorized
 	}
 
@@ -114,7 +114,7 @@ func (uc *SignIn) signInWithMock(
 ) (*SignInOutput, error) {
 	oauthUser, err := uc.m.GetUser(ctx, token)
 	if err != nil {
-		slog.Info("failed to get user from mock", "error", err)
+		slog.Error("failed to get user from mock", "error", err)
 		return nil, errs.ErrUnauthorized
 	}
 

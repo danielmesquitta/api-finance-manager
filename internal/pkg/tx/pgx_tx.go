@@ -19,18 +19,18 @@ func NewPgxTX(db *pgxpool.Pool) *PgxTX {
 	}
 }
 
-func (t *PgxTX) Begin(
+func (t *PgxTX) Do(
 	ctx context.Context,
 	fn func(context.Context) error,
 ) error {
-	tx, err := t.db.BeginTx(ctx, pgx.TxOptions{})
+	tx, err := t.db.Begin(ctx)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
-		if err := tx.Rollback(ctx); err != nil {
+		if err := tx.Rollback(ctx); err != nil && err != pgx.ErrTxClosed {
 			slog.Error("failed to rollback transaction", "error", err)
 		}
 	}()

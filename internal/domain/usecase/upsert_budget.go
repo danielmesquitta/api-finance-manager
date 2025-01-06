@@ -61,7 +61,7 @@ func (u *UpsertBudget) Execute(
 		return errs.New(err)
 	}
 
-	if err := u.tx.Begin(ctx, func(ctx context.Context) error {
+	if err := u.tx.Do(ctx, func(ctx context.Context) error {
 		if budgetDoesNotExists := budget == nil; budgetDoesNotExists {
 			budget, err = u.br.CreateBudget(ctx, repo.CreateBudgetParams{
 				Date:   monthStart,

@@ -15,7 +15,7 @@ type MockOAuth struct {
 	users map[string]*entity.User
 }
 
-const ValidUserToken = "valid_user_token"
+const MockToken = "mock_token"
 
 func NewMockOAuth(
 	e *config.Env,
@@ -37,7 +37,7 @@ func NewMockOAuth(
 	return &MockOAuth{
 		e: e,
 		users: map[string]*entity.User{
-			ValidUserToken: &user,
+			MockToken: &user,
 		},
 	}
 }

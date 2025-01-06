@@ -24,7 +24,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo/pgrepo"
 )
 
-// Injectors from wire.go:
+// Injectors from wire_config_gen.go:
 
 // NewDev wires up the application in development mode.
 func NewDev(v *validator.Validator, e *config.Env) *App {
@@ -65,7 +65,10 @@ func NewDev(v *validator.Validator, e *config.Env) *App {
 	accountPgRepo := pgrepo.NewAccountPgRepo(dbDB)
 	syncAccounts := usecase.NewSyncAccounts(v, mockpluggyClient, userPgRepo, accountPgRepo, institutionPgRepo)
 	accountHandler := handler.NewAccountHandler(syncAccounts)
-	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler)
+	transactionPgRepo := pgrepo.NewTransactionPgRepo(dbDB, queryBuilder)
+	syncTransactions := usecase.NewSyncTransactions(v, mockpluggyClient, pgxTX, userPgRepo, transactionPgRepo, categoryPgRepo)
+	transactionHandler := handler.NewTransactionHandler(syncTransactions)
+	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler)
 	app := newApp(middlewareMiddleware, routerRouter)
 	return app
 }
@@ -108,7 +111,10 @@ func NewProd(v *validator.Validator, e *config.Env) *App {
 	accountPgRepo := pgrepo.NewAccountPgRepo(dbDB)
 	syncAccounts := usecase.NewSyncAccounts(v, client, userPgRepo, accountPgRepo, institutionPgRepo)
 	accountHandler := handler.NewAccountHandler(syncAccounts)
-	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler)
+	transactionPgRepo := pgrepo.NewTransactionPgRepo(dbDB, queryBuilder)
+	syncTransactions := usecase.NewSyncTransactions(v, client, pgxTX, userPgRepo, transactionPgRepo, categoryPgRepo)
+	transactionHandler := handler.NewTransactionHandler(syncTransactions)
+	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler)
 	app := newApp(middlewareMiddleware, routerRouter)
 	return app
 }

@@ -535,6 +535,29 @@ paths:
             summary: Sync institutions from open finance
             tags:
                 - Institution
+    /v1/admin/transactions/sync:
+        post:
+            description: Webhook to sync transactions from open finance
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BasicAuth: []
+            summary: Sync transactions from open finance
+            tags:
+                - Transaction
     /v1/auth/refresh:
         post:
             description: Use refresh token to generate new access token

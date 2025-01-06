@@ -185,7 +185,9 @@ func (c *Client) ListTransactions(
 		if transRes.Page >= transRes.TotalPages {
 			break
 		}
+
 		page++
+		queryParams["page"] = strconv.Itoa(page)
 	}
 
 	transactions := []openfinance.Transaction{}

@@ -13,9 +13,10 @@ type categoriesResponse struct {
 }
 
 type categoriesResult struct {
-	ID                    string `json:"id"`
-	Description           string `json:"name"`
-	DescriptionTranslated string `json:"descriptionTranslated"`
+	ID                    string  `json:"id"`
+	ParentID              *string `json:"parentId"`
+	Description           string  `json:"name"`
+	DescriptionTranslated string  `json:"descriptionTranslated"`
 }
 
 func (c *Client) ListCategories(
@@ -42,6 +43,9 @@ func (c *Client) ListCategories(
 
 	var institutions []entity.Category
 	for _, connector := range categories.Results {
+		if connector.ParentID != nil {
+			continue
+		}
 		institutions = append(institutions, entity.Category{
 			ExternalID: connector.ID,
 			Name:       connector.DescriptionTranslated,
@@ -49,4 +53,25 @@ func (c *Client) ListCategories(
 	}
 
 	return institutions, nil
+}
+
+func (c *Client) GetParentCategoryExternalID(
+	externalCategoryID string,
+	categoriesByExternalID map[string]entity.Category,
+) (string, bool) {
+	defaultCategory := "99999999"
+	if externalCategoryID == "" {
+		return defaultCategory, false
+	}
+
+	if _, ok := categoriesByExternalID[externalCategoryID]; ok {
+		return externalCategoryID, true
+	}
+
+	parentExternalID := externalCategoryID[:2] + "000000"
+	if _, ok := categoriesByExternalID[parentExternalID]; ok {
+		return parentExternalID, true
+	}
+
+	return defaultCategory, false
 }
