@@ -5,14 +5,16 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
+	"golang.org/x/sync/errgroup"
+
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
-	"github.com/google/uuid"
-	"github.com/jinzhu/copier"
 )
 
 type SyncTransactions struct {
@@ -47,25 +49,22 @@ func (uc *SyncTransactions) Execute(
 ) error {
 	users, accounts := []entity.User{}, []entity.Account{}
 	categories := []entity.Category{}
-	errCh := make(chan error, 2)
-	defer close(errCh)
+	g, ctx := errgroup.WithContext(ctx)
 
-	go func() {
+	g.Go(func() error {
 		var err error
 		users, accounts, err = uc.ur.ListPremiumActiveUsersWithAccounts(ctx)
-		errCh <- err
-	}()
+		return err
+	})
 
-	go func() {
+	g.Go(func() error {
 		var err error
 		categories, err = uc.cr.ListCategories(ctx)
-		errCh <- err
-	}()
+		return err
+	})
 
-	for i := 0; i < cap(errCh); i++ {
-		if err := <-errCh; err != nil {
-			return errs.New(err)
-		}
+	if err := g.Wait(); err != nil {
+		return errs.New(err)
 	}
 
 	if len(users) == 0 || len(accounts) == 0 {

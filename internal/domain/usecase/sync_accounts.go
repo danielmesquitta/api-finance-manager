@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/jinzhu/copier"
+	"golang.org/x/sync/errgroup"
+
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
-	"github.com/jinzhu/copier"
 )
 
 type SyncAccounts struct {
@@ -67,35 +69,32 @@ func (uc *SyncAccounts) Execute(
 	var institution *entity.Institution
 	var accounts []entity.Account
 	var users []entity.User
-	errCh := make(chan error, 3)
-	defer close(errCh)
+	g, ctx := errgroup.WithContext(ctx)
 
 	institutionExternalID := fmt.Sprintf("%d", in.Institution.ID)
-	go func() {
+	g.Go(func() error {
 		var err error
 		institution, err = uc.ir.GetInstitutionByExternalID(
 			ctx,
 			institutionExternalID,
 		)
-		errCh <- err
-	}()
+		return err
+	})
 
-	go func() {
+	g.Go(func() error {
 		var err error
 		accounts, err = uc.o.ListAccounts(ctx, in.ItemID)
-		errCh <- err
-	}()
+		return err
+	})
 
-	go func() {
+	g.Go(func() error {
 		var err error
 		users, err = uc.ur.ListUsers(ctx)
-		errCh <- err
-	}()
+		return err
+	})
 
-	for i := 0; i < cap(errCh); i++ {
-		if err := <-errCh; err != nil {
-			return errs.New(err)
-		}
+	if err := g.Wait(); err != nil {
+		return errs.New(err)
 	}
 
 	if institution == nil {

@@ -3,6 +3,8 @@ package usecase
 import (
 	"context"
 
+	"golang.org/x/sync/errgroup"
+
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
@@ -30,33 +32,30 @@ func (uc *ListCategories) Execute(
 ) (*entity.PaginatedList[entity.Category], error) {
 	offset := preparePaginationInput(&in.PaginationInput)
 
-	var errCh = make(chan error, 2)
-	defer close(errCh)
+	g, ctx := errgroup.WithContext(ctx)
 	var categories []entity.Category
 	var count int64
 
-	go func() {
+	g.Go(func() error {
 		var err error
 		categories, err = uc.cr.ListCategories(
 			ctx,
 			repo.WithCategoriesPagination(uint(in.PageSize), uint(offset)),
 		)
-		errCh <- err
-	}()
+		return err
+	})
 
-	go func() {
+	g.Go(func() error {
 		var err error
 		count, err = uc.cr.CountCategories(
 			ctx,
 			repo.WithCategoriesSearch(in.Search),
 		)
-		errCh <- err
-	}()
+		return err
+	})
 
-	for i := 0; i < cap(errCh); i++ {
-		if err := <-errCh; err != nil {
-			return nil, errs.New(err)
-		}
+	if err := g.Wait(); err != nil {
+		return nil, errs.New(err)
 	}
 
 	return &entity.PaginatedList[entity.Category]{

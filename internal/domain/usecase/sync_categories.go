@@ -3,11 +3,13 @@ package usecase
 import (
 	"context"
 
+	"github.com/jinzhu/copier"
+	"golang.org/x/sync/errgroup"
+
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
-	"github.com/jinzhu/copier"
 )
 
 type SyncCategories struct {
@@ -28,25 +30,22 @@ func NewSyncCategories(
 func (uc *SyncCategories) Execute(ctx context.Context) error {
 	var openFinanceCategories, institutions []entity.Category
 
-	var errCh = make(chan error, 2)
-	defer close(errCh)
+	g, ctx := errgroup.WithContext(ctx)
 
-	go func() {
+	g.Go(func() error {
 		var err error
 		openFinanceCategories, err = uc.o.ListCategories(ctx)
-		errCh <- err
-	}()
+		return err
+	})
 
-	go func() {
+	g.Go(func() error {
 		var err error
 		institutions, err = uc.cr.ListCategories(ctx)
-		errCh <- err
-	}()
+		return err
+	})
 
-	for i := 0; i < cap(errCh); i++ {
-		if err := <-errCh; err != nil {
-			return errs.New(err)
-		}
+	if err := g.Wait(); err != nil {
+		return errs.New(err)
 	}
 
 	institutionsByExternalID := make(map[string]entity.Category)
