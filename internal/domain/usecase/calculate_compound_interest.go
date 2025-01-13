@@ -47,12 +47,30 @@ func (uc *CalculateCompoundInterest) Execute(
 	ctx context.Context,
 	in CalculateCompoundInterestInput,
 ) (*CalculateCompoundInterestOutput, error) {
+	type Result struct {
+		out *CalculateCompoundInterestOutput
+		err error
+	}
+
+	ch := make(chan Result)
+	defer close(ch)
+
+	go func() {
+		out, err := uc.execute(in)
+		ch <- Result{out, err}
+	}()
+
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
-	default:
+	case result := <-ch:
+		return result.out, result.err
 	}
+}
 
+func (uc *CalculateCompoundInterest) execute(
+	in CalculateCompoundInterestInput,
+) (*CalculateCompoundInterestOutput, error) {
 	if err := uc.validate(in); err != nil {
 		return nil, errs.New(err)
 	}

@@ -14,6 +14,7 @@ type CalculatorHandler struct {
 	cer *usecase.CalculateEmergencyReserve
 	cr  *usecase.CalculateRetirement
 	csi *usecase.CalculateSimpleInterest
+	cvi *usecase.CalculateCashVsInstallments
 }
 
 func NewCalculatorHandler(
@@ -21,12 +22,14 @@ func NewCalculatorHandler(
 	cer *usecase.CalculateEmergencyReserve,
 	cr *usecase.CalculateRetirement,
 	csi *usecase.CalculateSimpleInterest,
+	cvi *usecase.CalculateCashVsInstallments,
 ) *CalculatorHandler {
 	return &CalculatorHandler{
 		cci: cci,
 		cer: cer,
 		cr:  cr,
 		csi: csi,
+		cvi: cvi,
 	}
 }
 
@@ -151,5 +154,36 @@ func (h CalculatorHandler) SimpleInterest(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, dto.SimpleInterestResponse{
 		CalculateSimpleInterestOutput: *output,
+	})
+}
+
+// @Summary Calculate cash vs installments
+// @Description Calculate cash vs installments
+// @Tags Calculator
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param request body dto.CashVsInstallmentsRequest true "Request body"
+// @Success 200 {object} dto.CashVsInstallmentsResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/calculator/cash-vs-installments [post]
+func (h CalculatorHandler) CashVsInstallments(c echo.Context) error {
+	body := &dto.CashVsInstallmentsRequest{}
+	if err := c.Bind(body); err != nil {
+		return errs.New(err)
+	}
+
+	output, err := h.cvi.Execute(
+		c.Request().Context(),
+		body.CalculateCashVsInstallmentsInput,
+	)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return c.JSON(http.StatusOK, dto.CashVsInstallmentsResponse{
+		CalculateCashVsInstallmentsOutput: *output,
 	})
 }

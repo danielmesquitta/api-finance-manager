@@ -51,12 +51,31 @@ func (uc *CalculateRetirement) Execute(
 	ctx context.Context,
 	in CalculateRetirementInput,
 ) (*CalculateRetirementOutput, error) {
+	type Result struct {
+		out *CalculateRetirementOutput
+		err error
+	}
+
+	ch := make(chan Result)
+	defer close(ch)
+
+	go func() {
+		out, err := uc.execute(ctx, in)
+		ch <- Result{out, err}
+	}()
+
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
-	default:
+	case result := <-ch:
+		return result.out, result.err
 	}
+}
 
+func (uc *CalculateRetirement) execute(
+	ctx context.Context,
+	in CalculateRetirementInput,
+) (*CalculateRetirementOutput, error) {
 	if err := uc.validate(in); err != nil {
 		return nil, errs.New(err)
 	}

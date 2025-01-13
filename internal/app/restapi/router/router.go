@@ -96,6 +96,7 @@ func (r *Router) Register(
 	usersApiV1.POST("/calculator/emergency-reserve", r.ch.EmergencyReserve)
 	usersApiV1.POST("/calculator/retirement", r.ch.Retirement)
 	usersApiV1.POST("/calculator/simple-interest", r.ch.SimpleInterest)
+	usersApiV1.POST("/calculator/cash-vs-installments", r.ch.CashVsInstallments)
 
 	usersApiV1.GET("/categories", r.cth.List)
 

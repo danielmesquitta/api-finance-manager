@@ -1,6 +1,72 @@
 {
     "components": {
         "schemas": {
+            "dto.CashVsInstallmentsRequest": {
+                "properties": {
+                    "cash_discount": {
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "cashback": {
+                        "maximum": 10000,
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "credit_card_interest": {
+                        "maximum": 10000,
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "installments": {
+                        "minimum": 1,
+                        "type": "integer"
+                    },
+                    "interest": {
+                        "maximum": 10000,
+                        "minimum": 0,
+                        "type": "integer"
+                    },
+                    "interest_type": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/entity.InterestType"
+                            }
+                        ],
+                        "enum": [
+                            "MONTHLY",
+                            "ANNUAL"
+                        ]
+                    },
+                    "purchase_value": {
+                        "minimum": 0,
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "installments",
+                    "interest",
+                    "interest_type",
+                    "purchase_value"
+                ],
+                "type": "object"
+            },
+            "dto.CashVsInstallmentsResponse": {
+                "properties": {
+                    "cash_flow_by_month": {
+                        "additionalProperties": {
+                            "$ref": "#/components/schemas/usecase.CashFlow"
+                        },
+                        "type": "object"
+                    },
+                    "savings_with_cash": {
+                        "type": "integer"
+                    },
+                    "savings_with_credit_card": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "dto.CompoundInterestRequest": {
                 "properties": {
                     "initial_deposit": {
@@ -553,6 +619,17 @@
                     },
                     "verified_email": {
                         "type": "boolean"
+                    }
+                },
+                "type": "object"
+            },
+            "usecase.CashFlow": {
+                "properties": {
+                    "cash": {
+                        "type": "integer"
+                    },
+                    "credit_card": {
+                        "type": "integer"
                     }
                 },
                 "type": "object"
@@ -1143,6 +1220,74 @@
                 "summary": "Create or update budget",
                 "tags": [
                     "Budget"
+                ]
+            }
+        },
+        "/v1/calculator/cash-vs-installments": {
+            "post": {
+                "description": "Calculate cash vs installments",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.CashVsInstallmentsRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body",
+                    "required": true,
+                    "x-originalParamName": "request"
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.CashVsInstallmentsResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Calculate cash vs installments",
+                "tags": [
+                    "Calculator"
                 ]
             }
         },

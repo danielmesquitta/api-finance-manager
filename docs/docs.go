@@ -444,6 +444,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/calculator/cash-vs-installments": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Calculate cash vs installments",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Calculator"
+                ],
+                "summary": "Calculate cash vs installments",
+                "parameters": [
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CashVsInstallmentsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CashVsInstallmentsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/calculator/compound-interest": {
             "post": {
                 "security": [
@@ -768,6 +825,72 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.CashVsInstallmentsRequest": {
+            "type": "object",
+            "required": [
+                "installments",
+                "interest",
+                "interest_type",
+                "purchase_value"
+            ],
+            "properties": {
+                "cash_discount": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "cashback": {
+                    "type": "integer",
+                    "maximum": 10000,
+                    "minimum": 0
+                },
+                "credit_card_interest": {
+                    "type": "integer",
+                    "maximum": 10000,
+                    "minimum": 0
+                },
+                "installments": {
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "interest": {
+                    "type": "integer",
+                    "maximum": 10000,
+                    "minimum": 0
+                },
+                "interest_type": {
+                    "enum": [
+                        "MONTHLY",
+                        "ANNUAL"
+                    ],
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/entity.InterestType"
+                        }
+                    ]
+                },
+                "purchase_value": {
+                    "type": "integer",
+                    "minimum": 0
+                }
+            }
+        },
+        "dto.CashVsInstallmentsResponse": {
+            "type": "object",
+            "properties": {
+                "cash_flow_by_month": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/usecase.CashFlow"
+                    }
+                },
+                "savings_with_cash": {
+                    "type": "integer"
+                },
+                "savings_with_credit_card": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.CompoundInterestRequest": {
             "type": "object",
             "required": [
@@ -1321,6 +1444,17 @@ const docTemplate = `{
                 },
                 "verified_email": {
                     "type": "boolean"
+                }
+            }
+        },
+        "usecase.CashFlow": {
+            "type": "object",
+            "properties": {
+                "cash": {
+                    "type": "integer"
+                },
+                "credit_card": {
+                    "type": "integer"
                 }
             }
         },

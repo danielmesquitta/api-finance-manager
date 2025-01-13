@@ -33,3 +33,11 @@ type SimpleInterestRequest struct {
 type SimpleInterestResponse struct {
 	usecase.CalculateSimpleInterestOutput
 }
+
+type CashVsInstallmentsRequest struct {
+	usecase.CalculateCashVsInstallmentsInput
+}
+
+type CashVsInstallmentsResponse struct {
+	usecase.CalculateCashVsInstallmentsOutput
+}
