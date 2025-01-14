@@ -35,7 +35,7 @@ func (g *GoogleOAuth) GetUser(
 	}
 
 	body := res.Body()
-	if statusCode := res.StatusCode(); statusCode < 200 || statusCode >= 300 {
+	if res.IsError() {
 		return nil, errs.New(body)
 	}
 

@@ -70,14 +70,12 @@ func main() {
 
 	data, err := parseWireConfig(wireConfigFilename)
 	if err != nil {
-		fmt.Println("Error parsing wire config:", err)
-		os.Exit(1)
+		panic(err)
 	}
 
 	err = generateWireFile(wireOutputFilename, data)
 	if err != nil {
-		fmt.Println("Error generating wire file:", err)
-		os.Exit(1)
+		panic(err)
 	}
 
 	fmt.Printf("wire: wrote %s\n", wireOutputFilename)

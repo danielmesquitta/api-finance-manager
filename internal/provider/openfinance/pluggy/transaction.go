@@ -168,11 +168,11 @@ func (c *Client) ListTransactions(
 		if err != nil {
 			return nil, errs.New(err)
 		}
-		if err := res.Error(); err != nil {
-			return nil, errs.New(err)
+		body := res.Body()
+		if res.IsError() {
+			return nil, errs.New(body)
 		}
 
-		body := res.Body()
 		transRes := TransactionsResponse{}
 		if err := json.Unmarshal(body, &transRes); err != nil {
 			return nil, errs.New(err)

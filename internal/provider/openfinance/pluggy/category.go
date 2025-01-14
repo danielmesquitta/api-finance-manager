@@ -32,12 +32,13 @@ func (c *Client) ListCategories(
 	if err != nil {
 		return nil, errs.New(err)
 	}
-	if err := res.Error(); err != nil {
-		return nil, errs.New(err)
+	body := res.Body()
+	if res.IsError() {
+		return nil, errs.New(body)
 	}
 
 	categories := categoriesResponse{}
-	if err := json.Unmarshal(res.Body(), &categories); err != nil {
+	if err := json.Unmarshal(body, &categories); err != nil {
 		return nil, errs.New(err)
 	}
 

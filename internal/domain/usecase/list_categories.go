@@ -32,14 +32,14 @@ func (uc *ListCategories) Execute(
 ) (*entity.PaginatedList[entity.Category], error) {
 	offset := preparePaginationInput(&in.PaginationInput)
 
-	g, ctx := errgroup.WithContext(ctx)
+	g, gCtx := errgroup.WithContext(ctx)
 	var categories []entity.Category
 	var count int64
 
 	g.Go(func() error {
 		var err error
 		categories, err = uc.cr.ListCategories(
-			ctx,
+			gCtx,
 			repo.WithCategoriesPagination(uint(in.PageSize), uint(offset)),
 		)
 		return err
@@ -48,7 +48,7 @@ func (uc *ListCategories) Execute(
 	g.Go(func() error {
 		var err error
 		count, err = uc.cr.CountCategories(
-			ctx,
+			gCtx,
 			repo.WithCategoriesSearch(in.Search),
 		)
 		return err

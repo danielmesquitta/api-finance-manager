@@ -66,13 +66,14 @@ type CreateTransactionsParams struct {
 }
 
 type CreateUserParams struct {
-	ExternalID    string      `json:"external_id"`
-	Provider      string      `json:"provider"`
-	Name          string      `json:"name"`
-	Email         string      `json:"email"`
-	VerifiedEmail bool        `json:"verified_email"`
-	Tier          string      `json:"tier"`
-	Avatar        pgtype.Text `json:"avatar"`
+	ExternalID            string      `json:"external_id"`
+	Provider              string      `json:"provider"`
+	Name                  string      `json:"name"`
+	Email                 string      `json:"email"`
+	VerifiedEmail         bool        `json:"verified_email"`
+	Tier                  string      `json:"tier"`
+	Avatar                pgtype.Text `json:"avatar"`
+	SubscriptionExpiresAt *time.Time  `json:"subscription_expires_at"`
 }
 
 type UpdateUserParams struct {

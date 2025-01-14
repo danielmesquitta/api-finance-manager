@@ -30,17 +30,17 @@ func NewSyncCategories(
 func (uc *SyncCategories) Execute(ctx context.Context) error {
 	var openFinanceCategories, institutions []entity.Category
 
-	g, ctx := errgroup.WithContext(ctx)
+	g, gCtx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
 		var err error
-		openFinanceCategories, err = uc.o.ListCategories(ctx)
+		openFinanceCategories, err = uc.o.ListCategories(gCtx)
 		return err
 	})
 
 	g.Go(func() error {
 		var err error
-		institutions, err = uc.cr.ListCategories(ctx)
+		institutions, err = uc.cr.ListCategories(gCtx)
 		return err
 	})
 

@@ -38,5 +38,9 @@ func NewPostgresContainer(
 		panic(err)
 	}
 
-	return connStr, pgCont.Terminate
+	cleanUp = func(ctx context.Context) error {
+		return pgCont.Terminate(ctx)
+	}
+
+	return connStr, cleanUp
 }

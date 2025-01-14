@@ -3,12 +3,11 @@ package mockpluggy
 import (
 	"context"
 	"encoding/json"
-	"os"
-	"path/filepath"
 	"slices"
 	"strconv"
 	"strings"
 
+	root "github.com/danielmesquitta/api-finance-manager"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
@@ -24,9 +23,7 @@ func (c *Client) ListInstitutions(
 		opt(&opts)
 	}
 
-	filePath := filepath.Join("test", "data", "pluggy", "connectors.json")
-
-	data, err := os.ReadFile(filePath)
+	data, err := root.TestData.ReadFile("test/data/pluggy/connectors.json")
 	if err != nil {
 		return nil, errs.New(err)
 	}

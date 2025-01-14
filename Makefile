@@ -1,4 +1,4 @@
-.PHONY: default install update run clear generate build lint create_migration migrate docs test
+.PHONY: default install update run clear generate build lint create_migration migrate docs test seed
 
 include .env
 schema=sql/schema.prisma
@@ -31,3 +31,5 @@ studio:
 	@npx prisma studio --schema=$(schema)
 test:
 	@go test ./test/integration/...
+seed:
+	@go run cmd/seed/main.go

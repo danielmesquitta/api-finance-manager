@@ -30,12 +30,12 @@ func NewSyncInstitutions(
 func (uc *SyncInstitutions) Execute(ctx context.Context) error {
 	var openFinanceInstitutions, institutions []entity.Institution
 
-	g, ctx := errgroup.WithContext(ctx)
+	g, gCtx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
 		var err error
 		openFinanceInstitutions, err = uc.o.ListInstitutions(
-			ctx,
+			gCtx,
 			openfinance.WithInstitutionTypes(
 				[]string{"PERSONAL_BANK", "INVESTMENT"},
 			),
@@ -45,7 +45,7 @@ func (uc *SyncInstitutions) Execute(ctx context.Context) error {
 
 	g.Go(func() error {
 		var err error
-		institutions, err = uc.ir.ListInstitutions(ctx)
+		institutions, err = uc.ir.ListInstitutions(gCtx)
 		return err
 	})
 

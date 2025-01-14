@@ -2,6 +2,7 @@ package mockoauth
 
 import (
 	"context"
+	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
@@ -25,13 +26,16 @@ func NewMockOAuth(
 	}
 
 	avatar := "https://avatars.githubusercontent.com/u/60039311"
+	subscriptionExpiresAt := time.Now().AddDate(1, 0, 0)
 	user := entity.User{
-		ExternalID:    "6c2342aa-bdac-4efe-a31b-3a018072cff9",
-		Name:          "John Doe",
-		Email:         "johndoe@email.com",
-		Avatar:        &avatar,
-		Provider:      string(entity.ProviderMock),
-		VerifiedEmail: true,
+		ExternalID:            "6c2342aa-bdac-4efe-a31b-3a018072cff9",
+		Name:                  "John Doe",
+		Email:                 "johndoe@email.com",
+		Avatar:                &avatar,
+		Provider:              string(entity.ProviderMock),
+		Tier:                  string(entity.TierPremium),
+		SubscriptionExpiresAt: &subscriptionExpiresAt,
+		VerifiedEmail:         true,
 	}
 
 	return &MockOAuth{

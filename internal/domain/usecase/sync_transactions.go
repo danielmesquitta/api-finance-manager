@@ -49,17 +49,17 @@ func (uc *SyncTransactions) Execute(
 ) error {
 	users, accounts := []entity.User{}, []entity.Account{}
 	categories := []entity.Category{}
-	g, ctx := errgroup.WithContext(ctx)
+	g, gCtx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
 		var err error
-		users, accounts, err = uc.ur.ListPremiumActiveUsersWithAccounts(ctx)
+		users, accounts, err = uc.ur.ListPremiumActiveUsersWithAccounts(gCtx)
 		return err
 	})
 
 	g.Go(func() error {
 		var err error
-		categories, err = uc.cr.ListCategories(ctx)
+		categories, err = uc.cr.ListCategories(gCtx)
 		return err
 	})
 

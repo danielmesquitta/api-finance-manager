@@ -37,12 +37,13 @@ func (c *Client) ListAccounts(
 	if err != nil {
 		return nil, errs.New(err)
 	}
-	if err := res.Error(); err != nil {
-		return nil, errs.New(err)
+	body := res.Body()
+	if res.IsError() {
+		return nil, errs.New(body)
 	}
 
 	accountsRes := accountsResponse{}
-	if err := json.Unmarshal(res.Body(), &accountsRes); err != nil {
+	if err := json.Unmarshal(body, &accountsRes); err != nil {
 		return nil, errs.New(err)
 	}
 

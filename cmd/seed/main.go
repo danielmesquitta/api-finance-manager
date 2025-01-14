@@ -1,0 +1,113 @@
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+
+	"github.com/go-resty/resty/v2"
+	"golang.org/x/sync/errgroup"
+
+	root "github.com/danielmesquitta/api-finance-manager"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
+	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
+)
+
+func main() {
+	v := validator.New()
+	e := config.LoadEnv(v)
+
+	baseURL := fmt.Sprintf("%s:%s/api", e.Host, e.Port)
+
+	client := resty.New().
+		SetBaseURL(baseURL).
+		SetDebug(true)
+
+	res, err := client.R().Get("/health")
+	if err != nil {
+		panic(err)
+	}
+	if res.IsError() {
+		panic(string(res.Body()))
+	}
+
+	res, err = client.R().
+		SetHeader("Authorization", mockoauth.MockToken).
+		SetBody(dto.SignInRequest{SignInInput: usecase.SignInInput{
+			Provider: entity.ProviderMock,
+		}}).
+		Post("/v1/auth/sign-in")
+	if err != nil {
+		panic(err)
+	}
+	if res.IsError() {
+		panic(string(res.Body()))
+	}
+
+	client.
+		SetBasicAuth(e.BasicAuthUsername, e.BasicAuthPassword)
+
+	res, err = client.R().
+		Post("/v1/admin/categories/sync")
+	if err != nil {
+		panic(err)
+	}
+	if res.IsError() {
+		panic(string(res.Body()))
+	}
+
+	res, err = client.R().
+		Post("/v1/admin/institutions/sync")
+	if err != nil {
+		panic(err)
+	}
+	if res.IsError() {
+		panic(string(res.Body()))
+	}
+
+	data, err := root.TestData.ReadFile("test/data/pluggy/items.json")
+	if err != nil {
+		panic(err)
+	}
+
+	syncAccountsReqs := []dto.SyncAccountsRequest{}
+	if err := json.Unmarshal(data, &syncAccountsReqs); err != nil {
+		panic(err)
+	}
+
+	g, ctx := errgroup.WithContext(context.Background())
+
+	for _, syncAccountsReq := range syncAccountsReqs {
+		g.Go(func() error {
+			res, err := client.R().
+				SetContext(ctx).
+				SetBody(syncAccountsReq).
+				Post("/v1/admin/accounts/sync")
+			if err != nil {
+				return err
+			}
+			if res.IsError() {
+				panic(string(res.Body()))
+			}
+
+			return nil
+		})
+	}
+
+	if err := g.Wait(); err != nil {
+		panic(err)
+	}
+
+	res, err = client.R().
+		Post("/v1/admin/transactions/sync")
+	if err != nil {
+		panic(err)
+	}
+	if res.IsError() {
+		panic(string(res.Body()))
+	}
+}

@@ -48,12 +48,13 @@ func (c *Client) ListInstitutions(
 	if err != nil {
 		return nil, errs.New(err)
 	}
-	if err := res.Error(); err != nil {
-		return nil, errs.New(err)
+	body := res.Body()
+	if res.IsError() {
+		return nil, errs.New(body)
 	}
 
 	connectors := ConnectorsResponse{}
-	if err := json.Unmarshal(res.Body(), &connectors); err != nil {
+	if err := json.Unmarshal(body, &connectors); err != nil {
 		return nil, errs.New(err)
 	}
 

@@ -50,6 +50,8 @@ type Institution struct {
 	ID int `json:"id" validate:"required"`
 }
 
+// @todo: create account only to one specific user instead of all users
+// (probably using clientID)
 func (uc *SyncAccounts) Execute(
 	ctx context.Context,
 	in SyncAccountsInput,
@@ -67,15 +69,15 @@ func (uc *SyncAccounts) Execute(
 	}
 
 	var institution *entity.Institution
-	var accounts []entity.Account
+	var openFinanceAccounts []entity.Account
 	var users []entity.User
-	g, ctx := errgroup.WithContext(ctx)
+	g, gCtx := errgroup.WithContext(ctx)
 
 	institutionExternalID := fmt.Sprintf("%d", in.Institution.ID)
 	g.Go(func() error {
 		var err error
 		institution, err = uc.ir.GetInstitutionByExternalID(
-			ctx,
+			gCtx,
 			institutionExternalID,
 		)
 		return err
@@ -83,13 +85,13 @@ func (uc *SyncAccounts) Execute(
 
 	g.Go(func() error {
 		var err error
-		accounts, err = uc.o.ListAccounts(ctx, in.ItemID)
+		openFinanceAccounts, err = uc.o.ListAccounts(gCtx, in.ItemID)
 		return err
 	})
 
 	g.Go(func() error {
 		var err error
-		users, err = uc.ur.ListUsers(ctx)
+		users, err = uc.ur.ListUsers(gCtx)
 		return err
 	})
 
@@ -103,7 +105,7 @@ func (uc *SyncAccounts) Execute(
 
 	params := []repo.CreateAccountsParams{}
 	for _, user := range users {
-		for _, account := range accounts {
+		for _, account := range openFinanceAccounts {
 			param := repo.CreateAccountsParams{}
 			if err := copier.Copy(&param, account); err != nil {
 				return errs.New(err)

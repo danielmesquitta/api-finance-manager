@@ -56,12 +56,13 @@ func (c *Client) authenticate(ctx context.Context) error {
 	if err != nil {
 		return errs.New(err)
 	}
-	if err := res.Error(); err != nil {
-		return errs.New(err)
+	body := res.Body()
+	if res.IsError() {
+		return errs.New(body)
 	}
 
 	data := authResponse{}
-	if err := json.Unmarshal(res.Body(), &data); err != nil {
+	if err := json.Unmarshal(body, &data); err != nil {
 		return errs.New(err)
 	}
 
