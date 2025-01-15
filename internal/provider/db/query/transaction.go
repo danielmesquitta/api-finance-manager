@@ -26,7 +26,7 @@ func (qb *QueryBuilder) ListTransactions(
 	}
 
 	query := goqu.
-		From(string(TableTransaction)).
+		From(TableTransaction).
 		Select("*")
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
@@ -57,18 +57,22 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 	}
 
 	query := goqu.
-		From(string(TableTransaction)).
+		From(TableTransaction).
 		Select(
 			"*",
+			goqu.I(fmt.Sprintf("%s.%s", TableCategory, ColumnCategoryID)).
+				As("category_id"),
 			goqu.I(fmt.Sprintf("%s.%s", TableCategory, ColumnCategoryName)).
 				As("category_name"),
+			goqu.I(fmt.Sprintf("%s.%s", TableInstitution, ColumnInstitutionID)).
+				As("institution_id"),
 			goqu.I(fmt.Sprintf("%s.%s", TableInstitution, ColumnInstitutionName)).
 				As("institution_name"),
 			goqu.I(fmt.Sprintf("%s.%s", TableInstitution, ColumnInstitutionLogo)).
 				As("institution_logo"),
 		).
 		LeftJoin(
-			goqu.I(string(TableCategory)),
+			goqu.I(TableCategory),
 			goqu.
 				On(
 					goqu.I(fmt.Sprintf("%s.%s", TableTransaction, ColumnTransactionCategoryID)).
@@ -76,7 +80,7 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 				),
 		).
 		LeftJoin(
-			goqu.I(string(TableInstitution)),
+			goqu.I(TableInstitution),
 			goqu.
 				On(
 					goqu.I(fmt.Sprintf("%s.%s", TableTransaction, ColumnTransactionInstitutionID)).
@@ -115,7 +119,7 @@ func (qb *QueryBuilder) CountTransactions(
 	}
 
 	query := goqu.
-		From(string(TableTransaction)).
+		From(TableTransaction).
 		Select(goqu.COUNT("*"))
 
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
@@ -142,7 +146,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	whereExps = append(
 		whereExps,
-		goqu.I(string(ColumnTransactionUserID)).Eq(userID),
+		goqu.I(ColumnTransactionUserID).Eq(userID),
 	)
 
 	options.Search = strings.TrimSpace(options.Search)
@@ -158,7 +162,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if options.CategoryID != uuid.Nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(string(ColumnTransactionCategoryID)).
+			goqu.I(ColumnTransactionCategoryID).
 				Eq(options.CategoryID),
 		)
 	}
@@ -166,7 +170,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if options.InstitutionID != uuid.Nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(string(ColumnTransactionInstitutionID)).
+			goqu.I(ColumnTransactionInstitutionID).
 				Eq(options.InstitutionID),
 		)
 	}
@@ -174,20 +178,42 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if !options.StartDate.IsZero() {
 		whereExps = append(
 			whereExps,
-			goqu.I(string(ColumnTransactionDate)).Gte(options.StartDate),
+			goqu.I(ColumnTransactionDate).Gte(options.StartDate),
 		)
 	}
 
 	if !options.EndDate.IsZero() {
 		whereExps = append(
 			whereExps,
-			goqu.I(string(ColumnTransactionDate)).Lte(options.EndDate),
+			goqu.I(ColumnTransactionDate).Lte(options.EndDate),
+		)
+	}
+
+	if options.IsExpense {
+		whereExps = append(
+			whereExps,
+			goqu.I(ColumnTransactionAmount).Lt(0),
+		)
+	}
+
+	if options.IsIncome {
+		whereExps = append(
+			whereExps,
+			goqu.I(ColumnTransactionAmount).Gt(0),
+		)
+	}
+
+	if options.PaymentMethod != "" {
+		whereExps = append(
+			whereExps,
+			goqu.I(ColumnTransactionPaymentMethod).
+				Eq(options.PaymentMethod),
 		)
 	}
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(string(ColumnTransactionName)).Asc(),
+		goqu.I(ColumnTransactionName).Asc(),
 	)
 
 	return whereExps, orderedExps

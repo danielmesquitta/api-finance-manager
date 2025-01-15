@@ -9,13 +9,16 @@ import (
 )
 
 type ListTransactionsOptions struct {
-	Limit         uint      `json:"limit"`
-	Offset        uint      `json:"offset"`
-	Search        string    `json:"search"`
-	StartDate     time.Time `json:"start_date"`
-	EndDate       time.Time `json:"end_date"`
-	CategoryID    uuid.UUID `json:"category_id"`
-	InstitutionID uuid.UUID `json:"institution_id"`
+	Limit         uint                 `json:"-"`
+	Offset        uint                 `json:"-"`
+	Search        string               `json:"search"`
+	StartDate     time.Time            `json:"start_date"`
+	EndDate       time.Time            `json:"end_date"`
+	CategoryID    uuid.UUID            `json:"category_id"`
+	InstitutionID uuid.UUID            `json:"institution_id"`
+	IsExpense     bool                 `json:"is_expense"`
+	IsIncome      bool                 `json:"is_income"`
+	PaymentMethod entity.PaymentMethod `json:"payment_method"`
 }
 
 type ListTransactionsOption func(*ListTransactionsOptions)
@@ -59,6 +62,26 @@ func WithTransactionInstitution(
 ) ListTransactionsOption {
 	return func(o *ListTransactionsOptions) {
 		o.InstitutionID = institutionID
+	}
+}
+
+func WithTransactionIsExpense(isExpense bool) ListTransactionsOption {
+	return func(o *ListTransactionsOptions) {
+		o.IsExpense = isExpense
+	}
+}
+
+func WithTransactionIsIncome(isIncome bool) ListTransactionsOption {
+	return func(o *ListTransactionsOptions) {
+		o.IsIncome = isIncome
+	}
+}
+
+func WithTransactionPaymentMethod(
+	paymentMethod entity.PaymentMethod,
+) ListTransactionsOption {
+	return func(o *ListTransactionsOptions) {
+		o.PaymentMethod = paymentMethod
 	}
 }
 

@@ -22,7 +22,7 @@ func (qb *QueryBuilder) ListCategories(
 	}
 
 	query := goqu.
-		From(string(TableCategory)).
+		From(TableCategory).
 		Select("*")
 
 	var whereExps []goqu.Expression
@@ -40,7 +40,7 @@ func (qb *QueryBuilder) ListCategories(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(string(ColumnCategoryName)).Asc(),
+		goqu.I(ColumnCategoryName).Asc(),
 	)
 
 	if len(whereExps) == 1 {
@@ -86,7 +86,7 @@ func (qb *QueryBuilder) CountCategories(
 	}
 
 	query := goqu.
-		From(string(TableCategory)).
+		From(TableCategory).
 		Select(goqu.COUNT("*"))
 
 	var whereExps []goqu.Expression

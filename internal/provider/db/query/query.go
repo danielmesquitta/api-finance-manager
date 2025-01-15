@@ -37,7 +37,7 @@ func (qb *QueryBuilder) buildSearch(
 ) (exp.Expression, exp.SQLFunctionExpression) {
 	unaccentedColumn := goqu.Func("lower", goqu.Func(
 		"unaccent",
-		goqu.I(string(column)),
+		goqu.I(column),
 	))
 	searchPlaceholder := goqu.L("?", search)
 	unaccentedSearch := goqu.Func(

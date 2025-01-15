@@ -1,9 +1,9 @@
 package entity
 
 type PaginatedList[T any] struct {
-	Items      []T `json:"items,omitempty"`
-	TotalItems int `json:"total_items,omitempty"`
-	Page       int `json:"page,omitempty"`
-	PageSize   int `json:"page_size,omitempty"`
-	TotalPages int `json:"total_pages,omitempty"`
+	Items      []T  `json:"items"`
+	TotalItems uint `json:"total_items"`
+	Page       uint `json:"page"`
+	PageSize   uint `json:"page_size"`
+	TotalPages uint `json:"total_pages"`
 }

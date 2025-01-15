@@ -24,7 +24,7 @@ lint:
 lint-fix:
 	@golangci-lint run --fix && golines **/*.go -w -m 80 && go run cmd/lintfix/main.go
 create_migration:
-	@prisma-client-go migrate dev --schema=$(schema) --skip-generate
+	@prisma-client-go migrate dev --schema=$(schema) --skip-generate && prisma-to-go triggers --schema=$(schema) && make migrate
 migrate:
 	@prisma-client-go migrate deploy --schema=$(schema)
 studio:

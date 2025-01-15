@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
@@ -48,10 +49,12 @@ func (u *UpsertBudget) Execute(
 		return errs.New(err)
 	}
 
-	monthStart, err := parseDateToMonthStart(in.Date)
+	date, err := time.Parse(time.RFC3339, in.Date)
 	if err != nil {
-		return errs.New(err)
+		return errs.ErrInvalidDate
 	}
+
+	monthStart := toMonthStart(date)
 
 	budget, err := u.br.GetBudget(ctx, repo.GetBudgetParams{
 		UserID: in.UserID,
@@ -61,7 +64,7 @@ func (u *UpsertBudget) Execute(
 		return errs.New(err)
 	}
 
-	if err := u.tx.Do(ctx, func(ctx context.Context) error {
+	err = u.tx.Do(ctx, func(ctx context.Context) error {
 		if budgetDoesNotExists := budget == nil; budgetDoesNotExists {
 			budget, err = u.br.CreateBudget(ctx, repo.CreateBudgetParams{
 				Date:   monthStart,
@@ -99,7 +102,9 @@ func (u *UpsertBudget) Execute(
 		}
 
 		return nil
-	}); err != nil {
+	})
+
+	if err != nil {
 		return errs.New(err)
 	}
 

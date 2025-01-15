@@ -2,7 +2,7 @@
 
 package query
 
-type Table string
+type Table = string
 
 const (
 	TableAccount        Table = "accounts"
@@ -15,7 +15,7 @@ const (
 	TableUser           Table = "users"
 )
 
-type Column string
+type Column = string
 
 // Columns for table Account
 const (

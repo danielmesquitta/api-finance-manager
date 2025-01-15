@@ -5,6 +5,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/labstack/echo/v4"
 )
 
@@ -53,16 +54,18 @@ func (h CategoryHandler) Sync(c echo.Context) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/categories [get]
 func (h CategoryHandler) List(c echo.Context) error {
-	search, page, pageSize := getPaginationParams(c)
+	search := c.QueryParam(queryParamSearch)
+	paginationIn := parsePaginationParams(c)
+
 	in := usecase.ListCategoriesInput{
-		PaginationInput: usecase.PaginationInput{
-			Search:   search,
-			Page:     page,
-			PageSize: pageSize,
+		PaginationInput: paginationIn,
+		ListCategoriesOptions: repo.ListCategoriesOptions{
+			Search: search,
 		},
 	}
 
-	res, err := h.lc.Execute(c.Request().Context(), in)
+	ctx := c.Request().Context()
+	res, err := h.lc.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}

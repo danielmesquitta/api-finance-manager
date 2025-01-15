@@ -318,6 +318,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "format": "date",
                         "description": "Date",
                         "name": "date",
                         "in": "query"
@@ -783,6 +784,104 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/transactions": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List transactions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "List transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Start date",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "date",
+                        "description": "End date",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Institution ID",
+                        "name": "institution_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "category_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter only expenses",
+                        "name": "is_expense",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter only incomes",
+                        "name": "is_income",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ListTransactionsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/users/profile": {
             "get": {
                 "security": [
@@ -1009,16 +1108,25 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "available": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "available_per_day": {
-                    "type": "number"
+                    "type": "integer"
+                },
+                "available_per_day_percentage_variation": {
+                    "type": "integer"
+                },
+                "available_percentage_variation": {
+                    "type": "integer"
                 },
                 "budget_categories": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/usecase.GetBudgetBudgetCategory"
+                        "$ref": "#/definitions/usecase.GetBudgetCategoryOutput"
                     }
+                },
+                "comparison_date": {
+                    "type": "string"
                 },
                 "created_at": {
                     "type": "string"
@@ -1033,7 +1141,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "spent": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "updated_at": {
                     "type": "string"
@@ -1058,6 +1166,29 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/entity.Category"
+                    }
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total_items": {
+                    "type": "integer"
+                },
+                "total_pages": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ListTransactionsResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Transaction"
                     }
                 },
                 "page": {
@@ -1403,6 +1534,53 @@ const docTemplate = `{
                 "ProviderMock"
             ]
         },
+        "entity.Transaction": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "integer"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "external_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "institution_id": {
+                    "type": "string"
+                },
+                "is_ignored": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "payment_method": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.User": {
             "type": "object",
             "properties": {
@@ -1475,10 +1653,13 @@ const docTemplate = `{
                 }
             }
         },
-        "usecase.GetBudgetBudgetCategory": {
+        "usecase.GetBudgetCategoryOutput": {
             "type": "object",
             "properties": {
                 "amount": {
+                    "type": "integer"
+                },
+                "available": {
                     "type": "integer"
                 },
                 "budget_id": {
@@ -1500,7 +1681,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "spent": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "updated_at": {
                     "type": "string"

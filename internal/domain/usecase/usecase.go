@@ -1,18 +1,18 @@
 package usecase
 
 import (
+	"math"
 	"time"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 )
 
 type PaginationInput struct {
-	Search   string `json:"search"`
-	Page     int    `json:"page"`
-	PageSize int    `json:"page_size"`
+	Page     uint `json:"page"`
+	PageSize uint `json:"page_size"`
 }
 
-func preparePaginationInput(in *PaginationInput) (offset int) {
+func preparePaginationInput(in *PaginationInput) (offset uint) {
 	if in.Page == 0 {
 		in.Page = 1
 	}
@@ -22,12 +22,21 @@ func preparePaginationInput(in *PaginationInput) (offset int) {
 	return (in.Page - 1) * in.PageSize
 }
 
-func parseDateToMonthStart(dateStr string) (monthStart time.Time, err error) {
-	date, err := time.Parse(time.RFC3339, dateStr)
-	if err != nil {
-		return time.Time{}, errs.ErrInvalidDate
-	}
-	monthStart = time.Date(
+func preparePaginationOutput[T any](
+	out *entity.PaginatedList[T],
+	in PaginationInput,
+	count int64,
+) {
+	out.Page = in.Page
+	out.PageSize = in.PageSize
+	out.TotalItems = uint(count)
+	out.TotalPages = uint(math.Ceil(float64(count) / float64(in.PageSize)))
+}
+
+func toMonthStart(
+	date time.Time,
+) time.Time {
+	monthStart := time.Date(
 		date.Year(),
 		date.Month(),
 		1,
@@ -37,5 +46,46 @@ func parseDateToMonthStart(dateStr string) (monthStart time.Time, err error) {
 		0,
 		time.Local,
 	)
-	return monthStart, nil
+	return monthStart
+}
+
+func toMonthEnd(
+	date time.Time,
+) time.Time {
+	monthEnd := time.Date(
+		date.Year(),
+		date.Month()+1,
+		1,
+		0,
+		0,
+		0,
+		0,
+		time.Local,
+	)
+
+	monthEnd = monthEnd.Add(-time.Nanosecond)
+
+	return monthEnd
+}
+
+func toMonthDay(
+	monthStart time.Time,
+	day int,
+) time.Time {
+	monthSameDay := time.Date(
+		monthStart.Year(),
+		monthStart.Month(),
+		day,
+		0,
+		0,
+		0,
+		0,
+		time.Local,
+	)
+	// If the previous month has less days than the current month, we need to
+	// go back until we reach the last day of the month
+	for monthSameDay.Month() != monthStart.Month() {
+		monthSameDay = monthSameDay.AddDate(0, 0, -1)
+	}
+	return monthSameDay
 }

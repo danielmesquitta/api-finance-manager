@@ -47,7 +47,8 @@ func (h BudgetHandler) Upsert(c echo.Context) error {
 	}
 
 	claims := getUserClaims(c)
-	body.UserID = uuid.Must(uuid.Parse(claims.Issuer))
+	userID := uuid.MustParse(claims.Issuer)
+	body.UserID = userID
 
 	ctx := c.Request().Context()
 	if err := h.ub.Execute(
@@ -66,7 +67,7 @@ func (h BudgetHandler) Upsert(c echo.Context) error {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param date query string false "Date"
+// @Param date query string false "Date" format(date)
 // @Success 200 {object} dto.GetBudgetResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse

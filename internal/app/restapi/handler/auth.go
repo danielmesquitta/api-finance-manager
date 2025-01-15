@@ -73,11 +73,12 @@ func (h AuthHandler) SignIn(c echo.Context) error {
 // @Router /v1/auth/refresh [post]
 func (h AuthHandler) RefreshToken(c echo.Context) error {
 	claims := getUserClaims(c)
+	userID := uuid.MustParse(claims.Issuer)
 
 	ctx := c.Request().Context()
 	out, err := h.rt.Execute(
 		ctx,
-		uuid.MustParse(claims.Issuer),
+		userID,
 	)
 	if err != nil {
 		return errs.New(err)

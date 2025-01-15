@@ -4,23 +4,30 @@ import (
 	"math"
 )
 
+const percentageFactor = 10000
+const centsFactor = 100
+
 func decimalRound(value float64) float64 {
-	return math.Round(value*100) / 100
+	return math.Round(value*centsFactor) / centsFactor
 }
 
-// ToCents converts a float64 to cents.
+// ToPercentage converts a int64 to a float64 percentage.
 func ToPercentage(value int64) float64 {
-	return float64(value) / 10000
+	return float64(value) / percentageFactor
+}
+
+func FromPercentage(value float64) int64 {
+	return int64(value * percentageFactor)
 }
 
 // ToCents converts a float64 to cents.
 func ToCents(value float64) int64 {
-	return int64(decimalRound(value) * 100)
+	return int64(decimalRound(value) * centsFactor)
 }
 
 // FromCents converts cents to a float64.
 func FromCents(value int64) float64 {
-	return float64(value) / 100
+	return float64(value) / centsFactor
 }
 
 // ToMonthlyInterestRate converts an annual interest rate to a monthly interest rate.

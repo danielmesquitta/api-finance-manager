@@ -23,6 +23,7 @@ func NewListCategories(
 }
 
 type ListCategoriesInput struct {
+	repo.ListCategoriesOptions
 	PaginationInput
 }
 
@@ -36,20 +37,31 @@ func (uc *ListCategories) Execute(
 	var categories []entity.Category
 	var count int64
 
-	g.Go(func() error {
-		var err error
-		categories, err = uc.cr.ListCategories(
-			gCtx,
-			repo.WithCategoriesPagination(uint(in.PageSize), uint(offset)),
-		)
-		return err
-	})
+	options := []repo.ListCategoriesOption{}
+
+	if in.Search != "" {
+		options = append(options, repo.WithCategoriesSearch(in.Search))
+	}
 
 	g.Go(func() error {
 		var err error
 		count, err = uc.cr.CountCategories(
 			gCtx,
-			repo.WithCategoriesSearch(in.Search),
+			options...,
+		)
+		return err
+	})
+
+	options = append(
+		options,
+		repo.WithCategoriesPagination(in.PageSize, offset),
+	)
+
+	g.Go(func() error {
+		var err error
+		categories, err = uc.cr.ListCategories(
+			gCtx,
+			options...,
 		)
 		return err
 	})
@@ -58,11 +70,11 @@ func (uc *ListCategories) Execute(
 		return nil, errs.New(err)
 	}
 
-	return &entity.PaginatedList[entity.Category]{
-		Items:      categories,
-		TotalItems: int(count),
-		Page:       in.Page,
-		PageSize:   in.PageSize,
-		TotalPages: int(count) / in.PageSize,
-	}, nil
+	out := entity.PaginatedList[entity.Category]{
+		Items: categories,
+	}
+
+	preparePaginationOutput(&out, in.PaginationInput, count)
+
+	return &out, nil
 }

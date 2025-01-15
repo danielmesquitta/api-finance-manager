@@ -124,13 +124,19 @@ components:
                 amount:
                     type: integer
                 available:
-                    type: number
+                    type: integer
                 available_per_day:
-                    type: number
+                    type: integer
+                available_per_day_percentage_variation:
+                    type: integer
+                available_percentage_variation:
+                    type: integer
                 budget_categories:
                     items:
-                        $ref: '#/components/schemas/usecase.GetBudgetBudgetCategory'
+                        $ref: '#/components/schemas/usecase.GetBudgetCategoryOutput'
                     type: array
+                comparison_date:
+                    type: string
                 created_at:
                     type: string
                 date:
@@ -140,7 +146,7 @@ components:
                 id:
                     type: string
                 spent:
-                    type: number
+                    type: integer
                 updated_at:
                     type: string
                 user_id:
@@ -156,6 +162,21 @@ components:
                 items:
                     items:
                         $ref: '#/components/schemas/entity.Category'
+                    type: array
+                page:
+                    type: integer
+                page_size:
+                    type: integer
+                total_items:
+                    type: integer
+                total_pages:
+                    type: integer
+            type: object
+        dto.ListTransactionsResponse:
+            properties:
+                items:
+                    items:
+                        $ref: '#/components/schemas/entity.Transaction'
                     type: array
                 page:
                     type: integer
@@ -392,6 +413,37 @@ components:
                 - ProviderApple
                 - ProviderRefresh
                 - ProviderMock
+        entity.Transaction:
+            properties:
+                account_id:
+                    type: string
+                amount:
+                    type: integer
+                category_id:
+                    type: string
+                created_at:
+                    type: string
+                date:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                institution_id:
+                    type: string
+                is_ignored:
+                    type: boolean
+                name:
+                    type: string
+                payment_method:
+                    type: string
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
         entity.User:
             properties:
                 avatar:
@@ -439,9 +491,11 @@ components:
                 total_interest:
                     type: integer
             type: object
-        usecase.GetBudgetBudgetCategory:
+        usecase.GetBudgetCategoryOutput:
             properties:
                 amount:
+                    type: integer
+                available:
                     type: integer
                 budget_id:
                     type: string
@@ -456,7 +510,7 @@ components:
                 id:
                     type: string
                 spent:
-                    type: number
+                    type: integer
                 updated_at:
                     type: string
             type: object
@@ -721,6 +775,7 @@ paths:
                   in: query
                   name: date
                   schema:
+                    format: date
                     type: string
             responses:
                 "200":
@@ -1030,6 +1085,81 @@ paths:
             summary: List categories
             tags:
                 - Category
+    /v1/transactions:
+        get:
+            description: List transactions
+            parameters:
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+                - description: Start date
+                  in: query
+                  name: start_date
+                  schema:
+                    format: date
+                    type: string
+                - description: End date
+                  in: query
+                  name: end_date
+                  schema:
+                    format: date
+                    type: string
+                - description: Institution ID
+                  in: query
+                  name: institution_id
+                  schema:
+                    type: string
+                - description: Category ID
+                  in: query
+                  name: category_id
+                  schema:
+                    type: string
+                - description: Filter only expenses
+                  in: query
+                  name: is_expense
+                  schema:
+                    type: boolean
+                - description: Filter only incomes
+                  in: query
+                  name: is_income
+                  schema:
+                    type: boolean
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListTransactionsResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List transactions
+            tags:
+                - Transaction
     /v1/users/profile:
         get:
             description: Get logged-in user profile

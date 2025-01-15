@@ -21,7 +21,7 @@ model User {
   subscription_expires_at DateTime? @db.Timestamptz()
   synchronized_at         DateTime? @db.Timestamptz()
   created_at              DateTime  @default(now()) @db.Timestamptz()
-  updated_at              DateTime  @default(now()) @db.Timestamptz()
+  updated_at              DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at              DateTime? @db.Timestamptz()
 
   budgets Budget[]
@@ -44,7 +44,7 @@ model Transaction {
   is_ignored     Boolean   @default(false)
   date           DateTime  @db.Timestamptz()
   created_at     DateTime  @default(now()) @db.Timestamptz()
-  updated_at     DateTime  @default(now()) @db.Timestamptz()
+  updated_at     DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at     DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -72,7 +72,7 @@ model Investment {
   rate        Float
   rateType    String
   created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at  DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -86,7 +86,7 @@ model Category {
   external_id String    @unique
   name        String
   created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at  DateTime? @db.Timestamptz()
 
   transactions Transaction[]
@@ -102,7 +102,7 @@ model Account {
   name        String
   type        String
   created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at  DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -122,7 +122,7 @@ model Institution {
   name        String
   logo        String?
   created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at  DateTime? @db.Timestamptz()
 
   accounts Account[]
@@ -137,7 +137,7 @@ model Budget {
   amount     BigInt
   date       DateTime  @db.Timestamptz()
   created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -152,7 +152,7 @@ model BudgetCategory {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   amount     BigInt
   created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at DateTime? @db.Timestamptz()
 
   budget    Budget @relation(fields: [budget_id], references: [id], onDelete: Cascade, onUpdate: Cascade)

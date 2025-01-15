@@ -7,8 +7,8 @@ import (
 )
 
 type ListCategoriesOptions struct {
-	Limit  uint   `json:"limit"`
-	Offset uint   `json:"offset"`
+	Limit  uint   `json:"-"`
+	Offset uint   `json:"-"`
 	Search string `json:"search"`
 }
 

@@ -74,6 +74,7 @@ var providers = []any{
 	usecase.NewSyncAccounts,
 	usecase.NewSyncTransactions,
 	usecase.NewCalculateCashVsInstallments,
+	usecase.NewListTransactions,
 
 	handler.NewAuthHandler,
 	handler.NewHealthHandler,
