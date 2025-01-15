@@ -51,6 +51,7 @@ func (h CategoryHandler) Sync(c echo.Context) error {
 // @Param page query int false "Page"
 // @Param page_size query int false "Page size"
 // @Success 200 {object} dto.ListCategoriesResponse
+// @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/categories [get]
 func (h CategoryHandler) List(c echo.Context) error {

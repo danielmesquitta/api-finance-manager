@@ -146,6 +146,39 @@ func (q *Queries) CreateInstitutions(ctx context.Context, arg []CreateInstitutio
 	return q.db.CopyFrom(ctx, []string{"institutions"}, []string{"external_id", "name", "logo"}, &iteratorForCreateInstitutions{rows: arg})
 }
 
+// iteratorForCreatePaymentMethods implements pgx.CopyFromSource.
+type iteratorForCreatePaymentMethods struct {
+	rows                 []CreatePaymentMethodsParams
+	skippedFirstNextCall bool
+}
+
+func (r *iteratorForCreatePaymentMethods) Next() bool {
+	if len(r.rows) == 0 {
+		return false
+	}
+	if !r.skippedFirstNextCall {
+		r.skippedFirstNextCall = true
+		return true
+	}
+	r.rows = r.rows[1:]
+	return len(r.rows) > 0
+}
+
+func (r iteratorForCreatePaymentMethods) Values() ([]interface{}, error) {
+	return []interface{}{
+		r.rows[0].ExternalID,
+		r.rows[0].Name,
+	}, nil
+}
+
+func (r iteratorForCreatePaymentMethods) Err() error {
+	return nil
+}
+
+func (q *Queries) CreatePaymentMethods(ctx context.Context, arg []CreatePaymentMethodsParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"payment_methods"}, []string{"external_id", "name"}, &iteratorForCreatePaymentMethods{rows: arg})
+}
+
 // iteratorForCreateTransactions implements pgx.CopyFromSource.
 type iteratorForCreateTransactions struct {
 	rows                 []CreateTransactionsParams
@@ -169,7 +202,7 @@ func (r iteratorForCreateTransactions) Values() ([]interface{}, error) {
 		r.rows[0].ExternalID,
 		r.rows[0].Name,
 		r.rows[0].Amount,
-		r.rows[0].PaymentMethod,
+		r.rows[0].PaymentMethodID,
 		r.rows[0].Date,
 		r.rows[0].UserID,
 		r.rows[0].AccountID,
@@ -183,5 +216,5 @@ func (r iteratorForCreateTransactions) Err() error {
 }
 
 func (q *Queries) CreateTransactions(ctx context.Context, arg []CreateTransactionsParams) (int64, error) {
-	return q.db.CopyFrom(ctx, []string{"transactions"}, []string{"external_id", "name", "amount", "payment_method", "date", "user_id", "account_id", "institution_id", "category_id"}, &iteratorForCreateTransactions{rows: arg})
+	return q.db.CopyFrom(ctx, []string{"transactions"}, []string{"external_id", "name", "amount", "payment_method_id", "date", "user_id", "account_id", "institution_id", "category_id"}, &iteratorForCreateTransactions{rows: arg})
 }

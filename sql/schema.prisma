@@ -36,16 +36,18 @@ model User {
 }
 
 model Transaction {
-  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id    String    @unique
-  name           String
-  amount         BigInt
-  payment_method String
-  is_ignored     Boolean   @default(false)
-  date           DateTime  @db.Timestamptz()
-  created_at     DateTime  @default(now()) @db.Timestamptz()
-  updated_at     DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at     DateTime? @db.Timestamptz()
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String    @unique
+  name        String
+  amount      BigInt
+  is_ignored  Boolean   @default(false)
+  date        DateTime  @db.Timestamptz()
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
+
+  payment_method_id String        @db.Uuid
+  payment_method    PaymentMethod @relation(fields: [payment_method_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
@@ -60,6 +62,19 @@ model Transaction {
   category_id String?   @db.Uuid
 
   @@map("transactions")
+}
+
+model PaymentMethod {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String    @unique
+  name        String
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
+
+  transactions Transaction[]
+
+  @@map("payment_methods")
 }
 
 // @TODO: Add more fields to Investment model

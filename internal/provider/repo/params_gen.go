@@ -53,16 +53,21 @@ type CreateInstitutionsParams struct {
 	Logo       pgtype.Text `json:"logo"`
 }
 
+type CreatePaymentMethodsParams struct {
+	ExternalID string `json:"external_id"`
+	Name       string `json:"name"`
+}
+
 type CreateTransactionsParams struct {
-	ExternalID    string     `json:"external_id"`
-	Name          string     `json:"name"`
-	Amount        int64      `json:"amount"`
-	PaymentMethod string     `json:"payment_method"`
-	Date          time.Time  `json:"date"`
-	UserID        uuid.UUID  `json:"user_id"`
-	AccountID     *uuid.UUID `json:"account_id"`
-	InstitutionID *uuid.UUID `json:"institution_id"`
-	CategoryID    *uuid.UUID `json:"category_id"`
+	ExternalID      string     `json:"external_id"`
+	Name            string     `json:"name"`
+	Amount          int64      `json:"amount"`
+	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
+	Date            time.Time  `json:"date"`
+	UserID          uuid.UUID  `json:"user_id"`
+	AccountID       *uuid.UUID `json:"account_id"`
+	InstitutionID   *uuid.UUID `json:"institution_id"`
+	CategoryID      *uuid.UUID `json:"category_id"`
 }
 
 type CreateUserParams struct {

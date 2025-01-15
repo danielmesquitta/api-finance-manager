@@ -47,7 +47,8 @@ func WithTransactionDateBefore(endDate time.Time) ListTransactionsOption {
 
 type Transaction struct {
 	entity.Transaction
-	CategoryExternalID string
+	CategoryExternalID      string
+	PaymentMethodExternalID string
 }
 type Client interface {
 	ListInstitutions(

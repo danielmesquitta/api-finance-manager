@@ -3,7 +3,6 @@ package handler
 import (
 	"net/http"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
@@ -56,8 +55,9 @@ func (h *TransactionHandler) Sync(c echo.Context) error {
 // @Param page_size query int false "Page size"
 // @Param start_date query string false "Start date" format(date)
 // @Param end_date query string false "End date" format(date)
-// @Param institution_id query string false "Institution ID"
-// @Param category_id query string false "Category ID"
+// @Param institution_id query string false "Institution ID" format(uuid)
+// @Param category_id query string false "Category ID" format(uuid)
+// @Param payment_method_id query string false "Payment method ID" format(uuid)
 // @Param is_expense query bool false "Filter only expenses"
 // @Param is_income query bool false "Filter only incomes"
 // @Success 200 {object} dto.ListTransactionsResponse
@@ -70,11 +70,14 @@ func (h *TransactionHandler) List(c echo.Context) error {
 
 	search := c.QueryParam(queryParamSearch)
 
-	paymentMethod := c.QueryParam(queryParamPaymentMethod)
-
 	paginationIn := parsePaginationParams(c)
 
 	startDate, endDate, err := parseDateFilterParams(c)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	paymentMethodID, err := parseUUIDParam(c, queryParamPaymentMethodID)
 	if err != nil {
 		return errs.New(err)
 	}
@@ -102,16 +105,16 @@ func (h *TransactionHandler) List(c echo.Context) error {
 	in := usecase.ListTransactionsInput{
 		PaginationInput: paginationIn,
 		ListTransactionsOptions: repo.ListTransactionsOptions{
-			Limit:         0,
-			Offset:        0,
-			Search:        search,
-			StartDate:     startDate,
-			EndDate:       endDate,
-			CategoryID:    categoryID,
-			InstitutionID: institutionID,
-			IsExpense:     isExpense,
-			IsIncome:      isIncome,
-			PaymentMethod: entity.PaymentMethod(paymentMethod),
+			Limit:           0,
+			Offset:          0,
+			Search:          search,
+			StartDate:       startDate,
+			EndDate:         endDate,
+			CategoryID:      categoryID,
+			InstitutionID:   institutionID,
+			IsExpense:       isExpense,
+			IsIncome:        isIncome,
+			PaymentMethodID: paymentMethodID,
 		},
 		UserID: userID,
 	}

@@ -87,10 +87,10 @@ func (uc *ListTransactions) Execute(
 		)
 	}
 
-	if in.PaymentMethod != "" {
+	if in.PaymentMethodID != uuid.Nil {
 		options = append(
 			options,
-			repo.WithTransactionPaymentMethod(in.PaymentMethod),
+			repo.WithTransactionPaymentMethod(in.PaymentMethodID),
 		)
 	}
 

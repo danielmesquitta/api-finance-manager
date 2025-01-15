@@ -58,6 +58,9 @@ var providers = []any{
 	wire.Bind(new(repo.TransactionRepo), new(*pgrepo.TransactionPgRepo)),
 	pgrepo.NewTransactionPgRepo,
 
+	wire.Bind(new(repo.PaymentMethodRepo), new(*pgrepo.PaymentMethodPgRepo)),
+	pgrepo.NewPaymentMethodPgRepo,
+
 	usecase.NewSignIn,
 	usecase.NewRefreshToken,
 	usecase.NewCalculateCompoundInterest,
@@ -75,6 +78,7 @@ var providers = []any{
 	usecase.NewSyncTransactions,
 	usecase.NewCalculateCashVsInstallments,
 	usecase.NewListTransactions,
+	usecase.NewListInstitutions,
 
 	handler.NewAuthHandler,
 	handler.NewHealthHandler,

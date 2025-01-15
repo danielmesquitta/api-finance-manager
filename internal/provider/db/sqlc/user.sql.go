@@ -125,7 +125,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 
 const listPremiumActiveUsersWithAccounts = `-- name: ListPremiumActiveUsersWithAccounts :many
 SELECT users.id, users.external_id, users.provider, users.name, users.email, users.verified_email, users.tier, users.avatar, users.subscription_expires_at, users.synchronized_at, users.created_at, users.updated_at, users.deleted_at,
-  accounts.id, accounts.external_id, accounts.name, accounts.type, accounts.created_at, accounts.updated_at, accounts.user_id, accounts.institution_id, accounts.deleted_at
+  accounts.id, accounts.external_id, accounts.name, accounts.type, accounts.created_at, accounts.updated_at, accounts.deleted_at, accounts.user_id, accounts.institution_id
 FROM users
   JOIN accounts ON accounts.user_id = users.id
 WHERE tier IN ('PREMIUM', 'TRIAL')
@@ -168,9 +168,9 @@ func (q *Queries) ListPremiumActiveUsersWithAccounts(ctx context.Context) ([]Lis
 			&i.Account.Type,
 			&i.Account.CreatedAt,
 			&i.Account.UpdatedAt,
+			&i.Account.DeletedAt,
 			&i.Account.UserID,
 			&i.Account.InstitutionID,
-			&i.Account.DeletedAt,
 		); err != nil {
 			return nil, err
 		}

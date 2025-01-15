@@ -14,16 +14,18 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance/pluggy"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 )
 
 type SyncTransactions struct {
-	v  *validator.Validator
-	o  openfinance.Client
-	tx tx.TX
-	ur repo.UserRepo
-	tr repo.TransactionRepo
-	cr repo.CategoryRepo
+	v   *validator.Validator
+	o   openfinance.Client
+	tx  tx.TX
+	ur  repo.UserRepo
+	tr  repo.TransactionRepo
+	cr  repo.CategoryRepo
+	pmr repo.PaymentMethodRepo
 }
 
 func NewSyncTransactions(
@@ -33,14 +35,16 @@ func NewSyncTransactions(
 	ur repo.UserRepo,
 	tr repo.TransactionRepo,
 	cr repo.CategoryRepo,
+	pmr repo.PaymentMethodRepo,
 ) *SyncTransactions {
 	return &SyncTransactions{
-		v:  v,
-		o:  o,
-		tx: tx,
-		ur: ur,
-		tr: tr,
-		cr: cr,
+		v:   v,
+		o:   o,
+		tx:  tx,
+		ur:  ur,
+		tr:  tr,
+		cr:  cr,
+		pmr: pmr,
 	}
 }
 
@@ -49,6 +53,7 @@ func (uc *SyncTransactions) Execute(
 ) error {
 	users, accounts := []entity.User{}, []entity.Account{}
 	categories := []entity.Category{}
+	paymentMethods := []entity.PaymentMethod{}
 	g, gCtx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
@@ -63,6 +68,12 @@ func (uc *SyncTransactions) Execute(
 		return err
 	})
 
+	g.Go(func() error {
+		var err error
+		paymentMethods, err = uc.pmr.ListPaymentMethods(gCtx)
+		return err
+	})
+
 	if err := g.Wait(); err != nil {
 		return errs.New(err)
 	}
@@ -71,9 +82,28 @@ func (uc *SyncTransactions) Execute(
 		return nil
 	}
 
-	categoriesByExternalID := uc.getCategoriesByExternalID(categories)
+	accountsByUserID := uc.groupAccountsByUserID(accounts)
 
-	accountsByUserID := uc.getAccountsByUserID(accounts)
+	categoriesByExternalID := uc.groupCategoriesByExternalID(categories)
+
+	openFinanceTransactionsByAccountID := uc.groupOpenFinanceTransactionsByAccountID(
+		ctx,
+		users,
+		accountsByUserID,
+	)
+
+	paymentMethods, err := uc.syncPaymentMethods(
+		ctx,
+		openFinanceTransactionsByAccountID,
+		paymentMethods,
+	)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	paymentMethodsByExternalID := uc.groupPaymentMethodsByExternalID(
+		paymentMethods,
+	)
 
 	for _, user := range users {
 		accounts := accountsByUserID[user.ID]
@@ -81,11 +111,15 @@ func (uc *SyncTransactions) Execute(
 			continue
 		}
 
+		accountsByID := uc.groupAccountsByID(accounts)
+
 		if err := uc.syncUserTransactions(
 			ctx,
 			user,
-			accounts,
+			accountsByID,
 			categoriesByExternalID,
+			paymentMethodsByExternalID,
+			openFinanceTransactionsByAccountID,
 		); err != nil {
 			slog.Error(
 				"error syncing user transactions",
@@ -101,7 +135,67 @@ func (uc *SyncTransactions) Execute(
 	return nil
 }
 
-func (uc *SyncTransactions) getCategoriesByExternalID(
+func (uc *SyncTransactions) syncPaymentMethods(
+	ctx context.Context,
+	openFinanceTransactionsByAccountID map[uuid.UUID][]openfinance.Transaction,
+	paymentMethods []entity.PaymentMethod,
+) ([]entity.PaymentMethod, error) {
+	paymentMethodNamesByExternalID := map[string]string{
+		string(pluggy.PaymentMethodBOLETO):     "Boleto",
+		string(pluggy.PaymentMethodCreditCard): "Cartão de crédito",
+		string(pluggy.PaymentMethodDEBIT):      "Cartão de débito",
+	}
+
+	uniquePaymentMethodExternalIDs := map[string]struct{}{}
+	for _, openFinanceTransactions := range openFinanceTransactionsByAccountID {
+		for _, openFinanceTransaction := range openFinanceTransactions {
+			uniquePaymentMethodExternalIDs[openFinanceTransaction.PaymentMethodExternalID] = struct{}{}
+		}
+	}
+
+	for _, paymentMethod := range paymentMethods {
+		delete(uniquePaymentMethodExternalIDs, paymentMethod.ExternalID)
+	}
+
+	params := []repo.CreatePaymentMethodsParams{}
+	for paymentMethodExternalID := range uniquePaymentMethodExternalIDs {
+		name, ok := paymentMethodNamesByExternalID[paymentMethodExternalID]
+		if !ok {
+			name = paymentMethodExternalID
+		}
+
+		params = append(
+			params,
+			repo.CreatePaymentMethodsParams{
+				Name:       name,
+				ExternalID: paymentMethodExternalID,
+			},
+		)
+	}
+
+	if err := uc.pmr.CreatePaymentMethods(ctx, params); err != nil {
+		return nil, errs.New(err)
+	}
+
+	paymentMethods, err := uc.pmr.ListPaymentMethods(ctx)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	return paymentMethods, nil
+}
+
+func (uc *SyncTransactions) groupAccountsByID(
+	accounts []entity.Account,
+) map[uuid.UUID]entity.Account {
+	accountsByID := map[uuid.UUID]entity.Account{}
+	for _, account := range accounts {
+		accountsByID[account.ID] = account
+	}
+	return accountsByID
+}
+
+func (uc *SyncTransactions) groupCategoriesByExternalID(
 	categories []entity.Category,
 ) map[string]entity.Category {
 	categoriesByExternalID := map[string]entity.Category{}
@@ -111,7 +205,17 @@ func (uc *SyncTransactions) getCategoriesByExternalID(
 	return categoriesByExternalID
 }
 
-func (uc *SyncTransactions) getAccountsByUserID(
+func (uc *SyncTransactions) groupPaymentMethodsByExternalID(
+	paymentMethods []entity.PaymentMethod,
+) map[string]entity.PaymentMethod {
+	paymentMethodsByExternalID := map[string]entity.PaymentMethod{}
+	for _, paymentMethod := range paymentMethods {
+		paymentMethodsByExternalID[paymentMethod.ExternalID] = paymentMethod
+	}
+	return paymentMethodsByExternalID
+}
+
+func (uc *SyncTransactions) groupAccountsByUserID(
 	accounts []entity.Account,
 ) map[uuid.UUID][]entity.Account {
 	accountsByUserID := map[uuid.UUID][]entity.Account{}
@@ -124,18 +228,54 @@ func (uc *SyncTransactions) getAccountsByUserID(
 	return accountsByUserID
 }
 
+func (uc *SyncTransactions) groupOpenFinanceTransactionsByAccountID(
+	ctx context.Context,
+	users []entity.User,
+	accountsByUserID map[uuid.UUID][]entity.Account,
+) map[uuid.UUID][]openfinance.Transaction {
+	openFinanceTransactionsByAccountID := map[uuid.UUID][]openfinance.Transaction{}
+	for _, user := range users {
+		accounts := accountsByUserID[user.ID]
+		if len(accounts) == 0 {
+			continue
+		}
+
+		lastSynchronizedAt := uc.calculateLastSynchronizedAt(
+			user.SynchronizedAt,
+		)
+
+		for _, account := range accounts {
+			openFinanceTransactions, err := uc.listOpenFinanceTransactions(
+				ctx,
+				account.ExternalID,
+				lastSynchronizedAt,
+			)
+			if err != nil {
+				slog.Error(
+					"error getting open finance transactions",
+					"user", user,
+					"account", account,
+					"err", err,
+				)
+				continue
+			}
+			openFinanceTransactionsByAccountID[account.ID] = openFinanceTransactions
+		}
+	}
+	return openFinanceTransactionsByAccountID
+}
+
 func (uc *SyncTransactions) syncUserTransactions(
 	ctx context.Context,
 	user entity.User,
-	accounts []entity.Account,
+	accountsByID map[uuid.UUID]entity.Account,
 	categoriesByExternalID map[string]entity.Category,
+	paymentMethodsByExternalID map[string]entity.PaymentMethod,
+	openFinanceTransactionsByAccountID map[uuid.UUID][]openfinance.Transaction,
 ) error {
-	var lastSynchronizedAt time.Time
-	if user.SynchronizedAt != nil {
-		lastSynchronizedAt = uc.getStartOfDay(*user.SynchronizedAt)
-	}
+	lastSynchronizedAt := uc.calculateLastSynchronizedAt(user.SynchronizedAt)
 
-	transactions, err := uc.getRepoTransactions(
+	transactions, err := uc.listRepoTransactions(
 		ctx,
 		user.ID,
 		lastSynchronizedAt,
@@ -144,31 +284,16 @@ func (uc *SyncTransactions) syncUserTransactions(
 		return errs.New(err)
 	}
 
-	transactionsByExternalID := uc.getTransactionsByExternalID(transactions)
+	transactionsByExternalID := uc.groupTransactionsByExternalID(transactions)
 
-	params := []repo.CreateTransactionsParams{}
-	for _, account := range accounts {
-		openFinanceTransactions, err := uc.getOpenFinanceTransactions(
-			ctx,
-			account.ExternalID,
-			lastSynchronizedAt,
-		)
-		if err != nil {
-			return errs.New(err)
-		}
-		if len(openFinanceTransactions) == 0 {
-			continue
-		}
-
-		uc.setCreateTransactionsParams(
-			&params,
-			user,
-			account,
-			openFinanceTransactions,
-			transactionsByExternalID,
-			categoriesByExternalID,
-		)
-	}
+	params := uc.buildCreateTransactionsParams(
+		user,
+		accountsByID,
+		categoriesByExternalID,
+		paymentMethodsByExternalID,
+		openFinanceTransactionsByAccountID,
+		transactionsByExternalID,
+	)
 
 	err = uc.tx.Do(ctx, func(ctx context.Context) error {
 		if err := uc.tr.CreateTransactions(ctx, params); err != nil {
@@ -188,42 +313,62 @@ func (uc *SyncTransactions) syncUserTransactions(
 	return nil
 }
 
-func (uc *SyncTransactions) setCreateTransactionsParams(
-	params *[]repo.CreateTransactionsParams,
+func (uc *SyncTransactions) buildCreateTransactionsParams(
 	user entity.User,
-	account entity.Account,
-	openFinanceTransactions []openfinance.Transaction,
-	transactionsByExternalID map[string]entity.Transaction,
+	accountsByID map[uuid.UUID]entity.Account,
 	categoriesByExternalID map[string]entity.Category,
-) {
-	for _, openFinanceTransaction := range openFinanceTransactions {
-		_, transactionAlreadyRegistered := transactionsByExternalID[openFinanceTransaction.ExternalID]
-		if transactionAlreadyRegistered {
-			continue
+	paymentMethodsByExternalID map[string]entity.PaymentMethod,
+	openFinanceTransactionsByAccountID map[uuid.UUID][]openfinance.Transaction,
+	transactionsByExternalID map[string]entity.Transaction,
+) []repo.CreateTransactionsParams {
+
+	params := []repo.CreateTransactionsParams{}
+	for accountID, openFinanceTransactions := range openFinanceTransactionsByAccountID {
+		account := accountsByID[accountID]
+
+		for _, openFinanceTransaction := range openFinanceTransactions {
+			_, transactionAlreadyRegistered := transactionsByExternalID[openFinanceTransaction.ExternalID]
+			if transactionAlreadyRegistered {
+				continue
+			}
+
+			categoryID := uc.getCategoryID(
+				openFinanceTransaction.CategoryExternalID,
+				categoriesByExternalID,
+			)
+
+			paymentMethod := paymentMethodsByExternalID[openFinanceTransaction.PaymentMethodExternalID]
+
+			param := repo.CreateTransactionsParams{
+				ExternalID:      openFinanceTransaction.ExternalID,
+				Name:            openFinanceTransaction.Name,
+				Amount:          openFinanceTransaction.Amount,
+				PaymentMethodID: paymentMethod.ID,
+				Date:            openFinanceTransaction.Date,
+				UserID:          user.ID,
+				AccountID:       &account.ID,
+				InstitutionID:   &account.InstitutionID,
+				CategoryID:      categoryID,
+			}
+
+			params = append(params, param)
 		}
-
-		categoryID := uc.getCategoryID(
-			openFinanceTransaction.CategoryExternalID,
-			categoriesByExternalID,
-		)
-
-		param := repo.CreateTransactionsParams{
-			ExternalID:    openFinanceTransaction.ExternalID,
-			Name:          openFinanceTransaction.Name,
-			Amount:        openFinanceTransaction.Amount,
-			PaymentMethod: openFinanceTransaction.PaymentMethod,
-			Date:          openFinanceTransaction.Date,
-			UserID:        user.ID,
-			AccountID:     &account.ID,
-			InstitutionID: &account.InstitutionID,
-			CategoryID:    categoryID,
-		}
-
-		*params = append(*params, param)
 	}
+
+	return params
 }
 
-func (uc *SyncTransactions) getOpenFinanceTransactions(
+func (uc *SyncTransactions) calculateLastSynchronizedAt(
+	userSynchronizedAt *time.Time,
+) time.Time {
+	var lastSynchronizedAt time.Time
+	if userSynchronizedAt != nil {
+		lastSynchronizedAt = getStartOfDay(*userSynchronizedAt)
+	}
+	return lastSynchronizedAt
+}
+
+func (uc *SyncTransactions) listOpenFinanceTransactions(
 	ctx context.Context,
 	accountExternalID string,
 	lastSynchronizedAt time.Time,
@@ -248,7 +393,7 @@ func (uc *SyncTransactions) getOpenFinanceTransactions(
 	return openFinanceTransactions, nil
 }
 
-func (uc *SyncTransactions) getTransactionsByExternalID(
+func (uc *SyncTransactions) groupTransactionsByExternalID(
 	transactions []entity.Transaction,
 ) map[string]entity.Transaction {
 	transactionsByExternalID := map[string]entity.Transaction{}
@@ -258,7 +403,7 @@ func (uc *SyncTransactions) getTransactionsByExternalID(
 	return transactionsByExternalID
 }
 
-func (uc *SyncTransactions) getRepoTransactions(
+func (uc *SyncTransactions) listRepoTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
 	lastSynchronizedAt time.Time,
@@ -293,7 +438,7 @@ func (uc *SyncTransactions) updateUserSynchronizedAt(
 	}
 
 	yesterday := time.Now().AddDate(0, 0, -1)
-	startOfYesterday := uc.getStartOfDay(yesterday)
+	startOfYesterday := getStartOfDay(yesterday)
 	updateUserParams.SynchronizedAt = &startOfYesterday
 
 	_, err := uc.ur.UpdateUser(ctx, updateUserParams)
@@ -302,21 +447,6 @@ func (uc *SyncTransactions) updateUserSynchronizedAt(
 	}
 
 	return nil
-}
-
-func (uc *SyncTransactions) getStartOfDay(date time.Time) time.Time {
-	startOfDay := time.Date(
-		date.Year(),
-		date.Month(),
-		date.Day(),
-		0,
-		0,
-		0,
-		0,
-		time.Local,
-	)
-
-	return startOfDay
 }
 
 func (uc *SyncTransactions) getCategoryID(

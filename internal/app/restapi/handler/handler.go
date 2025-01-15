@@ -15,16 +15,16 @@ import (
 type QueryParam = string
 
 const (
-	queryParamSearch        QueryParam = "search"
-	queryParamPage          QueryParam = "page"
-	queryParamPageSize      QueryParam = "page_size"
-	queryParamStartDate     QueryParam = "start_date"
-	queryParamEndDate       QueryParam = "end_date"
-	queryParamInstitutionID QueryParam = "institution_id"
-	queryParamCategoryID    QueryParam = "category_id"
-	queryParamIsExpense     QueryParam = "is_expense"
-	queryParamIsIncome      QueryParam = "is_income"
-	queryParamPaymentMethod QueryParam = "payment_method"
+	queryParamSearch          QueryParam = "search"
+	queryParamPage            QueryParam = "page"
+	queryParamPageSize        QueryParam = "page_size"
+	queryParamStartDate       QueryParam = "start_date"
+	queryParamEndDate         QueryParam = "end_date"
+	queryParamInstitutionID   QueryParam = "institution_id"
+	queryParamCategoryID      QueryParam = "category_id"
+	queryParamIsExpense       QueryParam = "is_expense"
+	queryParamIsIncome        QueryParam = "is_income"
+	queryParamPaymentMethodID QueryParam = "payment_method_id"
 )
 
 func parsePaginationParams(

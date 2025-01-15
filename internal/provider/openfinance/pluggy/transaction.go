@@ -259,24 +259,24 @@ func (c *Client) setTransactionPaymentMethod(
 	r Result,
 ) {
 	if r.CreditCardMetadata != nil {
-		t.PaymentMethod = string(entity.PaymentMethodCreditCard)
+		t.PaymentMethodExternalID = string(PaymentMethodCreditCard)
 		return
 	}
 
 	if strings.HasPrefix(r.Description, "COMPRA C/CARTAO") {
-		t.PaymentMethod = string(entity.PaymentMethodCreditCard)
+		t.PaymentMethodExternalID = string(PaymentMethodCreditCard)
 		return
 	}
 
 	if r.OperationType != nil && *r.OperationType == OperationTypeCartao {
-		t.PaymentMethod = string(entity.PaymentMethodCreditCard)
+		t.PaymentMethodExternalID = string(PaymentMethodCreditCard)
 		return
 	}
 
 	if r.PaymentData != nil && r.PaymentData.PaymentMethod != nil {
-		t.PaymentMethod = string(*r.PaymentData.PaymentMethod)
+		t.PaymentMethodExternalID = string(*r.PaymentData.PaymentMethod)
 		return
 	}
 
-	t.PaymentMethod = string(entity.PaymentMethodOther)
+	t.PaymentMethodExternalID = string(PaymentMethodOther)
 }

@@ -24,20 +24,29 @@ type User struct {
 }
 
 type Transaction struct {
-	ID            uuid.UUID  `json:"id,omitempty"`
-	ExternalID    string     `json:"external_id,omitempty"`
-	Name          string     `json:"name,omitempty"`
-	Amount        int64      `json:"amount,omitempty"`
-	PaymentMethod string     `json:"payment_method,omitempty"`
-	IsIgnored     bool       `json:"is_ignored,omitempty"`
-	Date          time.Time  `json:"date,omitempty"`
-	CreatedAt     time.Time  `json:"created_at,omitempty"`
-	UpdatedAt     time.Time  `json:"updated_at,omitempty"`
-	DeletedAt     *time.Time `json:"deleted_at,omitempty"`
-	UserID        uuid.UUID  `json:"user_id,omitempty"`
-	AccountID     *uuid.UUID `json:"account_id,omitempty"`
-	InstitutionID *uuid.UUID `json:"institution_id,omitempty"`
-	CategoryID    *uuid.UUID `json:"category_id,omitempty"`
+	ID              uuid.UUID  `json:"id,omitempty"`
+	ExternalID      string     `json:"external_id,omitempty"`
+	Name            string     `json:"name,omitempty"`
+	Amount          int64      `json:"amount,omitempty"`
+	IsIgnored       bool       `json:"is_ignored,omitempty"`
+	Date            time.Time  `json:"date,omitempty"`
+	CreatedAt       time.Time  `json:"created_at,omitempty"`
+	UpdatedAt       time.Time  `json:"updated_at,omitempty"`
+	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
+	PaymentMethodID uuid.UUID  `json:"payment_method_id,omitempty"`
+	UserID          uuid.UUID  `json:"user_id,omitempty"`
+	AccountID       *uuid.UUID `json:"account_id,omitempty"`
+	InstitutionID   *uuid.UUID `json:"institution_id,omitempty"`
+	CategoryID      *uuid.UUID `json:"category_id,omitempty"`
+}
+
+type PaymentMethod struct {
+	ID         uuid.UUID  `json:"id,omitempty"`
+	ExternalID string     `json:"external_id,omitempty"`
+	Name       string     `json:"name,omitempty"`
+	CreatedAt  time.Time  `json:"created_at,omitempty"`
+	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
+	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
 }
 
 type Investment struct {

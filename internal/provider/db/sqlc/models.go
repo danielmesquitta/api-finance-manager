@@ -18,9 +18,9 @@ type Account struct {
 	Type          string     `json:"type"`
 	CreatedAt     time.Time  `json:"created_at"`
 	UpdatedAt     time.Time  `json:"updated_at"`
+	DeletedAt     *time.Time `json:"deleted_at"`
 	UserID        uuid.UUID  `json:"user_id"`
 	InstitutionID uuid.UUID  `json:"institution_id"`
-	DeletedAt     *time.Time `json:"deleted_at"`
 }
 
 type Budget struct {
@@ -29,8 +29,8 @@ type Budget struct {
 	Date      time.Time  `json:"date"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
-	UserID    uuid.UUID  `json:"user_id"`
 	DeletedAt *time.Time `json:"deleted_at"`
+	UserID    uuid.UUID  `json:"user_id"`
 }
 
 type BudgetCategory struct {
@@ -38,9 +38,9 @@ type BudgetCategory struct {
 	Amount     int64      `json:"amount"`
 	CreatedAt  time.Time  `json:"created_at"`
 	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
 	BudgetID   uuid.UUID  `json:"budget_id"`
 	CategoryID uuid.UUID  `json:"category_id"`
-	DeletedAt  *time.Time `json:"deleted_at"`
 }
 
 type Category struct {
@@ -72,25 +72,34 @@ type Investment struct {
 	RateType   string     `json:"rateType"`
 	CreatedAt  time.Time  `json:"created_at"`
 	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
 	UserID     uuid.UUID  `json:"user_id"`
+}
+
+type PaymentMethod struct {
+	ID         uuid.UUID  `json:"id"`
+	ExternalID string     `json:"external_id"`
+	Name       string     `json:"name"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
 	DeletedAt  *time.Time `json:"deleted_at"`
 }
 
 type Transaction struct {
-	ID            uuid.UUID  `json:"id"`
-	ExternalID    string     `json:"external_id"`
-	Name          string     `json:"name"`
-	Amount        int64      `json:"amount"`
-	PaymentMethod string     `json:"payment_method"`
-	IsIgnored     bool       `json:"is_ignored"`
-	Date          time.Time  `json:"date"`
-	CreatedAt     time.Time  `json:"created_at"`
-	UpdatedAt     time.Time  `json:"updated_at"`
-	UserID        uuid.UUID  `json:"user_id"`
-	AccountID     *uuid.UUID `json:"account_id"`
-	CategoryID    *uuid.UUID `json:"category_id"`
-	InstitutionID *uuid.UUID `json:"institution_id"`
-	DeletedAt     *time.Time `json:"deleted_at"`
+	ID              uuid.UUID  `json:"id"`
+	ExternalID      string     `json:"external_id"`
+	Name            string     `json:"name"`
+	Amount          int64      `json:"amount"`
+	IsIgnored       bool       `json:"is_ignored"`
+	Date            time.Time  `json:"date"`
+	CreatedAt       time.Time  `json:"created_at"`
+	UpdatedAt       time.Time  `json:"updated_at"`
+	DeletedAt       *time.Time `json:"deleted_at"`
+	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
+	UserID          uuid.UUID  `json:"user_id"`
+	AccountID       *uuid.UUID `json:"account_id"`
+	InstitutionID   *uuid.UUID `json:"institution_id"`
+	CategoryID      *uuid.UUID `json:"category_id"`
 }
 
 type User struct {

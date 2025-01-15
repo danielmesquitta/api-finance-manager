@@ -12,52 +12,52 @@ import (
 	"github.com/georgysavva/scany/v2/pgxscan"
 )
 
-func (qb *QueryBuilder) ListCategories(
+func (qb *QueryBuilder) ListPaymentMethods(
 	ctx context.Context,
-	opts ...repo.ListCategoriesOption,
-) ([]entity.Category, error) {
-	options := repo.ListCategoriesOptions{}
+	opts ...repo.ListPaymentMethodsOption,
+) ([]entity.PaymentMethod, error) {
+	options := repo.ListPaymentMethodsOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
 
 	query := goqu.
-		From(TableCategory).
+		From(TablePaymentMethod).
 		Select("*")
 
-	whereExps, orderedExps := qb.buildCategoryExpressions(options)
+	whereExps, orderedExps := qb.buildPaymentMethodExpressions(options)
 
-	qb.setCategoryExpressions(query, options, whereExps, orderedExps)
+	qb.setPaymentMethodExpressions(query, options, whereExps, orderedExps)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	var categories []entity.Category
-	if err := pgxscan.Select(ctx, qb.db, &categories, sql, args...); err != nil {
+	var paymentMethods []entity.PaymentMethod
+	if err := pgxscan.Select(ctx, qb.db, &paymentMethods, sql, args...); err != nil {
 		return nil, errs.New(err)
 	}
 
-	return categories, nil
+	return paymentMethods, nil
 }
 
-func (qb *QueryBuilder) CountCategories(
+func (qb *QueryBuilder) CountPaymentMethods(
 	ctx context.Context,
-	opts ...repo.ListCategoriesOption,
+	opts ...repo.ListPaymentMethodsOption,
 ) (int64, error) {
-	options := repo.ListCategoriesOptions{}
+	options := repo.ListPaymentMethodsOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
 
 	query := goqu.
-		From(TableCategory).
+		From(TablePaymentMethod).
 		Select(goqu.COUNT("*"))
 
-	whereExps, _ := qb.buildCategoryExpressions(options)
+	whereExps, _ := qb.buildPaymentMethodExpressions(options)
 
-	qb.setCategoryExpressions(query, options, whereExps, nil)
+	qb.setPaymentMethodExpressions(query, options, whereExps, nil)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -73,14 +73,14 @@ func (qb *QueryBuilder) CountCategories(
 	return count, nil
 }
 
-func (qb *QueryBuilder) buildCategoryExpressions(
-	options repo.ListCategoriesOptions,
+func (qb *QueryBuilder) buildPaymentMethodExpressions(
+	options repo.ListPaymentMethodsOptions,
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			ColumnCategoryName,
+			ColumnPaymentMethodName,
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -88,15 +88,15 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(ColumnCategoryName).Asc(),
+		goqu.I(ColumnPaymentMethodName).Asc(),
 	)
 
 	return whereExps, orderedExps
 }
 
-func (qb *QueryBuilder) setCategoryExpressions(
+func (qb *QueryBuilder) setPaymentMethodExpressions(
 	query *goqu.SelectDataset,
-	options repo.ListCategoriesOptions,
+	options repo.ListPaymentMethodsOptions,
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
 ) {

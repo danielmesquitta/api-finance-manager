@@ -31,7 +31,7 @@ func (qb *QueryBuilder) ListTransactions(
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
 
-	qb.setTransactionsQuery(query, options, whereExps, orderedExps)
+	qb.setTransactionsExpressions(query, options, whereExps, orderedExps)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -90,7 +90,7 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
 
-	qb.setTransactionsQuery(query, options, whereExps, orderedExps)
+	qb.setTransactionsExpressions(query, options, whereExps, orderedExps)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -124,7 +124,7 @@ func (qb *QueryBuilder) CountTransactions(
 
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
 
-	qb.setTransactionsQuery(query, options, whereExps, nil)
+	qb.setTransactionsExpressions(query, options, whereExps, nil)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -203,11 +203,11 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 		)
 	}
 
-	if options.PaymentMethod != "" {
+	if options.PaymentMethodID != uuid.Nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(ColumnTransactionPaymentMethod).
-				Eq(options.PaymentMethod),
+			goqu.I(ColumnTransactionPaymentMethodID).
+				Eq(options.PaymentMethodID),
 		)
 	}
 
@@ -219,7 +219,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	return whereExps, orderedExps
 }
 
-func (qb *QueryBuilder) setTransactionsQuery(
+func (qb *QueryBuilder) setTransactionsExpressions(
 	query *goqu.SelectDataset,
 	options repo.ListTransactionsOptions,
 	whereExps []goqu.Expression,

@@ -1,7 +1,3 @@
--- name: ListInstitutions :many
-SELECT *
-FROM institutions
-WHERE deleted_at IS NULL;
 -- name: GetInstitutionByExternalID :one
 SELECT *
 FROM institutions

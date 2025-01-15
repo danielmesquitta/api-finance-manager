@@ -3,7 +3,7 @@ INSERT INTO transactions (
     external_id,
     name,
     amount,
-    payment_method,
+    payment_method_id,
     date,
     user_id,
     account_id,

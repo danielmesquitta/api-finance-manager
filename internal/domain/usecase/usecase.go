@@ -89,3 +89,18 @@ func toMonthDay(
 	}
 	return monthSameDay
 }
+
+func getStartOfDay(date time.Time) time.Time {
+	startOfDay := time.Date(
+		date.Year(),
+		date.Month(),
+		date.Day(),
+		0,
+		0,
+		0,
+		0,
+		time.Local,
+	)
+
+	return startOfDay
+}

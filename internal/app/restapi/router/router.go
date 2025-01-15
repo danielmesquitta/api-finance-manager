@@ -100,6 +100,9 @@ func (r *Router) Register(
 
 	usersApiV1.GET("/categories", r.cth.List)
 
+	usersApiV1.GET("/institutions", r.ih.List)
+	usersApiV1.GET("/users/institutions", r.ih.ListUserInstitutions)
+
 	usersApiV1.POST("/budgets", r.bh.Upsert)
 	usersApiV1.GET("/budgets", r.bh.Get)
 	usersApiV1.DELETE("/budgets", r.bh.Delete)

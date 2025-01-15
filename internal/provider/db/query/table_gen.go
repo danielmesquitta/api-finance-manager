@@ -11,6 +11,7 @@ const (
 	TableCategory       Table = "categories"
 	TableInstitution    Table = "institutions"
 	TableInvestment     Table = "investments"
+	TablePaymentMethod  Table = "payment_methods"
 	TableTransaction    Table = "transactions"
 	TableUser           Table = "users"
 )
@@ -88,22 +89,32 @@ const (
 	ColumnInvestmentUserID     Column = "user_id"
 )
 
+// Columns for table PaymentMethod
+const (
+	ColumnPaymentMethodCreatedAt  Column = "created_at"
+	ColumnPaymentMethodDeletedAt  Column = "deleted_at"
+	ColumnPaymentMethodExternalID Column = "external_id"
+	ColumnPaymentMethodID         Column = "id"
+	ColumnPaymentMethodName       Column = "name"
+	ColumnPaymentMethodUpdatedAt  Column = "updated_at"
+)
+
 // Columns for table Transaction
 const (
-	ColumnTransactionAccountID     Column = "account_id"
-	ColumnTransactionAmount        Column = "amount"
-	ColumnTransactionCategoryID    Column = "category_id"
-	ColumnTransactionCreatedAt     Column = "created_at"
-	ColumnTransactionDate          Column = "date"
-	ColumnTransactionDeletedAt     Column = "deleted_at"
-	ColumnTransactionExternalID    Column = "external_id"
-	ColumnTransactionID            Column = "id"
-	ColumnTransactionInstitutionID Column = "institution_id"
-	ColumnTransactionIsIgnored     Column = "is_ignored"
-	ColumnTransactionName          Column = "name"
-	ColumnTransactionPaymentMethod Column = "payment_method"
-	ColumnTransactionUpdatedAt     Column = "updated_at"
-	ColumnTransactionUserID        Column = "user_id"
+	ColumnTransactionAccountID       Column = "account_id"
+	ColumnTransactionAmount          Column = "amount"
+	ColumnTransactionCategoryID      Column = "category_id"
+	ColumnTransactionCreatedAt       Column = "created_at"
+	ColumnTransactionDate            Column = "date"
+	ColumnTransactionDeletedAt       Column = "deleted_at"
+	ColumnTransactionExternalID      Column = "external_id"
+	ColumnTransactionID              Column = "id"
+	ColumnTransactionInstitutionID   Column = "institution_id"
+	ColumnTransactionIsIgnored       Column = "is_ignored"
+	ColumnTransactionName            Column = "name"
+	ColumnTransactionPaymentMethodID Column = "payment_method_id"
+	ColumnTransactionUpdatedAt       Column = "updated_at"
+	ColumnTransactionUserID          Column = "user_id"
 )
 
 // Columns for table User

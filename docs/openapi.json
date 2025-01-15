@@ -259,6 +259,29 @@
                 },
                 "type": "object"
             },
+            "dto.ListInstitutionsResponse": {
+                "properties": {
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/entity.Institution"
+                        },
+                        "type": "array"
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "page_size": {
+                        "type": "integer"
+                    },
+                    "total_items": {
+                        "type": "integer"
+                    },
+                    "total_pages": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "dto.ListTransactionsResponse": {
                 "properties": {
                     "items": {
@@ -572,6 +595,32 @@
                 },
                 "type": "object"
             },
+            "entity.Institution": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "deleted_at": {
+                        "type": "string"
+                    },
+                    "external_id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "logo": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "entity.InterestType": {
                 "enum": [
                     "MONTHLY",
@@ -646,7 +695,7 @@
                     "name": {
                         "type": "string"
                     },
-                    "payment_method": {
+                    "payment_method_id": {
                         "type": "string"
                     },
                     "updated_at": {
@@ -1686,6 +1735,16 @@
                         },
                         "description": "OK"
                     },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
                     "500": {
                         "content": {
                             "application/json": {
@@ -1705,6 +1764,78 @@
                 "summary": "List categories",
                 "tags": [
                     "Category"
+                ]
+            }
+        },
+        "/v1/institutions": {
+            "get": {
+                "description": "List all institutions",
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "in": "query",
+                        "name": "search",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Page",
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Page size",
+                        "in": "query",
+                        "name": "page_size",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ListInstitutionsResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "List institutions",
+                "tags": [
+                    "Institution"
                 ]
             }
         },
@@ -1759,6 +1890,7 @@
                         "in": "query",
                         "name": "institution_id",
                         "schema": {
+                            "format": "uuid",
                             "type": "string"
                         }
                     },
@@ -1767,6 +1899,16 @@
                         "in": "query",
                         "name": "category_id",
                         "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Payment method ID",
+                        "in": "query",
+                        "name": "payment_method_id",
+                        "schema": {
+                            "format": "uuid",
                             "type": "string"
                         }
                     },
@@ -1827,6 +1969,78 @@
                 "summary": "List transactions",
                 "tags": [
                     "Transaction"
+                ]
+            }
+        },
+        "/v1/users/institutions": {
+            "get": {
+                "description": "List user institutions",
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "in": "query",
+                        "name": "search",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Page",
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Page size",
+                        "in": "query",
+                        "name": "page_size",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ListInstitutionsResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "List user institutions",
+                "tags": [
+                    "Institution"
                 ]
             }
         },

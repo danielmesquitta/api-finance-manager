@@ -189,7 +189,7 @@ func (uc *GetBudget) Execute(
 		BudgetCategories:                   []GetBudgetCategoryOutput{},
 	}
 
-	categoriesByID := make(map[uuid.UUID]entity.Category)
+	categoriesByID := map[uuid.UUID]entity.Category{}
 	for _, category := range categories {
 		categoriesByID[category.ID] = category
 	}

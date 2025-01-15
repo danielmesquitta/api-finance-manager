@@ -9,16 +9,16 @@ import (
 )
 
 type ListTransactionsOptions struct {
-	Limit         uint                 `json:"-"`
-	Offset        uint                 `json:"-"`
-	Search        string               `json:"search"`
-	StartDate     time.Time            `json:"start_date"`
-	EndDate       time.Time            `json:"end_date"`
-	CategoryID    uuid.UUID            `json:"category_id"`
-	InstitutionID uuid.UUID            `json:"institution_id"`
-	IsExpense     bool                 `json:"is_expense"`
-	IsIncome      bool                 `json:"is_income"`
-	PaymentMethod entity.PaymentMethod `json:"payment_method"`
+	Limit           uint      `json:"-"`
+	Offset          uint      `json:"-"`
+	Search          string    `json:"search"`
+	StartDate       time.Time `json:"start_date"`
+	EndDate         time.Time `json:"end_date"`
+	CategoryID      uuid.UUID `json:"category_id"`
+	InstitutionID   uuid.UUID `json:"institution_id"`
+	IsExpense       bool      `json:"is_expense"`
+	IsIncome        bool      `json:"is_income"`
+	PaymentMethodID uuid.UUID `json:"payment_method"`
 }
 
 type ListTransactionsOption func(*ListTransactionsOptions)
@@ -78,10 +78,10 @@ func WithTransactionIsIncome(isIncome bool) ListTransactionsOption {
 }
 
 func WithTransactionPaymentMethod(
-	paymentMethod entity.PaymentMethod,
+	paymentMethodID uuid.UUID,
 ) ListTransactionsOption {
 	return func(o *ListTransactionsOptions) {
-		o.PaymentMethod = paymentMethod
+		o.PaymentMethodID = paymentMethodID
 	}
 }
 

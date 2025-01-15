@@ -15,7 +15,7 @@ import (
 const createBudget = `-- name: CreateBudget :one
 INSERT INTO budgets (amount, date, user_id)
 VALUES ($1, $2, $3)
-RETURNING id, amount, date, created_at, updated_at, user_id, deleted_at
+RETURNING id, amount, date, created_at, updated_at, deleted_at, user_id
 `
 
 type CreateBudgetParams struct {
@@ -33,8 +33,8 @@ func (q *Queries) CreateBudget(ctx context.Context, arg CreateBudgetParams) (Bud
 		&i.Date,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.UserID,
 		&i.DeletedAt,
+		&i.UserID,
 	)
 	return i, err
 }
@@ -72,7 +72,7 @@ func (q *Queries) DeleteBudgets(ctx context.Context, userID uuid.UUID) error {
 }
 
 const getBudget = `-- name: GetBudget :one
-SELECT id, amount, date, created_at, updated_at, user_id, deleted_at
+SELECT id, amount, date, created_at, updated_at, deleted_at, user_id
 FROM budgets
 WHERE user_id = $1
   AND date <= $2
@@ -95,14 +95,14 @@ func (q *Queries) GetBudget(ctx context.Context, arg GetBudgetParams) (Budget, e
 		&i.Date,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.UserID,
 		&i.DeletedAt,
+		&i.UserID,
 	)
 	return i, err
 }
 
 const listBudgetCategories = `-- name: ListBudgetCategories :many
-SELECT budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.budget_id, budget_categories.category_id, budget_categories.deleted_at,
+SELECT budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.deleted_at, budget_categories.budget_id, budget_categories.category_id,
   categories.id, categories.external_id, categories.name, categories.created_at, categories.updated_at, categories.deleted_at
 FROM budget_categories
   JOIN categories ON budget_categories.category_id = categories.id
@@ -130,9 +130,9 @@ func (q *Queries) ListBudgetCategories(ctx context.Context, budgetID uuid.UUID) 
 			&i.BudgetCategory.Amount,
 			&i.BudgetCategory.CreatedAt,
 			&i.BudgetCategory.UpdatedAt,
+			&i.BudgetCategory.DeletedAt,
 			&i.BudgetCategory.BudgetID,
 			&i.BudgetCategory.CategoryID,
-			&i.BudgetCategory.DeletedAt,
 			&i.Category.ID,
 			&i.Category.ExternalID,
 			&i.Category.Name,

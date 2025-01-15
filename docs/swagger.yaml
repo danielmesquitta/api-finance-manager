@@ -172,6 +172,21 @@ definitions:
       total_pages:
         type: integer
     type: object
+  dto.ListInstitutionsResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/entity.Institution'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
   dto.ListTransactionsResponse:
     properties:
       items:
@@ -383,6 +398,23 @@ definitions:
       updated_at:
         type: string
     type: object
+  entity.Institution:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      logo:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
   entity.InterestType:
     enum:
     - MONTHLY
@@ -437,7 +469,7 @@ definitions:
         type: boolean
       name:
         type: string
-      payment_method:
+      payment_method_id:
         type: string
       updated_at:
         type: string
@@ -1022,6 +1054,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/dto.ListCategoriesResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -1031,6 +1067,44 @@ paths:
       summary: List categories
       tags:
       - Category
+  /v1/institutions:
+    get:
+      consumes:
+      - application/json
+      description: List all institutions
+      parameters:
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ListInstitutionsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List institutions
+      tags:
+      - Institution
   /v1/transactions:
     get:
       consumes:
@@ -1060,12 +1134,19 @@ paths:
         name: end_date
         type: string
       - description: Institution ID
+        format: uuid
         in: query
         name: institution_id
         type: string
       - description: Category ID
+        format: uuid
         in: query
         name: category_id
+        type: string
+      - description: Payment method ID
+        format: uuid
+        in: query
+        name: payment_method_id
         type: string
       - description: Filter only expenses
         in: query
@@ -1095,6 +1176,44 @@ paths:
       summary: List transactions
       tags:
       - Transaction
+  /v1/users/institutions:
+    get:
+      consumes:
+      - application/json
+      description: List user institutions
+      parameters:
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ListInstitutionsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List user institutions
+      tags:
+      - Institution
   /v1/users/profile:
     get:
       consumes:
