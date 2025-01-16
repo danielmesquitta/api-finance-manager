@@ -87,8 +87,8 @@ func (qb *QueryBuilder) setInstitutionJoins(
 		query.Join(
 			goqu.I(TableAccount),
 			goqu.On(
-				goqu.I(fmt.Sprintf("%s.%s", TableAccount, ColumnAccountInstitutionID)).
-					Eq(goqu.I(fmt.Sprintf("%s.%s", TableInstitution, ColumnInstitutionID))),
+				goqu.I(ColumnAccountInstitutionID).
+					Eq(goqu.I(ColumnInstitutionID)),
 			),
 		)
 	}
@@ -110,7 +110,7 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 	if options.UserID != uuid.Nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(fmt.Sprintf("%s.%s", TableAccount, ColumnAccountUserID)).
+			goqu.I(ColumnAccountUserID).
 				Eq(options.UserID),
 		)
 	}

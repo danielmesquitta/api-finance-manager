@@ -59,32 +59,27 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 	query := goqu.
 		From(TableTransaction).
 		Select(
-			"*",
-			goqu.I(fmt.Sprintf("%s.%s", TableCategory, ColumnCategoryID)).
-				As("category_id"),
-			goqu.I(fmt.Sprintf("%s.%s", TableCategory, ColumnCategoryName)).
-				As("category_name"),
-			goqu.I(fmt.Sprintf("%s.%s", TableInstitution, ColumnInstitutionID)).
-				As("institution_id"),
-			goqu.I(fmt.Sprintf("%s.%s", TableInstitution, ColumnInstitutionName)).
-				As("institution_name"),
-			goqu.I(fmt.Sprintf("%s.%s", TableInstitution, ColumnInstitutionLogo)).
-				As("institution_logo"),
+			fmt.Sprintf("%s.*", TableTransaction),
+			goqu.I(ColumnCategoryID).As("category_id"),
+			goqu.I(ColumnCategoryName).As("category_name"),
+			goqu.I(ColumnInstitutionID).As("institution_id"),
+			goqu.I(ColumnInstitutionName).As("institution_name"),
+			goqu.I(ColumnInstitutionLogo).As("institution_logo"),
 		).
 		LeftJoin(
 			goqu.I(TableCategory),
 			goqu.
 				On(
-					goqu.I(fmt.Sprintf("%s.%s", TableTransaction, ColumnTransactionCategoryID)).
-						Eq(goqu.I(fmt.Sprintf("%s.%s", TableCategory, ColumnCategoryID))),
+					goqu.I(ColumnTransactionCategoryID).
+						Eq(goqu.I(ColumnCategoryID)),
 				),
 		).
 		LeftJoin(
 			goqu.I(TableInstitution),
 			goqu.
 				On(
-					goqu.I(fmt.Sprintf("%s.%s", TableTransaction, ColumnTransactionInstitutionID)).
-						Eq(goqu.I(fmt.Sprintf("%s.%s", TableInstitution, ColumnInstitutionID))),
+					goqu.I(ColumnTransactionInstitutionID).
+						Eq(goqu.I(ColumnInstitutionID)),
 				),
 		)
 
@@ -200,6 +195,13 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 		whereExps = append(
 			whereExps,
 			goqu.I(ColumnTransactionAmount).Gt(0),
+		)
+	}
+
+	if options.IsIgnored != nil {
+		whereExps = append(
+			whereExps,
+			goqu.I(ColumnTransactionIsIgnored).Eq(*options.IsIgnored),
 		)
 	}
 

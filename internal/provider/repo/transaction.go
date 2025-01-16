@@ -19,6 +19,7 @@ type ListTransactionsOptions struct {
 	IsExpense       bool      `json:"is_expense"`
 	IsIncome        bool      `json:"is_income"`
 	PaymentMethodID uuid.UUID `json:"payment_method"`
+	IsIgnored       *bool     `json:"is_ignored"`
 }
 
 type ListTransactionsOption func(*ListTransactionsOptions)
@@ -82,6 +83,14 @@ func WithTransactionPaymentMethod(
 ) ListTransactionsOption {
 	return func(o *ListTransactionsOptions) {
 		o.PaymentMethodID = paymentMethodID
+	}
+}
+
+func WithTransactionIsIgnored(
+	isIgnored bool,
+) ListTransactionsOption {
+	return func(o *ListTransactionsOptions) {
+		o.IsIgnored = &isIgnored
 	}
 }
 
