@@ -35,7 +35,7 @@ runner = "green"
 watcher = "cyan"
 
 [log]
-main_only = false
+main_only = true
 time = false
 
 [misc]
