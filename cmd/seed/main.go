@@ -21,7 +21,12 @@ func main() {
 	v := validator.New()
 	e := config.LoadConfig(v)
 
-	baseURL := fmt.Sprintf("%s:%s/api", e.Host, e.Port)
+	var baseURL string
+	if e.Port == "" || e.Port == "80" {
+		baseURL = fmt.Sprintf("%s/api", e.Host)
+	} else {
+		baseURL = fmt.Sprintf("%s:%s/api", e.Host, e.Port)
+	}
 
 	client := resty.New().
 		SetBaseURL(baseURL).

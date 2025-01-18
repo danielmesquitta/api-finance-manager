@@ -64,6 +64,7 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 			goqu.I(ColumnCategoryName).As("category_name"),
 			goqu.I(ColumnInstitutionName).As("institution_name"),
 			goqu.I(ColumnInstitutionLogo).As("institution_logo"),
+			goqu.I(ColumnPaymentMethodName).As("payment_method_name"),
 		).
 		LeftJoin(
 			goqu.I(TableCategory),
@@ -79,6 +80,14 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 				On(
 					goqu.I(ColumnTransactionInstitutionID).
 						Eq(goqu.I(ColumnInstitutionID)),
+				),
+		).
+		LeftJoin(
+			goqu.I(TablePaymentMethod),
+			goqu.
+				On(
+					goqu.I(ColumnTransactionPaymentMethodID).
+						Eq(goqu.I(ColumnPaymentMethodID)),
 				),
 		).
 		Where(goqu.Ex{ColumnTransactionDeletedAt: nil})
