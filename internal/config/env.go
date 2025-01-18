@@ -3,7 +3,6 @@ package config
 import (
 	"bytes"
 	_ "embed"
-	"log"
 
 	root "github.com/danielmesquitta/api-finance-manager"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
@@ -34,18 +33,6 @@ type Env struct {
 	BasicAuthUsername                string      `validate:"required"                                           mapstructure:"BASIC_AUTH_USERNAME"`
 	BasicAuthPassword                string      `validate:"required"                                           mapstructure:"BASIC_AUTH_PASSWORD"`
 	MaxLevenshteinDistancePercentage float64     `validate:"required,min=0,max=1"                               mapstructure:"MAX_LEVENSHTEIN_DISTANCE_PERCENTAGE"`
-}
-
-func LoadEnv(v *validator.Validator) *Env {
-	e := &Env{
-		v: v,
-	}
-
-	if err := e.loadEnv(); err != nil {
-		log.Fatalf("failed to load environment variables: %v", err)
-	}
-
-	return e
 }
 
 func (e *Env) loadEnv() error {

@@ -113,6 +113,7 @@ func (uc *GetBudget) Execute(
 			in.UserID,
 			repo.WithTransactionDateAfter(monthStart),
 			repo.WithTransactionDateBefore(monthEnd),
+			repo.WithTransactionIsIgnored(false),
 		)
 		return err
 	})
@@ -123,6 +124,7 @@ func (uc *GetBudget) Execute(
 			in.UserID,
 			repo.WithTransactionDateAfter(previousMonthStart),
 			repo.WithTransactionDateBefore(comparisonDate),
+			repo.WithTransactionIsIgnored(false),
 		)
 		return err
 	})
@@ -137,11 +139,18 @@ func (uc *GetBudget) Execute(
 		if transaction.Amount > 0 {
 			continue
 		}
-		if _, ok := spentByCategoryID[transaction.CategoryID]; !ok {
-			spentByCategoryID[transaction.CategoryID] = 0
-		}
+
 		spent -= transaction.Amount
-		spentByCategoryID[transaction.CategoryID] -= transaction.Amount
+
+		if transaction.CategoryID == nil {
+			continue
+		}
+
+		if _, ok := spentByCategoryID[*transaction.CategoryID]; !ok {
+			spentByCategoryID[*transaction.CategoryID] = 0
+		}
+
+		spentByCategoryID[*transaction.CategoryID] -= transaction.Amount
 	}
 
 	var spentPreviousMonth int64

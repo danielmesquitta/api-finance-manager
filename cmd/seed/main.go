@@ -19,7 +19,7 @@ import (
 
 func main() {
 	v := validator.New()
-	e := config.LoadEnv(v)
+	e := config.LoadConfig(v)
 
 	baseURL := fmt.Sprintf("%s:%s/api", e.Host, e.Port)
 

@@ -6,7 +6,6 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth"
 )
 
@@ -50,11 +49,7 @@ func (m *MockOAuth) GetUser(
 	ctx context.Context,
 	token string,
 ) (*entity.User, error) {
-	if user, ok := m.users[token]; ok {
-		return user, nil
-	}
-
-	return nil, errs.ErrUnauthorized
+	return m.users[MockToken], nil
 }
 
 var _ oauth.Provider = &MockOAuth{}

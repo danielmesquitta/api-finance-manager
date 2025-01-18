@@ -21,7 +21,7 @@ import (
 // @securityDefinitions.basic BasicAuth
 func main() {
 	v := validator.New()
-	e := config.LoadEnv(v)
+	e := config.LoadConfig(v)
 
 	var app *restapi.App
 	if e.Environment == config.EnvironmentProduction {

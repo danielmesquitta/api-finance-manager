@@ -12,7 +12,7 @@ SELECT sqlc.embed(budget_categories),
 FROM budget_categories
   JOIN categories ON budget_categories.category_id = categories.id
 WHERE budget_id = $1
-  AND deleted_at IS NULL
+  AND budget_categories.deleted_at IS NULL
 ORDER BY categories.name ASC;
 -- name: CreateBudget :one
 INSERT INTO budgets (amount, date, user_id)
@@ -33,7 +33,7 @@ SET deleted_at = NOW()
 FROM budgets
 WHERE budget_categories.budget_id = budgets.id
   AND budgets.user_id = $1
-  AND deleted_at IS NULL;
+  AND budget_categories.deleted_at IS NULL;
 -- name: DeleteBudgets :exec
 UPDATE budgets
 SET deleted_at = NOW()

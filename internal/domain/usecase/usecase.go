@@ -13,10 +13,10 @@ type PaginationInput struct {
 }
 
 func preparePaginationInput(in *PaginationInput) (offset uint) {
-	if in.Page == 0 {
+	if in.Page < 1 {
 		in.Page = 1
 	}
-	if in.PageSize == 0 {
+	if in.PageSize < 1 {
 		in.PageSize = 20
 	}
 	return (in.Page - 1) * in.PageSize

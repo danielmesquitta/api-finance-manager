@@ -933,6 +933,12 @@ const docTemplate = `{
                         "description": "Filter only incomes",
                         "name": "is_income",
                         "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter ignored or not ignored transactions",
+                        "name": "is_ignored",
+                        "in": "query"
                     }
                 ],
                 "responses": {

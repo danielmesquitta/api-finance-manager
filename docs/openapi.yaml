@@ -1225,6 +1225,11 @@ paths:
                   name: is_income
                   schema:
                     type: boolean
+                - description: Filter ignored or not ignored transactions
+                  in: query
+                  name: is_ignored
+                  schema:
+                    type: boolean
             responses:
                 "200":
                     content:

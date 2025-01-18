@@ -1156,6 +1156,10 @@ paths:
         in: query
         name: is_income
         type: boolean
+      - description: Filter ignored or not ignored transactions
+        in: query
+        name: is_ignored
+        type: boolean
       produces:
       - application/json
       responses:

@@ -24,6 +24,7 @@ const (
 	queryParamCategoryID      QueryParam = "category_id"
 	queryParamIsExpense       QueryParam = "is_expense"
 	queryParamIsIncome        QueryParam = "is_income"
+	queryParamIsIgnored       QueryParam = "is_ignored"
 	queryParamPaymentMethodID QueryParam = "payment_method_id"
 )
 
@@ -31,7 +32,13 @@ func parsePaginationParams(
 	c echo.Context,
 ) usecase.PaginationInput {
 	page, _ := strconv.Atoi(c.QueryParam(queryParamPage))
+	if page < 1 {
+		page = 1
+	}
 	pageSize, _ := strconv.Atoi(c.QueryParam(queryParamPageSize))
+	if pageSize < 1 {
+		pageSize = 20
+	}
 
 	return usecase.PaginationInput{
 		Page:     uint(page),
@@ -94,6 +101,23 @@ func parseBoolParam(
 	}
 
 	return b, nil
+}
+
+func parseNillableBoolParam(
+	c echo.Context,
+	param QueryParam,
+) (*bool, error) {
+	paramValue := c.QueryParam(param)
+	if paramValue == "" {
+		return nil, nil
+	}
+
+	b, err := strconv.ParseBool(paramValue)
+	if err != nil {
+		return nil, errs.ErrInvalidBool
+	}
+
+	return &b, nil
 }
 
 func getUserClaims(

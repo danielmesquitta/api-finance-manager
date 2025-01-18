@@ -25,13 +25,14 @@ func (qb *QueryBuilder) ListInstitutions(
 
 	query := goqu.
 		From(TableInstitution).
-		Select(fmt.Sprintf("%s.*", TableInstitution))
+		Select(fmt.Sprintf("%s.*", TableInstitution)).
+		Where(goqu.Ex{ColumnInstitutionDeletedAt: nil})
 
-	qb.setInstitutionJoins(query, options)
+	qb.buildInstitutionJoins(query, options)
 
 	whereExps, orderedExps := qb.buildInstitutionExpressions(options)
 
-	qb.setInstitutionExpressions(query, options, whereExps, orderedExps)
+	query = qb.buildInstitutionQuery(query, options, whereExps, orderedExps)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -57,13 +58,14 @@ func (qb *QueryBuilder) CountInstitutions(
 
 	query := goqu.
 		From(TableInstitution).
-		Select(goqu.COUNT("*"))
+		Select(goqu.COUNT("*")).
+		Where(goqu.Ex{ColumnInstitutionDeletedAt: nil})
 
-	qb.setInstitutionJoins(query, options)
+	query = qb.buildInstitutionJoins(query, options)
 
 	whereExps, _ := qb.buildInstitutionExpressions(options)
 
-	qb.setInstitutionExpressions(query, options, whereExps, nil)
+	query = qb.buildInstitutionQuery(query, options, whereExps, nil)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -79,12 +81,12 @@ func (qb *QueryBuilder) CountInstitutions(
 	return count, nil
 }
 
-func (qb *QueryBuilder) setInstitutionJoins(
+func (qb *QueryBuilder) buildInstitutionJoins(
 	query *goqu.SelectDataset,
 	options repo.ListInstitutionsOptions,
-) {
+) *goqu.SelectDataset {
 	if options.UserID != uuid.Nil {
-		query.Join(
+		query = query.Join(
 			goqu.I(TableAccount),
 			goqu.On(
 				goqu.I(ColumnAccountInstitutionID).
@@ -92,6 +94,7 @@ func (qb *QueryBuilder) setInstitutionJoins(
 			),
 		)
 	}
+	return query
 }
 
 func (qb *QueryBuilder) buildInstitutionExpressions(
@@ -123,30 +126,32 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 	return whereExps, orderedExps
 }
 
-func (qb *QueryBuilder) setInstitutionExpressions(
+func (qb *QueryBuilder) buildInstitutionQuery(
 	query *goqu.SelectDataset,
 	options repo.ListInstitutionsOptions,
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
-) {
+) *goqu.SelectDataset {
 	if len(whereExps) == 1 {
-		query.
+		query = query.
 			Where(whereExps[0])
 	} else if len(whereExps) > 0 {
-		query.
+		query = query.
 			Where(goqu.And(whereExps...))
 	}
 
 	if len(orderedExps) > 0 {
-		query.
+		query = query.
 			Order(orderedExps...)
 	}
 
 	if options.Limit > 0 {
-		query.Limit(options.Limit)
+		query = query.Limit(options.Limit)
 	}
 
 	if options.Offset > 0 {
-		query.Offset(options.Offset)
+		query = query.Offset(options.Offset)
 	}
+
+	return query
 }

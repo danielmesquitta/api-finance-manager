@@ -12,14 +12,14 @@ import (
 )
 
 type ListTransactions struct {
-	cr repo.TransactionRepo
+	tr repo.TransactionRepo
 }
 
 func NewListTransactions(
-	cr repo.TransactionRepo,
+	tr repo.TransactionRepo,
 ) *ListTransactions {
 	return &ListTransactions{
-		cr: cr,
+		tr: tr,
 	}
 }
 
@@ -32,11 +32,11 @@ type ListTransactionsInput struct {
 func (uc *ListTransactions) Execute(
 	ctx context.Context,
 	in ListTransactionsInput,
-) (*entity.PaginatedList[entity.Transaction], error) {
+) (*entity.PaginatedList[entity.TransactionWithCategoryAndInstitution], error) {
 	offset := preparePaginationInput(&in.PaginationInput)
 
 	g, gCtx := errgroup.WithContext(ctx)
-	var transactions []entity.Transaction
+	var transactions []entity.TransactionWithCategoryAndInstitution
 	var count int64
 
 	options := []repo.ListTransactionsOption{}
@@ -87,6 +87,13 @@ func (uc *ListTransactions) Execute(
 		)
 	}
 
+	if in.IsIgnored != nil {
+		options = append(
+			options,
+			repo.WithTransactionIsIgnored(*in.IsIgnored),
+		)
+	}
+
 	if in.PaymentMethodID != uuid.Nil {
 		options = append(
 			options,
@@ -96,7 +103,7 @@ func (uc *ListTransactions) Execute(
 
 	g.Go(func() error {
 		var err error
-		count, err = uc.cr.CountTransactions(
+		count, err = uc.tr.CountTransactions(
 			gCtx,
 			in.UserID,
 			options...,
@@ -111,7 +118,7 @@ func (uc *ListTransactions) Execute(
 
 	g.Go(func() error {
 		var err error
-		transactions, err = uc.cr.ListTransactions(
+		transactions, err = uc.tr.ListTransactionsWithCategoriesAndInstitutions(
 			gCtx,
 			in.UserID,
 			options...,
@@ -123,7 +130,7 @@ func (uc *ListTransactions) Execute(
 		return nil, errs.New(err)
 	}
 
-	out := entity.PaginatedList[entity.Transaction]{
+	out := entity.PaginatedList[entity.TransactionWithCategoryAndInstitution]{
 		Items: transactions,
 	}
 

@@ -23,11 +23,17 @@ func (qb *QueryBuilder) ListCategories(
 
 	query := goqu.
 		From(TableCategory).
-		Select("*")
+		Select("*").
+		Where(goqu.Ex{ColumnCategoryDeletedAt: nil})
 
 	whereExps, orderedExps := qb.buildCategoryExpressions(options)
 
-	qb.setCategoryExpressions(query, options, whereExps, orderedExps)
+	query = qb.buildCategoryQuery(
+		query,
+		options,
+		whereExps,
+		orderedExps,
+	)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -53,11 +59,12 @@ func (qb *QueryBuilder) CountCategories(
 
 	query := goqu.
 		From(TableCategory).
-		Select(goqu.COUNT("*"))
+		Select(goqu.COUNT("*")).
+		Where(goqu.Ex{ColumnCategoryDeletedAt: nil})
 
 	whereExps, _ := qb.buildCategoryExpressions(options)
 
-	qb.setCategoryExpressions(query, options, whereExps, nil)
+	query = qb.buildCategoryQuery(query, options, whereExps, nil)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -94,30 +101,32 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 	return whereExps, orderedExps
 }
 
-func (qb *QueryBuilder) setCategoryExpressions(
+func (qb *QueryBuilder) buildCategoryQuery(
 	query *goqu.SelectDataset,
 	options repo.ListCategoriesOptions,
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
-) {
+) *goqu.SelectDataset {
 	if len(whereExps) == 1 {
-		query.
+		query = query.
 			Where(whereExps[0])
 	} else if len(whereExps) > 0 {
-		query.
+		query = query.
 			Where(goqu.And(whereExps...))
 	}
 
 	if len(orderedExps) > 0 {
-		query.
+		query = query.
 			Order(orderedExps...)
 	}
 
 	if options.Limit > 0 {
-		query.Limit(options.Limit)
+		query = query.Limit(options.Limit)
 	}
 
 	if options.Offset > 0 {
-		query.Offset(options.Offset)
+		query = query.Offset(options.Offset)
 	}
+
+	return query
 }

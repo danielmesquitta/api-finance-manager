@@ -51,7 +51,7 @@ SET deleted_at = NOW()
 FROM budgets
 WHERE budget_categories.budget_id = budgets.id
   AND budgets.user_id = $1
-  AND deleted_at IS NULL
+  AND budget_categories.deleted_at IS NULL
 `
 
 func (q *Queries) DeleteBudgetCategories(ctx context.Context, userID uuid.UUID) error {
@@ -107,7 +107,7 @@ SELECT budget_categories.id, budget_categories.amount, budget_categories.created
 FROM budget_categories
   JOIN categories ON budget_categories.category_id = categories.id
 WHERE budget_id = $1
-  AND deleted_at IS NULL
+  AND budget_categories.deleted_at IS NULL
 ORDER BY categories.name ASC
 `
 

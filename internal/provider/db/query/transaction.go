@@ -27,11 +27,12 @@ func (qb *QueryBuilder) ListTransactions(
 
 	query := goqu.
 		From(TableTransaction).
-		Select("*")
+		Select("*").
+		Where(goqu.Ex{ColumnTransactionDeletedAt: nil})
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
 
-	qb.setTransactionsExpressions(query, options, whereExps, orderedExps)
+	query = qb.buildTransactionsQuery(query, options, whereExps, orderedExps)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -60,9 +61,7 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 		From(TableTransaction).
 		Select(
 			fmt.Sprintf("%s.*", TableTransaction),
-			goqu.I(ColumnCategoryID).As("category_id"),
 			goqu.I(ColumnCategoryName).As("category_name"),
-			goqu.I(ColumnInstitutionID).As("institution_id"),
 			goqu.I(ColumnInstitutionName).As("institution_name"),
 			goqu.I(ColumnInstitutionLogo).As("institution_logo"),
 		).
@@ -81,11 +80,17 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 					goqu.I(ColumnTransactionInstitutionID).
 						Eq(goqu.I(ColumnInstitutionID)),
 				),
-		)
+		).
+		Where(goqu.Ex{ColumnTransactionDeletedAt: nil})
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
 
-	qb.setTransactionsExpressions(query, options, whereExps, orderedExps)
+	query = qb.buildTransactionsQuery(
+		query,
+		options,
+		whereExps,
+		orderedExps,
+	)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -115,11 +120,12 @@ func (qb *QueryBuilder) CountTransactions(
 
 	query := goqu.
 		From(TableTransaction).
-		Select(goqu.COUNT("*"))
+		Select(goqu.COUNT("*")).
+		Where(goqu.Ex{ColumnTransactionDeletedAt: nil})
 
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
 
-	qb.setTransactionsExpressions(query, options, whereExps, nil)
+	query = qb.buildTransactionsQuery(query, options, whereExps, nil)
 
 	sql, args, err := query.ToSQL()
 	if err != nil {
@@ -221,30 +227,32 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	return whereExps, orderedExps
 }
 
-func (qb *QueryBuilder) setTransactionsExpressions(
+func (qb *QueryBuilder) buildTransactionsQuery(
 	query *goqu.SelectDataset,
 	options repo.ListTransactionsOptions,
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
-) {
+) *goqu.SelectDataset {
 	if len(whereExps) == 1 {
-		query.
+		query = query.
 			Where(whereExps[0])
 	} else if len(whereExps) > 0 {
-		query.
+		query = query.
 			Where(goqu.And(whereExps...))
 	}
 
 	if len(orderedExps) > 0 {
-		query.
+		query = query.
 			Order(orderedExps...)
 	}
 
 	if options.Limit > 0 {
-		query.Limit(options.Limit)
+		query = query.Limit(options.Limit)
 	}
 
 	if options.Offset > 0 {
-		query.Offset(options.Offset)
+		query = query.Offset(options.Offset)
 	}
+
+	return query
 }

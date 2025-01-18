@@ -2,7 +2,7 @@ package config
 
 import "time"
 
-func init() {
+func setServerTimeZone() {
 	// loc, _ := time.LoadLocation("America/Sao_Paulo")
 	time.Local = time.UTC
 }

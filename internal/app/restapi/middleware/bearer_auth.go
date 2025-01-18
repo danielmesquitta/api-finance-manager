@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"regexp"
 	"slices"
-	"strings"
 	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
@@ -97,13 +97,9 @@ func (m *Middleware) bearerAuth(
 		return errs.ErrUnauthorized
 	}
 
-	// Split the header to get the token part
-	parts := strings.Split(authHeader, " ")
-	if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
-		return errs.ErrUnauthorized
-	}
-
-	accessToken := parts[1]
+	// Extract the token from the header
+	re := regexp.MustCompile(`(?i)^Bearer\s+`)
+	accessToken := re.ReplaceAllString(authHeader, "")
 
 	// Parse and validate the token
 	claims, err := m.j.Parse(accessToken, tokenType)

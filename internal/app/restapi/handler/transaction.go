@@ -60,6 +60,7 @@ func (h *TransactionHandler) Sync(c echo.Context) error {
 // @Param payment_method_id query string false "Payment method ID" format(uuid)
 // @Param is_expense query bool false "Filter only expenses"
 // @Param is_income query bool false "Filter only incomes"
+// @Param is_ignored query bool false "Filter ignored or not ignored transactions"
 // @Success 200 {object} dto.ListTransactionsResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
@@ -102,6 +103,11 @@ func (h *TransactionHandler) List(c echo.Context) error {
 		return errs.New(err)
 	}
 
+	isIgnored, err := parseNillableBoolParam(c, queryParamIsIgnored)
+	if err != nil {
+		return errs.New(err)
+	}
+
 	in := usecase.ListTransactionsInput{
 		PaginationInput: paginationIn,
 		ListTransactionsOptions: repo.ListTransactionsOptions{
@@ -114,6 +120,7 @@ func (h *TransactionHandler) List(c echo.Context) error {
 			InstitutionID:   institutionID,
 			IsExpense:       isExpense,
 			IsIncome:        isIncome,
+			IsIgnored:       isIgnored,
 			PaymentMethodID: paymentMethodID,
 		},
 		UserID: userID,
