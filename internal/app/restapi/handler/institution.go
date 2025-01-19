@@ -61,7 +61,7 @@ func (h InstitutionHandler) List(c echo.Context) error {
 
 	in := usecase.ListInstitutionsInput{
 		PaginationInput: paginationIn,
-		ListInstitutionsOptions: repo.ListInstitutionsOptions{
+		InstitutionOptions: repo.InstitutionOptions{
 			Search: search,
 		},
 	}
@@ -96,7 +96,7 @@ func (h InstitutionHandler) ListUserInstitutions(c echo.Context) error {
 
 	in := usecase.ListInstitutionsInput{
 		PaginationInput: paginationIn,
-		ListInstitutionsOptions: repo.ListInstitutionsOptions{
+		InstitutionOptions: repo.InstitutionOptions{
 			UserID: userID,
 			Search: search,
 		},

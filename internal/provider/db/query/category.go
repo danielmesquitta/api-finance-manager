@@ -14,9 +14,9 @@ import (
 
 func (qb *QueryBuilder) ListCategories(
 	ctx context.Context,
-	opts ...repo.ListCategoriesOption,
+	opts ...repo.CategoryOption,
 ) ([]entity.Category, error) {
-	options := repo.ListCategoriesOptions{}
+	options := repo.CategoryOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
@@ -50,9 +50,9 @@ func (qb *QueryBuilder) ListCategories(
 
 func (qb *QueryBuilder) CountCategories(
 	ctx context.Context,
-	opts ...repo.ListCategoriesOption,
+	opts ...repo.CategoryOption,
 ) (int64, error) {
-	options := repo.ListCategoriesOptions{}
+	options := repo.CategoryOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
@@ -81,7 +81,7 @@ func (qb *QueryBuilder) CountCategories(
 }
 
 func (qb *QueryBuilder) buildCategoryExpressions(
-	options repo.ListCategoriesOptions,
+	options repo.CategoryOptions,
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
@@ -103,7 +103,7 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 
 func (qb *QueryBuilder) buildCategoryQuery(
 	query *goqu.SelectDataset,
-	options repo.ListCategoriesOptions,
+	options repo.CategoryOptions,
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
 ) *goqu.SelectDataset {

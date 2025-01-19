@@ -76,6 +76,23 @@ func parseDateFilterParams(
 	return startDate, endDate, nil
 }
 
+func parseDateParam(
+	c echo.Context,
+	param QueryParam,
+) (time.Time, error) {
+	paramValue := c.QueryParam(param)
+	if paramValue == "" {
+		return time.Time{}, nil
+	}
+
+	date, err := time.Parse(time.RFC3339, paramValue)
+	if err != nil {
+		return time.Time{}, errs.ErrInvalidDate
+	}
+
+	return date, nil
+}
+
 func parseUUIDParam(
 	c echo.Context,
 	param QueryParam,

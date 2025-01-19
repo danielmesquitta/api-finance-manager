@@ -36,6 +36,11 @@ type GetBudgetParams struct {
 	Date   time.Time `json:"date"`
 }
 
+type GetBudgetCategoryParams struct {
+	UserID uuid.UUID `json:"user_id"`
+	Date   time.Time `json:"date"`
+}
+
 type UpdateBudgetParams struct {
 	Amount int64     `json:"amount"`
 	UserID uuid.UUID `json:"user_id"`

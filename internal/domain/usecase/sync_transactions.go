@@ -373,7 +373,7 @@ func (uc *SyncTransactions) listOpenFinanceTransactions(
 	accountExternalID string,
 	lastSynchronizedAt time.Time,
 ) ([]openfinance.Transaction, error) {
-	opts := []openfinance.ListTransactionsOption{}
+	opts := []openfinance.TransactionOption{}
 	if !lastSynchronizedAt.IsZero() {
 		opts = append(
 			opts,
@@ -408,7 +408,7 @@ func (uc *SyncTransactions) listRepoTransactions(
 	userID uuid.UUID,
 	lastSynchronizedAt time.Time,
 ) ([]entity.Transaction, error) {
-	opts := []repo.ListTransactionsOption{}
+	opts := []repo.TransactionOption{}
 	if !lastSynchronizedAt.IsZero() {
 		opts = append(
 			opts,

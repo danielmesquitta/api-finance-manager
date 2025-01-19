@@ -30,6 +30,27 @@ type CreateCategoriesParams struct {
 	Name       string `json:"name"`
 }
 
+const getCategory = `-- name: GetCategory :one
+SELECT id, external_id, name, created_at, updated_at, deleted_at
+FROM categories
+WHERE id = $1
+  AND deleted_at IS NULL
+`
+
+func (q *Queries) GetCategory(ctx context.Context, id uuid.UUID) (Category, error) {
+	row := q.db.QueryRow(ctx, getCategory, id)
+	var i Category
+	err := row.Scan(
+		&i.ID,
+		&i.ExternalID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
 const listCategories = `-- name: ListCategories :many
 SELECT id, external_id, name, created_at, updated_at, deleted_at
 FROM categories

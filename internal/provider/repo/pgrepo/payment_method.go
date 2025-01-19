@@ -30,7 +30,7 @@ func NewPaymentMethodPgRepo(
 
 func (r *PaymentMethodPgRepo) ListPaymentMethods(
 	ctx context.Context,
-	opts ...repo.ListPaymentMethodsOption,
+	opts ...repo.PaymentMethodOption,
 ) ([]entity.PaymentMethod, error) {
 	paymentMethods, err := r.qb.ListPaymentMethods(ctx, opts...)
 	if err != nil {
@@ -42,7 +42,7 @@ func (r *PaymentMethodPgRepo) ListPaymentMethods(
 
 func (r *PaymentMethodPgRepo) CountPaymentMethods(
 	ctx context.Context,
-	opts ...repo.ListPaymentMethodsOption,
+	opts ...repo.PaymentMethodOption,
 ) (int64, error) {
 	return r.qb.CountPaymentMethods(ctx, opts...)
 }

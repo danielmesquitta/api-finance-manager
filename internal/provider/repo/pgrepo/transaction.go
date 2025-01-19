@@ -31,7 +31,7 @@ func NewTransactionPgRepo(
 func (r *TransactionPgRepo) ListTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.ListTransactionsOption,
+	opts ...repo.TransactionOption,
 ) ([]entity.Transaction, error) {
 	transactions, err := r.qb.ListTransactions(ctx, userID, opts...)
 	if err != nil {
@@ -43,7 +43,7 @@ func (r *TransactionPgRepo) ListTransactions(
 func (r *TransactionPgRepo) ListTransactionsWithCategoriesAndInstitutions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.ListTransactionsOption,
+	opts ...repo.TransactionOption,
 ) ([]entity.TransactionWithCategoryAndInstitution, error) {
 	transactions, err := r.qb.
 		ListTransactionsWithCategoriesAndInstitutions(ctx, userID, opts...)
@@ -56,9 +56,25 @@ func (r *TransactionPgRepo) ListTransactionsWithCategoriesAndInstitutions(
 func (r *TransactionPgRepo) CountTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.ListTransactionsOption,
+	opts ...repo.TransactionOption,
 ) (int64, error) {
 	return r.qb.CountTransactions(ctx, userID, opts...)
+}
+
+func (r *TransactionPgRepo) SumTransactions(
+	ctx context.Context,
+	userID uuid.UUID,
+	opts ...repo.TransactionOption,
+) (int64, error) {
+	return r.qb.SumTransactions(ctx, userID, opts...)
+}
+
+func (r *TransactionPgRepo) SumTransactionsByCategory(
+	ctx context.Context,
+	userID uuid.UUID,
+	opts ...repo.TransactionOption,
+) (map[uuid.UUID]int64, error) {
+	return r.qb.SumTransactionsByCategory(ctx, userID, opts...)
 }
 
 func (r *TransactionPgRepo) CreateTransactions(

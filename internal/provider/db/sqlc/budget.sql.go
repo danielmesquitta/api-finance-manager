@@ -101,6 +101,51 @@ func (q *Queries) GetBudget(ctx context.Context, arg GetBudgetParams) (Budget, e
 	return i, err
 }
 
+const getBudgetCategory = `-- name: GetBudgetCategory :one
+SELECT budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.deleted_at, budget_categories.budget_id, budget_categories.category_id,
+  categories.id, categories.external_id, categories.name, categories.created_at, categories.updated_at, categories.deleted_at
+FROM budget_categories
+  JOIN categories ON budget_categories.category_id = categories.id
+  AND categories.deleted_at IS NULL
+  JOIN budgets ON budget_categories.budget_id = budgets.id
+  AND budgets.deleted_at IS NULL
+WHERE budgets.user_id = $1
+  AND budgets.date <= $2
+  AND budget_categories.deleted_at IS NULL
+LIMIT 1
+`
+
+type GetBudgetCategoryParams struct {
+	UserID uuid.UUID `json:"user_id"`
+	Date   time.Time `json:"date"`
+}
+
+type GetBudgetCategoryRow struct {
+	BudgetCategory BudgetCategory `json:"budget_category"`
+	Category       Category       `json:"category"`
+}
+
+func (q *Queries) GetBudgetCategory(ctx context.Context, arg GetBudgetCategoryParams) (GetBudgetCategoryRow, error) {
+	row := q.db.QueryRow(ctx, getBudgetCategory, arg.UserID, arg.Date)
+	var i GetBudgetCategoryRow
+	err := row.Scan(
+		&i.BudgetCategory.ID,
+		&i.BudgetCategory.Amount,
+		&i.BudgetCategory.CreatedAt,
+		&i.BudgetCategory.UpdatedAt,
+		&i.BudgetCategory.DeletedAt,
+		&i.BudgetCategory.BudgetID,
+		&i.BudgetCategory.CategoryID,
+		&i.Category.ID,
+		&i.Category.ExternalID,
+		&i.Category.Name,
+		&i.Category.CreatedAt,
+		&i.Category.UpdatedAt,
+		&i.Category.DeletedAt,
+	)
+	return i, err
+}
+
 const listBudgetCategories = `-- name: ListBudgetCategories :many
 SELECT budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.deleted_at, budget_categories.budget_id, budget_categories.category_id,
   categories.id, categories.external_id, categories.name, categories.created_at, categories.updated_at, categories.deleted_at

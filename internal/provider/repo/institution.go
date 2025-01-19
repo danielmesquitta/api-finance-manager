@@ -7,33 +7,33 @@ import (
 	"github.com/google/uuid"
 )
 
-type ListInstitutionsOptions struct {
+type InstitutionOptions struct {
 	Limit  uint      `json:"-"`
 	Offset uint      `json:"-"`
 	Search string    `json:"search"`
 	UserID uuid.UUID `json:"-"`
 }
 
-type ListInstitutionsOption func(*ListInstitutionsOptions)
+type InstitutionOption func(*InstitutionOptions)
 
 func WithInstitutionsPagination(
 	limit uint,
 	offset uint,
-) ListInstitutionsOption {
-	return func(o *ListInstitutionsOptions) {
+) InstitutionOption {
+	return func(o *InstitutionOptions) {
 		o.Limit = limit
 		o.Offset = offset
 	}
 }
 
-func WithInstitutionsSearch(search string) ListInstitutionsOption {
-	return func(o *ListInstitutionsOptions) {
+func WithInstitutionsSearch(search string) InstitutionOption {
+	return func(o *InstitutionOptions) {
 		o.Search = search
 	}
 }
 
-func WithUser(userID uuid.UUID) ListInstitutionsOption {
-	return func(o *ListInstitutionsOptions) {
+func WithUser(userID uuid.UUID) InstitutionOption {
+	return func(o *InstitutionOptions) {
 		o.UserID = userID
 	}
 }
@@ -41,11 +41,11 @@ func WithUser(userID uuid.UUID) ListInstitutionsOption {
 type InstitutionRepo interface {
 	ListInstitutions(
 		ctx context.Context,
-		opts ...ListInstitutionsOption,
+		opts ...InstitutionOption,
 	) ([]entity.Institution, error)
 	CountInstitutions(
 		ctx context.Context,
-		opts ...ListInstitutionsOption,
+		opts ...InstitutionOption,
 	) (int64, error)
 	CreateInstitutions(
 		ctx context.Context,

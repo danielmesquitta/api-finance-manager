@@ -14,9 +14,9 @@ import (
 
 func (qb *QueryBuilder) ListPaymentMethods(
 	ctx context.Context,
-	opts ...repo.ListPaymentMethodsOption,
+	opts ...repo.PaymentMethodOption,
 ) ([]entity.PaymentMethod, error) {
-	options := repo.ListPaymentMethodsOptions{}
+	options := repo.PaymentMethodOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
@@ -50,9 +50,9 @@ func (qb *QueryBuilder) ListPaymentMethods(
 
 func (qb *QueryBuilder) CountPaymentMethods(
 	ctx context.Context,
-	opts ...repo.ListPaymentMethodsOption,
+	opts ...repo.PaymentMethodOption,
 ) (int64, error) {
-	options := repo.ListPaymentMethodsOptions{}
+	options := repo.PaymentMethodOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
@@ -81,7 +81,7 @@ func (qb *QueryBuilder) CountPaymentMethods(
 }
 
 func (qb *QueryBuilder) buildPaymentMethodExpressions(
-	options repo.ListPaymentMethodsOptions,
+	options repo.PaymentMethodOptions,
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
@@ -103,7 +103,7 @@ func (qb *QueryBuilder) buildPaymentMethodExpressions(
 
 func (qb *QueryBuilder) buildPaymentMethodQuery(
 	query *goqu.SelectDataset,
-	options repo.ListPaymentMethodsOptions,
+	options repo.PaymentMethodOptions,
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
 ) *goqu.SelectDataset {

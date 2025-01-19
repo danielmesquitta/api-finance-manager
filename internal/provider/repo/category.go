@@ -7,23 +7,23 @@ import (
 	"github.com/google/uuid"
 )
 
-type ListCategoriesOptions struct {
+type CategoryOptions struct {
 	Limit  uint   `json:"-"`
 	Offset uint   `json:"-"`
 	Search string `json:"search"`
 }
 
-type ListCategoriesOption func(*ListCategoriesOptions)
+type CategoryOption func(*CategoryOptions)
 
-func WithCategoriesPagination(limit uint, offset uint) ListCategoriesOption {
-	return func(o *ListCategoriesOptions) {
+func WithCategoriesPagination(limit uint, offset uint) CategoryOption {
+	return func(o *CategoryOptions) {
 		o.Limit = limit
 		o.Offset = offset
 	}
 }
 
-func WithCategoriesSearch(search string) ListCategoriesOption {
-	return func(o *ListCategoriesOptions) {
+func WithCategoriesSearch(search string) CategoryOption {
+	return func(o *CategoryOptions) {
 		o.Search = search
 	}
 }
@@ -31,11 +31,11 @@ func WithCategoriesSearch(search string) ListCategoriesOption {
 type CategoryRepo interface {
 	ListCategories(
 		ctx context.Context,
-		opts ...ListCategoriesOption,
+		opts ...CategoryOption,
 	) ([]entity.Category, error)
 	CountCategories(
 		ctx context.Context,
-		opts ...ListCategoriesOption,
+		opts ...CategoryOption,
 	) (int64, error)
 	CountCategoriesByIDs(ctx context.Context, ids []uuid.UUID) (int64, error)
 	CreateCategories(
@@ -46,4 +46,8 @@ type CategoryRepo interface {
 		ctx context.Context,
 		externalIDs []string,
 	) ([]entity.Category, error)
+	GetCategory(
+		ctx context.Context,
+		id uuid.UUID,
+	) (*entity.Category, error)
 }

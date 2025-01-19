@@ -60,7 +60,7 @@ func (h CategoryHandler) List(c echo.Context) error {
 
 	in := usecase.ListCategoriesInput{
 		PaginationInput: paginationIn,
-		ListCategoriesOptions: repo.ListCategoriesOptions{
+		CategoryOptions: repo.CategoryOptions{
 			Search: search,
 		},
 	}

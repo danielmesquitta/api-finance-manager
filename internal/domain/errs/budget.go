@@ -9,4 +9,8 @@ var (
 		"Você não possui um orçamento cadastrado",
 		ErrTypeNotFound,
 	)
+	ErrBudgetCategoryNotFound = NewWithType(
+		"Você não possui um orçamento cadastrado para essa categoria",
+		ErrTypeNotFound,
+	)
 )

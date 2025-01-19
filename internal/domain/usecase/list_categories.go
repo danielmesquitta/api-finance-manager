@@ -23,7 +23,7 @@ func NewListCategories(
 }
 
 type ListCategoriesInput struct {
-	repo.ListCategoriesOptions
+	repo.CategoryOptions
 	PaginationInput
 }
 
@@ -37,7 +37,7 @@ func (uc *ListCategories) Execute(
 	var categories []entity.Category
 	var count int64
 
-	options := []repo.ListCategoriesOption{}
+	options := []repo.CategoryOption{}
 
 	if in.Search != "" {
 		options = append(options, repo.WithCategoriesSearch(in.Search))

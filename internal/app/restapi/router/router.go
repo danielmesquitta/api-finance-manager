@@ -106,6 +106,10 @@ func (r *Router) Register(
 	usersApiV1.POST("/budgets", r.bh.Upsert)
 	usersApiV1.GET("/budgets", r.bh.Get)
 	usersApiV1.GET("/budgets/categories/:category_id", r.bh.GetCategory)
+	usersApiV1.GET(
+		"/budgets/categories/:category_id/transactions",
+		r.bh.ListCategoryTransactions,
+	)
 	usersApiV1.DELETE("/budgets", r.bh.Delete)
 
 	usersApiV1.GET("/transactions", r.th.List)

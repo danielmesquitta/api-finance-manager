@@ -25,6 +25,10 @@ type BudgetRepo interface {
 		ctx context.Context,
 		params GetBudgetParams,
 	) (*entity.Budget, error)
+	GetBudgetCategory(
+		ctx context.Context,
+		arg GetBudgetCategoryParams,
+	) (*entity.BudgetCategory, *entity.Category, error)
 	ListBudgetCategories(
 		ctx context.Context,
 		budgetID uuid.UUID,

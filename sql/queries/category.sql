@@ -15,3 +15,8 @@ WHERE external_id = ANY(sqlc.arg(ids)::text [])
 -- name: CreateCategories :copyfrom
 INSERT INTO categories (external_id, name)
 VALUES ($1, $2);
+-- name: GetCategory :one
+SELECT *
+FROM categories
+WHERE id = $1
+  AND deleted_at IS NULL;

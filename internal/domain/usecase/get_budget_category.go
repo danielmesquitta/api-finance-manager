@@ -15,17 +15,20 @@ type GetBudgetCategory struct {
 	v  *validator.Validator
 	br repo.BudgetRepo
 	tr repo.TransactionRepo
+	cr repo.CategoryRepo
 }
 
 func NewGetBudgetCategory(
 	v *validator.Validator,
 	br repo.BudgetRepo,
 	tr repo.TransactionRepo,
+	cr repo.CategoryRepo,
 ) *GetBudgetCategory {
 	return &GetBudgetCategory{
 		v:  v,
 		br: br,
 		tr: tr,
+		cr: cr,
 	}
 }
 
@@ -36,9 +39,10 @@ type GetBudgetCategoryInput struct {
 }
 
 type GetBudgetCategoryOutput struct {
-	Spent        int64                                          `json:"spent"`
-	Available    int64                                          `json:"available"`
-	Transactions []entity.TransactionWithCategoryAndInstitution `json:"transactions"`
+	entity.Category
+	Amount    int64 `json:"amount"`
+	Spent     int64 `json:"spent"`
+	Available int64 `json:"available"`
 }
 
 func (uc *GetBudgetCategory) Execute(
@@ -57,44 +61,45 @@ func (uc *GetBudgetCategory) Execute(
 	monthStart := toMonthStart(date)
 	monthEnd := toMonthEnd(date)
 
-	budget, err := uc.br.GetBudget(ctx, repo.GetBudgetParams{
-		UserID: in.UserID,
-		Date:   monthStart,
-	})
+	budgetCategory, category, err := uc.br.GetBudgetCategory(
+		ctx,
+		repo.GetBudgetCategoryParams{
+			UserID: in.UserID,
+			Date:   monthStart,
+		},
+	)
 	if err != nil {
 		return nil, errs.New(err)
 	}
-	if budget == nil {
-		return nil, errs.ErrBudgetNotFound
+	if budgetCategory == nil || category == nil {
+		return nil, errs.ErrBudgetCategoryNotFound
 	}
 
-	transactions, err := uc.tr.ListTransactionsWithCategoriesAndInstitutions(
-		ctx,
-		in.UserID,
+	transactionOpts := []repo.TransactionOption{
 		repo.WithTransactionDateAfter(monthStart),
 		repo.WithTransactionDateBefore(monthEnd),
-		repo.WithTransactionIsIgnored(false),
 		repo.WithTransactionCategory(in.CategoryID),
+		repo.WithTransactionIsIgnored(false),
+		repo.WithTransactionIsExpense(true),
+	}
+
+	spent, err := uc.tr.SumTransactions(
+		ctx,
+		in.UserID,
+		transactionOpts...,
 	)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	var spent int64
-	for _, transaction := range transactions {
-		if transaction.Amount > 0 {
-			continue
-		}
-
-		spent -= transaction.Amount
-	}
-
-	available := budget.Amount - spent
+	amount := budgetCategory.Amount
+	available := amount - spent
 
 	out := GetBudgetCategoryOutput{
-		Spent:        spent,
-		Available:    available,
-		Transactions: transactions,
+		Category:  *category,
+		Amount:    budgetCategory.Amount,
+		Spent:     spent,
+		Available: available,
 	}
 
 	return &out, nil

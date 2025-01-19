@@ -121,14 +121,24 @@ definitions:
     type: object
   dto.GetBudgetCategoryResponse:
     properties:
+      amount:
+        type: integer
       available:
         type: integer
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
       spent:
         type: integer
-      transactions:
-        items:
-          $ref: '#/definitions/entity.TransactionWithCategoryAndInstitution'
-        type: array
+      updated_at:
+        type: string
     type: object
   dto.GetBudgetResponse:
     properties:
@@ -481,45 +491,6 @@ definitions:
       name:
         type: string
       payment_method_id:
-        type: string
-      updated_at:
-        type: string
-      user_id:
-        type: string
-    type: object
-  entity.TransactionWithCategoryAndInstitution:
-    properties:
-      account_id:
-        type: string
-      amount:
-        type: integer
-      category_id:
-        type: string
-      category_name:
-        type: string
-      created_at:
-        type: string
-      date:
-        type: string
-      deleted_at:
-        type: string
-      external_id:
-        type: string
-      id:
-        type: string
-      institution_id:
-        type: string
-      institution_logo:
-        type: string
-      institution_name:
-        type: string
-      is_ignored:
-        type: boolean
-      name:
-        type: string
-      payment_method_id:
-        type: string
-      payment_method_name:
         type: string
       updated_at:
         type: string
@@ -906,16 +877,16 @@ paths:
       - application/json
       description: Get budget category
       parameters:
-      - description: Date
-        format: date
-        in: query
-        name: date
-        required: true
-        type: string
       - description: Category ID
         format: uuid
         in: path
         name: category_id
+        required: true
+        type: string
+      - description: Date
+        format: date
+        in: query
+        name: date
         required: true
         type: string
       produces:
@@ -940,6 +911,52 @@ paths:
       security:
       - BearerAuth: []
       summary: Get budget category
+      tags:
+      - Budget
+  /v1/budgets/categories/{category_id}/transactions:
+    get:
+      consumes:
+      - application/json
+      description: List budget category transactions
+      parameters:
+      - description: Category ID
+        format: uuid
+        in: path
+        name: category_id
+        required: true
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Date
+        format: date
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ListTransactionsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List budget category transactions
       tags:
       - Budget
   /v1/calculator/cash-vs-installments:
@@ -1216,6 +1233,11 @@ paths:
         in: query
         name: page_size
         type: integer
+      - description: Date
+        format: date
+        in: query
+        name: date
+        type: string
       - description: Start date
         format: date
         in: query

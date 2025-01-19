@@ -2,6 +2,8 @@ package pgrepo
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
@@ -31,7 +33,7 @@ func NewCategoryPgRepo(
 
 func (r *CategoryPgRepo) ListCategories(
 	ctx context.Context,
-	opts ...repo.ListCategoriesOption,
+	opts ...repo.CategoryOption,
 ) ([]entity.Category, error) {
 	categories, err := r.qb.ListCategories(ctx, opts...)
 	if err != nil {
@@ -43,7 +45,7 @@ func (r *CategoryPgRepo) ListCategories(
 
 func (r *CategoryPgRepo) CountCategories(
 	ctx context.Context,
-	opts ...repo.ListCategoriesOption,
+	opts ...repo.CategoryOption,
 ) (int64, error) {
 	return r.qb.CountCategories(ctx, opts...)
 }
@@ -88,6 +90,26 @@ func (r *CategoryPgRepo) ListCategoriesByExternalIDs(
 	}
 
 	return results, nil
+}
+
+func (r *CategoryPgRepo) GetCategory(
+	ctx context.Context,
+	id uuid.UUID,
+) (*entity.Category, error) {
+	category, err := r.db.GetCategory(ctx, id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, errs.New(err)
+	}
+
+	result := entity.Category{}
+	if err := copier.Copy(&result, category); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return &result, nil
 }
 
 var _ repo.CategoryRepo = &CategoryPgRepo{}

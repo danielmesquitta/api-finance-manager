@@ -11,10 +11,11 @@ import (
 )
 
 type BudgetHandler struct {
-	ub  *usecase.UpsertBudget
-	gb  *usecase.GetBudget
-	gbc *usecase.GetBudgetCategory
-	db  *usecase.DeleteBudget
+	ub   *usecase.UpsertBudget
+	gb   *usecase.GetBudget
+	gbc  *usecase.GetBudgetCategory
+	db   *usecase.DeleteBudget
+	lbct *usecase.ListBudgetCategoryTransactions
 }
 
 func NewBudgetHandler(
@@ -22,12 +23,14 @@ func NewBudgetHandler(
 	gb *usecase.GetBudget,
 	gbc *usecase.GetBudgetCategory,
 	db *usecase.DeleteBudget,
+	lbct *usecase.ListBudgetCategoryTransactions,
 ) *BudgetHandler {
 	return &BudgetHandler{
-		ub:  ub,
-		gb:  gb,
-		gbc: gbc,
-		db:  db,
+		ub:   ub,
+		gb:   gb,
+		gbc:  gbc,
+		db:   db,
+		lbct: lbct,
 	}
 }
 
@@ -102,8 +105,8 @@ func (h BudgetHandler) Get(c echo.Context) error {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param date query string true "Date" format(date)
 // @Param category_id path string true "Category ID" format(uuid)
+// @Param date query string true "Date" format(date)
 // @Success 200 {object} dto.GetBudgetCategoryResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -129,6 +132,49 @@ func (h BudgetHandler) GetCategory(c echo.Context) error {
 	return c.JSON(http.StatusOK, dto.GetBudgetCategoryResponse{
 		GetBudgetCategoryOutput: *out,
 	})
+}
+
+// @Summary List budget category transactions
+// @Description List budget category transactions
+// @Tags Budget
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param category_id path string true "Category ID" format(uuid)
+// @Param page query int false "Page"
+// @Param page_size query int false "Page size"
+// @Param date query string true "Date" format(date)
+// @Success 200 {object} dto.ListTransactionsResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/budgets/categories/{category_id}/transactions [get]
+func (h *BudgetHandler) ListCategoryTransactions(c echo.Context) error {
+	claims := getUserClaims(c)
+	userID := uuid.MustParse(claims.Issuer)
+
+	paginationIn := parsePaginationParams(c)
+
+	date, err := parseDateParam(c, queryParamDate)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	categoryID := uuid.MustParse(c.Param(pathParamCategoryID))
+
+	in := usecase.ListBudgetCategoryTransactionsInput{
+		PaginationInput: paginationIn,
+		Date:            date,
+		UserID:          userID,
+		CategoryID:      categoryID,
+	}
+
+	ctx := c.Request().Context()
+	res, err := h.lbct.Execute(ctx, in)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return c.JSON(http.StatusOK, res)
 }
 
 // @Summary Delete budget

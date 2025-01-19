@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"time"
 
 	"golang.org/x/sync/errgroup"
 
@@ -25,7 +26,8 @@ func NewListTransactions(
 
 type ListTransactionsInput struct {
 	PaginationInput
-	repo.ListTransactionsOptions
+	repo.TransactionOptions
+	Date   time.Time `json:"-"`
 	UserID uuid.UUID `json:"-"`
 }
 
@@ -39,64 +41,74 @@ func (uc *ListTransactions) Execute(
 	var transactions []entity.TransactionWithCategoryAndInstitution
 	var count int64
 
-	options := []repo.ListTransactionsOption{}
+	opts := []repo.TransactionOption{}
 
 	if in.Search != "" {
-		options = append(options, repo.WithTransactionsSearch(in.Search))
+		opts = append(opts, repo.WithTransactionsSearch(in.Search))
 	}
 
 	if in.CategoryID != uuid.Nil {
-		options = append(
-			options,
+		opts = append(
+			opts,
 			repo.WithTransactionCategory(in.CategoryID),
 		)
 	}
 
 	if in.InstitutionID != uuid.Nil {
-		options = append(
-			options,
+		opts = append(
+			opts,
 			repo.WithTransactionInstitution(in.InstitutionID),
 		)
 	}
 
-	if !in.StartDate.IsZero() {
-		options = append(
-			options,
-			repo.WithTransactionDateAfter(in.StartDate),
+	startDate, endDate := in.StartDate, in.EndDate
+	if !in.Date.IsZero() {
+		if startDate.IsZero() {
+			startDate = toMonthStart(in.Date)
+		}
+		if endDate.IsZero() {
+			endDate = toMonthEnd(in.Date)
+		}
+	}
+
+	if !startDate.IsZero() {
+		opts = append(
+			opts,
+			repo.WithTransactionDateAfter(startDate),
 		)
 	}
 
-	if !in.EndDate.IsZero() {
-		options = append(
-			options,
-			repo.WithTransactionDateBefore(in.EndDate),
+	if !endDate.IsZero() {
+		opts = append(
+			opts,
+			repo.WithTransactionDateBefore(endDate),
 		)
 	}
 
 	if in.IsExpense {
-		options = append(
-			options,
+		opts = append(
+			opts,
 			repo.WithTransactionIsExpense(in.IsExpense),
 		)
 	}
 
 	if in.IsIncome {
-		options = append(
-			options,
+		opts = append(
+			opts,
 			repo.WithTransactionIsIncome(in.IsIncome),
 		)
 	}
 
 	if in.IsIgnored != nil {
-		options = append(
-			options,
+		opts = append(
+			opts,
 			repo.WithTransactionIsIgnored(*in.IsIgnored),
 		)
 	}
 
 	if in.PaymentMethodID != uuid.Nil {
-		options = append(
-			options,
+		opts = append(
+			opts,
 			repo.WithTransactionPaymentMethod(in.PaymentMethodID),
 		)
 	}
@@ -106,13 +118,13 @@ func (uc *ListTransactions) Execute(
 		count, err = uc.tr.CountTransactions(
 			gCtx,
 			in.UserID,
-			options...,
+			opts...,
 		)
 		return err
 	})
 
-	options = append(
-		options,
+	opts = append(
+		opts,
 		repo.WithTransactionsPagination(in.PageSize, offset),
 	)
 
@@ -121,7 +133,7 @@ func (uc *ListTransactions) Execute(
 		transactions, err = uc.tr.ListTransactionsWithCategoriesAndInstitutions(
 			gCtx,
 			in.UserID,
-			options...,
+			opts...,
 		)
 		return err
 	})

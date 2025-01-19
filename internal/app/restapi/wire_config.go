@@ -80,6 +80,7 @@ var providers = []any{
 	usecase.NewListTransactions,
 	usecase.NewListInstitutions,
 	usecase.NewGetBudgetCategory,
+	usecase.NewListBudgetCategoryTransactions,
 
 	handler.NewAuthHandler,
 	handler.NewHealthHandler,

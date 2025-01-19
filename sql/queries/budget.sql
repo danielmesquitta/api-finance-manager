@@ -6,6 +6,18 @@ WHERE user_id = $1
   AND deleted_at IS NULL
 ORDER BY date ASC
 LIMIT 1;
+-- name: GetBudgetCategory :one
+SELECT sqlc.embed(budget_categories),
+  sqlc.embed(categories)
+FROM budget_categories
+  JOIN categories ON budget_categories.category_id = categories.id
+  AND categories.deleted_at IS NULL
+  JOIN budgets ON budget_categories.budget_id = budgets.id
+  AND budgets.deleted_at IS NULL
+WHERE budgets.user_id = $1
+  AND budgets.date <= $2
+  AND budget_categories.deleted_at IS NULL
+LIMIT 1;
 -- name: ListBudgetCategories :many
 SELECT sqlc.embed(budget_categories),
   sqlc.embed(categories)

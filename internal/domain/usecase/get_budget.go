@@ -32,6 +32,7 @@ func NewGetBudget(
 }
 
 type GetBudgetInput struct {
+	PaginationInput
 	UserID uuid.UUID `json:"-"    validate:"required"`
 	Date   string    `json:"date" validate:"required"`
 }
@@ -97,7 +98,8 @@ func (uc *GetBudget) Execute(
 	g, gCtx := errgroup.WithContext(ctx)
 	var budgetCategories []entity.BudgetCategory
 	var categories []entity.Category
-	var transactions, previousMonthTransactions []entity.TransactionWithCategoryAndInstitution
+	var spentPreviousMonth int64
+	var spentByCategoryID map[uuid.UUID]int64
 
 	g.Go(func() error {
 		budgetCategories, categories, err = uc.br.ListBudgetCategories(
@@ -107,24 +109,35 @@ func (uc *GetBudget) Execute(
 		return err
 	})
 
+	baseTransactionOpts := []repo.TransactionOption{
+		repo.WithTransactionIsIgnored(false),
+		repo.WithTransactionIsExpense(true),
+	}
+
 	g.Go(func() error {
-		transactions, err = uc.tr.ListTransactionsWithCategoriesAndInstitutions(
-			gCtx,
-			in.UserID,
+		opts := append(
+			baseTransactionOpts,
 			repo.WithTransactionDateAfter(monthStart),
 			repo.WithTransactionDateBefore(monthEnd),
-			repo.WithTransactionIsIgnored(false),
+		)
+		spentByCategoryID, err = uc.tr.SumTransactionsByCategory(
+			gCtx,
+			in.UserID,
+			opts...,
 		)
 		return err
 	})
 
 	g.Go(func() error {
-		previousMonthTransactions, err = uc.tr.ListTransactionsWithCategoriesAndInstitutions(
+		opts := append(
+			baseTransactionOpts,
+			repo.WithTransactionIsIgnored(false),
+			repo.WithTransactionIsExpense(true),
+		)
+		spentPreviousMonth, err = uc.tr.SumTransactions(
 			gCtx,
 			in.UserID,
-			repo.WithTransactionDateAfter(previousMonthStart),
-			repo.WithTransactionDateBefore(comparisonDate),
-			repo.WithTransactionIsIgnored(false),
+			opts...,
 		)
 		return err
 	})
@@ -133,32 +146,15 @@ func (uc *GetBudget) Execute(
 		return nil, errs.New(err)
 	}
 
-	var spent int64
-	spentByCategoryID := map[uuid.UUID]int64{}
-	for _, transaction := range transactions {
-		if transaction.Amount > 0 {
-			continue
-		}
-
-		spent -= transaction.Amount
-
-		if transaction.CategoryID == nil {
-			continue
-		}
-
-		if _, ok := spentByCategoryID[*transaction.CategoryID]; !ok {
-			spentByCategoryID[*transaction.CategoryID] = 0
-		}
-
-		spentByCategoryID[*transaction.CategoryID] -= transaction.Amount
+	// Invert spentPreviousMonth and spentByCategoryID values to make them positive
+	spentPreviousMonth = -1 * spentPreviousMonth
+	for categoryID, spent := range spentByCategoryID {
+		spentByCategoryID[categoryID] = -1 * spent
 	}
 
-	var spentPreviousMonth int64
-	for _, transaction := range previousMonthTransactions {
-		if transaction.Amount > 0 {
-			continue
-		}
-		spentPreviousMonth -= transaction.Amount
+	var spent int64
+	for _, amount := range spentByCategoryID {
+		spent += amount
 	}
 
 	available := budget.Amount - spent

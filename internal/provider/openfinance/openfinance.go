@@ -7,40 +7,40 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 )
 
-type ListInstitutionsOptions struct {
+type InstitutionOptions struct {
 	Types  []string `json:"types,omitempty"`
 	Search string   `json:"search,omitempty"`
 }
 
-type ListInstitutionsOption func(*ListInstitutionsOptions)
+type InstitutionOption func(*InstitutionOptions)
 
-func WithInstitutionTypes(types []string) ListInstitutionsOption {
-	return func(o *ListInstitutionsOptions) {
+func WithInstitutionTypes(types []string) InstitutionOption {
+	return func(o *InstitutionOptions) {
 		o.Types = types
 	}
 }
 
-func WithInstitutionSearch(search string) ListInstitutionsOption {
-	return func(o *ListInstitutionsOptions) {
+func WithInstitutionSearch(search string) InstitutionOption {
+	return func(o *InstitutionOptions) {
 		o.Search = search
 	}
 }
 
-type ListTransactionsOptions struct {
+type TransactionOptions struct {
 	StartDate time.Time `json:"startDate,omitempty"`
 	EndDate   time.Time `json:"endDate,omitempty"`
 }
 
-type ListTransactionsOption func(*ListTransactionsOptions)
+type TransactionOption func(*TransactionOptions)
 
-func WithTransactionDateAfter(startDate time.Time) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+func WithTransactionDateAfter(startDate time.Time) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.StartDate = startDate
 	}
 }
 
-func WithTransactionDateBefore(endDate time.Time) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+func WithTransactionDateBefore(endDate time.Time) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.EndDate = endDate
 	}
 }
@@ -53,7 +53,7 @@ type Transaction struct {
 type Client interface {
 	ListInstitutions(
 		ctx context.Context,
-		options ...ListInstitutionsOption,
+		options ...InstitutionOption,
 	) ([]entity.Institution, error)
 	ListCategories(
 		ctx context.Context,
@@ -65,7 +65,7 @@ type Client interface {
 	ListTransactions(
 		ctx context.Context,
 		accountID string,
-		options ...ListTransactionsOption,
+		options ...TransactionOption,
 	) ([]Transaction, error)
 	ListAccounts(
 		ctx context.Context,

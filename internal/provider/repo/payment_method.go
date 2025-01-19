@@ -6,26 +6,26 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 )
 
-type ListPaymentMethodsOptions struct {
+type PaymentMethodOptions struct {
 	Limit  uint   `json:"-"`
 	Offset uint   `json:"-"`
 	Search string `json:"search"`
 }
 
-type ListPaymentMethodsOption func(*ListPaymentMethodsOptions)
+type PaymentMethodOption func(*PaymentMethodOptions)
 
 func WithPaymentMethodsPagination(
 	limit uint,
 	offset uint,
-) ListPaymentMethodsOption {
-	return func(o *ListPaymentMethodsOptions) {
+) PaymentMethodOption {
+	return func(o *PaymentMethodOptions) {
 		o.Limit = limit
 		o.Offset = offset
 	}
 }
 
-func WithPaymentMethodsSearch(search string) ListPaymentMethodsOption {
-	return func(o *ListPaymentMethodsOptions) {
+func WithPaymentMethodsSearch(search string) PaymentMethodOption {
+	return func(o *PaymentMethodOptions) {
 		o.Search = search
 	}
 }
@@ -33,11 +33,11 @@ func WithPaymentMethodsSearch(search string) ListPaymentMethodsOption {
 type PaymentMethodRepo interface {
 	ListPaymentMethods(
 		ctx context.Context,
-		opts ...ListPaymentMethodsOption,
+		opts ...PaymentMethodOption,
 	) ([]entity.PaymentMethod, error)
 	CountPaymentMethods(
 		ctx context.Context,
-		opts ...ListPaymentMethodsOption,
+		opts ...PaymentMethodOption,
 	) (int64, error)
 	CreatePaymentMethods(
 		ctx context.Context,

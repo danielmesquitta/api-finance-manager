@@ -16,9 +16,9 @@ import (
 
 func (qb *QueryBuilder) ListInstitutions(
 	ctx context.Context,
-	opts ...repo.ListInstitutionsOption,
+	opts ...repo.InstitutionOption,
 ) ([]entity.Institution, error) {
-	options := repo.ListInstitutionsOptions{}
+	options := repo.InstitutionOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
@@ -49,9 +49,9 @@ func (qb *QueryBuilder) ListInstitutions(
 
 func (qb *QueryBuilder) CountInstitutions(
 	ctx context.Context,
-	opts ...repo.ListInstitutionsOption,
+	opts ...repo.InstitutionOption,
 ) (int64, error) {
-	options := repo.ListInstitutionsOptions{}
+	options := repo.InstitutionOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
@@ -83,7 +83,7 @@ func (qb *QueryBuilder) CountInstitutions(
 
 func (qb *QueryBuilder) buildInstitutionJoins(
 	query *goqu.SelectDataset,
-	options repo.ListInstitutionsOptions,
+	options repo.InstitutionOptions,
 ) *goqu.SelectDataset {
 	if options.UserID != uuid.Nil {
 		query = query.Join(
@@ -98,7 +98,7 @@ func (qb *QueryBuilder) buildInstitutionJoins(
 }
 
 func (qb *QueryBuilder) buildInstitutionExpressions(
-	options repo.ListInstitutionsOptions,
+	options repo.InstitutionOptions,
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
@@ -128,7 +128,7 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 
 func (qb *QueryBuilder) buildInstitutionQuery(
 	query *goqu.SelectDataset,
-	options repo.ListInstitutionsOptions,
+	options repo.InstitutionOptions,
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
 ) *goqu.SelectDataset {

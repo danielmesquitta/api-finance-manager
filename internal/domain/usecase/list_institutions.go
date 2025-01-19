@@ -23,7 +23,7 @@ func NewListInstitutions(
 }
 
 type ListInstitutionsInput struct {
-	repo.ListInstitutionsOptions
+	repo.InstitutionOptions
 	PaginationInput
 }
 
@@ -37,7 +37,7 @@ func (uc *ListInstitutions) Execute(
 	var institutions []entity.Institution
 	var count int64
 
-	options := []repo.ListInstitutionsOption{}
+	options := []repo.InstitutionOption{}
 
 	if in.Search != "" {
 		options = append(options, repo.WithInstitutionsSearch(in.Search))

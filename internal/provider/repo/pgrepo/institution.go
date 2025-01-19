@@ -31,7 +31,7 @@ func NewInstitutionPgRepo(
 
 func (r *InstitutionPgRepo) ListInstitutions(
 	ctx context.Context,
-	opts ...repo.ListInstitutionsOption,
+	opts ...repo.InstitutionOption,
 ) ([]entity.Institution, error) {
 	institutions, err := r.qb.ListInstitutions(ctx, opts...)
 	if err != nil {
@@ -48,7 +48,7 @@ func (r *InstitutionPgRepo) ListInstitutions(
 
 func (r *InstitutionPgRepo) CountInstitutions(
 	ctx context.Context,
-	opts ...repo.ListInstitutionsOption,
+	opts ...repo.InstitutionOption,
 ) (int64, error) {
 	return r.qb.CountInstitutions(ctx, opts...)
 }

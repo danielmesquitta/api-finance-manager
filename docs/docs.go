@@ -467,18 +467,18 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "format": "date",
-                        "description": "Date",
-                        "name": "date",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "format": "uuid",
                         "description": "Category ID",
                         "name": "category_id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Date",
+                        "name": "date",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -493,6 +493,76 @@ const docTemplate = `{
                         "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/budgets/categories/{category_id}/transactions": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "List budget category transactions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Budget"
+                ],
+                "summary": "List budget category transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Category ID",
+                        "name": "category_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Date",
+                        "name": "date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ListTransactionsResponse"
                         }
                     },
                     "401": {
@@ -955,6 +1025,13 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "format": "date",
+                        "description": "Date",
+                        "name": "date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "date",
                         "description": "Start date",
                         "name": "start_date",
                         "in": "query"
@@ -1310,17 +1387,32 @@ const docTemplate = `{
         "dto.GetBudgetCategoryResponse": {
             "type": "object",
             "properties": {
+                "amount": {
+                    "type": "integer"
+                },
                 "available": {
                     "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "external_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 },
                 "spent": {
                     "type": "integer"
                 },
-                "transactions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.TransactionWithCategoryAndInstitution"
-                    }
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -1843,65 +1935,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "payment_method_id": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.TransactionWithCategoryAndInstitution": {
-            "type": "object",
-            "properties": {
-                "account_id": {
-                    "type": "string"
-                },
-                "amount": {
-                    "type": "integer"
-                },
-                "category_id": {
-                    "type": "string"
-                },
-                "category_name": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "date": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "string"
-                },
-                "external_id": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "institution_id": {
-                    "type": "string"
-                },
-                "institution_logo": {
-                    "type": "string"
-                },
-                "institution_name": {
-                    "type": "string"
-                },
-                "is_ignored": {
-                    "type": "boolean"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "payment_method_id": {
-                    "type": "string"
-                },
-                "payment_method_name": {
                     "type": "string"
                 },
                 "updated_at": {

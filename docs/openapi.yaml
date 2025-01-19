@@ -121,14 +121,24 @@ components:
             type: object
         dto.GetBudgetCategoryResponse:
             properties:
+                amount:
+                    type: integer
                 available:
                     type: integer
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                name:
+                    type: string
                 spent:
                     type: integer
-                transactions:
-                    items:
-                        $ref: '#/components/schemas/entity.TransactionWithCategoryAndInstitution'
-                    type: array
+                updated_at:
+                    type: string
             type: object
         dto.GetBudgetResponse:
             properties:
@@ -481,45 +491,6 @@ components:
                 name:
                     type: string
                 payment_method_id:
-                    type: string
-                updated_at:
-                    type: string
-                user_id:
-                    type: string
-            type: object
-        entity.TransactionWithCategoryAndInstitution:
-            properties:
-                account_id:
-                    type: string
-                amount:
-                    type: integer
-                category_id:
-                    type: string
-                category_name:
-                    type: string
-                created_at:
-                    type: string
-                date:
-                    type: string
-                deleted_at:
-                    type: string
-                external_id:
-                    type: string
-                id:
-                    type: string
-                institution_id:
-                    type: string
-                institution_logo:
-                    type: string
-                institution_name:
-                    type: string
-                is_ignored:
-                    type: boolean
-                name:
-                    type: string
-                payment_method_id:
-                    type: string
-                payment_method_name:
                     type: string
                 updated_at:
                     type: string
@@ -930,19 +901,19 @@ paths:
         get:
             description: Get budget category
             parameters:
-                - description: Date
-                  in: query
-                  name: date
-                  required: true
-                  schema:
-                    format: date
-                    type: string
                 - description: Category ID
                   in: path
                   name: category_id
                   required: true
                   schema:
                     format: uuid
+                    type: string
+                - description: Date
+                  in: query
+                  name: date
+                  required: true
+                  schema:
+                    format: date
                     type: string
             responses:
                 "200":
@@ -972,6 +943,58 @@ paths:
             security:
                 - BearerAuth: []
             summary: Get budget category
+            tags:
+                - Budget
+    /v1/budgets/categories/{category_id}/transactions:
+        get:
+            description: List budget category transactions
+            parameters:
+                - description: Category ID
+                  in: path
+                  name: category_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+                - description: Date
+                  in: query
+                  name: date
+                  required: true
+                  schema:
+                    format: date
+                    type: string
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListTransactionsResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List budget category transactions
             tags:
                 - Budget
     /v1/calculator/cash-vs-installments:
@@ -1284,6 +1307,12 @@ paths:
                   name: page_size
                   schema:
                     type: integer
+                - description: Date
+                  in: query
+                  name: date
+                  schema:
+                    format: date
+                    type: string
                 - description: Start date
                   in: query
                   name: start_date

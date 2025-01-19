@@ -135,9 +135,9 @@ const (
 func (c *Client) ListTransactions(
 	ctx context.Context,
 	accountID string,
-	options ...openfinance.ListTransactionsOption,
+	options ...openfinance.TransactionOption,
 ) ([]openfinance.Transaction, error) {
-	opts := openfinance.ListTransactionsOptions{}
+	opts := openfinance.TransactionOptions{}
 	for _, opt := range options {
 		opt(&opts)
 	}

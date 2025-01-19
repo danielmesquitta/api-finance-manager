@@ -18,9 +18,9 @@ import (
 func (qb *QueryBuilder) ListTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.ListTransactionsOption,
+	opts ...repo.TransactionOption,
 ) ([]entity.Transaction, error) {
-	options := repo.ListTransactionsOptions{}
+	options := repo.TransactionOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
@@ -50,9 +50,9 @@ func (qb *QueryBuilder) ListTransactions(
 func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.ListTransactionsOption,
+	opts ...repo.TransactionOption,
 ) ([]entity.TransactionWithCategoryAndInstitution, error) {
-	options := repo.ListTransactionsOptions{}
+	options := repo.TransactionOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
@@ -120,9 +120,9 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 func (qb *QueryBuilder) CountTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.ListTransactionsOption,
+	opts ...repo.TransactionOption,
 ) (int64, error) {
-	options := repo.ListTransactionsOptions{}
+	options := repo.TransactionOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
@@ -150,9 +150,96 @@ func (qb *QueryBuilder) CountTransactions(
 	return count, nil
 }
 
+func (qb *QueryBuilder) SumTransactions(
+	ctx context.Context,
+	userID uuid.UUID,
+	opts ...repo.TransactionOption,
+) (int64, error) {
+	options := repo.TransactionOptions{}
+	for _, opt := range opts {
+		opt(&options)
+	}
+
+	query := goqu.
+		From(TableTransaction).
+		Select(goqu.SUM(ColumnTransactionAmount)).
+		Where(goqu.Ex{ColumnTransactionDeletedAt: nil})
+
+	whereExps, _ := qb.buildTransactionExpressions(userID, options)
+
+	query = qb.buildTransactionsQuery(query, options, whereExps, nil)
+
+	sql, args, err := query.ToSQL()
+	if err != nil {
+		return 0, errs.New(err)
+	}
+
+	row := qb.db.QueryRow(ctx, sql, args...)
+	var count int64
+	if err := row.Scan(&count); err != nil {
+		return 0, errs.New(err)
+	}
+
+	return count, nil
+}
+
+func (qb *QueryBuilder) SumTransactionsByCategory(
+	ctx context.Context,
+	userID uuid.UUID,
+	opts ...repo.TransactionOption,
+) (map[uuid.UUID]int64, error) {
+	options := repo.TransactionOptions{}
+	for _, opt := range opts {
+		opt(&options)
+	}
+
+	query := goqu.
+		From(TableTransaction).
+		Select(
+			goqu.I(ColumnTransactionCategoryID),
+			goqu.SUM(ColumnTransactionAmount).As("sum"),
+		).
+		Where(goqu.Ex{ColumnTransactionDeletedAt: nil}).
+		GroupBy(goqu.I(ColumnTransactionCategoryID))
+
+	whereExps, _ := qb.buildTransactionExpressions(userID, options)
+
+	query = qb.buildTransactionsQuery(query, options, whereExps, nil)
+
+	sql, args, err := query.ToSQL()
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	rows, err := qb.db.Query(ctx, sql, args...)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+	defer rows.Close()
+
+	out := map[uuid.UUID]int64{}
+	for rows.Next() {
+		row := struct {
+			CategoryID uuid.UUID
+			Sum        int64
+		}{}
+
+		if err := rows.Scan(&row.CategoryID, &row.Sum); err != nil {
+			return nil, err
+		}
+
+		out[row.CategoryID] = row.Sum
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return out, nil
+}
+
 func (qb *QueryBuilder) buildTransactionExpressions(
 	userID uuid.UUID,
-	options repo.ListTransactionsOptions,
+	options repo.TransactionOptions,
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	whereExps = append(
 		whereExps,
@@ -238,7 +325,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 
 func (qb *QueryBuilder) buildTransactionsQuery(
 	query *goqu.SelectDataset,
-	options repo.ListTransactionsOptions,
+	options repo.TransactionOptions,
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
 ) *goqu.SelectDataset {

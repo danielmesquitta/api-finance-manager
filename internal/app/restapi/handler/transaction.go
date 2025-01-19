@@ -53,6 +53,7 @@ func (h *TransactionHandler) Sync(c echo.Context) error {
 // @Param search query string false "Search"
 // @Param page query int false "Page"
 // @Param page_size query int false "Page size"
+// @Param date query string false "Date" format(date)
 // @Param start_date query string false "Start date" format(date)
 // @Param end_date query string false "End date" format(date)
 // @Param institution_id query string false "Institution ID" format(uuid)
@@ -74,6 +75,11 @@ func (h *TransactionHandler) List(c echo.Context) error {
 	paginationIn := parsePaginationParams(c)
 
 	startDate, endDate, err := parseDateFilterParams(c)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	date, err := parseDateParam(c, queryParamDate)
 	if err != nil {
 		return errs.New(err)
 	}
@@ -110,7 +116,7 @@ func (h *TransactionHandler) List(c echo.Context) error {
 
 	in := usecase.ListTransactionsInput{
 		PaginationInput: paginationIn,
-		ListTransactionsOptions: repo.ListTransactionsOptions{
+		TransactionOptions: repo.TransactionOptions{
 			Limit:           0,
 			Offset:          0,
 			Search:          search,
@@ -123,6 +129,7 @@ func (h *TransactionHandler) List(c echo.Context) error {
 			IsIgnored:       isIgnored,
 			PaymentMethodID: paymentMethodID,
 		},
+		Date:   date,
 		UserID: userID,
 	}
 

@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type ListTransactionsOptions struct {
+type TransactionOptions struct {
 	Limit           uint      `json:"-"`
 	Offset          uint      `json:"-"`
 	Search          string    `json:"search"`
@@ -22,74 +22,74 @@ type ListTransactionsOptions struct {
 	IsIgnored       *bool     `json:"is_ignored"`
 }
 
-type ListTransactionsOption func(*ListTransactionsOptions)
+type TransactionOption func(*TransactionOptions)
 
 func WithTransactionsPagination(
 	limit uint,
 	offset uint,
-) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.Limit = limit
 		o.Offset = offset
 	}
 }
 
-func WithTransactionsSearch(search string) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+func WithTransactionsSearch(search string) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.Search = search
 	}
 }
 
-func WithTransactionDateAfter(startDate time.Time) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+func WithTransactionDateAfter(startDate time.Time) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.StartDate = startDate
 	}
 }
 
-func WithTransactionDateBefore(endDate time.Time) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+func WithTransactionDateBefore(endDate time.Time) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.EndDate = endDate
 	}
 }
 
-func WithTransactionCategory(categoryID uuid.UUID) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+func WithTransactionCategory(categoryID uuid.UUID) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.CategoryID = categoryID
 	}
 }
 
 func WithTransactionInstitution(
 	institutionID uuid.UUID,
-) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.InstitutionID = institutionID
 	}
 }
 
-func WithTransactionIsExpense(isExpense bool) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+func WithTransactionIsExpense(isExpense bool) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.IsExpense = isExpense
 	}
 }
 
-func WithTransactionIsIncome(isIncome bool) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+func WithTransactionIsIncome(isIncome bool) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.IsIncome = isIncome
 	}
 }
 
 func WithTransactionPaymentMethod(
 	paymentMethodID uuid.UUID,
-) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.PaymentMethodID = paymentMethodID
 	}
 }
 
 func WithTransactionIsIgnored(
 	isIgnored bool,
-) ListTransactionsOption {
-	return func(o *ListTransactionsOptions) {
+) TransactionOption {
+	return func(o *TransactionOptions) {
 		o.IsIgnored = &isIgnored
 	}
 }
@@ -98,18 +98,28 @@ type TransactionRepo interface {
 	ListTransactions(
 		ctx context.Context,
 		userID uuid.UUID,
-		opts ...ListTransactionsOption,
+		opts ...TransactionOption,
 	) ([]entity.Transaction, error)
 	ListTransactionsWithCategoriesAndInstitutions(
 		ctx context.Context,
 		userID uuid.UUID,
-		opts ...ListTransactionsOption,
+		opts ...TransactionOption,
 	) ([]entity.TransactionWithCategoryAndInstitution, error)
 	CountTransactions(
 		ctx context.Context,
 		userID uuid.UUID,
-		opts ...ListTransactionsOption,
+		opts ...TransactionOption,
 	) (int64, error)
+	SumTransactions(
+		ctx context.Context,
+		userID uuid.UUID,
+		opts ...TransactionOption,
+	) (int64, error)
+	SumTransactionsByCategory(
+		ctx context.Context,
+		userID uuid.UUID,
+		opts ...TransactionOption,
+	) (map[uuid.UUID]int64, error)
 	CreateTransactions(
 		ctx context.Context,
 		params []CreateTransactionsParams,

@@ -16,9 +16,9 @@ import (
 
 func (c *Client) ListInstitutions(
 	ctx context.Context,
-	options ...openfinance.ListInstitutionsOption,
+	options ...openfinance.InstitutionOption,
 ) ([]entity.Institution, error) {
-	opts := openfinance.ListInstitutionsOptions{}
+	opts := openfinance.InstitutionOptions{}
 	for _, opt := range options {
 		opt(&opts)
 	}

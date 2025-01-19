@@ -88,6 +88,36 @@ func (r *BudgetPgRepo) GetBudget(
 	return &result, nil
 }
 
+func (r *BudgetPgRepo) GetBudgetCategory(
+	ctx context.Context,
+	params repo.GetBudgetCategoryParams,
+) (*entity.BudgetCategory, *entity.Category, error) {
+	dbParams := sqlc.GetBudgetCategoryParams{}
+	if err := copier.Copy(&dbParams, params); err != nil {
+		return nil, nil, errs.New(err)
+	}
+
+	row, err := r.db.GetBudgetCategory(ctx, dbParams)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil, nil
+		}
+		return nil, nil, errs.New(err)
+	}
+
+	budgetCategory := entity.BudgetCategory{}
+	if err := copier.Copy(&budgetCategory, row.BudgetCategory); err != nil {
+		return nil, nil, errs.New(err)
+	}
+
+	category := entity.Category{}
+	if err := copier.Copy(&category, row.Category); err != nil {
+		return nil, nil, errs.New(err)
+	}
+
+	return &budgetCategory, &category, nil
+}
+
 func (r *BudgetPgRepo) CreateBudgetCategories(
 	ctx context.Context,
 	params []repo.CreateBudgetCategoriesParams,
