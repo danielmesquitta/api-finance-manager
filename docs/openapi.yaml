@@ -173,6 +173,45 @@ components:
                 user_id:
                     type: string
             type: object
+        dto.GetTransactionResponse:
+            properties:
+                account_id:
+                    type: string
+                amount:
+                    type: integer
+                category_id:
+                    type: string
+                category_name:
+                    type: string
+                created_at:
+                    type: string
+                date:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                institution_id:
+                    type: string
+                institution_logo:
+                    type: string
+                institution_name:
+                    type: string
+                is_ignored:
+                    type: boolean
+                name:
+                    type: string
+                payment_method_id:
+                    type: string
+                payment_method_name:
+                    type: string
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
         dto.HealthResponse:
             properties:
                 ok:
@@ -212,7 +251,7 @@ components:
             properties:
                 items:
                     items:
-                        $ref: '#/components/schemas/entity.Transaction'
+                        $ref: '#/components/schemas/entity.FullTransaction'
                     type: array
                 page:
                     type: integer
@@ -419,6 +458,45 @@ components:
                 updated_at:
                     type: string
             type: object
+        entity.FullTransaction:
+            properties:
+                account_id:
+                    type: string
+                amount:
+                    type: integer
+                category_id:
+                    type: string
+                category_name:
+                    type: string
+                created_at:
+                    type: string
+                date:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                institution_id:
+                    type: string
+                institution_logo:
+                    type: string
+                institution_name:
+                    type: string
+                is_ignored:
+                    type: boolean
+                name:
+                    type: string
+                payment_method_id:
+                    type: string
+                payment_method_name:
+                    type: string
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
         entity.Institution:
             properties:
                 created_at:
@@ -466,37 +544,6 @@ components:
                 - ProviderApple
                 - ProviderRefresh
                 - ProviderMock
-        entity.Transaction:
-            properties:
-                account_id:
-                    type: string
-                amount:
-                    type: integer
-                category_id:
-                    type: string
-                created_at:
-                    type: string
-                date:
-                    type: string
-                deleted_at:
-                    type: string
-                external_id:
-                    type: string
-                id:
-                    type: string
-                institution_id:
-                    type: string
-                is_ignored:
-                    type: boolean
-                name:
-                    type: string
-                payment_method_id:
-                    type: string
-                updated_at:
-                    type: string
-                user_id:
-                    type: string
-            type: object
         entity.User:
             properties:
                 avatar:
@@ -810,6 +857,12 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/dto.ErrorResponse'
                     description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
                 "500":
                     content:
                         application/json:
@@ -850,6 +903,12 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/dto.ErrorResponse'
                     description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
                 "500":
                     content:
                         application/json:
@@ -934,6 +993,12 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/dto.ErrorResponse'
                     description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
                 "500":
                     content:
                         application/json:
@@ -986,6 +1051,12 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/dto.ErrorResponse'
                     description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
                 "500":
                     content:
                         application/json:
@@ -1382,6 +1453,47 @@ paths:
             summary: List transactions
             tags:
                 - Transaction
+    /v1/transactions/{transaction_id}:
+        get:
+            description: Get transaction
+            parameters:
+                - description: Transaction ID
+                  in: path
+                  name: transaction_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.GetTransactionResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Get transaction
+            tags:
+                - Transaction
     /v1/users/institutions:
         get:
             description: List user institutions
@@ -1441,6 +1553,12 @@ paths:
                             schema:
                                 $ref: '#/components/schemas/dto.ErrorResponse'
                     description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
                 "500":
                     content:
                         application/json:

@@ -5,5 +5,9 @@ import (
 )
 
 type ListTransactionsResponse struct {
-	entity.PaginatedList[entity.Transaction]
+	entity.PaginatedList[entity.FullTransaction]
+}
+
+type GetTransactionResponse struct {
+	entity.FullTransaction
 }

@@ -95,6 +95,19 @@ func WithTransactionIsIgnored(
 }
 
 type TransactionRepo interface {
+	CountTransactions(
+		ctx context.Context,
+		userID uuid.UUID,
+		opts ...TransactionOption,
+	) (int64, error)
+	CreateTransactions(
+		ctx context.Context,
+		params []CreateTransactionsParams,
+	) error
+	GetTransaction(
+		ctx context.Context,
+		params GetTransactionParams,
+	) (*entity.FullTransaction, error)
 	ListTransactions(
 		ctx context.Context,
 		userID uuid.UUID,
@@ -104,12 +117,7 @@ type TransactionRepo interface {
 		ctx context.Context,
 		userID uuid.UUID,
 		opts ...TransactionOption,
-	) ([]entity.TransactionWithCategoryAndInstitution, error)
-	CountTransactions(
-		ctx context.Context,
-		userID uuid.UUID,
-		opts ...TransactionOption,
-	) (int64, error)
+	) ([]entity.FullTransaction, error)
 	SumTransactions(
 		ctx context.Context,
 		userID uuid.UUID,
@@ -120,8 +128,4 @@ type TransactionRepo interface {
 		userID uuid.UUID,
 		opts ...TransactionOption,
 	) (map[uuid.UUID]int64, error)
-	CreateTransactions(
-		ctx context.Context,
-		params []CreateTransactionsParams,
-	) error
 }

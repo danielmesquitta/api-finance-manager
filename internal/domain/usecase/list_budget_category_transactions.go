@@ -36,7 +36,7 @@ type ListBudgetCategoryTransactionsInput struct {
 func (uc *ListBudgetCategoryTransactions) Execute(
 	ctx context.Context,
 	in ListBudgetCategoryTransactionsInput,
-) (*entity.PaginatedList[entity.TransactionWithCategoryAndInstitution], error) {
+) (*entity.PaginatedList[entity.FullTransaction], error) {
 	if err := uc.v.Validate(in); err != nil {
 		return nil, errs.New(err)
 	}

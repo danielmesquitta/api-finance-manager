@@ -34,11 +34,11 @@ type ListTransactionsInput struct {
 func (uc *ListTransactions) Execute(
 	ctx context.Context,
 	in ListTransactionsInput,
-) (*entity.PaginatedList[entity.TransactionWithCategoryAndInstitution], error) {
+) (*entity.PaginatedList[entity.FullTransaction], error) {
 	offset := preparePaginationInput(&in.PaginationInput)
 
 	g, gCtx := errgroup.WithContext(ctx)
-	var transactions []entity.TransactionWithCategoryAndInstitution
+	var transactions []entity.FullTransaction
 	var count int64
 
 	opts := []repo.TransactionOption{}
@@ -142,7 +142,7 @@ func (uc *ListTransactions) Execute(
 		return nil, errs.New(err)
 	}
 
-	out := entity.PaginatedList[entity.TransactionWithCategoryAndInstitution]{
+	out := entity.PaginatedList[entity.FullTransaction]{
 		Items: transactions,
 	}
 

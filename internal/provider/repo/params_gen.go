@@ -75,6 +75,11 @@ type CreateTransactionsParams struct {
 	CategoryID      *uuid.UUID `json:"category_id"`
 }
 
+type GetTransactionParams struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"user_id"`
+}
+
 type CreateUserParams struct {
 	ExternalID            string      `json:"external_id"`
 	Provider              string      `json:"provider"`

@@ -2,6 +2,8 @@ package pgrepo
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
@@ -44,7 +46,7 @@ func (r *TransactionPgRepo) ListTransactionsWithCategoriesAndInstitutions(
 	ctx context.Context,
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
-) ([]entity.TransactionWithCategoryAndInstitution, error) {
+) ([]entity.FullTransaction, error) {
 	transactions, err := r.qb.
 		ListTransactionsWithCategoriesAndInstitutions(ctx, userID, opts...)
 	if err != nil {
@@ -93,6 +95,31 @@ func (r *TransactionPgRepo) CreateTransactions(
 	}
 
 	return nil
+}
+
+func (r *TransactionPgRepo) GetTransaction(
+	ctx context.Context,
+	params repo.GetTransactionParams,
+) (*entity.FullTransaction, error) {
+	dbParams := sqlc.GetTransactionParams{}
+	if err := copier.Copy(&dbParams, params); err != nil {
+		return nil, errs.New(err)
+	}
+
+	transaction, err := r.db.GetTransaction(ctx, dbParams)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, errs.New(err)
+	}
+
+	result := entity.FullTransaction{}
+	if err := copier.Copy(&result, transaction); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return &result, nil
 }
 
 var _ repo.TransactionRepo = &TransactionPgRepo{}

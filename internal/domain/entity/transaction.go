@@ -1,6 +1,6 @@
 package entity
 
-type TransactionWithCategoryAndInstitution struct {
+type FullTransaction struct {
 	Transaction
 	CategoryName      string `json:"category_name,omitempty"`
 	PaymentMethodName string `json:"payment_method_name,omitempty"`

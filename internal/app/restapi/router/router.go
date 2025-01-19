@@ -113,4 +113,5 @@ func (r *Router) Register(
 	usersApiV1.DELETE("/budgets", r.bh.Delete)
 
 	usersApiV1.GET("/transactions", r.th.List)
+	usersApiV1.GET("/transactions/:transaction_id", r.th.Get)
 }

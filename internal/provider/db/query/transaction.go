@@ -51,7 +51,7 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 	ctx context.Context,
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
-) ([]entity.TransactionWithCategoryAndInstitution, error) {
+) ([]entity.FullTransaction, error) {
 	options := repo.TransactionOptions{}
 	for _, opt := range opts {
 		opt(&options)
@@ -106,7 +106,7 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 		return nil, errs.New(err)
 	}
 
-	var transactions []entity.TransactionWithCategoryAndInstitution
+	var transactions []entity.FullTransaction
 	if err := pgxscan.Select(ctx, qb.db, &transactions, sql, args...); err != nil {
 		if err == pgx.ErrNoRows {
 			return nil, nil

@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
@@ -13,16 +14,53 @@ import (
 type TransactionHandler struct {
 	sa *usecase.SyncTransactions
 	lt *usecase.ListTransactions
+	gt *usecase.GetTransaction
 }
 
 func NewTransactionHandler(
 	sa *usecase.SyncTransactions,
 	lt *usecase.ListTransactions,
+	gt *usecase.GetTransaction,
 ) *TransactionHandler {
 	return &TransactionHandler{
 		sa: sa,
 		lt: lt,
+		gt: gt,
 	}
+}
+
+// @Summary Get transaction
+// @Description Get transaction
+// @Tags Transaction
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param transaction_id path string true "Transaction ID" format(uuid)
+// @Success 200 {object} dto.GetTransactionResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/transactions/{transaction_id} [get]
+func (h TransactionHandler) Get(c echo.Context) error {
+	claims := getUserClaims(c)
+	userID := uuid.MustParse(claims.Issuer)
+
+	transactionID := uuid.MustParse(c.Param(pathParamTransactionID))
+
+	in := usecase.GetTransactionInput{
+		TransactionID: transactionID,
+		UserID:        userID,
+	}
+
+	ctx := c.Request().Context()
+	transaction, err := h.gt.Execute(ctx, in)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return c.JSON(http.StatusOK, dto.GetTransactionResponse{
+		FullTransaction: *transaction,
+	})
 }
 
 // @Summary Sync transactions from open finance

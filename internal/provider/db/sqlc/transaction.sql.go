@@ -6,9 +6,11 @@
 package sqlc
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type CreateTransactionsParams struct {
@@ -21,4 +23,71 @@ type CreateTransactionsParams struct {
 	AccountID       *uuid.UUID `json:"account_id"`
 	InstitutionID   *uuid.UUID `json:"institution_id"`
 	CategoryID      *uuid.UUID `json:"category_id"`
+}
+
+const getTransaction = `-- name: GetTransaction :one
+SELECT transactions.id, transactions.external_id, transactions.name, transactions.amount, transactions.is_ignored, transactions.date, transactions.created_at, transactions.updated_at, transactions.deleted_at, transactions.payment_method_id, transactions.user_id, transactions.account_id, transactions.institution_id, transactions.category_id,
+  categories.name as category_name,
+  institutions.name as institution_name,
+  institutions.logo as institution_logo,
+  payment_methods.name as payment_method_name
+FROM transactions
+  LEFT JOIN categories ON transactions.category_id = categories.id
+  LEFT JOIN institutions ON transactions.institution_id = institutions.id
+  LEFT JOIN payment_methods ON transactions.payment_method_id = payment_methods.id
+WHERE transactions.id = $1
+  AND user_id = $2
+  AND transactions.deleted_at IS NULL
+`
+
+type GetTransactionParams struct {
+	ID     uuid.UUID `json:"id"`
+	UserID uuid.UUID `json:"user_id"`
+}
+
+type GetTransactionRow struct {
+	ID                uuid.UUID   `json:"id"`
+	ExternalID        string      `json:"external_id"`
+	Name              string      `json:"name"`
+	Amount            int64       `json:"amount"`
+	IsIgnored         bool        `json:"is_ignored"`
+	Date              time.Time   `json:"date"`
+	CreatedAt         time.Time   `json:"created_at"`
+	UpdatedAt         time.Time   `json:"updated_at"`
+	DeletedAt         *time.Time  `json:"deleted_at"`
+	PaymentMethodID   uuid.UUID   `json:"payment_method_id"`
+	UserID            uuid.UUID   `json:"user_id"`
+	AccountID         *uuid.UUID  `json:"account_id"`
+	InstitutionID     *uuid.UUID  `json:"institution_id"`
+	CategoryID        *uuid.UUID  `json:"category_id"`
+	CategoryName      pgtype.Text `json:"category_name"`
+	InstitutionName   pgtype.Text `json:"institution_name"`
+	InstitutionLogo   pgtype.Text `json:"institution_logo"`
+	PaymentMethodName pgtype.Text `json:"payment_method_name"`
+}
+
+func (q *Queries) GetTransaction(ctx context.Context, arg GetTransactionParams) (GetTransactionRow, error) {
+	row := q.db.QueryRow(ctx, getTransaction, arg.ID, arg.UserID)
+	var i GetTransactionRow
+	err := row.Scan(
+		&i.ID,
+		&i.ExternalID,
+		&i.Name,
+		&i.Amount,
+		&i.IsIgnored,
+		&i.Date,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+		&i.PaymentMethodID,
+		&i.UserID,
+		&i.AccountID,
+		&i.InstitutionID,
+		&i.CategoryID,
+		&i.CategoryName,
+		&i.InstitutionName,
+		&i.InstitutionLogo,
+		&i.PaymentMethodName,
+	)
+	return i, err
 }

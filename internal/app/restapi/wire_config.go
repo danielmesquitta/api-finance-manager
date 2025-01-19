@@ -81,6 +81,7 @@ var providers = []any{
 	usecase.NewListInstitutions,
 	usecase.NewGetBudgetCategory,
 	usecase.NewListBudgetCategoryTransactions,
+	usecase.NewGetTransaction,
 
 	handler.NewAuthHandler,
 	handler.NewHealthHandler,

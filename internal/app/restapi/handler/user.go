@@ -30,6 +30,7 @@ func NewUserHandler(
 // @Produce json
 // @Success 200 {object} dto.UserProfileResponse
 // @Failure 401 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/users/profile [get]
 func (h UserHandler) Profile(c echo.Context) error {

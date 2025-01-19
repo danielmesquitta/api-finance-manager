@@ -77,6 +77,7 @@ func (h BudgetHandler) Upsert(c echo.Context) error {
 // @Success 200 {object} dto.GetBudgetResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets [get]
 func (h BudgetHandler) Get(c echo.Context) error {
@@ -110,6 +111,7 @@ func (h BudgetHandler) Get(c echo.Context) error {
 // @Success 200 {object} dto.GetBudgetCategoryResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets/categories/{category_id} [get]
 func (h BudgetHandler) GetCategory(c echo.Context) error {
@@ -146,6 +148,7 @@ func (h BudgetHandler) GetCategory(c echo.Context) error {
 // @Param date query string true "Date" format(date)
 // @Success 200 {object} dto.ListTransactionsResponse
 // @Failure 401 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets/categories/{category_id}/transactions [get]
 func (h *BudgetHandler) ListCategoryTransactions(c echo.Context) error {
@@ -186,6 +189,7 @@ func (h *BudgetHandler) ListCategoryTransactions(c echo.Context) error {
 // @Success 204
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets [delete]
 func (h BudgetHandler) Delete(c echo.Context) error {
