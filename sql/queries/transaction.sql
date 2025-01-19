@@ -11,6 +11,18 @@ INSERT INTO transactions (
     category_id
   )
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+-- name: UpdateTransaction :exec
+UPDATE transactions
+SET name = $2,
+  amount = $3,
+  payment_method_id = $4,
+  date = $5,
+  account_id = $6,
+  institution_id = $7,
+  category_id = $8
+WHERE id = $1
+  AND user_id = $9
+  AND deleted_at IS NULL;
 -- name: GetTransaction :one
 SELECT transactions.*,
   categories.name as category_name,

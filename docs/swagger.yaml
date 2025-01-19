@@ -400,6 +400,27 @@ definitions:
     - executionStatus
     - id
     type: object
+  dto.UpdateTransactionRequest:
+    properties:
+      account_id:
+        type: string
+      amount:
+        type: integer
+      category_id:
+        type: string
+      date:
+        type: string
+      id:
+        type: string
+      institution_id:
+        type: string
+      name:
+        type: string
+      payment_method_id:
+        type: string
+    required:
+    - id
+    type: object
   dto.UpsertBudgetRequest:
     properties:
       amount:
@@ -1392,6 +1413,45 @@ paths:
       security:
       - BearerAuth: []
       summary: Get transaction
+      tags:
+      - Transaction
+    put:
+      consumes:
+      - application/json
+      description: Update transaction
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateTransactionRequest'
+      - description: Transaction ID
+        format: uuid
+        in: path
+        name: transaction_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update transaction
       tags:
       - Transaction
   /v1/users/institutions:

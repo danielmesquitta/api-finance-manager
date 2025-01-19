@@ -114,4 +114,5 @@ func (r *Router) Register(
 
 	usersApiV1.GET("/transactions", r.th.List)
 	usersApiV1.GET("/transactions/:transaction_id", r.th.Get)
+	usersApiV1.PUT("/transactions/:transaction_id", r.th.Update)
 }

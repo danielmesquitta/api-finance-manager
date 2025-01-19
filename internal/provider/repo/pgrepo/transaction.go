@@ -122,4 +122,17 @@ func (r *TransactionPgRepo) GetTransaction(
 	return &result, nil
 }
 
+func (r *TransactionPgRepo) UpdateTransaction(
+	ctx context.Context,
+	params repo.UpdateTransactionParams,
+) error {
+	dbParams := sqlc.UpdateTransactionParams{}
+	if err := copier.Copy(&dbParams, params); err != nil {
+		return errs.New(err)
+	}
+
+	tx := r.db.UseTx(ctx)
+	return tx.UpdateTransaction(ctx, dbParams)
+}
+
 var _ repo.TransactionRepo = &TransactionPgRepo{}

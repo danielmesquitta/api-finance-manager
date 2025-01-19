@@ -128,4 +128,8 @@ type TransactionRepo interface {
 		userID uuid.UUID,
 		opts ...TransactionOption,
 	) (map[uuid.UUID]int64, error)
+	UpdateTransaction(
+		ctx context.Context,
+		params UpdateTransactionParams,
+	) error
 }

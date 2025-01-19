@@ -74,7 +74,8 @@ func NewDev(v *validator.Validator, e *config.Env) *App {
 	paymentMethodPgRepo := pgrepo.NewPaymentMethodPgRepo(dbDB, queryBuilder)
 	syncTransactions := usecase.NewSyncTransactions(v, mockpluggyClient, pgxTX, userPgRepo, transactionPgRepo, categoryPgRepo, paymentMethodPgRepo)
 	getTransaction := usecase.NewGetTransaction(transactionPgRepo)
-	transactionHandler := handler.NewTransactionHandler(syncTransactions, listTransactions, getTransaction)
+	updateTransaction := usecase.NewUpdateTransaction(v, transactionPgRepo)
+	transactionHandler := handler.NewTransactionHandler(syncTransactions, listTransactions, getTransaction, updateTransaction)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler)
 	app := newApp(middlewareMiddleware, routerRouter)
 	return app
@@ -127,7 +128,8 @@ func NewProd(v *validator.Validator, e *config.Env) *App {
 	paymentMethodPgRepo := pgrepo.NewPaymentMethodPgRepo(dbDB, queryBuilder)
 	syncTransactions := usecase.NewSyncTransactions(v, client, pgxTX, userPgRepo, transactionPgRepo, categoryPgRepo, paymentMethodPgRepo)
 	getTransaction := usecase.NewGetTransaction(transactionPgRepo)
-	transactionHandler := handler.NewTransactionHandler(syncTransactions, listTransactions, getTransaction)
+	updateTransaction := usecase.NewUpdateTransaction(v, transactionPgRepo)
+	transactionHandler := handler.NewTransactionHandler(syncTransactions, listTransactions, getTransaction, updateTransaction)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler)
 	app := newApp(middlewareMiddleware, routerRouter)
 	return app

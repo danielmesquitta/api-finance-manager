@@ -91,3 +91,44 @@ func (q *Queries) GetTransaction(ctx context.Context, arg GetTransactionParams) 
 	)
 	return i, err
 }
+
+const updateTransaction = `-- name: UpdateTransaction :exec
+UPDATE transactions
+SET name = $2,
+  amount = $3,
+  payment_method_id = $4,
+  date = $5,
+  account_id = $6,
+  institution_id = $7,
+  category_id = $8
+WHERE id = $1
+  AND user_id = $9
+  AND deleted_at IS NULL
+`
+
+type UpdateTransactionParams struct {
+	ID              uuid.UUID  `json:"id"`
+	Name            string     `json:"name"`
+	Amount          int64      `json:"amount"`
+	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
+	Date            time.Time  `json:"date"`
+	AccountID       *uuid.UUID `json:"account_id"`
+	InstitutionID   *uuid.UUID `json:"institution_id"`
+	CategoryID      *uuid.UUID `json:"category_id"`
+	UserID          uuid.UUID  `json:"user_id"`
+}
+
+func (q *Queries) UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) error {
+	_, err := q.db.Exec(ctx, updateTransaction,
+		arg.ID,
+		arg.Name,
+		arg.Amount,
+		arg.PaymentMethodID,
+		arg.Date,
+		arg.AccountID,
+		arg.InstitutionID,
+		arg.CategoryID,
+		arg.UserID,
+	)
+	return err
+}

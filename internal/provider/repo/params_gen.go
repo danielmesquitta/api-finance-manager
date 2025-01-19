@@ -80,6 +80,18 @@ type GetTransactionParams struct {
 	UserID uuid.UUID `json:"user_id"`
 }
 
+type UpdateTransactionParams struct {
+	ID              uuid.UUID  `json:"id"`
+	Name            string     `json:"name"`
+	Amount          int64      `json:"amount"`
+	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
+	Date            time.Time  `json:"date"`
+	AccountID       *uuid.UUID `json:"account_id"`
+	InstitutionID   *uuid.UUID `json:"institution_id"`
+	CategoryID      *uuid.UUID `json:"category_id"`
+	UserID          uuid.UUID  `json:"user_id"`
+}
+
 type CreateUserParams struct {
 	ExternalID            string      `json:"external_id"`
 	Provider              string      `json:"provider"`

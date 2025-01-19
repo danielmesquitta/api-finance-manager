@@ -15,17 +15,20 @@ type TransactionHandler struct {
 	sa *usecase.SyncTransactions
 	lt *usecase.ListTransactions
 	gt *usecase.GetTransaction
+	ut *usecase.UpdateTransaction
 }
 
 func NewTransactionHandler(
 	sa *usecase.SyncTransactions,
 	lt *usecase.ListTransactions,
 	gt *usecase.GetTransaction,
+	ut *usecase.UpdateTransaction,
 ) *TransactionHandler {
 	return &TransactionHandler{
 		sa: sa,
 		lt: lt,
 		gt: gt,
+		ut: ut,
 	}
 }
 
@@ -178,4 +181,36 @@ func (h *TransactionHandler) List(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, res)
+}
+
+// @Summary Update transaction
+// @Description Update transaction
+// @Tags Transaction
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param request body dto.UpdateTransactionRequest true "Request body"
+// @Param transaction_id path string true "Transaction ID" format(uuid)
+// @Success 204
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/transactions/{transaction_id} [put]
+func (h TransactionHandler) Update(c echo.Context) error {
+	claims := getUserClaims(c)
+	userID := uuid.MustParse(claims.Issuer)
+
+	transactionID := uuid.MustParse(c.Param(pathParamTransactionID))
+
+	in := usecase.UpdateTransactionInput{
+		ID:     transactionID,
+		UserID: userID,
+	}
+
+	ctx := c.Request().Context()
+	if err := h.ut.Execute(ctx, in); err != nil {
+		return errs.New(err)
+	}
+
+	return c.NoContent(http.StatusNoContent)
 }
