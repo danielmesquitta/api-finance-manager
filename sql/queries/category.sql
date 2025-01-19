@@ -2,6 +2,11 @@
 SELECT *
 FROM categories
 WHERE deleted_at IS NULL;
+-- name: CountCategoriesByIDs :one
+SELECT COUNT(*)
+FROM categories
+WHERE id = ANY(sqlc.arg(ids)::uuid [])
+  AND deleted_at IS NULL;
 -- name: ListCategoriesByExternalIDs :many
 SELECT *
 FROM categories

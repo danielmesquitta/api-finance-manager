@@ -321,7 +321,8 @@ const docTemplate = `{
                         "format": "date",
                         "description": "Date",
                         "name": "date",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -423,6 +424,70 @@ const docTemplate = `{
                 "responses": {
                     "204": {
                         "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/budgets/categories/{category_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Get budget category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Budget"
+                ],
+                "summary": "Get budget category",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Date",
+                        "name": "date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Category ID",
+                        "name": "category_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetBudgetCategoryResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1242,6 +1307,23 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.GetBudgetCategoryResponse": {
+            "type": "object",
+            "properties": {
+                "available": {
+                    "type": "integer"
+                },
+                "spent": {
+                    "type": "integer"
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.TransactionWithCategoryAndInstitution"
+                    }
+                }
+            }
+        },
         "dto.GetBudgetResponse": {
             "type": "object",
             "properties": {
@@ -1263,7 +1345,7 @@ const docTemplate = `{
                 "budget_categories": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/usecase.GetBudgetCategoryOutput"
+                        "$ref": "#/definitions/usecase.GetBudgetBudgetCategories"
                     }
                 },
                 "comparison_date": {
@@ -1771,6 +1853,65 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.TransactionWithCategoryAndInstitution": {
+            "type": "object",
+            "properties": {
+                "account_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "integer"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "external_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "institution_id": {
+                    "type": "string"
+                },
+                "institution_logo": {
+                    "type": "string"
+                },
+                "institution_name": {
+                    "type": "string"
+                },
+                "is_ignored": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "payment_method_id": {
+                    "type": "string"
+                },
+                "payment_method_name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.User": {
             "type": "object",
             "properties": {
@@ -1843,7 +1984,7 @@ const docTemplate = `{
                 }
             }
         },
-        "usecase.GetBudgetCategoryOutput": {
+        "usecase.GetBudgetBudgetCategories": {
             "type": "object",
             "properties": {
                 "amount": {

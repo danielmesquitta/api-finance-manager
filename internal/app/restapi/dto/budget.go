@@ -11,3 +11,7 @@ type UpsertBudgetRequest struct {
 type GetBudgetResponse struct {
 	usecase.GetBudgetOutput
 }
+
+type GetBudgetCategoryResponse struct {
+	usecase.GetBudgetCategoryOutput
+}

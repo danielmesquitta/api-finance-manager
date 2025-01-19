@@ -22,7 +22,15 @@ const (
 	ErrTypeValidation   Type = "validation_error"
 )
 
-func newErr(err any, t Type) *Err {
+// NewErr creates a new Err instance from either an error or a string,
+// and sets the Type flag to unknown. This is useful when you want to
+// create an error that is not expected to happen, and you want to
+// log it with stack tracing.
+func New(err any) *Err {
+	return NewWithType(err, ErrTypeUnknown)
+}
+
+func NewWithType(err any, t Type) *Err {
 	if err == nil {
 		return nil
 	}
@@ -62,71 +70,8 @@ func newErr(err any, t Type) *Err {
 	}
 }
 
-// NewErr creates a new Err instance from either an error or a string,
-// and sets the Type flag to unknown. This is useful when you want to
-// create an error that is not expected to happen, and you want to
-// log it with stack tracing.
-func New(err any) *Err {
-	return newErr(err, ErrTypeUnknown)
-}
-
-func NewWithType(err any, t Type) *Err {
-	return newErr(err, t)
-}
-
 func (e *Err) Error() string {
 	return e.Message
 }
-
-var (
-	ErrUserNotFound = newErr(
-		"Usuário não encontrado",
-		ErrTypeNotFound,
-	)
-	ErrUnauthorized = newErr(
-		"Usuário não autorizado",
-		ErrTypeUnauthorized,
-	)
-	ErrSubscriptionExpired = newErr(
-		"Assinatura expirada",
-		ErrTypeUnauthorized,
-	)
-	ErrAccountsAlreadyRegistered = newErr(
-		"Essa conta já está registrada",
-		ErrTypeForbidden,
-	)
-	ErrInvalidRetirementAge = newErr(
-		"Sua idade atual deve ser menor que a idade da aposentadoria",
-		ErrTypeValidation,
-	)
-	ErrInvalidLifeExpectance = newErr(
-		"Sua expectativa de vida deve ser maior que 0",
-		ErrTypeValidation,
-	)
-	ErrInvalidCompoundInterestInput = newErr(
-		"Pelo menos um dos valores de depósito inicial e mensal deve ser diferente de 0",
-		ErrTypeValidation,
-	)
-	ErrInvalidTotalBudgetCategoryAmount = newErr(
-		"O valor total das categorias do orçamento deve ser menor ou igual ao valor do orçamento",
-		ErrTypeValidation,
-	)
-	ErrBudgetNotFound = newErr(
-		"Você não possui um orçamento cadastrado",
-		ErrTypeNotFound,
-	)
-	ErrInvalidDate = newErr(
-		`Data inválida, utilize uma data no formato "2006-01-02T15:04:05+07:00"`,
-		ErrTypeValidation,
-	)
-	ErrInvalidUUID = newErr(
-		`Utilize um UUID no formato "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"`,
-		ErrTypeValidation,
-	)
-	ErrInvalidBool = newErr(
-		`Utilize um valor verdadeiro ou falso (1, t, T, TRUE, true, True, 0, f, F, FALSE, false, False)`,
-		ErrTypeValidation,
-	)
-)
 
 var _ error = (*Err)(nil)

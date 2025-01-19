@@ -119,6 +119,17 @@ components:
                 message:
                     type: string
             type: object
+        dto.GetBudgetCategoryResponse:
+            properties:
+                available:
+                    type: integer
+                spent:
+                    type: integer
+                transactions:
+                    items:
+                        $ref: '#/components/schemas/entity.TransactionWithCategoryAndInstitution'
+                    type: array
+            type: object
         dto.GetBudgetResponse:
             properties:
                 amount:
@@ -133,7 +144,7 @@ components:
                     type: integer
                 budget_categories:
                     items:
-                        $ref: '#/components/schemas/usecase.GetBudgetCategoryOutput'
+                        $ref: '#/components/schemas/usecase.GetBudgetBudgetCategories'
                     type: array
                 comparison_date:
                     type: string
@@ -476,6 +487,45 @@ components:
                 user_id:
                     type: string
             type: object
+        entity.TransactionWithCategoryAndInstitution:
+            properties:
+                account_id:
+                    type: string
+                amount:
+                    type: integer
+                category_id:
+                    type: string
+                category_name:
+                    type: string
+                created_at:
+                    type: string
+                date:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                institution_id:
+                    type: string
+                institution_logo:
+                    type: string
+                institution_name:
+                    type: string
+                is_ignored:
+                    type: boolean
+                name:
+                    type: string
+                payment_method_id:
+                    type: string
+                payment_method_name:
+                    type: string
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
         entity.User:
             properties:
                 avatar:
@@ -523,7 +573,7 @@ components:
                 total_interest:
                     type: integer
             type: object
-        usecase.GetBudgetCategoryOutput:
+        usecase.GetBudgetBudgetCategories:
             properties:
                 amount:
                     type: integer
@@ -806,6 +856,7 @@ paths:
                 - description: Date
                   in: query
                   name: date
+                  required: true
                   schema:
                     format: date
                     type: string
@@ -873,6 +924,54 @@ paths:
             security:
                 - BearerAuth: []
             summary: Create or update budget
+            tags:
+                - Budget
+    /v1/budgets/categories/{category_id}:
+        get:
+            description: Get budget category
+            parameters:
+                - description: Date
+                  in: query
+                  name: date
+                  required: true
+                  schema:
+                    format: date
+                    type: string
+                - description: Category ID
+                  in: path
+                  name: category_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.GetBudgetCategoryResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Get budget category
             tags:
                 - Budget
     /v1/calculator/cash-vs-installments:

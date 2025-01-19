@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
+	"github.com/google/uuid"
 )
 
 type ListCategoriesOptions struct {
@@ -36,6 +37,7 @@ type CategoryRepo interface {
 		ctx context.Context,
 		opts ...ListCategoriesOption,
 	) (int64, error)
+	CountCategoriesByIDs(ctx context.Context, ids []uuid.UUID) (int64, error)
 	CreateCategories(
 		ctx context.Context,
 		params []CreateCategoriesParams,

@@ -7,7 +7,23 @@ package sqlc
 
 import (
 	"context"
+
+	"github.com/google/uuid"
 )
+
+const countCategoriesByIDs = `-- name: CountCategoriesByIDs :one
+SELECT COUNT(*)
+FROM categories
+WHERE id = ANY($1::uuid [])
+  AND deleted_at IS NULL
+`
+
+func (q *Queries) CountCategoriesByIDs(ctx context.Context, ids []uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countCategoriesByIDs, ids)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
 
 type CreateCategoriesParams struct {
 	ExternalID string `json:"external_id"`

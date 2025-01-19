@@ -18,6 +18,7 @@ const (
 	queryParamSearch          QueryParam = "search"
 	queryParamPage            QueryParam = "page"
 	queryParamPageSize        QueryParam = "page_size"
+	queryParamDate            QueryParam = "date"
 	queryParamStartDate       QueryParam = "start_date"
 	queryParamEndDate         QueryParam = "end_date"
 	queryParamInstitutionID   QueryParam = "institution_id"
@@ -26,6 +27,12 @@ const (
 	queryParamIsIncome        QueryParam = "is_income"
 	queryParamIsIgnored       QueryParam = "is_ignored"
 	queryParamPaymentMethodID QueryParam = "payment_method_id"
+)
+
+type PathParam = string
+
+const (
+	pathParamCategoryID PathParam = "category_id"
 )
 
 func parsePaginationParams(

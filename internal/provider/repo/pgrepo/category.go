@@ -9,6 +9,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
+	"github.com/google/uuid"
 
 	"github.com/jinzhu/copier"
 )
@@ -45,6 +46,13 @@ func (r *CategoryPgRepo) CountCategories(
 	opts ...repo.ListCategoriesOption,
 ) (int64, error) {
 	return r.qb.CountCategories(ctx, opts...)
+}
+
+func (r *CategoryPgRepo) CountCategoriesByIDs(
+	ctx context.Context,
+	ids []uuid.UUID,
+) (int64, error) {
+	return r.db.CountCategoriesByIDs(ctx, ids)
 }
 
 func (r *CategoryPgRepo) CreateCategories(

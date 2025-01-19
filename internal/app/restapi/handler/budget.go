@@ -11,20 +11,23 @@ import (
 )
 
 type BudgetHandler struct {
-	ub *usecase.UpsertBudget
-	gb *usecase.GetBudget
-	db *usecase.DeleteBudget
+	ub  *usecase.UpsertBudget
+	gb  *usecase.GetBudget
+	gbc *usecase.GetBudgetCategory
+	db  *usecase.DeleteBudget
 }
 
 func NewBudgetHandler(
 	ub *usecase.UpsertBudget,
 	gb *usecase.GetBudget,
+	gbc *usecase.GetBudgetCategory,
 	db *usecase.DeleteBudget,
 ) *BudgetHandler {
 	return &BudgetHandler{
-		ub: ub,
-		gb: gb,
-		db: db,
+		ub:  ub,
+		gb:  gb,
+		gbc: gbc,
+		db:  db,
 	}
 }
 
@@ -67,7 +70,7 @@ func (h BudgetHandler) Upsert(c echo.Context) error {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param date query string false "Date" format(date)
+// @Param date query string true "Date" format(date)
 // @Success 200 {object} dto.GetBudgetResponse
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -77,7 +80,7 @@ func (h BudgetHandler) Get(c echo.Context) error {
 	claims := getUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	date := c.QueryParam("date")
+	date := c.QueryParam(queryParamDate)
 
 	ctx := c.Request().Context()
 	out, err := h.gb.Execute(ctx, usecase.GetBudgetInput{
@@ -90,6 +93,41 @@ func (h BudgetHandler) Get(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, dto.GetBudgetResponse{
 		GetBudgetOutput: *out,
+	})
+}
+
+// @Summary Get budget category
+// @Description Get budget category
+// @Tags Budget
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param date query string true "Date" format(date)
+// @Param category_id path string true "Category ID" format(uuid)
+// @Success 200 {object} dto.GetBudgetCategoryResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/budgets/categories/{category_id} [get]
+func (h BudgetHandler) GetCategory(c echo.Context) error {
+	claims := getUserClaims(c)
+	userID := uuid.MustParse(claims.Issuer)
+
+	date := c.QueryParam(queryParamDate)
+	categoryID := uuid.MustParse(c.Param(pathParamCategoryID))
+
+	ctx := c.Request().Context()
+	out, err := h.gbc.Execute(ctx, usecase.GetBudgetCategoryInput{
+		UserID:     userID,
+		Date:       date,
+		CategoryID: categoryID,
+	})
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return c.JSON(http.StatusOK, dto.GetBudgetCategoryResponse{
+		GetBudgetCategoryOutput: *out,
 	})
 }
 

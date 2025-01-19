@@ -36,7 +36,7 @@ type GetBudgetInput struct {
 	Date   string    `json:"date" validate:"required"`
 }
 
-type GetBudgetCategoryOutput struct {
+type GetBudgetBudgetCategories struct {
 	entity.BudgetCategory
 	Spent     int64           `json:"spent"`
 	Available int64           `json:"available"`
@@ -45,13 +45,13 @@ type GetBudgetCategoryOutput struct {
 
 type GetBudgetOutput struct {
 	entity.Budget
-	Spent                              int64                     `json:"spent"`
-	Available                          int64                     `json:"available"`
-	AvailablePercentageVariation       int64                     `json:"available_percentage_variation"`
-	AvailablePerDay                    int64                     `json:"available_per_day,omitempty"`
-	AvailablePerDayPercentageVariation int64                     `json:"available_per_day_percentage_variation,omitempty"`
-	ComparisonDate                     time.Time                 `json:"comparison_date"`
-	BudgetCategories                   []GetBudgetCategoryOutput `json:"budget_categories"`
+	Spent                              int64                       `json:"spent"`
+	Available                          int64                       `json:"available"`
+	AvailablePercentageVariation       int64                       `json:"available_percentage_variation"`
+	AvailablePerDay                    int64                       `json:"available_per_day,omitempty"`
+	AvailablePerDayPercentageVariation int64                       `json:"available_per_day_percentage_variation,omitempty"`
+	ComparisonDate                     time.Time                   `json:"comparison_date"`
+	BudgetCategories                   []GetBudgetBudgetCategories `json:"budget_categories"`
 }
 
 func (uc *GetBudget) Execute(
@@ -195,7 +195,7 @@ func (uc *GetBudget) Execute(
 		AvailablePerDay:                    availablePerDay,
 		AvailablePerDayPercentageVariation: availablePerDayPercentageVariation,
 		ComparisonDate:                     comparisonDate,
-		BudgetCategories:                   []GetBudgetCategoryOutput{},
+		BudgetCategories:                   []GetBudgetBudgetCategories{},
 	}
 
 	categoriesByID := map[uuid.UUID]entity.Category{}
@@ -210,7 +210,7 @@ func (uc *GetBudget) Execute(
 
 		out.BudgetCategories = append(
 			out.BudgetCategories,
-			GetBudgetCategoryOutput{
+			GetBudgetBudgetCategories{
 				Spent:          spent,
 				Available:      available,
 				BudgetCategory: budgetCategory,

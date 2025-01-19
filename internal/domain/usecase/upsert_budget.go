@@ -4,28 +4,33 @@ import (
 	"context"
 	"time"
 
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
+	"golang.org/x/sync/errgroup"
 )
 
 type UpsertBudget struct {
 	v  *validator.Validator
 	tx tx.TX
 	br repo.BudgetRepo
+	cr repo.CategoryRepo
 }
 
 func NewUpsertBudget(
 	v *validator.Validator,
 	tx tx.TX,
 	br repo.BudgetRepo,
+	cr repo.CategoryRepo,
 ) *UpsertBudget {
 	return &UpsertBudget{
 		v:  v,
 		tx: tx,
 		br: br,
+		cr: cr,
 	}
 }
 
@@ -56,12 +61,40 @@ func (u *UpsertBudget) Execute(
 
 	monthStart := toMonthStart(date)
 
-	budget, err := u.br.GetBudget(ctx, repo.GetBudgetParams{
-		UserID: in.UserID,
-		Date:   monthStart,
+	categoryIDs := []uuid.UUID{}
+	for _, c := range in.Categories {
+		categoryIDs = append(categoryIDs, c.CategoryID)
+	}
+
+	g, gCtx := errgroup.WithContext(ctx)
+	var budget *entity.Budget
+	var categoriesCount int64
+
+	g.Go(func() error {
+		budget, err = u.br.GetBudget(gCtx, repo.GetBudgetParams{
+			UserID: in.UserID,
+			Date:   monthStart,
+		})
+		if err != nil {
+			return errs.New(err)
+		}
+		return nil
 	})
-	if err != nil {
+
+	g.Go(func() error {
+		categoriesCount, err = u.cr.CountCategoriesByIDs(gCtx, categoryIDs)
+		if err != nil {
+			return errs.New(err)
+		}
+		return nil
+	})
+
+	if err := g.Wait(); err != nil {
 		return errs.New(err)
+	}
+
+	if categoriesCount != int64(len(in.Categories)) {
+		return errs.ErrCategoriesNotFound
 	}
 
 	err = u.tx.Do(ctx, func(ctx context.Context) error {

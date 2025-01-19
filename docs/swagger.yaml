@@ -119,6 +119,17 @@ definitions:
       message:
         type: string
     type: object
+  dto.GetBudgetCategoryResponse:
+    properties:
+      available:
+        type: integer
+      spent:
+        type: integer
+      transactions:
+        items:
+          $ref: '#/definitions/entity.TransactionWithCategoryAndInstitution'
+        type: array
+    type: object
   dto.GetBudgetResponse:
     properties:
       amount:
@@ -133,7 +144,7 @@ definitions:
         type: integer
       budget_categories:
         items:
-          $ref: '#/definitions/usecase.GetBudgetCategoryOutput'
+          $ref: '#/definitions/usecase.GetBudgetBudgetCategories'
         type: array
       comparison_date:
         type: string
@@ -476,6 +487,45 @@ definitions:
       user_id:
         type: string
     type: object
+  entity.TransactionWithCategoryAndInstitution:
+    properties:
+      account_id:
+        type: string
+      amount:
+        type: integer
+      category_id:
+        type: string
+      category_name:
+        type: string
+      created_at:
+        type: string
+      date:
+        type: string
+      deleted_at:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      institution_id:
+        type: string
+      institution_logo:
+        type: string
+      institution_name:
+        type: string
+      is_ignored:
+        type: boolean
+      name:
+        type: string
+      payment_method_id:
+        type: string
+      payment_method_name:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
   entity.User:
     properties:
       avatar:
@@ -523,7 +573,7 @@ definitions:
       total_interest:
         type: integer
     type: object
-  usecase.GetBudgetCategoryOutput:
+  usecase.GetBudgetBudgetCategories:
     properties:
       amount:
         type: integer
@@ -791,6 +841,7 @@ paths:
         format: date
         in: query
         name: date
+        required: true
         type: string
       produces:
       - application/json
@@ -847,6 +898,48 @@ paths:
       security:
       - BearerAuth: []
       summary: Create or update budget
+      tags:
+      - Budget
+  /v1/budgets/categories/{category_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get budget category
+      parameters:
+      - description: Date
+        format: date
+        in: query
+        name: date
+        required: true
+        type: string
+      - description: Category ID
+        format: uuid
+        in: path
+        name: category_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetBudgetCategoryResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get budget category
       tags:
       - Budget
   /v1/calculator/cash-vs-installments:
