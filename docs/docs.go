@@ -1055,20 +1055,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "format": "date",
-                        "description": "Start date",
-                        "name": "start_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "format": "date",
-                        "description": "End date",
-                        "name": "end_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
                         "format": "uuid",
                         "description": "Institution ID",
                         "name": "institution_id",
@@ -1586,8 +1572,8 @@ const docTemplate = `{
                         "$ref": "#/definitions/usecase.GetBudgetBudgetCategories"
                     }
                 },
-                "comparison_date": {
-                    "type": "string"
+                "comparison_dates": {
+                    "$ref": "#/definitions/usecase.ComparisonDates"
                 },
                 "created_at": {
                     "type": "string"
@@ -2246,6 +2232,32 @@ const docTemplate = `{
                 },
                 "credit_card": {
                     "type": "integer"
+                }
+            }
+        },
+        "usecase.ComparisonDates": {
+            "type": "object",
+            "properties": {
+                "current_month_comparison_end_date": {
+                    "type": "string"
+                },
+                "current_month_end_date": {
+                    "type": "string"
+                },
+                "current_month_start_date": {
+                    "type": "string"
+                },
+                "is_current_month": {
+                    "type": "boolean"
+                },
+                "previous_month_comparison_end_date": {
+                    "type": "string"
+                },
+                "previous_month_end_date": {
+                    "type": "string"
+                },
+                "previous_month_start_date": {
+                    "type": "string"
                 }
             }
         },

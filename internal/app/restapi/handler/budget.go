@@ -84,7 +84,10 @@ func (h BudgetHandler) Get(c echo.Context) error {
 	claims := getUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	date := c.QueryParam(queryParamDate)
+	date, err := parseDateParam(c, queryParamDate)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	ctx := c.Request().Context()
 	out, err := h.gb.Execute(ctx, usecase.GetBudgetInput{

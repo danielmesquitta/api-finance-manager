@@ -33,8 +33,8 @@ func NewGetBudget(
 
 type GetBudgetInput struct {
 	PaginationInput
-	UserID uuid.UUID `json:"-"    validate:"required"`
-	Date   string    `json:"date" validate:"required"`
+	UserID uuid.UUID `json:"user_id" validate:"required"`
+	Date   time.Time `json:"date"    validate:"required"`
 }
 
 type GetBudgetBudgetCategories struct {
@@ -51,7 +51,7 @@ type GetBudgetOutput struct {
 	AvailablePercentageVariation       int64                       `json:"available_percentage_variation"`
 	AvailablePerDay                    int64                       `json:"available_per_day,omitempty"`
 	AvailablePerDayPercentageVariation int64                       `json:"available_per_day_percentage_variation,omitempty"`
-	ComparisonDate                     time.Time                   `json:"comparison_date"`
+	ComparisonDates                    ComparisonDates             `json:"comparison_dates"`
 	BudgetCategories                   []GetBudgetBudgetCategories `json:"budget_categories"`
 }
 
@@ -63,30 +63,11 @@ func (uc *GetBudget) Execute(
 		return nil, errs.New(err)
 	}
 
-	date, err := time.Parse(time.RFC3339, in.Date)
-	if err != nil {
-		return nil, errs.ErrInvalidDate
-	}
-
-	now := time.Now()
-	isCurrentMonth := date.Year() == now.Year() && date.Month() == now.Month()
-
-	monthStart := toMonthStart(date)
-	monthEnd := toMonthEnd(date)
-	monthSameDayAsToday := toMonthDay(monthStart, now.Day())
-
-	previousMonthStart := monthStart.AddDate(0, -1, 0)
-	previousMonthEnd := toMonthEnd(previousMonthStart)
-	previousMonthSameDayAsToday := toMonthDay(previousMonthStart, now.Day())
-
-	comparisonDate := previousMonthEnd
-	if isCurrentMonth {
-		comparisonDate = previousMonthSameDayAsToday
-	}
+	comparisonDates := calculateComparisonDates(in.Date)
 
 	budget, err := uc.br.GetBudget(ctx, repo.GetBudgetParams{
 		UserID: in.UserID,
-		Date:   monthStart,
+		Date:   comparisonDates.MonthStart,
 	})
 	if err != nil {
 		return nil, errs.New(err)
@@ -117,8 +98,10 @@ func (uc *GetBudget) Execute(
 	g.Go(func() error {
 		opts := append(
 			baseTransactionOpts,
-			repo.WithTransactionDateAfter(monthStart),
-			repo.WithTransactionDateBefore(monthEnd),
+			repo.WithTransactionDateAfter(comparisonDates.MonthStart),
+			repo.WithTransactionDateBefore(
+				comparisonDates.MonthComparisonEndDate,
+			),
 		)
 		spentByCategoryID, err = uc.tr.SumTransactionsByCategory(
 			gCtx,
@@ -131,8 +114,10 @@ func (uc *GetBudget) Execute(
 	g.Go(func() error {
 		opts := append(
 			baseTransactionOpts,
-			repo.WithTransactionIsIgnored(false),
-			repo.WithTransactionIsExpense(true),
+			repo.WithTransactionDateAfter(comparisonDates.PreviousMonthStart),
+			repo.WithTransactionDateBefore(
+				comparisonDates.PreviousMonthComparisonEndDate,
+			),
 		)
 		spentPreviousMonth, err = uc.tr.SumTransactions(
 			gCtx,
@@ -165,17 +150,17 @@ func (uc *GetBudget) Execute(
 	)
 
 	var availablePerDay, availablePerDayPercentageVariation int64
-	if isCurrentMonth {
+	if comparisonDates.IsCurrentMonth {
 		availablePerDay = uc.calculateAvailablePerDay(
 			available,
-			monthEnd,
-			monthSameDayAsToday.Day(),
+			comparisonDates.MonthEnd,
+			comparisonDates.MonthComparisonEndDate.Day(),
 		)
 
 		availablePreviousMonthPerDay := uc.calculateAvailablePerDay(
 			availablePreviousMonth,
-			previousMonthEnd,
-			previousMonthSameDayAsToday.Day(),
+			comparisonDates.PreviousMonthEnd,
+			comparisonDates.PreviousMonthComparisonEndDate.Day(),
 		)
 
 		availablePerDayPercentageVariation = money.FromPercentage(
@@ -190,7 +175,7 @@ func (uc *GetBudget) Execute(
 		AvailablePercentageVariation:       availablePercentageVariation,
 		AvailablePerDay:                    availablePerDay,
 		AvailablePerDayPercentageVariation: availablePerDayPercentageVariation,
-		ComparisonDate:                     comparisonDate,
+		ComparisonDates:                    *comparisonDates,
 		BudgetCategories:                   []GetBudgetBudgetCategories{},
 	}
 

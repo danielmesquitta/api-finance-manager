@@ -104,3 +104,43 @@ func getStartOfDay(date time.Time) time.Time {
 
 	return startOfDay
 }
+
+func calculateComparisonDates(date time.Time) *ComparisonDates {
+	now := time.Now()
+	isCurrentMonth := date.Year() == now.Year() && date.Month() == now.Month()
+
+	MonthStart := toMonthStart(date)
+	MonthEnd := toMonthEnd(date)
+	currentMonthSameDayAsToday := toMonthDay(MonthStart, now.Day())
+
+	previousMonthStartDate := MonthStart.AddDate(0, -1, 0)
+	previousMonthEndDate := toMonthEnd(previousMonthStartDate)
+	previousMonthSameDayAsToday := toMonthDay(previousMonthStartDate, now.Day())
+
+	monthComparisonEndDate := MonthEnd
+	previousMonthComparisonEndDate := previousMonthEndDate
+	if isCurrentMonth {
+		monthComparisonEndDate = currentMonthSameDayAsToday
+		previousMonthComparisonEndDate = previousMonthSameDayAsToday
+	}
+
+	return &ComparisonDates{
+		IsCurrentMonth:                 isCurrentMonth,
+		MonthStart:                     MonthStart,
+		MonthEnd:                       MonthEnd,
+		MonthComparisonEndDate:         monthComparisonEndDate,
+		PreviousMonthStart:             previousMonthStartDate,
+		PreviousMonthEnd:               previousMonthEndDate,
+		PreviousMonthComparisonEndDate: previousMonthComparisonEndDate,
+	}
+}
+
+type ComparisonDates struct {
+	IsCurrentMonth                 bool      `json:"is_current_month,omitempty"`
+	MonthStart                     time.Time `json:"current_month_start_date,omitempty"`
+	MonthEnd                       time.Time `json:"current_month_end_date,omitempty"`
+	MonthComparisonEndDate         time.Time `json:"current_month_comparison_end_date,omitempty"`
+	PreviousMonthStart             time.Time `json:"previous_month_start_date,omitempty"`
+	PreviousMonthEnd               time.Time `json:"previous_month_end_date,omitempty"`
+	PreviousMonthComparisonEndDate time.Time `json:"previous_month_comparison_end_date,omitempty"`
+}

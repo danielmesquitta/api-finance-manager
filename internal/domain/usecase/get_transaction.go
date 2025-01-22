@@ -23,8 +23,8 @@ func NewGetTransaction(
 }
 
 type GetTransactionInput struct {
-	UserID        uuid.UUID
-	TransactionID uuid.UUID
+	UserID        uuid.UUID `json:"user_id"`
+	TransactionID uuid.UUID `json:"transaction_id"`
 }
 
 func (uc *GetTransaction) Execute(

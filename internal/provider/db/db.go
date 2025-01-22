@@ -35,7 +35,7 @@ type DB struct {
 	*pgxpool.Pool
 }
 
-func NewQueries(pool *pgxpool.Pool) *DB {
+func NewDB(pool *pgxpool.Pool) *DB {
 	return &DB{
 		Queries: sqlc.New(pool),
 		Pool:    pool,

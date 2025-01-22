@@ -1,6 +1,3 @@
-linters-settings:
-  govet:
-    shadow: true
 linters:
   enable:
     - goconst

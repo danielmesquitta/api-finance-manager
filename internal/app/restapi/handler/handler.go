@@ -54,29 +54,6 @@ func parsePaginationParams(
 	}
 }
 
-func parseDateFilterParams(
-	c echo.Context,
-) (startDate time.Time, endDate time.Time, err error) {
-	startDateStr := c.QueryParam(queryParamStartDate)
-
-	if startDateStr != "" {
-		startDate, err = time.Parse(time.RFC3339, startDateStr)
-		if err != nil {
-			return time.Time{}, time.Time{}, errs.ErrInvalidDate
-		}
-	}
-
-	endDateStr := c.QueryParam(queryParamEndDate)
-	if endDateStr != "" {
-		endDate, err = time.Parse(time.RFC3339, endDateStr)
-		if err != nil {
-			return time.Time{}, time.Time{}, errs.ErrInvalidDate
-		}
-	}
-
-	return startDate, endDate, nil
-}
-
 func parseDateParam(
 	c echo.Context,
 	param QueryParam,

@@ -9,8 +9,8 @@ import (
 )
 
 type TransactionOptions struct {
-	Limit           uint      `json:"-"`
-	Offset          uint      `json:"-"`
+	Limit           uint      `json:"limit"`
+	Offset          uint      `json:"offset"`
 	Search          string    `json:"search"`
 	StartDate       time.Time `json:"start_date"`
 	EndDate         time.Time `json:"end_date"`

@@ -233,8 +233,8 @@
                         },
                         "type": "array"
                     },
-                    "comparison_date": {
-                        "type": "string"
+                    "comparison_dates": {
+                        "$ref": "#/components/schemas/usecase.ComparisonDates"
                     },
                     "created_at": {
                         "type": "string"
@@ -893,6 +893,32 @@
                     },
                     "credit_card": {
                         "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "usecase.ComparisonDates": {
+                "properties": {
+                    "current_month_comparison_end_date": {
+                        "type": "string"
+                    },
+                    "current_month_end_date": {
+                        "type": "string"
+                    },
+                    "current_month_start_date": {
+                        "type": "string"
+                    },
+                    "is_current_month": {
+                        "type": "boolean"
+                    },
+                    "previous_month_comparison_end_date": {
+                        "type": "string"
+                    },
+                    "previous_month_end_date": {
+                        "type": "string"
+                    },
+                    "previous_month_start_date": {
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -2209,24 +2235,6 @@
                         "description": "Date",
                         "in": "query",
                         "name": "date",
-                        "schema": {
-                            "format": "date",
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Start date",
-                        "in": "query",
-                        "name": "start_date",
-                        "schema": {
-                            "format": "date",
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "End date",
-                        "in": "query",
-                        "name": "end_date",
                         "schema": {
                             "format": "date",
                             "type": "string"

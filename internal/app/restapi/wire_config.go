@@ -34,8 +34,8 @@ var providers = []any{
 	pluggy.NewClient,
 
 	db.NewPGXPool,
-	db.NewQueries,
 	query.NewQueryBuilder,
+	db.NewDB,
 
 	wire.Bind(new(tx.TX), new(*tx.PgxTX)),
 	tx.NewPgxTX,

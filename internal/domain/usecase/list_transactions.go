@@ -8,18 +8,22 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
 )
 
 type ListTransactions struct {
+	v  *validator.Validator
 	tr repo.TransactionRepo
 }
 
 func NewListTransactions(
+	v *validator.Validator,
 	tr repo.TransactionRepo,
 ) *ListTransactions {
 	return &ListTransactions{
+		v:  v,
 		tr: tr,
 	}
 }
@@ -27,14 +31,18 @@ func NewListTransactions(
 type ListTransactionsInput struct {
 	PaginationInput
 	repo.TransactionOptions
-	Date   time.Time `json:"-"`
-	UserID uuid.UUID `json:"-"`
+	Date   time.Time `json:"date"    validate:"required"`
+	UserID uuid.UUID `json:"user_id" validate:"required"`
 }
 
 func (uc *ListTransactions) Execute(
 	ctx context.Context,
 	in ListTransactionsInput,
 ) (*entity.PaginatedList[entity.FullTransaction], error) {
+	if err := uc.v.Validate(in); err != nil {
+		return nil, errs.New(err)
+	}
+
 	offset := preparePaginationInput(&in.PaginationInput)
 
 	g, gCtx := errgroup.WithContext(ctx)
