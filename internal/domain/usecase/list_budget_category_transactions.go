@@ -41,6 +41,8 @@ func (uc *ListBudgetCategoryTransactions) Execute(
 		return nil, errs.New(err)
 	}
 
+	isIgnored := false
+
 	transactions, err := uc.lt.Execute(ctx, ListTransactionsInput{
 		PaginationInput: in.PaginationInput,
 		Date:            in.Date,
@@ -48,6 +50,7 @@ func (uc *ListBudgetCategoryTransactions) Execute(
 		TransactionOptions: repo.TransactionOptions{
 			CategoryID: in.CategoryID,
 			IsExpense:  true,
+			IsIgnored:  &isIgnored,
 		},
 	})
 	if err != nil {
