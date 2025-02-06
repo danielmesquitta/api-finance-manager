@@ -19,9 +19,9 @@ type categoriesResult struct {
 	DescriptionTranslated string  `json:"descriptionTranslated"`
 }
 
-func (c *Client) ListCategories(
+func (c *Client) ListTransactionCategories(
 	ctx context.Context,
-) ([]entity.Category, error) {
+) ([]entity.TransactionCategory, error) {
 	if err := c.refreshAccessToken(ctx); err != nil {
 		return nil, errs.New(err)
 	}
@@ -37,28 +37,28 @@ func (c *Client) ListCategories(
 		return nil, errs.New(body)
 	}
 
-	categories := categoriesResponse{}
-	if err := json.Unmarshal(body, &categories); err != nil {
+	categoriesRes := categoriesResponse{}
+	if err := json.Unmarshal(body, &categoriesRes); err != nil {
 		return nil, errs.New(err)
 	}
 
-	var institutions []entity.Category
-	for _, connector := range categories.Results {
+	var categories []entity.TransactionCategory
+	for _, connector := range categoriesRes.Results {
 		if connector.ParentID != nil {
 			continue
 		}
-		institutions = append(institutions, entity.Category{
+		categories = append(categories, entity.TransactionCategory{
 			ExternalID: connector.ID,
 			Name:       connector.DescriptionTranslated,
 		})
 	}
 
-	return institutions, nil
+	return categories, nil
 }
 
 func (c *Client) GetParentCategoryExternalID(
 	externalCategoryID string,
-	categoriesByExternalID map[string]entity.Category,
+	categoriesByExternalID map[string]entity.TransactionCategory,
 ) (string, bool) {
 	defaultCategory := "99999999"
 	if externalCategoryID == "" {

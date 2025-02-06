@@ -39,7 +39,7 @@ type GetBudgetCategoryInput struct {
 }
 
 type GetBudgetCategoryOutput struct {
-	entity.Category
+	entity.TransactionCategory
 	Amount    int64 `json:"amount"`
 	Spent     int64 `json:"spent"`
 	Available int64 `json:"available"`
@@ -96,10 +96,10 @@ func (uc *GetBudgetCategory) Execute(
 	available := amount - spent
 
 	out := GetBudgetCategoryOutput{
-		Category:  *category,
-		Amount:    budgetCategory.Amount,
-		Spent:     spent,
-		Available: available,
+		TransactionCategory: *category,
+		Amount:              budgetCategory.Amount,
+		Spent:               spent,
+		Available:           available,
 	}
 
 	return &out, nil

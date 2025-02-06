@@ -84,8 +84,8 @@ func (r *Router) Register(
 
 	adminApiV1 := apiV1.Group("/admin", r.m.BasicAuth)
 	adminApiV1.POST("/institutions/sync", r.ih.Sync)
-	adminApiV1.POST("/categories/sync", r.cth.Sync)
 	adminApiV1.POST("/accounts/sync", r.ach.Sync)
+	adminApiV1.POST("/transactions/categories/sync", r.cth.Sync)
 	adminApiV1.POST("/transactions/sync", r.th.Sync)
 
 	usersApiV1 := apiV1.Group("", r.m.BearerAuthAccessToken())
@@ -98,14 +98,17 @@ func (r *Router) Register(
 	usersApiV1.POST("/calculator/simple-interest", r.ch.SimpleInterest)
 	usersApiV1.POST("/calculator/cash-vs-installments", r.ch.CashVsInstallments)
 
-	usersApiV1.GET("/categories", r.cth.List)
+	usersApiV1.GET("/transactions/categories", r.cth.List)
 
 	usersApiV1.GET("/institutions", r.ih.List)
 	usersApiV1.GET("/users/institutions", r.ih.ListUserInstitutions)
 
 	usersApiV1.POST("/budgets", r.bh.Upsert)
 	usersApiV1.GET("/budgets", r.bh.Get)
-	usersApiV1.GET("/budgets/categories/:category_id", r.bh.GetCategory)
+	usersApiV1.GET(
+		"/budgets/categories/:category_id",
+		r.bh.GetTransactionCategory,
+	)
 	usersApiV1.GET(
 		"/budgets/categories/:category_id/transactions",
 		r.bh.ListCategoryTransactions,

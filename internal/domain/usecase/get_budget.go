@@ -39,9 +39,9 @@ type GetBudgetInput struct {
 
 type GetBudgetBudgetCategories struct {
 	entity.BudgetCategory
-	Spent     int64           `json:"spent"`
-	Available int64           `json:"available"`
-	Category  entity.Category `json:"category,omitempty"`
+	Spent     int64                      `json:"spent"`
+	Available int64                      `json:"available"`
+	Category  entity.TransactionCategory `json:"category,omitempty"`
 }
 
 type GetBudgetOutput struct {
@@ -78,7 +78,7 @@ func (uc *GetBudget) Execute(
 
 	g, gCtx := errgroup.WithContext(ctx)
 	var budgetCategories []entity.BudgetCategory
-	var categories []entity.Category
+	var categories []entity.TransactionCategory
 	var spentPreviousMonth int64
 	var spentByCategoryID map[uuid.UUID]int64
 
@@ -179,7 +179,7 @@ func (uc *GetBudget) Execute(
 		BudgetCategories:                   []GetBudgetBudgetCategories{},
 	}
 
-	categoriesByID := map[uuid.UUID]entity.Category{}
+	categoriesByID := map[uuid.UUID]entity.TransactionCategory{}
 	for _, category := range categories {
 		categoriesByID[category.ID] = category
 	}

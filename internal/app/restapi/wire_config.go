@@ -69,7 +69,7 @@ var providers = []any{
 	usecase.NewCalculateSimpleInterest,
 	usecase.NewSyncInstitutions,
 	usecase.NewSyncCategories,
-	usecase.NewListCategories,
+	usecase.NewListTransactionCategories,
 	usecase.NewUpsertBudget,
 	usecase.NewGetBudget,
 	usecase.NewDeleteBudget,

@@ -24,7 +24,7 @@ type TransactionOptions struct {
 
 type TransactionOption func(*TransactionOptions)
 
-func WithTransactionsPagination(
+func WithTransactionPagination(
 	limit uint,
 	offset uint,
 ) TransactionOption {
@@ -34,7 +34,7 @@ func WithTransactionsPagination(
 	}
 }
 
-func WithTransactionsSearch(search string) TransactionOption {
+func WithTransactionSearch(search string) TransactionOption {
 	return func(o *TransactionOptions) {
 		o.Search = search
 	}

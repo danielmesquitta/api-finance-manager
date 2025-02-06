@@ -2,134 +2,460 @@
 
 package query
 
-type Table = string
+import "fmt"
 
-const (
-	TableAccount        Table = "accounts"
-	TableBudget         Table = "budgets"
-	TableBudgetCategory Table = "budget_categories"
-	TableCategory       Table = "categories"
-	TableInstitution    Table = "institutions"
-	TableInvestment     Table = "investments"
-	TablePaymentMethod  Table = "payment_methods"
-	TableTransaction    Table = "transactions"
-	TableUser           Table = "users"
-)
+type TableAccount string
 
-type Column = string
+func (t TableAccount) String() string {
+	return string(t)
+}
 
-// Columns for table Account
-const (
-	ColumnAccountCreatedAt     Column = "accounts.created_at"
-	ColumnAccountDeletedAt     Column = "accounts.deleted_at"
-	ColumnAccountExternalID    Column = "accounts.external_id"
-	ColumnAccountID            Column = "accounts.id"
-	ColumnAccountInstitutionID Column = "accounts.institution_id"
-	ColumnAccountName          Column = "accounts.name"
-	ColumnAccountType          Column = "accounts.type"
-	ColumnAccountUpdatedAt     Column = "accounts.updated_at"
-	ColumnAccountUserID        Column = "accounts.user_id"
-)
+func (t TableAccount) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
+}
 
-// Columns for table Budget
-const (
-	ColumnBudgetAmount    Column = "budgets.amount"
-	ColumnBudgetCreatedAt Column = "budgets.created_at"
-	ColumnBudgetDate      Column = "budgets.date"
-	ColumnBudgetDeletedAt Column = "budgets.deleted_at"
-	ColumnBudgetID        Column = "budgets.id"
-	ColumnBudgetUpdatedAt Column = "budgets.updated_at"
-	ColumnBudgetUserID    Column = "budgets.user_id"
-)
+func (t TableAccount) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
 
-// Columns for table BudgetCategory
-const (
-	ColumnBudgetCategoryAmount     Column = "budget_categories.amount"
-	ColumnBudgetCategoryBudgetID   Column = "budget_categories.budget_id"
-	ColumnBudgetCategoryCategoryID Column = "budget_categories.category_id"
-	ColumnBudgetCategoryCreatedAt  Column = "budget_categories.created_at"
-	ColumnBudgetCategoryDeletedAt  Column = "budget_categories.deleted_at"
-	ColumnBudgetCategoryID         Column = "budget_categories.id"
-	ColumnBudgetCategoryUpdatedAt  Column = "budget_categories.updated_at"
-)
+func (t TableAccount) ColumnUserID() string {
+	return fmt.Sprintf("%s.user_id", t)
+}
 
-// Columns for table Category
-const (
-	ColumnCategoryCreatedAt  Column = "categories.created_at"
-	ColumnCategoryDeletedAt  Column = "categories.deleted_at"
-	ColumnCategoryExternalID Column = "categories.external_id"
-	ColumnCategoryID         Column = "categories.id"
-	ColumnCategoryName       Column = "categories.name"
-	ColumnCategoryUpdatedAt  Column = "categories.updated_at"
-)
+func (t TableAccount) ColumnInstitutionID() string {
+	return fmt.Sprintf("%s.institution_id", t)
+}
 
-// Columns for table Institution
-const (
-	ColumnInstitutionCreatedAt  Column = "institutions.created_at"
-	ColumnInstitutionDeletedAt  Column = "institutions.deleted_at"
-	ColumnInstitutionExternalID Column = "institutions.external_id"
-	ColumnInstitutionID         Column = "institutions.id"
-	ColumnInstitutionLogo       Column = "institutions.logo"
-	ColumnInstitutionName       Column = "institutions.name"
-	ColumnInstitutionUpdatedAt  Column = "institutions.updated_at"
-)
+func (t TableAccount) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
 
-// Columns for table Investment
-const (
-	ColumnInvestmentAmount     Column = "investments.amount"
-	ColumnInvestmentCreatedAt  Column = "investments.created_at"
-	ColumnInvestmentDeletedAt  Column = "investments.deleted_at"
-	ColumnInvestmentExternalID Column = "investments.external_id"
-	ColumnInvestmentID         Column = "investments.id"
-	ColumnInvestmentName       Column = "investments.name"
-	ColumnInvestmentRate       Column = "investments.rate"
-	ColumnInvestmentRateType   Column = "investments.rateType"
-	ColumnInvestmentType       Column = "investments.type"
-	ColumnInvestmentUpdatedAt  Column = "investments.updated_at"
-	ColumnInvestmentUserID     Column = "investments.user_id"
-)
+func (t TableAccount) ColumnType() string {
+	return fmt.Sprintf("%s.type", t)
+}
 
-// Columns for table PaymentMethod
-const (
-	ColumnPaymentMethodCreatedAt  Column = "payment_methods.created_at"
-	ColumnPaymentMethodDeletedAt  Column = "payment_methods.deleted_at"
-	ColumnPaymentMethodExternalID Column = "payment_methods.external_id"
-	ColumnPaymentMethodID         Column = "payment_methods.id"
-	ColumnPaymentMethodName       Column = "payment_methods.name"
-	ColumnPaymentMethodUpdatedAt  Column = "payment_methods.updated_at"
-)
+func (t TableAccount) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
 
-// Columns for table Transaction
-const (
-	ColumnTransactionAccountID       Column = "transactions.account_id"
-	ColumnTransactionAmount          Column = "transactions.amount"
-	ColumnTransactionCategoryID      Column = "transactions.category_id"
-	ColumnTransactionCreatedAt       Column = "transactions.created_at"
-	ColumnTransactionDate            Column = "transactions.date"
-	ColumnTransactionDeletedAt       Column = "transactions.deleted_at"
-	ColumnTransactionExternalID      Column = "transactions.external_id"
-	ColumnTransactionID              Column = "transactions.id"
-	ColumnTransactionInstitutionID   Column = "transactions.institution_id"
-	ColumnTransactionIsIgnored       Column = "transactions.is_ignored"
-	ColumnTransactionName            Column = "transactions.name"
-	ColumnTransactionPaymentMethodID Column = "transactions.payment_method_id"
-	ColumnTransactionUpdatedAt       Column = "transactions.updated_at"
-	ColumnTransactionUserID          Column = "transactions.user_id"
-)
+func (t TableAccount) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
 
-// Columns for table User
-const (
-	ColumnUserAvatar                Column = "users.avatar"
-	ColumnUserCreatedAt             Column = "users.created_at"
-	ColumnUserDeletedAt             Column = "users.deleted_at"
-	ColumnUserEmail                 Column = "users.email"
-	ColumnUserExternalID            Column = "users.external_id"
-	ColumnUserID                    Column = "users.id"
-	ColumnUserName                  Column = "users.name"
-	ColumnUserProvider              Column = "users.provider"
-	ColumnUserSubscriptionExpiresAt Column = "users.subscription_expires_at"
-	ColumnUserSynchronizedAt        Column = "users.synchronized_at"
-	ColumnUserTier                  Column = "users.tier"
-	ColumnUserUpdatedAt             Column = "users.updated_at"
-	ColumnUserVerifiedEmail         Column = "users.verified_email"
-)
+func (t TableAccount) ColumnName() string {
+	return fmt.Sprintf("%s.name", t)
+}
+
+const tableAccount = TableAccount("accounts")
+
+type TableAccountBalance string
+
+func (t TableAccountBalance) String() string {
+	return string(t)
+}
+
+func (t TableAccountBalance) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t TableAccountBalance) ColumnAmount() string {
+	return fmt.Sprintf("%s.amount", t)
+}
+
+func (t TableAccountBalance) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
+
+func (t TableAccountBalance) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
+func (t TableAccountBalance) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t TableAccountBalance) ColumnAccountID() string {
+	return fmt.Sprintf("%s.account_id", t)
+}
+
+const tableAccountBalance = TableAccountBalance("account_balances")
+
+type TableBudget string
+
+func (t TableBudget) String() string {
+	return string(t)
+}
+
+func (t TableBudget) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
+func (t TableBudget) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t TableBudget) ColumnUserID() string {
+	return fmt.Sprintf("%s.user_id", t)
+}
+
+func (t TableBudget) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t TableBudget) ColumnAmount() string {
+	return fmt.Sprintf("%s.amount", t)
+}
+
+func (t TableBudget) ColumnDate() string {
+	return fmt.Sprintf("%s.date", t)
+}
+
+func (t TableBudget) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
+
+const tableBudget = TableBudget("budgets")
+
+type TableBudgetCategory string
+
+func (t TableBudgetCategory) String() string {
+	return string(t)
+}
+
+func (t TableBudgetCategory) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
+
+func (t TableBudgetCategory) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
+func (t TableBudgetCategory) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t TableBudgetCategory) ColumnBudgetID() string {
+	return fmt.Sprintf("%s.budget_id", t)
+}
+
+func (t TableBudgetCategory) ColumnCategoryID() string {
+	return fmt.Sprintf("%s.category_id", t)
+}
+
+func (t TableBudgetCategory) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t TableBudgetCategory) ColumnAmount() string {
+	return fmt.Sprintf("%s.amount", t)
+}
+
+const tableBudgetCategory = TableBudgetCategory("budget_categories")
+
+type TableInstitution string
+
+func (t TableInstitution) String() string {
+	return string(t)
+}
+
+func (t TableInstitution) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t TableInstitution) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
+}
+
+func (t TableInstitution) ColumnName() string {
+	return fmt.Sprintf("%s.name", t)
+}
+
+func (t TableInstitution) ColumnLogo() string {
+	return fmt.Sprintf("%s.logo", t)
+}
+
+func (t TableInstitution) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
+
+func (t TableInstitution) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
+func (t TableInstitution) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+const tableInstitution = TableInstitution("institutions")
+
+type TableInvestment string
+
+func (t TableInvestment) String() string {
+	return string(t)
+}
+
+func (t TableInvestment) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t TableInvestment) ColumnRate() string {
+	return fmt.Sprintf("%s.rate", t)
+}
+
+func (t TableInvestment) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
+
+func (t TableInvestment) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
+func (t TableInvestment) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t TableInvestment) ColumnUserID() string {
+	return fmt.Sprintf("%s.user_id", t)
+}
+
+func (t TableInvestment) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
+}
+
+func (t TableInvestment) ColumnName() string {
+	return fmt.Sprintf("%s.name", t)
+}
+
+func (t TableInvestment) ColumnAmount() string {
+	return fmt.Sprintf("%s.amount", t)
+}
+
+func (t TableInvestment) ColumnRateType() string {
+	return fmt.Sprintf("%s.rateType", t)
+}
+
+func (t TableInvestment) ColumnCategoryID() string {
+	return fmt.Sprintf("%s.category_id", t)
+}
+
+const tableInvestment = TableInvestment("investments")
+
+type TableInvestmentCategory string
+
+func (t TableInvestmentCategory) String() string {
+	return string(t)
+}
+
+func (t TableInvestmentCategory) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
+
+func (t TableInvestmentCategory) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
+func (t TableInvestmentCategory) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t TableInvestmentCategory) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t TableInvestmentCategory) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
+}
+
+func (t TableInvestmentCategory) ColumnName() string {
+	return fmt.Sprintf("%s.name", t)
+}
+
+const tableInvestmentCategory = TableInvestmentCategory("investment_categories")
+
+type TablePaymentMethod string
+
+func (t TablePaymentMethod) String() string {
+	return string(t)
+}
+
+func (t TablePaymentMethod) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
+func (t TablePaymentMethod) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t TablePaymentMethod) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t TablePaymentMethod) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
+}
+
+func (t TablePaymentMethod) ColumnName() string {
+	return fmt.Sprintf("%s.name", t)
+}
+
+func (t TablePaymentMethod) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
+
+const tablePaymentMethod = TablePaymentMethod("payment_methods")
+
+type TableTransaction string
+
+func (t TableTransaction) String() string {
+	return string(t)
+}
+
+func (t TableTransaction) ColumnIsIgnored() string {
+	return fmt.Sprintf("%s.is_ignored", t)
+}
+
+func (t TableTransaction) ColumnInstitutionID() string {
+	return fmt.Sprintf("%s.institution_id", t)
+}
+
+func (t TableTransaction) ColumnAmount() string {
+	return fmt.Sprintf("%s.amount", t)
+}
+
+func (t TableTransaction) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
+func (t TableTransaction) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t TableTransaction) ColumnUserID() string {
+	return fmt.Sprintf("%s.user_id", t)
+}
+
+func (t TableTransaction) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t TableTransaction) ColumnDate() string {
+	return fmt.Sprintf("%s.date", t)
+}
+
+func (t TableTransaction) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
+
+func (t TableTransaction) ColumnPaymentMethodID() string {
+	return fmt.Sprintf("%s.payment_method_id", t)
+}
+
+func (t TableTransaction) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
+}
+
+func (t TableTransaction) ColumnName() string {
+	return fmt.Sprintf("%s.name", t)
+}
+
+func (t TableTransaction) ColumnAccountID() string {
+	return fmt.Sprintf("%s.account_id", t)
+}
+
+func (t TableTransaction) ColumnCategoryID() string {
+	return fmt.Sprintf("%s.category_id", t)
+}
+
+const tableTransaction = TableTransaction("transactions")
+
+type TableTransactionCategory string
+
+func (t TableTransactionCategory) String() string {
+	return string(t)
+}
+
+func (t TableTransactionCategory) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
+func (t TableTransactionCategory) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t TableTransactionCategory) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t TableTransactionCategory) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
+}
+
+func (t TableTransactionCategory) ColumnName() string {
+	return fmt.Sprintf("%s.name", t)
+}
+
+func (t TableTransactionCategory) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
+
+const tableTransactionCategory = TableTransactionCategory("transaction_categories")
+
+type TableUser string
+
+func (t TableUser) String() string {
+	return string(t)
+}
+
+func (t TableUser) ColumnEmail() string {
+	return fmt.Sprintf("%s.email", t)
+}
+
+func (t TableUser) ColumnVerifiedEmail() string {
+	return fmt.Sprintf("%s.verified_email", t)
+}
+
+func (t TableUser) ColumnSubscriptionExpiresAt() string {
+	return fmt.Sprintf("%s.subscription_expires_at", t)
+}
+
+func (t TableUser) ColumnSynchronizedAt() string {
+	return fmt.Sprintf("%s.synchronized_at", t)
+}
+
+func (t TableUser) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
+func (t TableUser) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t TableUser) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
+}
+
+func (t TableUser) ColumnProvider() string {
+	return fmt.Sprintf("%s.provider", t)
+}
+
+func (t TableUser) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
+}
+
+func (t TableUser) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t TableUser) ColumnName() string {
+	return fmt.Sprintf("%s.name", t)
+}
+
+func (t TableUser) ColumnTier() string {
+	return fmt.Sprintf("%s.tier", t)
+}
+
+func (t TableUser) ColumnAvatar() string {
+	return fmt.Sprintf("%s.avatar", t)
+}
+
+const tableUser = TableUser("users")

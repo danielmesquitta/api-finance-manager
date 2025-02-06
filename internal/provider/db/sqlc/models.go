@@ -23,6 +23,15 @@ type Account struct {
 	InstitutionID uuid.UUID  `json:"institution_id"`
 }
 
+type AccountBalance struct {
+	ID        uuid.UUID  `json:"id"`
+	Amount    int64      `json:"amount"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at"`
+	AccountID uuid.UUID  `json:"account_id"`
+}
+
 type Budget struct {
 	ID        uuid.UUID  `json:"id"`
 	Amount    int64      `json:"amount"`
@@ -43,15 +52,6 @@ type BudgetCategory struct {
 	CategoryID uuid.UUID  `json:"category_id"`
 }
 
-type Category struct {
-	ID         uuid.UUID  `json:"id"`
-	ExternalID string     `json:"external_id"`
-	Name       string     `json:"name"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	DeletedAt  *time.Time `json:"deleted_at"`
-}
-
 type Institution struct {
 	ID         uuid.UUID   `json:"id"`
 	ExternalID string      `json:"external_id"`
@@ -67,13 +67,22 @@ type Investment struct {
 	ExternalID string     `json:"external_id"`
 	Name       string     `json:"name"`
 	Amount     int64      `json:"amount"`
-	Type       string     `json:"type"`
-	Rate       float64    `json:"rate"`
+	Rate       int64      `json:"rate"`
 	RateType   string     `json:"rateType"`
 	CreatedAt  time.Time  `json:"created_at"`
 	UpdatedAt  time.Time  `json:"updated_at"`
 	DeletedAt  *time.Time `json:"deleted_at"`
+	CategoryID uuid.UUID  `json:"category_id"`
 	UserID     uuid.UUID  `json:"user_id"`
+}
+
+type InvestmentCategory struct {
+	ID         uuid.UUID  `json:"id"`
+	ExternalID string     `json:"external_id"`
+	Name       string     `json:"name"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
 }
 
 type PaymentMethod struct {
@@ -100,6 +109,15 @@ type Transaction struct {
 	AccountID       *uuid.UUID `json:"account_id"`
 	InstitutionID   *uuid.UUID `json:"institution_id"`
 	CategoryID      *uuid.UUID `json:"category_id"`
+}
+
+type TransactionCategory struct {
+	ID         uuid.UUID  `json:"id"`
+	ExternalID string     `json:"external_id"`
+	Name       string     `json:"name"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
 }
 
 type User struct {

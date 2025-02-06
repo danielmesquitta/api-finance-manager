@@ -117,7 +117,7 @@ func (h BudgetHandler) Get(c echo.Context) error {
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets/categories/{category_id} [get]
-func (h BudgetHandler) GetCategory(c echo.Context) error {
+func (h BudgetHandler) GetTransactionCategory(c echo.Context) error {
 	claims := getUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 

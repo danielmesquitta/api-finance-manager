@@ -52,7 +52,7 @@ func (uc *ListTransactions) Execute(
 	opts := []repo.TransactionOption{}
 
 	if in.Search != "" {
-		opts = append(opts, repo.WithTransactionsSearch(in.Search))
+		opts = append(opts, repo.WithTransactionSearch(in.Search))
 	}
 
 	if in.CategoryID != uuid.Nil {
@@ -133,7 +133,7 @@ func (uc *ListTransactions) Execute(
 
 	opts = append(
 		opts,
-		repo.WithTransactionsPagination(in.PageSize, offset),
+		repo.WithTransactionPagination(in.PageSize, offset),
 	)
 
 	g.Go(func() error {

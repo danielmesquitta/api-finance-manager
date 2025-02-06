@@ -31,11 +31,11 @@ func NewCategoryPgRepo(
 	}
 }
 
-func (r *CategoryPgRepo) ListCategories(
+func (r *CategoryPgRepo) ListTransactionCategories(
 	ctx context.Context,
-	opts ...repo.CategoryOption,
-) ([]entity.Category, error) {
-	categories, err := r.qb.ListCategories(ctx, opts...)
+	opts ...repo.TransactionCategoryOption,
+) ([]entity.TransactionCategory, error) {
+	categories, err := r.qb.ListTransactionCategories(ctx, opts...)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -43,31 +43,31 @@ func (r *CategoryPgRepo) ListCategories(
 	return categories, nil
 }
 
-func (r *CategoryPgRepo) CountCategories(
+func (r *CategoryPgRepo) CountTransactionCategories(
 	ctx context.Context,
-	opts ...repo.CategoryOption,
+	opts ...repo.TransactionCategoryOption,
 ) (int64, error) {
-	return r.qb.CountCategories(ctx, opts...)
+	return r.qb.CountTransactionCategories(ctx, opts...)
 }
 
-func (r *CategoryPgRepo) CountCategoriesByIDs(
+func (r *CategoryPgRepo) CountTransactionCategoriesByIDs(
 	ctx context.Context,
 	ids []uuid.UUID,
 ) (int64, error) {
-	return r.db.CountCategoriesByIDs(ctx, ids)
+	return r.db.CountTransactionCategoriesByIDs(ctx, ids)
 }
 
-func (r *CategoryPgRepo) CreateCategories(
+func (r *CategoryPgRepo) CreateTransactionCategories(
 	ctx context.Context,
-	params []repo.CreateCategoriesParams,
+	params []repo.CreateTransactionCategoriesParams,
 ) error {
-	dbParams := make([]sqlc.CreateCategoriesParams, len(params))
+	dbParams := make([]sqlc.CreateTransactionCategoriesParams, len(params))
 	if err := copier.Copy(&dbParams, params); err != nil {
 		return errs.New(err)
 	}
 
 	tx := r.db.UseTx(ctx)
-	_, err := tx.CreateCategories(ctx, dbParams)
+	_, err := tx.CreateTransactionCategories(ctx, dbParams)
 	if err != nil {
 		return errs.New(err)
 	}
@@ -75,16 +75,19 @@ func (r *CategoryPgRepo) CreateCategories(
 	return nil
 }
 
-func (r *CategoryPgRepo) ListCategoriesByExternalIDs(
+func (r *CategoryPgRepo) ListTransactionCategoriesByExternalIDs(
 	ctx context.Context,
 	externalIDs []string,
-) ([]entity.Category, error) {
-	categories, err := r.db.ListCategoriesByExternalIDs(ctx, externalIDs)
+) ([]entity.TransactionCategory, error) {
+	categories, err := r.db.ListTransactionCategoriesByExternalIDs(
+		ctx,
+		externalIDs,
+	)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	results := []entity.Category{}
+	results := []entity.TransactionCategory{}
 	if err := copier.Copy(&results, categories); err != nil {
 		return nil, errs.New(err)
 	}
@@ -92,11 +95,11 @@ func (r *CategoryPgRepo) ListCategoriesByExternalIDs(
 	return results, nil
 }
 
-func (r *CategoryPgRepo) GetCategory(
+func (r *CategoryPgRepo) GetTransactionCategory(
 	ctx context.Context,
 	id uuid.UUID,
-) (*entity.Category, error) {
-	category, err := r.db.GetCategory(ctx, id)
+) (*entity.TransactionCategory, error) {
+	category, err := r.db.GetTransactionCategory(ctx, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -104,7 +107,7 @@ func (r *CategoryPgRepo) GetCategory(
 		return nil, errs.New(err)
 	}
 
-	result := entity.Category{}
+	result := entity.TransactionCategory{}
 	if err := copier.Copy(&result, category); err != nil {
 		return nil, errs.New(err)
 	}

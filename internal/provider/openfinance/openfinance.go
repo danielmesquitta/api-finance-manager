@@ -55,12 +55,12 @@ type Client interface {
 		ctx context.Context,
 		options ...InstitutionOption,
 	) ([]entity.Institution, error)
-	ListCategories(
+	ListTransactionCategories(
 		ctx context.Context,
-	) ([]entity.Category, error)
+	) ([]entity.TransactionCategory, error)
 	GetParentCategoryExternalID(
 		externalCategoryID string,
-		categoriesByExternalID map[string]entity.Category,
+		categoriesByExternalID map[string]entity.TransactionCategory,
 	) (parentExternalID string, ok bool)
 	ListTransactions(
 		ctx context.Context,

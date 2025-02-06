@@ -11,12 +11,12 @@ import (
 
 type CategoryHandler struct {
 	sc *usecase.SyncCategories
-	lc *usecase.ListCategories
+	lc *usecase.ListTransactionCategories
 }
 
 func NewCategoryHandler(
 	sc *usecase.SyncCategories,
-	lc *usecase.ListCategories,
+	lc *usecase.ListTransactionCategories,
 ) *CategoryHandler {
 	return &CategoryHandler{
 		sc: sc,
@@ -32,7 +32,7 @@ func NewCategoryHandler(
 // @Produce json
 // @Success 204
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /v1/admin/categories/sync [post]
+// @Router /v1/admin/transactions/categories/sync [post]
 func (h CategoryHandler) Sync(c echo.Context) error {
 	if err := h.sc.Execute(c.Request().Context()); err != nil {
 		return errs.New(err)
@@ -53,14 +53,14 @@ func (h CategoryHandler) Sync(c echo.Context) error {
 // @Success 200 {object} dto.ListCategoriesResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /v1/categories [get]
+// @Router /v1/transactions/categories [get]
 func (h CategoryHandler) List(c echo.Context) error {
 	search := c.QueryParam(queryParamSearch)
 	paginationIn := parsePaginationParams(c)
 
 	in := usecase.ListCategoriesInput{
 		PaginationInput: paginationIn,
-		CategoryOptions: repo.CategoryOptions{
+		TransactionCategoryOptions: repo.TransactionCategoryOptions{
 			Search: search,
 		},
 	}

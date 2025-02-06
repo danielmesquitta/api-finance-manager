@@ -61,19 +61,19 @@ CREATE TABLE "investments" (
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "amount" BIGINT NOT NULL,
-    "type" TEXT NOT NULL,
-    "rate" DOUBLE PRECISION NOT NULL,
+    "rate" BIGINT NOT NULL,
     "rateType" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
+    "category_id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
 
     CONSTRAINT "investments_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "categories" (
+CREATE TABLE "investment_categories" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -81,7 +81,19 @@ CREATE TABLE "categories" (
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
 
-    CONSTRAINT "categories_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "investment_categories_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "transaction_categories" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "external_id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ,
+
+    CONSTRAINT "transaction_categories_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -97,6 +109,18 @@ CREATE TABLE "accounts" (
     "institution_id" UUID NOT NULL,
 
     CONSTRAINT "accounts_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "account_balances" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "amount" BIGINT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ,
+    "account_id" UUID NOT NULL,
+
+    CONSTRAINT "account_balances_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -151,7 +175,10 @@ CREATE UNIQUE INDEX "payment_methods_external_id_key" ON "payment_methods"("exte
 CREATE UNIQUE INDEX "investments_external_id_key" ON "investments"("external_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "categories_external_id_key" ON "categories"("external_id");
+CREATE UNIQUE INDEX "investment_categories_external_id_key" ON "investment_categories"("external_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "transaction_categories_external_id_key" ON "transaction_categories"("external_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "accounts_external_id_key" ON "accounts"("external_id");
@@ -172,7 +199,10 @@ ALTER TABLE "transactions" ADD CONSTRAINT "transactions_account_id_fkey" FOREIGN
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "institutions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "transactions" ADD CONSTRAINT "transactions_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "transaction_categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "investments" ADD CONSTRAINT "investments_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "investment_categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "investments" ADD CONSTRAINT "investments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -184,10 +214,13 @@ ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "institutions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "account_balances" ADD CONSTRAINT "account_balances_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "budgets" ADD CONSTRAINT "budgets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "budget_categories" ADD CONSTRAINT "budget_categories_budget_id_fkey" FOREIGN KEY ("budget_id") REFERENCES "budgets"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "budget_categories" ADD CONSTRAINT "budget_categories_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "budget_categories" ADD CONSTRAINT "budget_categories_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "transaction_categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;

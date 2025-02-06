@@ -24,9 +24,9 @@ func (qb *QueryBuilder) ListInstitutions(
 	}
 
 	query := goqu.
-		From(TableInstitution).
-		Select(fmt.Sprintf("%s.*", TableInstitution)).
-		Where(goqu.Ex{ColumnInstitutionDeletedAt: nil})
+		From(tableInstitution).
+		Select(fmt.Sprintf("%s.*", tableInstitution)).
+		Where(goqu.Ex{tableInstitution.ColumnDeletedAt(): nil})
 
 	qb.buildInstitutionJoins(query, options)
 
@@ -57,9 +57,9 @@ func (qb *QueryBuilder) CountInstitutions(
 	}
 
 	query := goqu.
-		From(TableInstitution).
+		From(tableInstitution).
 		Select(goqu.COUNT("*")).
-		Where(goqu.Ex{ColumnInstitutionDeletedAt: nil})
+		Where(goqu.Ex{tableInstitution.ColumnDeletedAt(): nil})
 
 	query = qb.buildInstitutionJoins(query, options)
 
@@ -87,10 +87,10 @@ func (qb *QueryBuilder) buildInstitutionJoins(
 ) *goqu.SelectDataset {
 	if options.UserID != uuid.Nil {
 		query = query.Join(
-			goqu.I(TableAccount),
+			goqu.I(tableAccount.String()),
 			goqu.On(
-				goqu.I(ColumnAccountInstitutionID).
-					Eq(goqu.I(ColumnInstitutionID)),
+				goqu.I(tableAccount.ColumnInstitutionID()).
+					Eq(goqu.I(tableInstitution.ColumnID())),
 			),
 		)
 	}
@@ -104,7 +104,7 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			ColumnInstitutionName,
+			tableInstitution.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -113,14 +113,14 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 	if options.UserID != uuid.Nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(ColumnAccountUserID).
+			goqu.I(tableAccount.ColumnUserID()).
 				Eq(options.UserID),
 		)
 	}
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(ColumnInstitutionName).Asc(),
+		goqu.I(tableInstitution.ColumnName()).Asc(),
 	)
 
 	return whereExps, orderedExps

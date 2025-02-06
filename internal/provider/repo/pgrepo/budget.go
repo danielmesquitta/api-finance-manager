@@ -91,7 +91,7 @@ func (r *BudgetPgRepo) GetBudget(
 func (r *BudgetPgRepo) GetBudgetCategory(
 	ctx context.Context,
 	params repo.GetBudgetCategoryParams,
-) (*entity.BudgetCategory, *entity.Category, error) {
+) (*entity.BudgetCategory, *entity.TransactionCategory, error) {
 	dbParams := sqlc.GetBudgetCategoryParams{}
 	if err := copier.Copy(&dbParams, params); err != nil {
 		return nil, nil, errs.New(err)
@@ -110,8 +110,8 @@ func (r *BudgetPgRepo) GetBudgetCategory(
 		return nil, nil, errs.New(err)
 	}
 
-	category := entity.Category{}
-	if err := copier.Copy(&category, row.Category); err != nil {
+	category := entity.TransactionCategory{}
+	if err := copier.Copy(&category, row.TransactionCategory); err != nil {
 		return nil, nil, errs.New(err)
 	}
 
@@ -139,7 +139,7 @@ func (r *BudgetPgRepo) CreateBudgetCategories(
 func (r *BudgetPgRepo) ListBudgetCategories(
 	ctx context.Context,
 	budgetID uuid.UUID,
-) ([]entity.BudgetCategory, []entity.Category, error) {
+) ([]entity.BudgetCategory, []entity.TransactionCategory, error) {
 	rows, err := r.db.ListBudgetCategories(ctx, budgetID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -149,7 +149,7 @@ func (r *BudgetPgRepo) ListBudgetCategories(
 	}
 
 	budgetCategories := []entity.BudgetCategory{}
-	categories := []entity.Category{}
+	categories := []entity.TransactionCategory{}
 	for _, row := range rows {
 		budgetCategory := entity.BudgetCategory{}
 		if err := copier.Copy(&budgetCategory, row.BudgetCategory); err != nil {
@@ -157,8 +157,8 @@ func (r *BudgetPgRepo) ListBudgetCategories(
 		}
 		budgetCategories = append(budgetCategories, budgetCategory)
 
-		category := entity.Category{}
-		if err := copier.Copy(&category, row.Category); err != nil {
+		category := entity.TransactionCategory{}
+		if err := copier.Copy(&category, row.TransactionCategory); err != nil {
 			return nil, nil, errs.New(err)
 		}
 		categories = append(categories, category)

@@ -22,9 +22,9 @@ func (qb *QueryBuilder) ListPaymentMethods(
 	}
 
 	query := goqu.
-		From(TablePaymentMethod).
+		From(tablePaymentMethod).
 		Select("*").
-		Where(goqu.Ex{ColumnPaymentMethodDeletedAt: nil})
+		Where(goqu.Ex{tablePaymentMethod.ColumnDeletedAt(): nil})
 
 	whereExps, orderedExps := qb.buildPaymentMethodExpressions(options)
 
@@ -58,9 +58,9 @@ func (qb *QueryBuilder) CountPaymentMethods(
 	}
 
 	query := goqu.
-		From(TablePaymentMethod).
+		From(tablePaymentMethod).
 		Select(goqu.COUNT("*")).
-		Where(goqu.Ex{ColumnPaymentMethodDeletedAt: nil})
+		Where(goqu.Ex{tablePaymentMethod.ColumnDeletedAt(): nil})
 
 	whereExps, _ := qb.buildPaymentMethodExpressions(options)
 
@@ -87,7 +87,7 @@ func (qb *QueryBuilder) buildPaymentMethodExpressions(
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			ColumnPaymentMethodName,
+			tablePaymentMethod.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -95,7 +95,7 @@ func (qb *QueryBuilder) buildPaymentMethodExpressions(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(ColumnPaymentMethodName).Asc(),
+		goqu.I(tablePaymentMethod.ColumnName()).Asc(),
 	)
 
 	return whereExps, orderedExps

@@ -40,7 +40,7 @@ func (uc *ListInstitutions) Execute(
 	options := []repo.InstitutionOption{}
 
 	if in.Search != "" {
-		options = append(options, repo.WithInstitutionsSearch(in.Search))
+		options = append(options, repo.WithInstitutionSearch(in.Search))
 	}
 
 	g.Go(func() error {
@@ -54,7 +54,7 @@ func (uc *ListInstitutions) Execute(
 
 	options = append(
 		options,
-		repo.WithInstitutionsPagination(in.PageSize, offset),
+		repo.WithInstitutionPagination(in.PageSize, offset),
 	)
 
 	g.Go(func() error {

@@ -10,42 +10,45 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 )
 
-type ListCategories struct {
+type ListTransactionCategories struct {
 	cr repo.CategoryRepo
 }
 
-func NewListCategories(
+func NewListTransactionCategories(
 	cr repo.CategoryRepo,
-) *ListCategories {
-	return &ListCategories{
+) *ListTransactionCategories {
+	return &ListTransactionCategories{
 		cr: cr,
 	}
 }
 
 type ListCategoriesInput struct {
-	repo.CategoryOptions
+	repo.TransactionCategoryOptions
 	PaginationInput
 }
 
-func (uc *ListCategories) Execute(
+func (uc *ListTransactionCategories) Execute(
 	ctx context.Context,
 	in ListCategoriesInput,
-) (*entity.PaginatedList[entity.Category], error) {
+) (*entity.PaginatedList[entity.TransactionCategory], error) {
 	offset := preparePaginationInput(&in.PaginationInput)
 
 	g, gCtx := errgroup.WithContext(ctx)
-	var categories []entity.Category
+	var categories []entity.TransactionCategory
 	var count int64
 
-	options := []repo.CategoryOption{}
+	options := []repo.TransactionCategoryOption{}
 
 	if in.Search != "" {
-		options = append(options, repo.WithCategoriesSearch(in.Search))
+		options = append(
+			options,
+			repo.WithTransactionCategorySearch(in.Search),
+		)
 	}
 
 	g.Go(func() error {
 		var err error
-		count, err = uc.cr.CountCategories(
+		count, err = uc.cr.CountTransactionCategories(
 			gCtx,
 			options...,
 		)
@@ -54,12 +57,12 @@ func (uc *ListCategories) Execute(
 
 	options = append(
 		options,
-		repo.WithCategoriesPagination(in.PageSize, offset),
+		repo.WithTransactionCategoryPagination(in.PageSize, offset),
 	)
 
 	g.Go(func() error {
 		var err error
-		categories, err = uc.cr.ListCategories(
+		categories, err = uc.cr.ListTransactionCategories(
 			gCtx,
 			options...,
 		)
@@ -70,7 +73,7 @@ func (uc *ListCategories) Execute(
 		return nil, errs.New(err)
 	}
 
-	out := entity.PaginatedList[entity.Category]{
+	out := entity.PaginatedList[entity.TransactionCategory]{
 		Items: categories,
 	}
 

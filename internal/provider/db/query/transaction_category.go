@@ -12,19 +12,19 @@ import (
 	"github.com/georgysavva/scany/v2/pgxscan"
 )
 
-func (qb *QueryBuilder) ListCategories(
+func (qb *QueryBuilder) ListTransactionCategories(
 	ctx context.Context,
-	opts ...repo.CategoryOption,
-) ([]entity.Category, error) {
-	options := repo.CategoryOptions{}
+	opts ...repo.TransactionCategoryOption,
+) ([]entity.TransactionCategory, error) {
+	options := repo.TransactionCategoryOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
 
 	query := goqu.
-		From(TableCategory).
+		From(tableTransactionCategory).
 		Select("*").
-		Where(goqu.Ex{ColumnCategoryDeletedAt: nil})
+		Where(goqu.Ex{tableTransactionCategory.ColumnDeletedAt(): nil})
 
 	whereExps, orderedExps := qb.buildCategoryExpressions(options)
 
@@ -40,7 +40,7 @@ func (qb *QueryBuilder) ListCategories(
 		return nil, errs.New(err)
 	}
 
-	var categories []entity.Category
+	var categories []entity.TransactionCategory
 	if err := pgxscan.Select(ctx, qb.db, &categories, sql, args...); err != nil {
 		return nil, errs.New(err)
 	}
@@ -48,19 +48,19 @@ func (qb *QueryBuilder) ListCategories(
 	return categories, nil
 }
 
-func (qb *QueryBuilder) CountCategories(
+func (qb *QueryBuilder) CountTransactionCategories(
 	ctx context.Context,
-	opts ...repo.CategoryOption,
+	opts ...repo.TransactionCategoryOption,
 ) (int64, error) {
-	options := repo.CategoryOptions{}
+	options := repo.TransactionCategoryOptions{}
 	for _, opt := range opts {
 		opt(&options)
 	}
 
 	query := goqu.
-		From(TableCategory).
+		From(tableTransactionCategory).
 		Select(goqu.COUNT("*")).
-		Where(goqu.Ex{ColumnCategoryDeletedAt: nil})
+		Where(goqu.Ex{tableTransactionCategory.ColumnDeletedAt(): nil})
 
 	whereExps, _ := qb.buildCategoryExpressions(options)
 
@@ -81,13 +81,13 @@ func (qb *QueryBuilder) CountCategories(
 }
 
 func (qb *QueryBuilder) buildCategoryExpressions(
-	options repo.CategoryOptions,
+	options repo.TransactionCategoryOptions,
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			ColumnCategoryName,
+			tableTransactionCategory.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -95,7 +95,7 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(ColumnCategoryName).Asc(),
+		goqu.I(tableTransactionCategory.ColumnName()).Asc(),
 	)
 
 	return whereExps, orderedExps
@@ -103,7 +103,7 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 
 func (qb *QueryBuilder) buildCategoryQuery(
 	query *goqu.SelectDataset,
-	options repo.CategoryOptions,
+	options repo.TransactionCategoryOptions,
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
 ) *goqu.SelectDataset {

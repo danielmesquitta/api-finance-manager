@@ -103,10 +103,10 @@ func (q *Queries) GetBudget(ctx context.Context, arg GetBudgetParams) (Budget, e
 
 const getBudgetCategory = `-- name: GetBudgetCategory :one
 SELECT budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.deleted_at, budget_categories.budget_id, budget_categories.category_id,
-  categories.id, categories.external_id, categories.name, categories.created_at, categories.updated_at, categories.deleted_at
+  transaction_categories.id, transaction_categories.external_id, transaction_categories.name, transaction_categories.created_at, transaction_categories.updated_at, transaction_categories.deleted_at
 FROM budget_categories
-  JOIN categories ON budget_categories.category_id = categories.id
-  AND categories.deleted_at IS NULL
+  JOIN transaction_categories ON budget_categories.category_id = transaction_categories.id
+  AND transaction_categories.deleted_at IS NULL
   JOIN budgets ON budget_categories.budget_id = budgets.id
   AND budgets.deleted_at IS NULL
 WHERE budgets.user_id = $1
@@ -121,8 +121,8 @@ type GetBudgetCategoryParams struct {
 }
 
 type GetBudgetCategoryRow struct {
-	BudgetCategory BudgetCategory `json:"budget_category"`
-	Category       Category       `json:"category"`
+	BudgetCategory      BudgetCategory      `json:"budget_category"`
+	TransactionCategory TransactionCategory `json:"transaction_category"`
 }
 
 func (q *Queries) GetBudgetCategory(ctx context.Context, arg GetBudgetCategoryParams) (GetBudgetCategoryRow, error) {
@@ -136,29 +136,29 @@ func (q *Queries) GetBudgetCategory(ctx context.Context, arg GetBudgetCategoryPa
 		&i.BudgetCategory.DeletedAt,
 		&i.BudgetCategory.BudgetID,
 		&i.BudgetCategory.CategoryID,
-		&i.Category.ID,
-		&i.Category.ExternalID,
-		&i.Category.Name,
-		&i.Category.CreatedAt,
-		&i.Category.UpdatedAt,
-		&i.Category.DeletedAt,
+		&i.TransactionCategory.ID,
+		&i.TransactionCategory.ExternalID,
+		&i.TransactionCategory.Name,
+		&i.TransactionCategory.CreatedAt,
+		&i.TransactionCategory.UpdatedAt,
+		&i.TransactionCategory.DeletedAt,
 	)
 	return i, err
 }
 
 const listBudgetCategories = `-- name: ListBudgetCategories :many
 SELECT budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.deleted_at, budget_categories.budget_id, budget_categories.category_id,
-  categories.id, categories.external_id, categories.name, categories.created_at, categories.updated_at, categories.deleted_at
+  transaction_categories.id, transaction_categories.external_id, transaction_categories.name, transaction_categories.created_at, transaction_categories.updated_at, transaction_categories.deleted_at
 FROM budget_categories
-  JOIN categories ON budget_categories.category_id = categories.id
+  JOIN transaction_categories ON budget_categories.category_id = transaction_categories.id
 WHERE budget_id = $1
   AND budget_categories.deleted_at IS NULL
-ORDER BY categories.name ASC
+ORDER BY transaction_categories.name ASC
 `
 
 type ListBudgetCategoriesRow struct {
-	BudgetCategory BudgetCategory `json:"budget_category"`
-	Category       Category       `json:"category"`
+	BudgetCategory      BudgetCategory      `json:"budget_category"`
+	TransactionCategory TransactionCategory `json:"transaction_category"`
 }
 
 func (q *Queries) ListBudgetCategories(ctx context.Context, budgetID uuid.UUID) ([]ListBudgetCategoriesRow, error) {
@@ -178,12 +178,12 @@ func (q *Queries) ListBudgetCategories(ctx context.Context, budgetID uuid.UUID) 
 			&i.BudgetCategory.DeletedAt,
 			&i.BudgetCategory.BudgetID,
 			&i.BudgetCategory.CategoryID,
-			&i.Category.ID,
-			&i.Category.ExternalID,
-			&i.Category.Name,
-			&i.Category.CreatedAt,
-			&i.Category.UpdatedAt,
-			&i.Category.DeletedAt,
+			&i.TransactionCategory.ID,
+			&i.TransactionCategory.ExternalID,
+			&i.TransactionCategory.Name,
+			&i.TransactionCategory.CreatedAt,
+			&i.TransactionCategory.UpdatedAt,
+			&i.TransactionCategory.DeletedAt,
 		); err != nil {
 			return nil, err
 		}

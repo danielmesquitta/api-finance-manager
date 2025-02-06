@@ -52,7 +52,7 @@ func (uc *SyncTransactions) Execute(
 	ctx context.Context,
 ) error {
 	users, accounts := []entity.User{}, []entity.Account{}
-	categories := []entity.Category{}
+	categories := []entity.TransactionCategory{}
 	paymentMethods := []entity.PaymentMethod{}
 	g, gCtx := errgroup.WithContext(ctx)
 
@@ -64,7 +64,7 @@ func (uc *SyncTransactions) Execute(
 
 	g.Go(func() error {
 		var err error
-		categories, err = uc.cr.ListCategories(gCtx)
+		categories, err = uc.cr.ListTransactionCategories(gCtx)
 		return err
 	})
 
@@ -196,9 +196,9 @@ func (uc *SyncTransactions) groupAccountsByID(
 }
 
 func (uc *SyncTransactions) groupCategoriesByExternalID(
-	categories []entity.Category,
-) map[string]entity.Category {
-	categoriesByExternalID := map[string]entity.Category{}
+	categories []entity.TransactionCategory,
+) map[string]entity.TransactionCategory {
+	categoriesByExternalID := map[string]entity.TransactionCategory{}
 	for _, category := range categories {
 		categoriesByExternalID[category.ExternalID] = category
 	}
@@ -269,7 +269,7 @@ func (uc *SyncTransactions) syncUserTransactions(
 	ctx context.Context,
 	user entity.User,
 	accountsByID map[uuid.UUID]entity.Account,
-	categoriesByExternalID map[string]entity.Category,
+	categoriesByExternalID map[string]entity.TransactionCategory,
 	paymentMethodsByExternalID map[string]entity.PaymentMethod,
 	openFinanceTransactionsByAccountID map[uuid.UUID][]openfinance.Transaction,
 ) error {
@@ -316,7 +316,7 @@ func (uc *SyncTransactions) syncUserTransactions(
 func (uc *SyncTransactions) buildCreateTransactionsParams(
 	user entity.User,
 	accountsByID map[uuid.UUID]entity.Account,
-	categoriesByExternalID map[string]entity.Category,
+	categoriesByExternalID map[string]entity.TransactionCategory,
 	paymentMethodsByExternalID map[string]entity.PaymentMethod,
 	openFinanceTransactionsByAccountID map[uuid.UUID][]openfinance.Transaction,
 	transactionsByExternalID map[string]entity.Transaction,
@@ -451,7 +451,7 @@ func (uc *SyncTransactions) updateUserSynchronizedAt(
 
 func (uc *SyncTransactions) getCategoryID(
 	categoryExternalID string,
-	categoriesByExternalID map[string]entity.Category,
+	categoriesByExternalID map[string]entity.TransactionCategory,
 ) *uuid.UUID {
 	parentCategoryExternalID, ok := uc.o.GetParentCategoryExternalID(
 		categoryExternalID,

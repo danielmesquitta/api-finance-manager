@@ -16,7 +16,7 @@ type InstitutionOptions struct {
 
 type InstitutionOption func(*InstitutionOptions)
 
-func WithInstitutionsPagination(
+func WithInstitutionPagination(
 	limit uint,
 	offset uint,
 ) InstitutionOption {
@@ -26,7 +26,7 @@ func WithInstitutionsPagination(
 	}
 }
 
-func WithInstitutionsSearch(search string) InstitutionOption {
+func WithInstitutionSearch(search string) InstitutionOption {
 	return func(o *InstitutionOptions) {
 		o.Search = search
 	}

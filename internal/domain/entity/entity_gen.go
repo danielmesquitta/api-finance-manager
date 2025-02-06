@@ -54,16 +54,25 @@ type Investment struct {
 	ExternalID string     `json:"external_id,omitempty"`
 	Name       string     `json:"name,omitempty"`
 	Amount     int64      `json:"amount,omitempty"`
-	Type       string     `json:"type,omitempty"`
-	Rate       float64    `json:"rate,omitempty"`
+	Rate       int64      `json:"rate,omitempty"`
 	RateType   string     `json:"rateType,omitempty"`
 	CreatedAt  time.Time  `json:"created_at,omitempty"`
 	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
 	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
+	CategoryID uuid.UUID  `json:"category_id,omitempty"`
 	UserID     uuid.UUID  `json:"user_id,omitempty"`
 }
 
-type Category struct {
+type InvestmentCategory struct {
+	ID         uuid.UUID  `json:"id,omitempty"`
+	ExternalID string     `json:"external_id,omitempty"`
+	Name       string     `json:"name,omitempty"`
+	CreatedAt  time.Time  `json:"created_at,omitempty"`
+	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
+	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
+}
+
+type TransactionCategory struct {
 	ID         uuid.UUID  `json:"id,omitempty"`
 	ExternalID string     `json:"external_id,omitempty"`
 	Name       string     `json:"name,omitempty"`
@@ -82,6 +91,15 @@ type Account struct {
 	DeletedAt     *time.Time `json:"deleted_at,omitempty"`
 	UserID        uuid.UUID  `json:"user_id,omitempty"`
 	InstitutionID uuid.UUID  `json:"institution_id,omitempty"`
+}
+
+type AccountBalance struct {
+	ID        uuid.UUID  `json:"id,omitempty"`
+	Amount    int64      `json:"amount,omitempty"`
+	CreatedAt time.Time  `json:"created_at,omitempty"`
+	UpdatedAt time.Time  `json:"updated_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	AccountID uuid.UUID  `json:"account_id,omitempty"`
 }
 
 type Institution struct {

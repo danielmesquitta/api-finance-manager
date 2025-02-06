@@ -27,12 +27,12 @@ type CreateTransactionsParams struct {
 
 const getTransaction = `-- name: GetTransaction :one
 SELECT transactions.id, transactions.external_id, transactions.name, transactions.amount, transactions.is_ignored, transactions.date, transactions.created_at, transactions.updated_at, transactions.deleted_at, transactions.payment_method_id, transactions.user_id, transactions.account_id, transactions.institution_id, transactions.category_id,
-  categories.name as category_name,
+  transaction_categories.name as category_name,
   institutions.name as institution_name,
   institutions.logo as institution_logo,
   payment_methods.name as payment_method_name
 FROM transactions
-  LEFT JOIN categories ON transactions.category_id = categories.id
+  LEFT JOIN transaction_categories ON transactions.category_id = transaction_categories.id
   LEFT JOIN institutions ON transactions.institution_id = institutions.id
   LEFT JOIN payment_methods ON transactions.payment_method_id = payment_methods.id
 WHERE transactions.id = $1

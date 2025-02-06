@@ -5,5 +5,5 @@ import (
 )
 
 type ListCategoriesResponse struct {
-	entity.PaginatedList[entity.Category]
+	entity.PaginatedList[entity.TransactionCategory]
 }

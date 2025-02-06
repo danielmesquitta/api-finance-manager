@@ -33,7 +33,7 @@ func (qb *QueryBuilder) calculateMaxLevenshteinDistance(search string) int {
 }
 
 func (qb *QueryBuilder) buildSearch(
-	search string, column Column,
+	search, column string,
 ) (exp.Expression, exp.SQLFunctionExpression) {
 	unaccentedColumn := goqu.Func("lower", goqu.Func(
 		"unaccent",

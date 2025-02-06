@@ -28,19 +28,19 @@ func NewSyncCategories(
 }
 
 func (uc *SyncCategories) Execute(ctx context.Context) error {
-	var openFinanceCategories, institutions []entity.Category
+	var openFinanceCategories, institutions []entity.TransactionCategory
 
 	g, gCtx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
 		var err error
-		openFinanceCategories, err = uc.o.ListCategories(gCtx)
+		openFinanceCategories, err = uc.o.ListTransactionCategories(gCtx)
 		return err
 	})
 
 	g.Go(func() error {
 		var err error
-		institutions, err = uc.cr.ListCategories(gCtx)
+		institutions, err = uc.cr.ListTransactionCategories(gCtx)
 		return err
 	})
 
@@ -48,24 +48,24 @@ func (uc *SyncCategories) Execute(ctx context.Context) error {
 		return errs.New(err)
 	}
 
-	institutionsByExternalID := make(map[string]entity.Category)
+	institutionsByExternalID := make(map[string]entity.TransactionCategory)
 	for _, i := range institutions {
 		institutionsByExternalID[i.ExternalID] = i
 	}
 
-	params := []repo.CreateCategoriesParams{}
+	params := []repo.CreateTransactionCategoriesParams{}
 	for _, i := range openFinanceCategories {
 		if _, ok := institutionsByExternalID[i.ExternalID]; ok {
 			continue
 		}
-		param := repo.CreateCategoriesParams{}
+		param := repo.CreateTransactionCategoriesParams{}
 		if err := copier.Copy(&param, i); err != nil {
 			return errs.New(err)
 		}
 		params = append(params, param)
 	}
 
-	if err := uc.cr.CreateCategories(ctx, params); err != nil {
+	if err := uc.cr.CreateTransactionCategories(ctx, params); err != nil {
 		return errs.New(err)
 	}
 

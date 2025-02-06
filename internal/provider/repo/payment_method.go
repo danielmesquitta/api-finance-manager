@@ -14,7 +14,7 @@ type PaymentMethodOptions struct {
 
 type PaymentMethodOption func(*PaymentMethodOptions)
 
-func WithPaymentMethodsPagination(
+func WithPaymentMethodPagination(
 	limit uint,
 	offset uint,
 ) PaymentMethodOption {
@@ -24,7 +24,7 @@ func WithPaymentMethodsPagination(
 	}
 }
 
-func WithPaymentMethodsSearch(search string) PaymentMethodOption {
+func WithPaymentMethodSearch(search string) PaymentMethodOption {
 	return func(o *PaymentMethodOptions) {
 		o.Search = search
 	}

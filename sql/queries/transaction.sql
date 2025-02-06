@@ -25,12 +25,12 @@ WHERE id = $1
   AND deleted_at IS NULL;
 -- name: GetTransaction :one
 SELECT transactions.*,
-  categories.name as category_name,
+  transaction_categories.name as category_name,
   institutions.name as institution_name,
   institutions.logo as institution_logo,
   payment_methods.name as payment_method_name
 FROM transactions
-  LEFT JOIN categories ON transactions.category_id = categories.id
+  LEFT JOIN transaction_categories ON transactions.category_id = transaction_categories.id
   LEFT JOIN institutions ON transactions.institution_id = institutions.id
   LEFT JOIN payment_methods ON transactions.payment_method_id = payment_methods.id
 WHERE transactions.id = $1

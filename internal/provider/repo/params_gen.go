@@ -47,11 +47,6 @@ type UpdateBudgetParams struct {
 	Date   time.Time `json:"date"`
 }
 
-type CreateCategoriesParams struct {
-	ExternalID string `json:"external_id"`
-	Name       string `json:"name"`
-}
-
 type CreateInstitutionsParams struct {
 	ExternalID string      `json:"external_id"`
 	Name       string      `json:"name"`
@@ -90,6 +85,11 @@ type UpdateTransactionParams struct {
 	InstitutionID   *uuid.UUID `json:"institution_id"`
 	CategoryID      *uuid.UUID `json:"category_id"`
 	UserID          uuid.UUID  `json:"user_id"`
+}
+
+type CreateTransactionCategoriesParams struct {
+	ExternalID string `json:"external_id"`
+	Name       string `json:"name"`
 }
 
 type CreateUserParams struct {

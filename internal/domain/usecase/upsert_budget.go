@@ -82,7 +82,10 @@ func (u *UpsertBudget) Execute(
 	})
 
 	g.Go(func() error {
-		categoriesCount, err = u.cr.CountCategoriesByIDs(gCtx, categoryIDs)
+		categoriesCount, err = u.cr.CountTransactionCategoriesByIDs(
+			gCtx,
+			categoryIDs,
+		)
 		if err != nil {
 			return errs.New(err)
 		}
