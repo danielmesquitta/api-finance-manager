@@ -19,6 +19,17 @@ type CreateAccountsParams struct {
 	InstitutionID uuid.UUID `json:"institution_id"`
 }
 
+type CreateAccountBalanceParams struct {
+	Amount    int64     `json:"amount"`
+	UserID    uuid.UUID `json:"user_id"`
+	AccountID uuid.UUID `json:"account_id"`
+}
+
+type GetUserBalanceOnDateParams struct {
+	UserID uuid.UUID `json:"user_id"`
+	Date   time.Time `json:"date"`
+}
+
 type CreateBudgetParams struct {
 	Amount int64     `json:"amount"`
 	Date   time.Time `json:"date"`

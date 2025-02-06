@@ -30,6 +30,7 @@ type AccountBalance struct {
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
 	AccountID uuid.UUID  `json:"account_id"`
+	UserID    uuid.UUID  `json:"user_id"`
 }
 
 type Budget struct {
