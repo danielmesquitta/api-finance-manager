@@ -178,6 +178,26 @@
                 },
                 "type": "object"
             },
+            "dto.GetBalanceResponse": {
+                "properties": {
+                    "comparison_dates": {
+                        "$ref": "#/components/schemas/usecase.ComparisonDates"
+                    },
+                    "current_balance": {
+                        "type": "integer"
+                    },
+                    "current_balance_percentage_variation": {
+                        "type": "integer"
+                    },
+                    "monthly_balance": {
+                        "type": "integer"
+                    },
+                    "monthly_balance_percentage_variation": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "dto.GetBudgetCategoryResponse": {
                 "properties": {
                     "amount": {
@@ -331,7 +351,7 @@
                 "properties": {
                     "items": {
                         "items": {
-                            "$ref": "#/components/schemas/entity.Category"
+                            "$ref": "#/components/schemas/entity.TransactionCategory"
                         },
                         "type": "array"
                     },
@@ -695,29 +715,6 @@
                 },
                 "type": "object"
             },
-            "entity.Category": {
-                "properties": {
-                    "created_at": {
-                        "type": "string"
-                    },
-                    "deleted_at": {
-                        "type": "string"
-                    },
-                    "external_id": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "updated_at": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
             "entity.FullTransaction": {
                 "properties": {
                     "account_id": {
@@ -842,6 +839,29 @@
                     "ProviderMock"
                 ]
             },
+            "entity.TransactionCategory": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "deleted_at": {
+                        "type": "string"
+                    },
+                    "external_id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "entity.User": {
                 "properties": {
                     "avatar": {
@@ -952,7 +972,7 @@
                         "type": "string"
                     },
                     "category": {
-                        "$ref": "#/components/schemas/entity.Category"
+                        "$ref": "#/components/schemas/entity.TransactionCategory"
                     },
                     "category_id": {
                         "type": "string"
@@ -1122,35 +1142,6 @@
                 ]
             }
         },
-        "/v1/admin/categories/sync": {
-            "post": {
-                "description": "Sync categories from open finance",
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
-                "security": [
-                    {
-                        "BasicAuth": []
-                    }
-                ],
-                "summary": "Sync categories from open finance",
-                "tags": [
-                    "Category"
-                ]
-            }
-        },
         "/v1/admin/institutions/sync": {
             "post": {
                 "description": "Sync institutions from open finance",
@@ -1177,6 +1168,35 @@
                 "summary": "Sync institutions from open finance",
                 "tags": [
                     "Institution"
+                ]
+            }
+        },
+        "/v1/admin/transactions/categories/sync": {
+            "post": {
+                "description": "Sync categories from open finance",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "summary": "Sync categories from open finance",
+                "tags": [
+                    "Category"
                 ]
             }
         },
@@ -1340,6 +1360,122 @@
                 "summary": "Sign in",
                 "tags": [
                     "Auth"
+                ]
+            }
+        },
+        "/v1/balances": {
+            "get": {
+                "description": "Gets user total balance and transactions monthly balance with previous month comparison",
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "in": "query",
+                        "name": "search",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Date",
+                        "in": "query",
+                        "name": "date",
+                        "schema": {
+                            "format": "date",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Institution ID",
+                        "in": "query",
+                        "name": "institution_id",
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Category ID",
+                        "in": "query",
+                        "name": "category_id",
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Payment method ID",
+                        "in": "query",
+                        "name": "payment_method_id",
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Filter only expenses",
+                        "in": "query",
+                        "name": "is_expense",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "Filter only incomes",
+                        "in": "query",
+                        "name": "is_income",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "description": "Filter ignored or not ignored transactions",
+                        "in": "query",
+                        "name": "is_ignored",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.GetBalanceResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Get balance",
+                "tags": [
+                    "Balance"
                 ]
             }
         },
@@ -2059,78 +2195,6 @@
                 ]
             }
         },
-        "/v1/categories": {
-            "get": {
-                "description": "List categories",
-                "parameters": [
-                    {
-                        "description": "Search",
-                        "in": "query",
-                        "name": "search",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Page",
-                        "in": "query",
-                        "name": "page",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "description": "Page size",
-                        "in": "query",
-                        "name": "page_size",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.ListCategoriesResponse"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "401": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Unauthorized"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "summary": "List categories",
-                "tags": [
-                    "Category"
-                ]
-            }
-        },
         "/v1/institutions": {
             "get": {
                 "description": "List all institutions",
@@ -2332,6 +2396,78 @@
                 "summary": "List transactions",
                 "tags": [
                     "Transaction"
+                ]
+            }
+        },
+        "/v1/transactions/categories": {
+            "get": {
+                "description": "List categories",
+                "parameters": [
+                    {
+                        "description": "Search",
+                        "in": "query",
+                        "name": "search",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Page",
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "description": "Page size",
+                        "in": "query",
+                        "name": "page_size",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ListCategoriesResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "List categories",
+                "tags": [
+                    "Category"
                 ]
             }
         },

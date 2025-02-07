@@ -26,6 +26,7 @@ type Router struct {
 	uh  *handler.UserHandler
 	ach *handler.AccountHandler
 	th  *handler.TransactionHandler
+	bah *handler.BalanceHandler
 }
 
 func NewRouter(
@@ -40,6 +41,7 @@ func NewRouter(
 	uh *handler.UserHandler,
 	ach *handler.AccountHandler,
 	th *handler.TransactionHandler,
+	bah *handler.BalanceHandler,
 ) *Router {
 	return &Router{
 		e:   e,
@@ -53,6 +55,7 @@ func NewRouter(
 		uh:  uh,
 		ach: ach,
 		th:  th,
+		bah: bah,
 	}
 }
 
@@ -114,6 +117,8 @@ func (r *Router) Register(
 		r.bh.ListCategoryTransactions,
 	)
 	usersApiV1.DELETE("/budgets", r.bh.Delete)
+
+	usersApiV1.GET("/balances", r.bah.Get)
 
 	usersApiV1.GET("/transactions", r.th.List)
 	usersApiV1.GET("/transactions/:transaction_id", r.th.Get)

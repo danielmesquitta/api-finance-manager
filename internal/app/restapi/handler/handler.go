@@ -8,6 +8,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
@@ -126,4 +127,50 @@ func getUserClaims(
 	c echo.Context,
 ) *jwtutil.UserClaims {
 	return c.Get(middleware.ClaimsKey).(*jwtutil.UserClaims)
+}
+
+func prepareTransactionOptions(
+	c echo.Context,
+) (*repo.TransactionOptions, error) {
+	search := c.QueryParam(queryParamSearch)
+
+	paymentMethodID, err := parseUUIDParam(c, queryParamPaymentMethodID)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	institutionID, err := parseUUIDParam(c, queryParamInstitutionID)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	categoryID, err := parseUUIDParam(c, queryParamCategoryID)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	isExpense, err := parseBoolParam(c, queryParamIsExpense)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	isIncome, err := parseBoolParam(c, queryParamIsExpense)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	isIgnored, err := parseNillableBoolParam(c, queryParamIsIgnored)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	return &repo.TransactionOptions{
+		Search:          search,
+		CategoryID:      categoryID,
+		InstitutionID:   institutionID,
+		IsExpense:       isExpense,
+		IsIncome:        isIncome,
+		IsIgnored:       isIgnored,
+		PaymentMethodID: paymentMethodID,
+	}, nil
 }

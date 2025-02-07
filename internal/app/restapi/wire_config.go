@@ -61,6 +61,9 @@ var providers = []any{
 	wire.Bind(new(repo.PaymentMethodRepo), new(*pgrepo.PaymentMethodPgRepo)),
 	pgrepo.NewPaymentMethodPgRepo,
 
+	wire.Bind(new(repo.AccountBalanceRepo), new(*pgrepo.AccountBalancePgRepo)),
+	pgrepo.NewAccountBalancePgRepo,
+
 	usecase.NewSignIn,
 	usecase.NewRefreshToken,
 	usecase.NewCalculateCompoundInterest,
@@ -83,6 +86,7 @@ var providers = []any{
 	usecase.NewListBudgetCategoryTransactions,
 	usecase.NewGetTransaction,
 	usecase.NewUpdateTransaction,
+	usecase.NewGetBalance,
 
 	handler.NewAuthHandler,
 	handler.NewHealthHandler,
@@ -93,6 +97,7 @@ var providers = []any{
 	handler.NewUserHandler,
 	handler.NewAccountHandler,
 	handler.NewTransactionHandler,
+	handler.NewBalanceHandler,
 
 	middleware.NewMiddleware,
 

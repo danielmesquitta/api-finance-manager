@@ -76,7 +76,10 @@ func NewDev(v *validator.Validator, e *config.Env) *App {
 	getTransaction := usecase.NewGetTransaction(transactionPgRepo)
 	updateTransaction := usecase.NewUpdateTransaction(v, transactionPgRepo)
 	transactionHandler := handler.NewTransactionHandler(syncTransactions, listTransactions, getTransaction, updateTransaction)
-	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler)
+	accountBalancePgRepo := pgrepo.NewAccountBalancePgRepo(dbDB)
+	getBalance := usecase.NewGetBalance(v, transactionPgRepo, accountBalancePgRepo)
+	balanceHandler := handler.NewBalanceHandler(getBalance)
+	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler)
 	app := newApp(middlewareMiddleware, routerRouter)
 	return app
 }
@@ -130,7 +133,10 @@ func NewProd(v *validator.Validator, e *config.Env) *App {
 	getTransaction := usecase.NewGetTransaction(transactionPgRepo)
 	updateTransaction := usecase.NewUpdateTransaction(v, transactionPgRepo)
 	transactionHandler := handler.NewTransactionHandler(syncTransactions, listTransactions, getTransaction, updateTransaction)
-	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler)
+	accountBalancePgRepo := pgrepo.NewAccountBalancePgRepo(dbDB)
+	getBalance := usecase.NewGetBalance(v, transactionPgRepo, accountBalancePgRepo)
+	balanceHandler := handler.NewBalanceHandler(getBalance)
+	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler)
 	app := newApp(middlewareMiddleware, routerRouter)
 	return app
 }

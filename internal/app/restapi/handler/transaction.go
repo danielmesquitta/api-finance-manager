@@ -6,7 +6,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
@@ -109,8 +108,6 @@ func (h *TransactionHandler) List(c echo.Context) error {
 	claims := getUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	search := c.QueryParam(queryParamSearch)
-
 	paginationIn := parsePaginationParams(c)
 
 	date, err := parseDateParam(c, queryParamDate)
@@ -118,49 +115,16 @@ func (h *TransactionHandler) List(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	paymentMethodID, err := parseUUIDParam(c, queryParamPaymentMethodID)
-	if err != nil {
-		return errs.New(err)
-	}
-
-	institutionID, err := parseUUIDParam(c, queryParamInstitutionID)
-	if err != nil {
-		return errs.New(err)
-	}
-
-	categoryID, err := parseUUIDParam(c, queryParamCategoryID)
-	if err != nil {
-		return errs.New(err)
-	}
-
-	isExpense, err := parseBoolParam(c, queryParamIsExpense)
-	if err != nil {
-		return errs.New(err)
-	}
-
-	isIncome, err := parseBoolParam(c, queryParamIsExpense)
-	if err != nil {
-		return errs.New(err)
-	}
-
-	isIgnored, err := parseNillableBoolParam(c, queryParamIsIgnored)
+	transactionOptions, err := prepareTransactionOptions(c)
 	if err != nil {
 		return errs.New(err)
 	}
 
 	in := usecase.ListTransactionsInput{
-		PaginationInput: paginationIn,
-		TransactionOptions: repo.TransactionOptions{
-			Search:          search,
-			CategoryID:      categoryID,
-			InstitutionID:   institutionID,
-			IsExpense:       isExpense,
-			IsIncome:        isIncome,
-			IsIgnored:       isIgnored,
-			PaymentMethodID: paymentMethodID,
-		},
-		Date:   date,
-		UserID: userID,
+		PaginationInput:    paginationIn,
+		TransactionOptions: *transactionOptions,
+		Date:               date,
+		UserID:             userID,
 	}
 
 	ctx := c.Request().Context()

@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
+	"github.com/google/uuid"
 )
 
 type PaginationInput struct {
@@ -143,4 +145,83 @@ type ComparisonDates struct {
 	PreviousMonthStart             time.Time `json:"previous_month_start_date,omitempty"`
 	PreviousMonthEnd               time.Time `json:"previous_month_end_date,omitempty"`
 	PreviousMonthComparisonEndDate time.Time `json:"previous_month_comparison_end_date,omitempty"`
+}
+
+func prepareTransactionOptions(
+	in repo.TransactionOptions,
+	date time.Time,
+) []repo.TransactionOption {
+	opts := []repo.TransactionOption{}
+
+	if in.Search != "" {
+		opts = append(opts, repo.WithTransactionSearch(in.Search))
+	}
+
+	if in.CategoryID != uuid.Nil {
+		opts = append(
+			opts,
+			repo.WithTransactionCategory(in.CategoryID),
+		)
+	}
+
+	if in.InstitutionID != uuid.Nil {
+		opts = append(
+			opts,
+			repo.WithTransactionInstitution(in.InstitutionID),
+		)
+	}
+
+	startDate, endDate := in.StartDate, in.EndDate
+	if !date.IsZero() {
+		if startDate.IsZero() {
+			startDate = toMonthStart(date)
+		}
+		if endDate.IsZero() {
+			endDate = toMonthEnd(date)
+		}
+	}
+
+	if !startDate.IsZero() {
+		opts = append(
+			opts,
+			repo.WithTransactionDateAfter(startDate),
+		)
+	}
+
+	if !endDate.IsZero() {
+		opts = append(
+			opts,
+			repo.WithTransactionDateBefore(endDate),
+		)
+	}
+
+	if in.IsExpense {
+		opts = append(
+			opts,
+			repo.WithTransactionIsExpense(in.IsExpense),
+		)
+	}
+
+	if in.IsIncome {
+		opts = append(
+			opts,
+			repo.WithTransactionIsIncome(in.IsIncome),
+		)
+	}
+
+	if in.IsIgnored != nil {
+		opts = append(
+			opts,
+			repo.WithTransactionIsIgnored(*in.IsIgnored),
+		)
+	}
+
+	if in.PaymentMethodID != uuid.Nil {
+		opts = append(
+			opts,
+			repo.WithTransactionPaymentMethod(in.PaymentMethodID),
+		)
+	}
+
+	return opts
 }

@@ -49,77 +49,7 @@ func (uc *ListTransactions) Execute(
 	var transactions []entity.FullTransaction
 	var count int64
 
-	opts := []repo.TransactionOption{}
-
-	if in.Search != "" {
-		opts = append(opts, repo.WithTransactionSearch(in.Search))
-	}
-
-	if in.CategoryID != uuid.Nil {
-		opts = append(
-			opts,
-			repo.WithTransactionCategory(in.CategoryID),
-		)
-	}
-
-	if in.InstitutionID != uuid.Nil {
-		opts = append(
-			opts,
-			repo.WithTransactionInstitution(in.InstitutionID),
-		)
-	}
-
-	startDate, endDate := in.StartDate, in.EndDate
-	if !in.Date.IsZero() {
-		if startDate.IsZero() {
-			startDate = toMonthStart(in.Date)
-		}
-		if endDate.IsZero() {
-			endDate = toMonthEnd(in.Date)
-		}
-	}
-
-	if !startDate.IsZero() {
-		opts = append(
-			opts,
-			repo.WithTransactionDateAfter(startDate),
-		)
-	}
-
-	if !endDate.IsZero() {
-		opts = append(
-			opts,
-			repo.WithTransactionDateBefore(endDate),
-		)
-	}
-
-	if in.IsExpense {
-		opts = append(
-			opts,
-			repo.WithTransactionIsExpense(in.IsExpense),
-		)
-	}
-
-	if in.IsIncome {
-		opts = append(
-			opts,
-			repo.WithTransactionIsIncome(in.IsIncome),
-		)
-	}
-
-	if in.IsIgnored != nil {
-		opts = append(
-			opts,
-			repo.WithTransactionIsIgnored(*in.IsIgnored),
-		)
-	}
-
-	if in.PaymentMethodID != uuid.Nil {
-		opts = append(
-			opts,
-			repo.WithTransactionPaymentMethod(in.PaymentMethodID),
-		)
-	}
+	opts := prepareTransactionOptions(in.TransactionOptions, in.Date)
 
 	g.Go(func() error {
 		var err error
