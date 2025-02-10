@@ -12,40 +12,10 @@ import (
 	"github.com/google/uuid"
 )
 
-const createAccountBalance = `-- name: CreateAccountBalance :exec
-INSERT INTO account_balances (amount, user_id, account_id)
-VALUES ($1, $2, $3)
-`
-
-type CreateAccountBalanceParams struct {
+type CreateAccountBalancesParams struct {
 	Amount    int64     `json:"amount"`
 	UserID    uuid.UUID `json:"user_id"`
 	AccountID uuid.UUID `json:"account_id"`
-}
-
-func (q *Queries) CreateAccountBalance(ctx context.Context, arg CreateAccountBalanceParams) error {
-	_, err := q.db.Exec(ctx, createAccountBalance, arg.Amount, arg.UserID, arg.AccountID)
-	return err
-}
-
-const getUserBalance = `-- name: GetUserBalance :one
-WITH latest_balances AS (
-  SELECT DISTINCT ON (account_id) account_id,
-    amount
-  FROM account_balances
-  WHERE user_id = $1
-  ORDER BY account_id,
-    created_at DESC
-)
-SELECT COALESCE(SUM(amount), 0)::bigint AS total_balance
-FROM latest_balances
-`
-
-func (q *Queries) GetUserBalance(ctx context.Context, userID uuid.UUID) (int64, error) {
-	row := q.db.QueryRow(ctx, getUserBalance, userID)
-	var total_balance int64
-	err := row.Scan(&total_balance)
-	return total_balance, err
 }
 
 const getUserBalanceOnDate = `-- name: GetUserBalanceOnDate :one

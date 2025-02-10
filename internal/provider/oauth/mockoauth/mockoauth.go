@@ -27,7 +27,7 @@ func NewMockOAuth(
 	avatar := "https://avatars.githubusercontent.com/u/60039311"
 	subscriptionExpiresAt := time.Now().AddDate(1, 0, 0)
 	user := entity.User{
-		ExternalID:            "6c2342aa-bdac-4efe-a31b-3a018072cff9",
+		AuthID:                "6c2342aa-bdac-4efe-a31b-3a018072cff9",
 		Name:                  "John Doe",
 		Email:                 "johndoe@email.com",
 		Avatar:                &avatar,

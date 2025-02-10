@@ -10,12 +10,12 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
-    external_id,
+    auth_id,
+    open_finance_id,
     provider,
     name,
     email,
@@ -24,24 +24,26 @@ INSERT INTO users (
     avatar,
     subscription_expires_at
   )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-RETURNING id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+RETURNING id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
 `
 
 type CreateUserParams struct {
-	ExternalID            string      `json:"external_id"`
-	Provider              string      `json:"provider"`
-	Name                  string      `json:"name"`
-	Email                 string      `json:"email"`
-	VerifiedEmail         bool        `json:"verified_email"`
-	Tier                  string      `json:"tier"`
-	Avatar                pgtype.Text `json:"avatar"`
-	SubscriptionExpiresAt *time.Time  `json:"subscription_expires_at"`
+	AuthID                string     `json:"auth_id"`
+	OpenFinanceID         *string    `json:"open_finance_id"`
+	Provider              string     `json:"provider"`
+	Name                  string     `json:"name"`
+	Email                 string     `json:"email"`
+	VerifiedEmail         bool       `json:"verified_email"`
+	Tier                  string     `json:"tier"`
+	Avatar                *string    `json:"avatar"`
+	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, createUser,
-		arg.ExternalID,
+		arg.AuthID,
+		arg.OpenFinanceID,
 		arg.Provider,
 		arg.Name,
 		arg.Email,
@@ -53,7 +55,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.ExternalID,
 		&i.Provider,
 		&i.Name,
 		&i.Email,
@@ -65,12 +66,14 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.AuthID,
+		&i.OpenFinanceID,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+SELECT id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
 FROM users
 WHERE email = $1
 `
@@ -80,7 +83,6 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.ExternalID,
 		&i.Provider,
 		&i.Name,
 		&i.Email,
@@ -92,12 +94,14 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.AuthID,
+		&i.OpenFinanceID,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+SELECT id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
 FROM users
 WHERE id = $1
 `
@@ -107,7 +111,6 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.ExternalID,
 		&i.Provider,
 		&i.Name,
 		&i.Email,
@@ -119,12 +122,14 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.AuthID,
+		&i.OpenFinanceID,
 	)
 	return i, err
 }
 
 const listPremiumActiveUsersWithAccounts = `-- name: ListPremiumActiveUsersWithAccounts :many
-SELECT users.id, users.external_id, users.provider, users.name, users.email, users.verified_email, users.tier, users.avatar, users.subscription_expires_at, users.synchronized_at, users.created_at, users.updated_at, users.deleted_at,
+SELECT users.id, users.provider, users.name, users.email, users.verified_email, users.tier, users.avatar, users.subscription_expires_at, users.synchronized_at, users.created_at, users.updated_at, users.deleted_at, users.auth_id, users.open_finance_id,
   accounts.id, accounts.external_id, accounts.name, accounts.type, accounts.created_at, accounts.updated_at, accounts.deleted_at, accounts.user_id, accounts.institution_id
 FROM users
   JOIN accounts ON accounts.user_id = users.id
@@ -150,7 +155,6 @@ func (q *Queries) ListPremiumActiveUsersWithAccounts(ctx context.Context) ([]Lis
 		var i ListPremiumActiveUsersWithAccountsRow
 		if err := rows.Scan(
 			&i.User.ID,
-			&i.User.ExternalID,
 			&i.User.Provider,
 			&i.User.Name,
 			&i.User.Email,
@@ -162,6 +166,8 @@ func (q *Queries) ListPremiumActiveUsersWithAccounts(ctx context.Context) ([]Lis
 			&i.User.CreatedAt,
 			&i.User.UpdatedAt,
 			&i.User.DeletedAt,
+			&i.User.AuthID,
+			&i.User.OpenFinanceID,
 			&i.Account.ID,
 			&i.Account.ExternalID,
 			&i.Account.Name,
@@ -183,7 +189,7 @@ func (q *Queries) ListPremiumActiveUsersWithAccounts(ctx context.Context) ([]Lis
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+SELECT id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
 FROM users
 WHERE deleted_at IS NULL
 `
@@ -199,7 +205,6 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		var i User
 		if err := rows.Scan(
 			&i.ID,
-			&i.ExternalID,
 			&i.Provider,
 			&i.Name,
 			&i.Email,
@@ -211,6 +216,8 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DeletedAt,
+			&i.AuthID,
+			&i.OpenFinanceID,
 		); err != nil {
 			return nil, err
 		}
@@ -224,36 +231,39 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET external_id = $2,
-  provider = $3,
-  name = $4,
-  email = $5,
-  verified_email = $6,
-  tier = $7,
-  avatar = $8,
-  subscription_expires_at = $9,
-  synchronized_at = $10
+SET auth_id = $2,
+  open_finance_id = $3,
+  provider = $4,
+  name = $5,
+  email = $6,
+  verified_email = $7,
+  tier = $8,
+  avatar = $9,
+  subscription_expires_at = $10,
+  synchronized_at = $11
 WHERE id = $1
-RETURNING id, external_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+RETURNING id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
 `
 
 type UpdateUserParams struct {
-	ID                    uuid.UUID   `json:"id"`
-	ExternalID            string      `json:"external_id"`
-	Provider              string      `json:"provider"`
-	Name                  string      `json:"name"`
-	Email                 string      `json:"email"`
-	VerifiedEmail         bool        `json:"verified_email"`
-	Tier                  string      `json:"tier"`
-	Avatar                pgtype.Text `json:"avatar"`
-	SubscriptionExpiresAt *time.Time  `json:"subscription_expires_at"`
-	SynchronizedAt        *time.Time  `json:"synchronized_at"`
+	ID                    uuid.UUID  `json:"id"`
+	AuthID                string     `json:"auth_id"`
+	OpenFinanceID         *string    `json:"open_finance_id"`
+	Provider              string     `json:"provider"`
+	Name                  string     `json:"name"`
+	Email                 string     `json:"email"`
+	VerifiedEmail         bool       `json:"verified_email"`
+	Tier                  string     `json:"tier"`
+	Avatar                *string    `json:"avatar"`
+	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
+	SynchronizedAt        *time.Time `json:"synchronized_at"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUser,
 		arg.ID,
-		arg.ExternalID,
+		arg.AuthID,
+		arg.OpenFinanceID,
 		arg.Provider,
 		arg.Name,
 		arg.Email,
@@ -266,7 +276,6 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.ExternalID,
 		&i.Provider,
 		&i.Name,
 		&i.Email,
@@ -278,6 +287,8 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.AuthID,
+		&i.OpenFinanceID,
 	)
 	return i, err
 }

@@ -12,6 +12,10 @@ type AccountRepo interface {
 		ctx context.Context,
 		userID uuid.UUID,
 	) ([]entity.Account, error)
+	ListAccountsByExternalIDs(
+		ctx context.Context,
+		externalIDs []string,
+	) ([]entity.Account, error)
 	CreateAccounts(
 		ctx context.Context,
 		params []CreateAccountsParams,

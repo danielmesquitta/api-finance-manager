@@ -9,7 +9,8 @@ import (
 
 type User struct {
 	ID                    uuid.UUID  `json:"id,omitempty"`
-	ExternalID            string     `json:"external_id,omitempty"`
+	AuthID                string     `json:"auth_id,omitempty"`
+	OpenFinanceID         *string    `json:"open_finance_id,omitempty"`
 	Provider              string     `json:"provider,omitempty"`
 	Name                  string     `json:"name,omitempty"`
 	Email                 string     `json:"email,omitempty"`

@@ -6,6 +6,8 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
 )
 
 type accountsResponse struct {
@@ -13,15 +15,16 @@ type accountsResponse struct {
 }
 
 type accountsResult struct {
-	ID   string `json:"id"`
-	Type string `json:"type"`
-	Name string `json:"name"`
+	ID      string  `json:"id"`
+	Type    string  `json:"type"`
+	Name    string  `json:"name"`
+	Balance float64 `json:"balance"`
 }
 
 func (c *Client) ListAccounts(
 	ctx context.Context,
 	connectionID string,
-) ([]entity.Account, error) {
+) ([]openfinance.Account, error) {
 	if err := c.refreshAccessToken(ctx); err != nil {
 		return nil, errs.New(err)
 	}
@@ -47,12 +50,15 @@ func (c *Client) ListAccounts(
 		return nil, errs.New(err)
 	}
 
-	var accounts []entity.Account
+	var accounts []openfinance.Account
 	for _, a := range accountsRes.Results {
-		accounts = append(accounts, entity.Account{
-			ExternalID: a.ID,
-			Type:       a.Type,
-			Name:       a.Name,
+		accounts = append(accounts, openfinance.Account{
+			Account: entity.Account{
+				ExternalID: a.ID,
+				Type:       a.Type,
+				Name:       a.Name,
+			},
+			Balance: money.ToCents(a.Balance),
 		})
 	}
 

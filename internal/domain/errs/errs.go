@@ -2,7 +2,7 @@ package errs
 
 import (
 	"encoding/json"
-	"log"
+	"fmt"
 	"runtime/debug"
 )
 
@@ -59,8 +59,11 @@ func NewWithType(err any, t Type) *Err {
 	default:
 		jsonData, err := json.Marshal(v)
 		if err != nil {
-			log.Fatalf("trying to create an Err with an unsupported type %T\n%+v", v, err)
-			return nil
+			return &Err{
+				Message:    fmt.Sprintf("unsupported err type %T: %+v", v, err),
+				StackTrace: string(debug.Stack()),
+				Type:       t,
+			}
 		}
 		return &Err{
 			Message:    string(jsonData),

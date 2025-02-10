@@ -1,4 +1,4 @@
-.PHONY: default install update run clear generate build lint create_migration migrate docs test seed
+.PHONY: default install update run clear generate build lint create_migration migrate reset_db docs test seed
 
 include .env
 schema=sql/schema.prisma
@@ -27,6 +27,8 @@ create_migration:
 	@prisma-client-go migrate dev --schema=$(schema) --skip-generate && prisma-to-go triggers --schema=$(schema) && make migrate
 migrate:
 	@prisma-client-go migrate deploy --schema=$(schema)
+reset_db:
+	@prisma-client-go migrate reset --schema=$(schema) --skip-generate
 studio:
 	@npx prisma studio --schema=$(schema)
 test:

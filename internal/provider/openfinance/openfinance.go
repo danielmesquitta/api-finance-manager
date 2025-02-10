@@ -50,6 +50,12 @@ type Transaction struct {
 	CategoryExternalID      string
 	PaymentMethodExternalID string
 }
+
+type Account struct {
+	entity.Account
+	Balance int64
+}
+
 type Client interface {
 	ListInstitutions(
 		ctx context.Context,
@@ -70,5 +76,5 @@ type Client interface {
 	ListAccounts(
 		ctx context.Context,
 		connectionID string,
-	) ([]entity.Account, error)
+	) ([]Account, error)
 }

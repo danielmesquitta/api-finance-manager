@@ -47,14 +47,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/admin/accounts/sync": {
+        "/v1/admin/accounts/sync/all": {
             "post": {
                 "security": [
                     {
                         "BasicAuth": []
                     }
                 ],
-                "description": "Webhook to sync accounts from open finance",
+                "description": "Sync all accounts from open finance",
                 "consumes": [
                     "application/json"
                 ],
@@ -64,7 +64,7 @@ const docTemplate = `{
                 "tags": [
                     "Account"
                 ],
-                "summary": "Sync accounts from open finance",
+                "summary": "Sync all accounts from open finance",
                 "parameters": [
                     {
                         "description": "Request body",
@@ -2040,7 +2040,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "connector": {
-                    "$ref": "#/definitions/usecase.Institution"
+                    "$ref": "#/definitions/usecase.SyncAccountsInstitution"
                 },
                 "executionStatus": {
                     "type": "string"
@@ -2427,17 +2427,6 @@ const docTemplate = `{
                 }
             }
         },
-        "usecase.Institution": {
-            "type": "object",
-            "required": [
-                "id"
-            ],
-            "properties": {
-                "id": {
-                    "type": "integer"
-                }
-            }
-        },
         "usecase.SimpleInterestResult": {
             "type": "object",
             "properties": {
@@ -2448,6 +2437,17 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "total_interest": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.SyncAccountsInstitution": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
                     "type": "integer"
                 }
             }

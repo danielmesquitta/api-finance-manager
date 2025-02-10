@@ -50,7 +50,7 @@ func (g *GoogleOAuth) GetUser(
 	}
 
 	user := entity.User{
-		ExternalID:    userInfo.ID,
+		AuthID:        userInfo.ID,
 		Name:          userInfo.Name,
 		Email:         userInfo.Email,
 		VerifiedEmail: userInfo.VerifiedEmail,

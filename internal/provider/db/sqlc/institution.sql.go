@@ -7,14 +7,12 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type CreateInstitutionsParams struct {
-	ExternalID string      `json:"external_id"`
-	Name       string      `json:"name"`
-	Logo       pgtype.Text `json:"logo"`
+	ExternalID string  `json:"external_id"`
+	Name       string  `json:"name"`
+	Logo       *string `json:"logo"`
 }
 
 const getInstitutionByExternalID = `-- name: GetInstitutionByExternalID :one

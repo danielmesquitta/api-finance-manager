@@ -7,7 +7,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
-	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -21,28 +20,21 @@ func NewAccountBalancePgRepo(db *db.DB) *AccountBalancePgRepo {
 	}
 }
 
-func (r *AccountBalancePgRepo) CreateAccountBalance(
+func (r *AccountBalancePgRepo) CreateAccountBalances(
 	ctx context.Context,
-	params repo.CreateAccountBalanceParams,
+	params []repo.CreateAccountBalancesParams,
 ) error {
-	dbParams := sqlc.CreateAccountBalanceParams{}
+	dbParams := make([]sqlc.CreateAccountBalancesParams, len(params))
 	if err := copier.Copy(&dbParams, params); err != nil {
 		return errs.New(err)
 	}
 
 	tx := r.db.UseTx(ctx)
-	if err := tx.CreateAccountBalance(ctx, dbParams); err != nil {
+	if _, err := tx.CreateAccountBalances(ctx, dbParams); err != nil {
 		return errs.New(err)
 	}
 
 	return nil
-}
-
-func (r *AccountBalancePgRepo) GetUserBalance(
-	ctx context.Context,
-	userID uuid.UUID,
-) (int64, error) {
-	return r.db.GetUserBalance(ctx, userID)
 }
 
 func (r *AccountBalancePgRepo) GetUserBalanceOnDate(

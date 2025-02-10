@@ -40,14 +40,14 @@
                 }
             }
         },
-        "/v1/admin/accounts/sync": {
+        "/v1/admin/accounts/sync/all": {
             "post": {
                 "security": [
                     {
                         "BasicAuth": []
                     }
                 ],
-                "description": "Webhook to sync accounts from open finance",
+                "description": "Sync all accounts from open finance",
                 "consumes": [
                     "application/json"
                 ],
@@ -57,7 +57,7 @@
                 "tags": [
                     "Account"
                 ],
-                "summary": "Sync accounts from open finance",
+                "summary": "Sync all accounts from open finance",
                 "parameters": [
                     {
                         "description": "Request body",
@@ -2033,7 +2033,7 @@
                     "type": "string"
                 },
                 "connector": {
-                    "$ref": "#/definitions/usecase.Institution"
+                    "$ref": "#/definitions/usecase.SyncAccountsInstitution"
                 },
                 "executionStatus": {
                     "type": "string"
@@ -2420,17 +2420,6 @@
                 }
             }
         },
-        "usecase.Institution": {
-            "type": "object",
-            "required": [
-                "id"
-            ],
-            "properties": {
-                "id": {
-                    "type": "integer"
-                }
-            }
-        },
         "usecase.SimpleInterestResult": {
             "type": "object",
             "properties": {
@@ -2441,6 +2430,17 @@
                     "type": "integer"
                 },
                 "total_interest": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecase.SyncAccountsInstitution": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
                     "type": "integer"
                 }
             }

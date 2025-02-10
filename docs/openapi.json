@@ -601,7 +601,7 @@
                         "type": "string"
                     },
                     "connector": {
-                        "$ref": "#/components/schemas/usecase.Institution"
+                        "$ref": "#/components/schemas/usecase.SyncAccountsInstitution"
                     },
                     "executionStatus": {
                         "type": "string"
@@ -995,17 +995,6 @@
                 },
                 "type": "object"
             },
-            "usecase.Institution": {
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "id"
-                ],
-                "type": "object"
-            },
             "usecase.SimpleInterestResult": {
                 "properties": {
                     "total_amount": {
@@ -1018,6 +1007,17 @@
                         "type": "integer"
                     }
                 },
+                "type": "object"
+            },
+            "usecase.SyncAccountsInstitution": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "id"
+                ],
                 "type": "object"
             },
             "usecase.UpsertBudgetCategoryInput": {
@@ -1091,9 +1091,9 @@
                 ]
             }
         },
-        "/v1/admin/accounts/sync": {
+        "/v1/admin/accounts/sync/all": {
             "post": {
-                "description": "Webhook to sync accounts from open finance",
+                "description": "Sync all accounts from open finance",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -1136,7 +1136,7 @@
                         "BasicAuth": []
                     }
                 ],
-                "summary": "Sync accounts from open finance",
+                "summary": "Sync all accounts from open finance",
                 "tags": [
                     "Account"
                 ]

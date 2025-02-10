@@ -21,7 +21,7 @@ func NewAccountHandler(
 }
 
 // @Summary Sync accounts from open finance
-// @Description Webhook to sync accounts from open finance
+// @Description Webhook to sync user accounts from open finance
 // @Tags Account
 // @Security BasicAuth
 // @Accept json

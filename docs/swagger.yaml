@@ -402,7 +402,7 @@ definitions:
       clientUserId:
         type: string
       connector:
-        $ref: '#/definitions/usecase.Institution'
+        $ref: '#/definitions/usecase.SyncAccountsInstitution'
       executionStatus:
         type: string
       id:
@@ -665,13 +665,6 @@ definitions:
       updated_at:
         type: string
     type: object
-  usecase.Institution:
-    properties:
-      id:
-        type: integer
-    required:
-    - id
-    type: object
   usecase.SimpleInterestResult:
     properties:
       total_amount:
@@ -680,6 +673,13 @@ definitions:
         type: integer
       total_interest:
         type: integer
+    type: object
+  usecase.SyncAccountsInstitution:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
     type: object
   usecase.UpsertBudgetCategoryInput:
     properties:
@@ -718,11 +718,11 @@ paths:
       summary: Health check
       tags:
       - Health
-  /v1/admin/accounts/sync:
+  /v1/admin/accounts/sync/all:
     post:
       consumes:
       - application/json
-      description: Webhook to sync accounts from open finance
+      description: Sync all accounts from open finance
       parameters:
       - description: Request body
         in: body
@@ -745,7 +745,7 @@ paths:
             $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BasicAuth: []
-      summary: Sync accounts from open finance
+      summary: Sync all accounts from open finance
       tags:
       - Account
   /v1/admin/institutions/sync:

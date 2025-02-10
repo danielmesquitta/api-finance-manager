@@ -11,7 +11,8 @@ generator client {
 
 model User {
   id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id             String
+  auth_id                 String
+  open_finance_id         String?
   provider                String
   name                    String
   email                   String    @unique

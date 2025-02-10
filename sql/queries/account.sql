@@ -6,3 +6,8 @@ WHERE user_id = $1
 -- name: CreateAccounts :copyfrom
 INSERT INTO accounts (external_id, name, type, user_id, institution_id)
 VALUES ($1, $2, $3, $4, $5);
+-- name: ListAccountsByExternalIDs :many
+SELECT *
+FROM accounts
+WHERE external_id = ANY(sqlc.arg(externalIDs)::text [])
+  AND deleted_at IS NULL;

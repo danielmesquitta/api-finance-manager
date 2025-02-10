@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type CreateTransactionsParams struct {
@@ -46,24 +45,24 @@ type GetTransactionParams struct {
 }
 
 type GetTransactionRow struct {
-	ID                uuid.UUID   `json:"id"`
-	ExternalID        string      `json:"external_id"`
-	Name              string      `json:"name"`
-	Amount            int64       `json:"amount"`
-	IsIgnored         bool        `json:"is_ignored"`
-	Date              time.Time   `json:"date"`
-	CreatedAt         time.Time   `json:"created_at"`
-	UpdatedAt         time.Time   `json:"updated_at"`
-	DeletedAt         *time.Time  `json:"deleted_at"`
-	PaymentMethodID   uuid.UUID   `json:"payment_method_id"`
-	UserID            uuid.UUID   `json:"user_id"`
-	AccountID         *uuid.UUID  `json:"account_id"`
-	InstitutionID     *uuid.UUID  `json:"institution_id"`
-	CategoryID        *uuid.UUID  `json:"category_id"`
-	CategoryName      pgtype.Text `json:"category_name"`
-	InstitutionName   pgtype.Text `json:"institution_name"`
-	InstitutionLogo   pgtype.Text `json:"institution_logo"`
-	PaymentMethodName pgtype.Text `json:"payment_method_name"`
+	ID                uuid.UUID  `json:"id"`
+	ExternalID        string     `json:"external_id"`
+	Name              string     `json:"name"`
+	Amount            int64      `json:"amount"`
+	IsIgnored         bool       `json:"is_ignored"`
+	Date              time.Time  `json:"date"`
+	CreatedAt         time.Time  `json:"created_at"`
+	UpdatedAt         time.Time  `json:"updated_at"`
+	DeletedAt         *time.Time `json:"deleted_at"`
+	PaymentMethodID   uuid.UUID  `json:"payment_method_id"`
+	UserID            uuid.UUID  `json:"user_id"`
+	AccountID         *uuid.UUID `json:"account_id"`
+	InstitutionID     *uuid.UUID `json:"institution_id"`
+	CategoryID        *uuid.UUID `json:"category_id"`
+	CategoryName      *string    `json:"category_name"`
+	InstitutionName   *string    `json:"institution_name"`
+	InstitutionLogo   *string    `json:"institution_logo"`
+	PaymentMethodName *string    `json:"payment_method_name"`
 }
 
 func (q *Queries) GetTransaction(ctx context.Context, arg GetTransactionParams) (GetTransactionRow, error) {

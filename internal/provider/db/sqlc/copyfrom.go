@@ -9,6 +9,40 @@ import (
 	"context"
 )
 
+// iteratorForCreateAccountBalances implements pgx.CopyFromSource.
+type iteratorForCreateAccountBalances struct {
+	rows                 []CreateAccountBalancesParams
+	skippedFirstNextCall bool
+}
+
+func (r *iteratorForCreateAccountBalances) Next() bool {
+	if len(r.rows) == 0 {
+		return false
+	}
+	if !r.skippedFirstNextCall {
+		r.skippedFirstNextCall = true
+		return true
+	}
+	r.rows = r.rows[1:]
+	return len(r.rows) > 0
+}
+
+func (r iteratorForCreateAccountBalances) Values() ([]interface{}, error) {
+	return []interface{}{
+		r.rows[0].Amount,
+		r.rows[0].UserID,
+		r.rows[0].AccountID,
+	}, nil
+}
+
+func (r iteratorForCreateAccountBalances) Err() error {
+	return nil
+}
+
+func (q *Queries) CreateAccountBalances(ctx context.Context, arg []CreateAccountBalancesParams) (int64, error) {
+	return q.db.CopyFrom(ctx, []string{"account_balances"}, []string{"amount", "user_id", "account_id"}, &iteratorForCreateAccountBalances{rows: arg})
+}
+
 // iteratorForCreateAccounts implements pgx.CopyFromSource.
 type iteratorForCreateAccounts struct {
 	rows                 []CreateAccountsParams

@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Account struct {
@@ -54,13 +53,13 @@ type BudgetCategory struct {
 }
 
 type Institution struct {
-	ID         uuid.UUID   `json:"id"`
-	ExternalID string      `json:"external_id"`
-	Name       string      `json:"name"`
-	Logo       pgtype.Text `json:"logo"`
-	CreatedAt  time.Time   `json:"created_at"`
-	UpdatedAt  time.Time   `json:"updated_at"`
-	DeletedAt  *time.Time  `json:"deleted_at"`
+	ID         uuid.UUID  `json:"id"`
+	ExternalID string     `json:"external_id"`
+	Name       string     `json:"name"`
+	Logo       *string    `json:"logo"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
 }
 
 type Investment struct {
@@ -122,17 +121,18 @@ type TransactionCategory struct {
 }
 
 type User struct {
-	ID                    uuid.UUID   `json:"id"`
-	ExternalID            string      `json:"external_id"`
-	Provider              string      `json:"provider"`
-	Name                  string      `json:"name"`
-	Email                 string      `json:"email"`
-	VerifiedEmail         bool        `json:"verified_email"`
-	Tier                  string      `json:"tier"`
-	Avatar                pgtype.Text `json:"avatar"`
-	SubscriptionExpiresAt *time.Time  `json:"subscription_expires_at"`
-	SynchronizedAt        *time.Time  `json:"synchronized_at"`
-	CreatedAt             time.Time   `json:"created_at"`
-	UpdatedAt             time.Time   `json:"updated_at"`
-	DeletedAt             *time.Time  `json:"deleted_at"`
+	ID                    uuid.UUID  `json:"id"`
+	Provider              string     `json:"provider"`
+	Name                  string     `json:"name"`
+	Email                 string     `json:"email"`
+	VerifiedEmail         bool       `json:"verified_email"`
+	Tier                  string     `json:"tier"`
+	Avatar                *string    `json:"avatar"`
+	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
+	SynchronizedAt        *time.Time `json:"synchronized_at"`
+	CreatedAt             time.Time  `json:"created_at"`
+	UpdatedAt             time.Time  `json:"updated_at"`
+	DeletedAt             *time.Time `json:"deleted_at"`
+	AuthID                string     `json:"auth_id"`
+	OpenFinanceID         *string    `json:"open_finance_id"`
 }

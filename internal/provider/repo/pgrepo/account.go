@@ -57,4 +57,24 @@ func (r *AccountPgRepo) CreateAccounts(
 	return nil
 }
 
+func (r *AccountPgRepo) ListAccountsByExternalIDs(
+	ctx context.Context,
+	externalIDs []string,
+) ([]entity.Account, error) {
+	accounts, err := r.db.ListAccountsByExternalIDs(
+		ctx,
+		externalIDs,
+	)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	results := []entity.Account{}
+	if err := copier.Copy(&results, accounts); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return results, nil
+}
+
 var _ repo.AccountRepo = &AccountPgRepo{}

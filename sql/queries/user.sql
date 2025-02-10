@@ -8,7 +8,8 @@ FROM users
 WHERE email = $1;
 -- name: CreateUser :one
 INSERT INTO users (
-    external_id,
+    auth_id,
+    open_finance_id,
     provider,
     name,
     email,
@@ -17,19 +18,20 @@ INSERT INTO users (
     avatar,
     subscription_expires_at
   )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
 RETURNING *;
 -- name: UpdateUser :one
 UPDATE users
-SET external_id = $2,
-  provider = $3,
-  name = $4,
-  email = $5,
-  verified_email = $6,
-  tier = $7,
-  avatar = $8,
-  subscription_expires_at = $9,
-  synchronized_at = $10
+SET auth_id = $2,
+  open_finance_id = $3,
+  provider = $4,
+  name = $5,
+  email = $6,
+  verified_email = $7,
+  tier = $8,
+  avatar = $9,
+  subscription_expires_at = $10,
+  synchronized_at = $11
 WHERE id = $1
 RETURNING *;
 -- name: ListUsers :many

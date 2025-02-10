@@ -40,11 +40,14 @@ func main() {
 		panic(string(res.Body()))
 	}
 
+	signInRes := dto.SignInResponse{}
+
 	res, err = client.R().
 		SetHeader("Authorization", mockoauth.MockToken).
 		SetBody(dto.SignInRequest{SignInInput: usecase.SignInInput{
 			Provider: entity.ProviderMock,
 		}}).
+		SetResult(&signInRes).
 		Post("/v1/auth/sign-in")
 	if err != nil {
 		panic(err)
@@ -82,6 +85,10 @@ func main() {
 	syncAccountsReqs := []dto.SyncAccountsRequest{}
 	if err := json.Unmarshal(data, &syncAccountsReqs); err != nil {
 		panic(err)
+	}
+
+	for i := range syncAccountsReqs {
+		syncAccountsReqs[i].ClientUserID = signInRes.User.ID
 	}
 
 	g, ctx := errgroup.WithContext(context.Background())

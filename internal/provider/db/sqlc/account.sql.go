@@ -19,6 +19,43 @@ type CreateAccountsParams struct {
 	InstitutionID uuid.UUID `json:"institution_id"`
 }
 
+const listAccountsByExternalIDs = `-- name: ListAccountsByExternalIDs :many
+SELECT id, external_id, name, type, created_at, updated_at, deleted_at, user_id, institution_id
+FROM accounts
+WHERE external_id = ANY($1::text [])
+  AND deleted_at IS NULL
+`
+
+func (q *Queries) ListAccountsByExternalIDs(ctx context.Context, externalids []string) ([]Account, error) {
+	rows, err := q.db.Query(ctx, listAccountsByExternalIDs, externalids)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Account
+	for rows.Next() {
+		var i Account
+		if err := rows.Scan(
+			&i.ID,
+			&i.ExternalID,
+			&i.Name,
+			&i.Type,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.DeletedAt,
+			&i.UserID,
+			&i.InstitutionID,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listAccountsByUserID = `-- name: ListAccountsByUserID :many
 SELECT id, external_id, name, type, created_at, updated_at, deleted_at, user_id, institution_id
 FROM accounts
