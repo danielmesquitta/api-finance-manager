@@ -9,17 +9,17 @@ import (
 )
 
 type TransactionOptions struct {
-	Limit           uint      `json:"limit"`
-	Offset          uint      `json:"offset"`
-	Search          string    `json:"search"`
-	StartDate       time.Time `json:"start_date"`
-	EndDate         time.Time `json:"end_date"`
-	CategoryID      uuid.UUID `json:"category_id"`
-	InstitutionID   uuid.UUID `json:"institution_id"`
-	IsExpense       bool      `json:"is_expense"`
-	IsIncome        bool      `json:"is_income"`
-	PaymentMethodID uuid.UUID `json:"payment_method"`
-	IsIgnored       *bool     `json:"is_ignored"`
+	Limit            uint        `json:"limit"`
+	Offset           uint        `json:"offset"`
+	Search           string      `json:"search"`
+	StartDate        time.Time   `json:"start_date"`
+	EndDate          time.Time   `json:"end_date"`
+	CategoryIDs      []uuid.UUID `json:"category_ids"`
+	InstitutionIDs   []uuid.UUID `json:"institution_ids"`
+	PaymentMethodIDs []uuid.UUID `json:"payment_method_ids"`
+	IsExpense        bool        `json:"is_expense"`
+	IsIncome         bool        `json:"is_income"`
+	IsIgnored        *bool       `json:"is_ignored"`
 }
 
 type TransactionOption func(*TransactionOptions)
@@ -52,17 +52,25 @@ func WithTransactionDateBefore(endDate time.Time) TransactionOption {
 	}
 }
 
-func WithTransactionCategory(categoryID uuid.UUID) TransactionOption {
+func WithTransactionCategories(categoryIDs ...uuid.UUID) TransactionOption {
 	return func(o *TransactionOptions) {
-		o.CategoryID = categoryID
+		o.CategoryIDs = categoryIDs
 	}
 }
 
-func WithTransactionInstitution(
-	institutionID uuid.UUID,
+func WithTransactionInstitutions(
+	institutionIDs ...uuid.UUID,
 ) TransactionOption {
 	return func(o *TransactionOptions) {
-		o.InstitutionID = institutionID
+		o.InstitutionIDs = institutionIDs
+	}
+}
+
+func WithTransactionPaymentMethods(
+	paymentMethodIDs ...uuid.UUID,
+) TransactionOption {
+	return func(o *TransactionOptions) {
+		o.PaymentMethodIDs = paymentMethodIDs
 	}
 }
 
@@ -75,14 +83,6 @@ func WithTransactionIsExpense(isExpense bool) TransactionOption {
 func WithTransactionIsIncome(isIncome bool) TransactionOption {
 	return func(o *TransactionOptions) {
 		o.IsIncome = isIncome
-	}
-}
-
-func WithTransactionPaymentMethod(
-	paymentMethodID uuid.UUID,
-) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.PaymentMethodID = paymentMethodID
 	}
 }
 

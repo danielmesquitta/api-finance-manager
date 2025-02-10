@@ -72,21 +72,28 @@ func parseDateParam(
 	return date, nil
 }
 
-func parseUUIDParam(
+func parseUUIDsParam(
 	c echo.Context,
 	param QueryParam,
-) (uuid.UUID, error) {
-	paramValue := c.QueryParam(param)
-	if paramValue == "" {
-		return uuid.Nil, nil
+) ([]uuid.UUID, error) {
+	values := c.QueryParams()[param]
+	if len(values) == 0 {
+		return nil, nil
 	}
 
-	id, err := uuid.Parse(paramValue)
-	if err != nil {
-		return uuid.Nil, errs.ErrInvalidUUID
+	var uuids []uuid.UUID
+	for _, value := range values {
+		if value == "" {
+			continue
+		}
+		id, err := uuid.Parse(value)
+		if err != nil {
+			return nil, errs.ErrInvalidUUID
+		}
+		uuids = append(uuids, id)
 	}
 
-	return id, nil
+	return uuids, nil
 }
 
 func parseBoolParam(
@@ -134,17 +141,17 @@ func prepareTransactionOptions(
 ) (*repo.TransactionOptions, error) {
 	search := c.QueryParam(queryParamSearch)
 
-	paymentMethodID, err := parseUUIDParam(c, queryParamPaymentMethodID)
+	paymentMethodIDs, err := parseUUIDsParam(c, queryParamPaymentMethodID)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	institutionID, err := parseUUIDParam(c, queryParamInstitutionID)
+	institutionIDs, err := parseUUIDsParam(c, queryParamInstitutionID)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	categoryID, err := parseUUIDParam(c, queryParamCategoryID)
+	categoryIDs, err := parseUUIDsParam(c, queryParamCategoryID)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -165,12 +172,12 @@ func prepareTransactionOptions(
 	}
 
 	return &repo.TransactionOptions{
-		Search:          search,
-		CategoryID:      categoryID,
-		InstitutionID:   institutionID,
-		IsExpense:       isExpense,
-		IsIncome:        isIncome,
-		IsIgnored:       isIgnored,
-		PaymentMethodID: paymentMethodID,
+		Search:           search,
+		CategoryIDs:      categoryIDs,
+		InstitutionIDs:   institutionIDs,
+		PaymentMethodIDs: paymentMethodIDs,
+		IsExpense:        isExpense,
+		IsIncome:         isIncome,
+		IsIgnored:        isIgnored,
 	}, nil
 }

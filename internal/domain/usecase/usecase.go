@@ -6,7 +6,6 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
-	"github.com/google/uuid"
 )
 
 type PaginationInput struct {
@@ -157,17 +156,24 @@ func prepareTransactionOptions(
 		opts = append(opts, repo.WithTransactionSearch(in.Search))
 	}
 
-	if in.CategoryID != uuid.Nil {
+	if len(in.CategoryIDs) > 0 {
 		opts = append(
 			opts,
-			repo.WithTransactionCategory(in.CategoryID),
+			repo.WithTransactionCategories(in.CategoryIDs...),
 		)
 	}
 
-	if in.InstitutionID != uuid.Nil {
+	if len(in.InstitutionIDs) > 0 {
 		opts = append(
 			opts,
-			repo.WithTransactionInstitution(in.InstitutionID),
+			repo.WithTransactionInstitutions(in.InstitutionIDs...),
+		)
+	}
+
+	if len(in.PaymentMethodIDs) > 0 {
+		opts = append(
+			opts,
+			repo.WithTransactionPaymentMethods(in.PaymentMethodIDs...),
 		)
 	}
 
@@ -213,13 +219,6 @@ func prepareTransactionOptions(
 		opts = append(
 			opts,
 			repo.WithTransactionIsIgnored(*in.IsIgnored),
-		)
-	}
-
-	if in.PaymentMethodID != uuid.Nil {
-		opts = append(
-			opts,
-			repo.WithTransactionPaymentMethod(in.PaymentMethodID),
 		)
 	}
 

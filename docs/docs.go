@@ -47,14 +47,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/admin/accounts/sync/all": {
+        "/v1/admin/accounts/sync": {
             "post": {
                 "security": [
                     {
                         "BasicAuth": []
                     }
                 ],
-                "description": "Sync all accounts from open finance",
+                "description": "Webhook to sync user accounts from open finance",
                 "consumes": [
                     "application/json"
                 ],
@@ -64,7 +64,7 @@ const docTemplate = `{
                 "tags": [
                     "Account"
                 ],
-                "summary": "Sync all accounts from open finance",
+                "summary": "Sync accounts from open finance",
                 "parameters": [
                     {
                         "description": "Request body",
@@ -330,24 +330,33 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Institution ID",
-                        "name": "institution_id",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Institution IDs",
+                        "name": "institution_ids",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Category ID",
-                        "name": "category_id",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Category IDs",
+                        "name": "category_ids",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Payment method ID",
-                        "name": "payment_method_id",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Payment method IDs",
+                        "name": "payment_method_ids",
                         "in": "query"
                     },
                     {
@@ -1088,24 +1097,33 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Institution ID",
-                        "name": "institution_id",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Institution IDs",
+                        "name": "institution_ids",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Category ID",
-                        "name": "category_id",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Category IDs",
+                        "name": "category_ids",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "format": "uuid",
-                        "description": "Payment method ID",
-                        "name": "payment_method_id",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Payment method IDs",
+                        "name": "payment_method_ids",
                         "in": "query"
                     },
                     {
@@ -2106,6 +2124,9 @@ const docTemplate = `{
         "dto.UserProfileResponse": {
             "type": "object",
             "properties": {
+                "auth_id": {
+                    "type": "string"
+                },
                 "avatar": {
                     "type": "string"
                 },
@@ -2118,13 +2139,13 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "external_id": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "open_finance_id": {
                     "type": "string"
                 },
                 "provider": {
@@ -2297,6 +2318,9 @@ const docTemplate = `{
         "entity.User": {
             "type": "object",
             "properties": {
+                "auth_id": {
+                    "type": "string"
+                },
                 "avatar": {
                     "type": "string"
                 },
@@ -2309,13 +2333,13 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
-                "external_id": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "open_finance_id": {
                     "type": "string"
                 },
                 "provider": {

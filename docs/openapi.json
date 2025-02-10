@@ -673,6 +673,9 @@
             },
             "dto.UserProfileResponse": {
                 "properties": {
+                    "auth_id": {
+                        "type": "string"
+                    },
                     "avatar": {
                         "type": "string"
                     },
@@ -685,13 +688,13 @@
                     "email": {
                         "type": "string"
                     },
-                    "external_id": {
-                        "type": "string"
-                    },
                     "id": {
                         "type": "string"
                     },
                     "name": {
+                        "type": "string"
+                    },
+                    "open_finance_id": {
                         "type": "string"
                     },
                     "provider": {
@@ -864,6 +867,9 @@
             },
             "entity.User": {
                 "properties": {
+                    "auth_id": {
+                        "type": "string"
+                    },
                     "avatar": {
                         "type": "string"
                     },
@@ -876,13 +882,13 @@
                     "email": {
                         "type": "string"
                     },
-                    "external_id": {
-                        "type": "string"
-                    },
                     "id": {
                         "type": "string"
                     },
                     "name": {
+                        "type": "string"
+                    },
+                    "open_finance_id": {
                         "type": "string"
                     },
                     "provider": {
@@ -1091,9 +1097,9 @@
                 ]
             }
         },
-        "/v1/admin/accounts/sync/all": {
+        "/v1/admin/accounts/sync": {
             "post": {
-                "description": "Sync all accounts from open finance",
+                "description": "Webhook to sync user accounts from open finance",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -1136,7 +1142,7 @@
                         "BasicAuth": []
                     }
                 ],
-                "summary": "Sync all accounts from open finance",
+                "summary": "Sync accounts from open finance",
                 "tags": [
                     "Account"
                 ]
@@ -1385,30 +1391,36 @@
                         }
                     },
                     {
-                        "description": "Institution ID",
+                        "description": "Institution IDs",
                         "in": "query",
-                        "name": "institution_id",
+                        "name": "institution_ids",
                         "schema": {
-                            "format": "uuid",
-                            "type": "string"
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
                         }
                     },
                     {
-                        "description": "Category ID",
+                        "description": "Category IDs",
                         "in": "query",
-                        "name": "category_id",
+                        "name": "category_ids",
                         "schema": {
-                            "format": "uuid",
-                            "type": "string"
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
                         }
                     },
                     {
-                        "description": "Payment method ID",
+                        "description": "Payment method IDs",
                         "in": "query",
-                        "name": "payment_method_id",
+                        "name": "payment_method_ids",
                         "schema": {
-                            "format": "uuid",
-                            "type": "string"
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
                         }
                     },
                     {
@@ -2305,30 +2317,36 @@
                         }
                     },
                     {
-                        "description": "Institution ID",
+                        "description": "Institution IDs",
                         "in": "query",
-                        "name": "institution_id",
+                        "name": "institution_ids",
                         "schema": {
-                            "format": "uuid",
-                            "type": "string"
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
                         }
                     },
                     {
-                        "description": "Category ID",
+                        "description": "Category IDs",
                         "in": "query",
-                        "name": "category_id",
+                        "name": "category_ids",
                         "schema": {
-                            "format": "uuid",
-                            "type": "string"
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
                         }
                     },
                     {
-                        "description": "Payment method ID",
+                        "description": "Payment method IDs",
                         "in": "query",
-                        "name": "payment_method_id",
+                        "name": "payment_method_ids",
                         "schema": {
-                            "format": "uuid",
-                            "type": "string"
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
                         }
                     },
                     {

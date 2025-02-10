@@ -42,15 +42,16 @@ func (uc *ListBudgetCategoryTransactions) Execute(
 	}
 
 	isIgnored := false
+	categoryIDs := []uuid.UUID{in.CategoryID}
 
 	transactions, err := uc.lt.Execute(ctx, ListTransactionsInput{
 		PaginationInput: in.PaginationInput,
 		Date:            in.Date,
 		UserID:          in.UserID,
 		TransactionOptions: repo.TransactionOptions{
-			CategoryID: in.CategoryID,
-			IsExpense:  true,
-			IsIgnored:  &isIgnored,
+			CategoryIDs: categoryIDs,
+			IsExpense:   true,
+			IsIgnored:   &isIgnored,
 		},
 	})
 	if err != nil {

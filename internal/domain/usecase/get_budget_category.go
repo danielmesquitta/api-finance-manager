@@ -78,7 +78,7 @@ func (uc *GetBudgetCategory) Execute(
 	transactionOpts := []repo.TransactionOption{
 		repo.WithTransactionDateAfter(monthStart),
 		repo.WithTransactionDateBefore(monthEnd),
-		repo.WithTransactionCategory(in.CategoryID),
+		repo.WithTransactionCategories(in.CategoryID),
 		repo.WithTransactionIsIgnored(false),
 		repo.WithTransactionIsExpense(true),
 	}

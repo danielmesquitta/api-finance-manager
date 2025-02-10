@@ -450,6 +450,8 @@ definitions:
     type: object
   dto.UserProfileResponse:
     properties:
+      auth_id:
+        type: string
       avatar:
         type: string
       created_at:
@@ -458,11 +460,11 @@ definitions:
         type: string
       email:
         type: string
-      external_id:
-        type: string
       id:
         type: string
       name:
+        type: string
+      open_finance_id:
         type: string
       provider:
         type: string
@@ -580,6 +582,8 @@ definitions:
     type: object
   entity.User:
     properties:
+      auth_id:
+        type: string
       avatar:
         type: string
       created_at:
@@ -588,11 +592,11 @@ definitions:
         type: string
       email:
         type: string
-      external_id:
-        type: string
       id:
         type: string
       name:
+        type: string
+      open_finance_id:
         type: string
       provider:
         type: string
@@ -718,11 +722,11 @@ paths:
       summary: Health check
       tags:
       - Health
-  /v1/admin/accounts/sync/all:
+  /v1/admin/accounts/sync:
     post:
       consumes:
       - application/json
-      description: Sync all accounts from open finance
+      description: Webhook to sync user accounts from open finance
       parameters:
       - description: Request body
         in: body
@@ -745,7 +749,7 @@ paths:
             $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BasicAuth: []
-      summary: Sync all accounts from open finance
+      summary: Sync accounts from open finance
       tags:
       - Account
   /v1/admin/institutions/sync:
@@ -890,21 +894,27 @@ paths:
         in: query
         name: date
         type: string
-      - description: Institution ID
-        format: uuid
+      - collectionFormat: csv
+        description: Institution IDs
         in: query
-        name: institution_id
-        type: string
-      - description: Category ID
-        format: uuid
+        items:
+          type: string
+        name: institution_ids
+        type: array
+      - collectionFormat: csv
+        description: Category IDs
         in: query
-        name: category_id
-        type: string
-      - description: Payment method ID
-        format: uuid
+        items:
+          type: string
+        name: category_ids
+        type: array
+      - collectionFormat: csv
+        description: Payment method IDs
         in: query
-        name: payment_method_id
-        type: string
+        items:
+          type: string
+        name: payment_method_ids
+        type: array
       - description: Filter only expenses
         in: query
         name: is_expense
@@ -1377,21 +1387,27 @@ paths:
         in: query
         name: date
         type: string
-      - description: Institution ID
-        format: uuid
+      - collectionFormat: csv
+        description: Institution IDs
         in: query
-        name: institution_id
-        type: string
-      - description: Category ID
-        format: uuid
+        items:
+          type: string
+        name: institution_ids
+        type: array
+      - collectionFormat: csv
+        description: Category IDs
         in: query
-        name: category_id
-        type: string
-      - description: Payment method ID
-        format: uuid
+        items:
+          type: string
+        name: category_ids
+        type: array
+      - collectionFormat: csv
+        description: Payment method IDs
         in: query
-        name: payment_method_id
-        type: string
+        items:
+          type: string
+        name: payment_method_ids
+        type: array
       - description: Filter only expenses
         in: query
         name: is_expense

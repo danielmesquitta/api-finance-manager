@@ -450,6 +450,8 @@ components:
             type: object
         dto.UserProfileResponse:
             properties:
+                auth_id:
+                    type: string
                 avatar:
                     type: string
                 created_at:
@@ -458,11 +460,11 @@ components:
                     type: string
                 email:
                     type: string
-                external_id:
-                    type: string
                 id:
                     type: string
                 name:
+                    type: string
+                open_finance_id:
                     type: string
                 provider:
                     type: string
@@ -580,6 +582,8 @@ components:
             type: object
         entity.User:
             properties:
+                auth_id:
+                    type: string
                 avatar:
                     type: string
                 created_at:
@@ -588,11 +592,11 @@ components:
                     type: string
                 email:
                     type: string
-                external_id:
-                    type: string
                 id:
                     type: string
                 name:
+                    type: string
+                open_finance_id:
                     type: string
                 provider:
                     type: string
@@ -728,9 +732,9 @@ paths:
             summary: Health check
             tags:
                 - Health
-    /v1/admin/accounts/sync/all:
+    /v1/admin/accounts/sync:
         post:
-            description: Sync all accounts from open finance
+            description: Webhook to sync user accounts from open finance
             requestBody:
                 content:
                     application/json:
@@ -756,7 +760,7 @@ paths:
                     description: Internal Server Error
             security:
                 - BasicAuth: []
-            summary: Sync all accounts from open finance
+            summary: Sync accounts from open finance
             tags:
                 - Account
     /v1/admin/institutions/sync:
@@ -905,24 +909,27 @@ paths:
                   schema:
                     format: date
                     type: string
-                - description: Institution ID
+                - description: Institution IDs
                   in: query
-                  name: institution_id
+                  name: institution_ids
                   schema:
-                    format: uuid
-                    type: string
-                - description: Category ID
+                    items:
+                        type: string
+                    type: array
+                - description: Category IDs
                   in: query
-                  name: category_id
+                  name: category_ids
                   schema:
-                    format: uuid
-                    type: string
-                - description: Payment method ID
+                    items:
+                        type: string
+                    type: array
+                - description: Payment method IDs
                   in: query
-                  name: payment_method_id
+                  name: payment_method_ids
                   schema:
-                    format: uuid
-                    type: string
+                    items:
+                        type: string
+                    type: array
                 - description: Filter only expenses
                   in: query
                   name: is_expense
@@ -1464,24 +1471,27 @@ paths:
                   schema:
                     format: date
                     type: string
-                - description: Institution ID
+                - description: Institution IDs
                   in: query
-                  name: institution_id
+                  name: institution_ids
                   schema:
-                    format: uuid
-                    type: string
-                - description: Category ID
+                    items:
+                        type: string
+                    type: array
+                - description: Category IDs
                   in: query
-                  name: category_id
+                  name: category_ids
                   schema:
-                    format: uuid
-                    type: string
-                - description: Payment method ID
+                    items:
+                        type: string
+                    type: array
+                - description: Payment method IDs
                   in: query
-                  name: payment_method_id
+                  name: payment_method_ids
                   schema:
-                    format: uuid
-                    type: string
+                    items:
+                        type: string
+                    type: array
                 - description: Filter only expenses
                   in: query
                   name: is_expense

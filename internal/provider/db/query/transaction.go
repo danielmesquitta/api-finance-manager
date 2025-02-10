@@ -256,19 +256,27 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 		orderedExps = append(orderedExps, distanceExp.Asc())
 	}
 
-	if options.CategoryID != uuid.Nil {
+	if len(options.CategoryIDs) > 0 {
 		whereExps = append(
 			whereExps,
 			goqu.I(tableTransaction.ColumnCategoryID()).
-				Eq(options.CategoryID),
+				In(options.CategoryIDs),
 		)
 	}
 
-	if options.InstitutionID != uuid.Nil {
+	if len(options.InstitutionIDs) > 0 {
 		whereExps = append(
 			whereExps,
 			goqu.I(tableTransaction.ColumnInstitutionID()).
-				Eq(options.InstitutionID),
+				In(options.InstitutionIDs),
+		)
+	}
+
+	if len(options.PaymentMethodIDs) > 0 {
+		whereExps = append(
+			whereExps,
+			goqu.I(tableTransaction.ColumnPaymentMethodID()).
+				In(options.PaymentMethodIDs),
 		)
 	}
 
@@ -304,14 +312,6 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 		whereExps = append(
 			whereExps,
 			goqu.I(tableTransaction.ColumnIsIgnored()).Eq(*options.IsIgnored),
-		)
-	}
-
-	if options.PaymentMethodID != uuid.Nil {
-		whereExps = append(
-			whereExps,
-			goqu.I(tableTransaction.ColumnPaymentMethodID()).
-				Eq(options.PaymentMethodID),
 		)
 	}
 
