@@ -87,9 +87,10 @@ func (r *Router) Register(
 
 	adminApiV1 := apiV1.Group("/admin", r.m.BasicAuth)
 	adminApiV1.POST("/institutions/sync", r.ih.Sync)
-	adminApiV1.POST("/accounts/sync", r.ach.Sync)
+	adminApiV1.POST("/accounts", r.ach.Create)
 	adminApiV1.POST("/transactions/categories/sync", r.cth.Sync)
 	adminApiV1.POST("/transactions/sync", r.th.Sync)
+	adminApiV1.POST("/balances/sync", r.bah.Sync)
 
 	usersApiV1 := apiV1.Group("", r.m.BearerAuthAccessToken())
 

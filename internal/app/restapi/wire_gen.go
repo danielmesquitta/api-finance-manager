@@ -15,6 +15,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/rediscache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
@@ -68,17 +69,19 @@ func NewDev(v *validator.Validator, e *config.Env) *App {
 	budgetHandler := handler.NewBudgetHandler(upsertBudget, getBudget, getBudgetCategory, deleteBudget, listBudgetCategoryTransactions)
 	getUser := usecase.NewGetUser(userPgRepo)
 	userHandler := handler.NewUserHandler(getUser)
-	accountPgRepo := pgrepo.NewAccountPgRepo(dbDB)
+	accountPgRepo := pgrepo.NewAccountPgRepo(dbDB, queryBuilder)
 	accountBalancePgRepo := pgrepo.NewAccountBalancePgRepo(dbDB)
-	syncAccounts := usecase.NewSyncAccounts(v, mockpluggyClient, pgxTX, userPgRepo, accountPgRepo, accountBalancePgRepo, institutionPgRepo)
-	accountHandler := handler.NewAccountHandler(syncAccounts)
+	redisCache := rediscache.NewRedisCache(e)
 	paymentMethodPgRepo := pgrepo.NewPaymentMethodPgRepo(dbDB, queryBuilder)
-	syncTransactions := usecase.NewSyncTransactions(v, mockpluggyClient, pgxTX, userPgRepo, transactionPgRepo, categoryPgRepo, paymentMethodPgRepo)
+	syncTransactions := usecase.NewSyncTransactions(e, mockpluggyClient, redisCache, pgxTX, accountPgRepo, userPgRepo, transactionPgRepo, categoryPgRepo, paymentMethodPgRepo)
+	createAccounts := usecase.NewCreateAccounts(v, mockpluggyClient, pgxTX, userPgRepo, accountPgRepo, accountBalancePgRepo, institutionPgRepo, syncTransactions)
+	accountHandler := handler.NewAccountHandler(createAccounts)
 	getTransaction := usecase.NewGetTransaction(transactionPgRepo)
 	updateTransaction := usecase.NewUpdateTransaction(v, transactionPgRepo)
 	transactionHandler := handler.NewTransactionHandler(syncTransactions, listTransactions, getTransaction, updateTransaction)
 	getBalance := usecase.NewGetBalance(v, transactionPgRepo, accountBalancePgRepo)
-	balanceHandler := handler.NewBalanceHandler(getBalance)
+	syncBalances := usecase.NewSyncBalances(e, mockpluggyClient, redisCache, accountPgRepo, accountBalancePgRepo)
+	balanceHandler := handler.NewBalanceHandler(getBalance, syncBalances)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler)
 	app := newApp(middlewareMiddleware, routerRouter)
 	return app
@@ -125,17 +128,19 @@ func NewProd(v *validator.Validator, e *config.Env) *App {
 	budgetHandler := handler.NewBudgetHandler(upsertBudget, getBudget, getBudgetCategory, deleteBudget, listBudgetCategoryTransactions)
 	getUser := usecase.NewGetUser(userPgRepo)
 	userHandler := handler.NewUserHandler(getUser)
-	accountPgRepo := pgrepo.NewAccountPgRepo(dbDB)
+	accountPgRepo := pgrepo.NewAccountPgRepo(dbDB, queryBuilder)
 	accountBalancePgRepo := pgrepo.NewAccountBalancePgRepo(dbDB)
-	syncAccounts := usecase.NewSyncAccounts(v, client, pgxTX, userPgRepo, accountPgRepo, accountBalancePgRepo, institutionPgRepo)
-	accountHandler := handler.NewAccountHandler(syncAccounts)
+	redisCache := rediscache.NewRedisCache(e)
 	paymentMethodPgRepo := pgrepo.NewPaymentMethodPgRepo(dbDB, queryBuilder)
-	syncTransactions := usecase.NewSyncTransactions(v, client, pgxTX, userPgRepo, transactionPgRepo, categoryPgRepo, paymentMethodPgRepo)
+	syncTransactions := usecase.NewSyncTransactions(e, client, redisCache, pgxTX, accountPgRepo, userPgRepo, transactionPgRepo, categoryPgRepo, paymentMethodPgRepo)
+	createAccounts := usecase.NewCreateAccounts(v, client, pgxTX, userPgRepo, accountPgRepo, accountBalancePgRepo, institutionPgRepo, syncTransactions)
+	accountHandler := handler.NewAccountHandler(createAccounts)
 	getTransaction := usecase.NewGetTransaction(transactionPgRepo)
 	updateTransaction := usecase.NewUpdateTransaction(v, transactionPgRepo)
 	transactionHandler := handler.NewTransactionHandler(syncTransactions, listTransactions, getTransaction, updateTransaction)
 	getBalance := usecase.NewGetBalance(v, transactionPgRepo, accountBalancePgRepo)
-	balanceHandler := handler.NewBalanceHandler(getBalance)
+	syncBalances := usecase.NewSyncBalances(e, client, redisCache, accountPgRepo, accountBalancePgRepo)
+	balanceHandler := handler.NewBalanceHandler(getBalance, syncBalances)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler)
 	app := newApp(middlewareMiddleware, routerRouter)
 	return app

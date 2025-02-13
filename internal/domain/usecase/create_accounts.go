@@ -2,8 +2,9 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
+	"strconv"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
@@ -17,7 +18,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 )
 
-type SyncAccounts struct {
+type CreateAccounts struct {
 	v   *validator.Validator
 	o   openfinance.Client
 	tx  tx.TX
@@ -25,9 +26,10 @@ type SyncAccounts struct {
 	ar  repo.AccountRepo
 	abr repo.AccountBalanceRepo
 	ir  repo.InstitutionRepo
+	st  *SyncTransactions
 }
 
-func NewSyncAccounts(
+func NewCreateAccounts(
 	v *validator.Validator,
 	o openfinance.Client,
 	tx tx.TX,
@@ -35,8 +37,9 @@ func NewSyncAccounts(
 	ar repo.AccountRepo,
 	abr repo.AccountBalanceRepo,
 	ir repo.InstitutionRepo,
-) *SyncAccounts {
-	return &SyncAccounts{
+	st *SyncTransactions,
+) *CreateAccounts {
+	return &CreateAccounts{
 		v:   v,
 		o:   o,
 		tx:  tx,
@@ -44,23 +47,24 @@ func NewSyncAccounts(
 		ar:  ar,
 		abr: abr,
 		ir:  ir,
+		st:  st,
 	}
 }
 
-type SyncAccountsInput struct {
-	ItemID          string                  `json:"id"              validate:"required"`
-	Institution     SyncAccountsInstitution `json:"connector"       validate:"required"`
-	ExecutionStatus string                  `json:"executionStatus" validate:"required"`
-	ClientUserID    uuid.UUID               `json:"clientUserId"    validate:"required"`
+type CreateAccountsInput struct {
+	ItemID          string                    `json:"id"              validate:"required"`
+	Institution     CreateAccountsInstitution `json:"connector"       validate:"required"`
+	ExecutionStatus string                    `json:"executionStatus" validate:"required"`
+	ClientUserID    uuid.UUID                 `json:"clientUserId"    validate:"required"`
 }
 
-type SyncAccountsInstitution struct {
+type CreateAccountsInstitution struct {
 	ID int `json:"id" validate:"required"`
 }
 
-func (uc *SyncAccounts) Execute(
+func (uc *CreateAccounts) Execute(
 	ctx context.Context,
-	in SyncAccountsInput,
+	in CreateAccountsInput,
 ) error {
 	if err := uc.v.Validate(in); err != nil {
 		return errs.New(err)
@@ -74,17 +78,24 @@ func (uc *SyncAccounts) Execute(
 		return nil
 	}
 
-	var institution *entity.Institution
-	var openFinanceAccounts []openfinance.Account
-	var user *entity.User
+	var (
+		user                *entity.User
+		institution         *entity.Institution
+		openFinanceAccounts []openfinance.Account
+	)
 	g, gCtx := errgroup.WithContext(ctx)
 
-	institutionExternalID := fmt.Sprintf("%d", in.Institution.ID)
+	g.Go(func() error {
+		var err error
+		user, err = uc.ur.GetUserByID(gCtx, in.ClientUserID)
+		return err
+	})
+
 	g.Go(func() error {
 		var err error
 		institution, err = uc.ir.GetInstitutionByExternalID(
 			gCtx,
-			institutionExternalID,
+			strconv.Itoa(in.Institution.ID),
 		)
 		return err
 	})
@@ -95,30 +106,26 @@ func (uc *SyncAccounts) Execute(
 		return err
 	})
 
-	g.Go(func() error {
-		var err error
-		user, err = uc.ur.GetUserByID(gCtx, in.ClientUserID)
-		return err
-	})
-
 	if err := g.Wait(); err != nil {
 		return errs.New(err)
-	}
-
-	if len(openFinanceAccounts) == 0 {
-		return errs.New("no open finance accounts found")
-	}
-
-	if institution == nil {
-		return errs.ErrInstitutionNotFound
 	}
 
 	if user == nil {
 		return errs.ErrUserNotFound
 	}
 
-	createAccountsParams := []repo.CreateAccountsParams{}
-	accountExternalIDs := []string{}
+	if institution == nil {
+		return errs.ErrInstitutionNotFound
+	}
+
+	if len(openFinanceAccounts) == 0 {
+		return errs.New("no open finance accounts found")
+	}
+
+	var (
+		createAccountsParams []repo.CreateAccountsParams
+		accountExternalIDs   []string
+	)
 	for _, account := range openFinanceAccounts {
 		accountExternalIDs = append(accountExternalIDs, account.ExternalID)
 
@@ -132,9 +139,9 @@ func (uc *SyncAccounts) Execute(
 		createAccountsParams = append(createAccountsParams, param)
 	}
 
-	accounts, err := uc.ar.ListAccountsByExternalIDs(
+	accounts, err := uc.ar.ListAccounts(
 		ctx,
-		accountExternalIDs,
+		repo.WithAccountExternalIDs(accountExternalIDs),
 	)
 	if err != nil {
 		return errs.New(err)
@@ -149,9 +156,9 @@ func (uc *SyncAccounts) Execute(
 			return errs.New(err)
 		}
 
-		accounts, err = uc.ar.ListAccountsByExternalIDs(
+		accounts, err = uc.ar.ListAccounts(
 			ctx,
-			accountExternalIDs,
+			repo.WithAccountExternalIDs(accountExternalIDs),
 		)
 		if err != nil {
 			return errs.New(err)
@@ -199,6 +206,24 @@ func (uc *SyncAccounts) Execute(
 	if err != nil {
 		return errs.New(err)
 	}
+
+	go func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+
+		syncTransactionsIn := SyncTransactionsInput{
+			UserIDs: []uuid.UUID{user.ID},
+		}
+
+		err := uc.st.Execute(ctx, syncTransactionsIn)
+		if err != nil {
+			slog.Error(
+				"failed to sync transactions after creating accounts",
+				"error", err,
+				"user_id", user.ID,
+			)
+		}
+	}()
 
 	return nil
 }

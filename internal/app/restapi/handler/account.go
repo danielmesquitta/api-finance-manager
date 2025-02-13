@@ -9,14 +9,14 @@ import (
 )
 
 type AccountHandler struct {
-	sa *usecase.SyncAccounts
+	ca *usecase.CreateAccounts
 }
 
 func NewAccountHandler(
-	sa *usecase.SyncAccounts,
+	ca *usecase.CreateAccounts,
 ) *AccountHandler {
 	return &AccountHandler{
-		sa: sa,
+		ca: ca,
 	}
 }
 
@@ -26,19 +26,19 @@ func NewAccountHandler(
 // @Security BasicAuth
 // @Accept json
 // @Produce json
-// @Param request body dto.SyncAccountsRequest true "Request body"
+// @Param request body dto.CreateAccountsRequest true "Request body"
 // @Success 204
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /v1/admin/accounts/sync [post]
-func (h AccountHandler) Sync(c echo.Context) error {
-	in := usecase.SyncAccountsInput{}
+// @Router /v1/admin/accounts [post]
+func (h AccountHandler) Create(c echo.Context) error {
+	in := usecase.CreateAccountsInput{}
 	if err := c.Bind(&in); err != nil {
 		return errs.New(err)
 	}
 
 	ctx := c.Request().Context()
-	if err := h.sa.Execute(ctx, in); err != nil {
+	if err := h.ca.Execute(ctx, in); err != nil {
 		return errs.New(err)
 	}
 

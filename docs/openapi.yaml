@@ -83,6 +83,22 @@ components:
                 total_interest:
                     type: integer
             type: object
+        dto.CreateAccountsRequest:
+            properties:
+                clientUserId:
+                    type: string
+                connector:
+                    $ref: '#/components/schemas/usecase.CreateAccountsInstitution'
+                executionStatus:
+                    type: string
+                id:
+                    type: string
+            required:
+                - clientUserId
+                - connector
+                - executionStatus
+                - id
+            type: object
         dto.EmergencyReserveRequest:
             properties:
                 job_type:
@@ -397,22 +413,6 @@ components:
                 total_interest:
                     type: integer
             type: object
-        dto.SyncAccountsRequest:
-            properties:
-                clientUserId:
-                    type: string
-                connector:
-                    $ref: '#/components/schemas/usecase.SyncAccountsInstitution'
-                executionStatus:
-                    type: string
-                id:
-                    type: string
-            required:
-                - clientUserId
-                - connector
-                - executionStatus
-                - id
-            type: object
         dto.UpdateTransactionRequest:
             properties:
                 account_id:
@@ -646,6 +646,13 @@ components:
                 total_interest:
                     type: integer
             type: object
+        usecase.CreateAccountsInstitution:
+            properties:
+                id:
+                    type: integer
+            required:
+                - id
+            type: object
         usecase.GetBudgetBudgetCategories:
             properties:
                 amount:
@@ -677,13 +684,6 @@ components:
                     type: integer
                 total_interest:
                     type: integer
-            type: object
-        usecase.SyncAccountsInstitution:
-            properties:
-                id:
-                    type: integer
-            required:
-                - id
             type: object
         usecase.UpsertBudgetCategoryInput:
             properties:
@@ -732,14 +732,14 @@ paths:
             summary: Health check
             tags:
                 - Health
-    /v1/admin/accounts/sync:
+    /v1/admin/accounts:
         post:
             description: Webhook to sync user accounts from open finance
             requestBody:
                 content:
                     application/json:
                         schema:
-                            $ref: '#/components/schemas/dto.SyncAccountsRequest'
+                            $ref: '#/components/schemas/dto.CreateAccountsRequest'
                 description: Request body
                 required: true
                 x-originalParamName: request
@@ -763,6 +763,23 @@ paths:
             summary: Sync accounts from open finance
             tags:
                 - Account
+    /v1/admin/balances/sync:
+        post:
+            description: Sync account balances from open finance
+            responses:
+                "204":
+                    description: No Content
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BasicAuth: []
+            summary: Sync account balances from open finance
+            tags:
+                - Institution
     /v1/admin/institutions/sync:
         post:
             description: Sync institutions from open finance

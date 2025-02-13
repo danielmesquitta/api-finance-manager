@@ -9,6 +9,8 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/rediscache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
@@ -39,6 +41,9 @@ var providers = []any{
 
 	wire.Bind(new(tx.TX), new(*tx.PgxTX)),
 	tx.NewPgxTX,
+
+	wire.Bind(new(cache.Cache), new(*rediscache.RedisCache)),
+	rediscache.NewRedisCache,
 
 	wire.Bind(new(repo.UserRepo), new(*pgrepo.UserPgRepo)),
 	pgrepo.NewUserPgRepo,
@@ -77,7 +82,7 @@ var providers = []any{
 	usecase.NewGetBudget,
 	usecase.NewDeleteBudget,
 	usecase.NewGetUser,
-	usecase.NewSyncAccounts,
+	usecase.NewCreateAccounts,
 	usecase.NewSyncTransactions,
 	usecase.NewCalculateCashVsInstallments,
 	usecase.NewListTransactions,
@@ -87,6 +92,7 @@ var providers = []any{
 	usecase.NewGetTransaction,
 	usecase.NewUpdateTransaction,
 	usecase.NewGetBalance,
+	usecase.NewSyncBalances,
 
 	handler.NewAuthHandler,
 	handler.NewHealthHandler,

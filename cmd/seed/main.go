@@ -82,7 +82,7 @@ func main() {
 		panic(err)
 	}
 
-	syncAccountsReqs := []dto.SyncAccountsRequest{}
+	syncAccountsReqs := []dto.CreateAccountsRequest{}
 	if err := json.Unmarshal(data, &syncAccountsReqs); err != nil {
 		panic(err)
 	}
@@ -112,14 +112,5 @@ func main() {
 
 	if err := g.Wait(); err != nil {
 		panic(err)
-	}
-
-	res, err = client.R().
-		Post("/v1/admin/transactions/sync")
-	if err != nil {
-		panic(err)
-	}
-	if res.IsError() {
-		panic(string(res.Body()))
 	}
 }

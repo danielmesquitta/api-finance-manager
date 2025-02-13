@@ -83,6 +83,22 @@ definitions:
       total_interest:
         type: integer
     type: object
+  dto.CreateAccountsRequest:
+    properties:
+      clientUserId:
+        type: string
+      connector:
+        $ref: '#/definitions/usecase.CreateAccountsInstitution'
+      executionStatus:
+        type: string
+      id:
+        type: string
+    required:
+    - clientUserId
+    - connector
+    - executionStatus
+    - id
+    type: object
   dto.EmergencyReserveRequest:
     properties:
       job_type:
@@ -397,22 +413,6 @@ definitions:
       total_interest:
         type: integer
     type: object
-  dto.SyncAccountsRequest:
-    properties:
-      clientUserId:
-        type: string
-      connector:
-        $ref: '#/definitions/usecase.SyncAccountsInstitution'
-      executionStatus:
-        type: string
-      id:
-        type: string
-    required:
-    - clientUserId
-    - connector
-    - executionStatus
-    - id
-    type: object
   dto.UpdateTransactionRequest:
     properties:
       account_id:
@@ -646,6 +646,13 @@ definitions:
       total_interest:
         type: integer
     type: object
+  usecase.CreateAccountsInstitution:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
   usecase.GetBudgetBudgetCategories:
     properties:
       amount:
@@ -677,13 +684,6 @@ definitions:
         type: integer
       total_interest:
         type: integer
-    type: object
-  usecase.SyncAccountsInstitution:
-    properties:
-      id:
-        type: integer
-    required:
-    - id
     type: object
   usecase.UpsertBudgetCategoryInput:
     properties:
@@ -722,7 +722,7 @@ paths:
       summary: Health check
       tags:
       - Health
-  /v1/admin/accounts/sync:
+  /v1/admin/accounts:
     post:
       consumes:
       - application/json
@@ -733,7 +733,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/dto.SyncAccountsRequest'
+          $ref: '#/definitions/dto.CreateAccountsRequest'
       produces:
       - application/json
       responses:
@@ -752,6 +752,25 @@ paths:
       summary: Sync accounts from open finance
       tags:
       - Account
+  /v1/admin/balances/sync:
+    post:
+      consumes:
+      - application/json
+      description: Sync account balances from open finance
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BasicAuth: []
+      summary: Sync account balances from open finance
+      tags:
+      - Institution
   /v1/admin/institutions/sync:
     post:
       consumes:

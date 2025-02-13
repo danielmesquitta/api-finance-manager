@@ -24,7 +24,7 @@ func (qb *QueryBuilder) ListTransactionCategories(
 	query := goqu.
 		From(tableTransactionCategory).
 		Select("*").
-		Where(goqu.Ex{tableTransactionCategory.ColumnDeletedAt(): nil})
+		Where(goqu.I(tableTransactionCategory.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildCategoryExpressions(options)
 
@@ -60,7 +60,7 @@ func (qb *QueryBuilder) CountTransactionCategories(
 	query := goqu.
 		From(tableTransactionCategory).
 		Select(goqu.COUNT("*")).
-		Where(goqu.Ex{tableTransactionCategory.ColumnDeletedAt(): nil})
+		Where(goqu.I(tableTransactionCategory.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildCategoryExpressions(options)
 
@@ -107,17 +107,12 @@ func (qb *QueryBuilder) buildCategoryQuery(
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
 ) *goqu.SelectDataset {
-	if len(whereExps) == 1 {
-		query = query.
-			Where(whereExps[0])
-	} else if len(whereExps) > 0 {
-		query = query.
-			Where(goqu.And(whereExps...))
+	if len(whereExps) > 0 {
+		query = query.Where(whereExps...)
 	}
 
 	if len(orderedExps) > 0 {
-		query = query.
-			Order(orderedExps...)
+		query = query.Order(orderedExps...)
 	}
 
 	if options.Limit > 0 {

@@ -113,7 +113,7 @@ type TransactionRepo interface {
 		userID uuid.UUID,
 		opts ...TransactionOption,
 	) ([]entity.Transaction, error)
-	ListTransactionsWithCategoriesAndInstitutions(
+	ListFullTransactions(
 		ctx context.Context,
 		userID uuid.UUID,
 		opts ...TransactionOption,

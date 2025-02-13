@@ -6,37 +6,39 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
-	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
 type AccountPgRepo struct {
 	db *db.DB
+	qb *query.QueryBuilder
 }
 
-func NewAccountPgRepo(db *db.DB) *AccountPgRepo {
+func NewAccountPgRepo(
+	db *db.DB,
+	qb *query.QueryBuilder,
+) *AccountPgRepo {
 	return &AccountPgRepo{
 		db: db,
+		qb: qb,
 	}
 }
 
-func (r *AccountPgRepo) ListAccountsByUserID(
+func (r *AccountPgRepo) ListAccounts(
 	ctx context.Context,
-	userID uuid.UUID,
+	opts ...repo.AccountOption,
 ) ([]entity.Account, error) {
-	accounts, err := r.db.ListAccountsByUserID(ctx, userID)
-	if err != nil {
-		return nil, errs.New(err)
-	}
+	return r.qb.ListAccounts(ctx, opts...)
+}
 
-	results := []entity.Account{}
-	if err := copier.Copy(&results, accounts); err != nil {
-		return nil, errs.New(err)
-	}
-
-	return results, nil
+func (r *AccountPgRepo) ListFullAccounts(
+	ctx context.Context,
+	opts ...repo.AccountOption,
+) ([]entity.FullAccount, error) {
+	return r.qb.ListFullAccounts(ctx, opts...)
 }
 
 func (r *AccountPgRepo) CreateAccounts(
@@ -55,26 +57,6 @@ func (r *AccountPgRepo) CreateAccounts(
 	}
 
 	return nil
-}
-
-func (r *AccountPgRepo) ListAccountsByExternalIDs(
-	ctx context.Context,
-	externalIDs []string,
-) ([]entity.Account, error) {
-	accounts, err := r.db.ListAccountsByExternalIDs(
-		ctx,
-		externalIDs,
-	)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	results := []entity.Account{}
-	if err := copier.Copy(&results, accounts); err != nil {
-		return nil, errs.New(err)
-	}
-
-	return results, nil
 }
 
 var _ repo.AccountRepo = &AccountPgRepo{}

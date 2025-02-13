@@ -7,15 +7,75 @@ import (
 	"github.com/google/uuid"
 )
 
+type AccountOptions struct {
+	Limit                uint          `json:"limit"`
+	Offset               uint          `json:"offset"`
+	Search               string        `json:"search"`
+	UserIDs              []uuid.UUID   `json:"user_id"`
+	ExternalIDs          []string      `json:"external_ids"`
+	UserTiers            []entity.Tier `json:"user_tiers"`
+	IsSubscriptionActive *bool         `json:"is_subscription_active"`
+}
+
+type AccountOption func(*AccountOptions)
+
+func WithAccountPagination(
+	limit uint,
+	offset uint,
+) AccountOption {
+	return func(o *AccountOptions) {
+		o.Limit = limit
+		o.Offset = offset
+	}
+}
+
+func WithAccountSearch(search string) AccountOption {
+	return func(o *AccountOptions) {
+		o.Search = search
+	}
+}
+
+func WithAccountUserIDs(
+	userIDs []uuid.UUID,
+) AccountOption {
+	return func(o *AccountOptions) {
+		o.UserIDs = userIDs
+	}
+}
+
+func WithAccountExternalIDs(
+	externalIDs []string,
+) AccountOption {
+	return func(o *AccountOptions) {
+		o.ExternalIDs = externalIDs
+	}
+}
+
+func WithAccountUserTiers(
+	userTiers []entity.Tier,
+) AccountOption {
+	return func(o *AccountOptions) {
+		o.UserTiers = userTiers
+	}
+}
+
+func WithAccountSubscriptionActive(
+	isSubscriptionActive bool,
+) AccountOption {
+	return func(o *AccountOptions) {
+		o.IsSubscriptionActive = &isSubscriptionActive
+	}
+}
+
 type AccountRepo interface {
-	ListAccountsByUserID(
+	ListAccounts(
 		ctx context.Context,
-		userID uuid.UUID,
+		opts ...AccountOption,
 	) ([]entity.Account, error)
-	ListAccountsByExternalIDs(
+	ListFullAccounts(
 		ctx context.Context,
-		externalIDs []string,
-	) ([]entity.Account, error)
+		opts ...AccountOption,
+	) ([]entity.FullAccount, error)
 	CreateAccounts(
 		ctx context.Context,
 		params []CreateAccountsParams,

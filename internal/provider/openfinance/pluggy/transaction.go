@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
@@ -13,6 +14,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
 	"github.com/google/uuid"
+	"golang.org/x/sync/errgroup"
 )
 
 type TransactionsResponse struct {
@@ -146,11 +148,10 @@ func (c *Client) ListTransactions(
 		return nil, errs.New(err)
 	}
 
-	page := 1
 	queryParams := map[string]string{
 		"accountId": accountID,
 		"pageSize":  "500",
-		"page":      strconv.Itoa(page),
+		"page":      "1",
 	}
 	if !opts.StartDate.IsZero() {
 		queryParams["from"] = opts.StartDate.Format(time.DateOnly)
@@ -159,35 +160,38 @@ func (c *Client) ListTransactions(
 		queryParams["to"] = opts.EndDate.Format(time.DateOnly)
 	}
 
-	allTransactions := TransactionsResponse{}
-	for {
-		res, err := c.c.R().
-			SetContext(ctx).
-			SetQueryParams(queryParams).
-			Get("/transactions")
-		if err != nil {
-			return nil, errs.New(err)
-		}
-		body := res.Body()
-		if res.IsError() {
-			return nil, errs.New(body)
-		}
+	transRes, err := c.fetchTransactions(ctx, queryParams)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+	allTransactions := TransactionsResponse{
+		Results: transRes.Results,
+	}
 
-		transRes := TransactionsResponse{}
-		if err := json.Unmarshal(body, &transRes); err != nil {
-			return nil, errs.New(err)
-		}
+	mu := sync.Mutex{}
+	g, gCtx := errgroup.WithContext(ctx)
 
-		allTransactions.Results = append(
-			allTransactions.Results,
-			transRes.Results...)
+	maxRequestsAtOnce := 5
+	g.SetLimit(maxRequestsAtOnce)
 
-		if transRes.Page >= transRes.TotalPages {
-			break
-		}
-
-		page++
+	for page := 2; page <= int(transRes.TotalPages); page++ {
+		queryParams := queryParams
 		queryParams["page"] = strconv.Itoa(page)
+
+		g.Go(func() error {
+			transRes, err := c.fetchTransactions(gCtx, queryParams)
+			if err != nil {
+				return errs.New(err)
+			}
+
+			mu.Lock()
+			allTransactions.Results = append(
+				allTransactions.Results,
+				transRes.Results...)
+			mu.Unlock()
+
+			return nil
+		})
 	}
 
 	transactions := []openfinance.Transaction{}
@@ -235,6 +239,30 @@ func (c *Client) parseTransactionResultToEntity(
 	c.setTransactionPaymentMethod(&transaction, r)
 
 	return &transaction, nil
+}
+
+func (c *Client) fetchTransactions(
+	ctx context.Context,
+	queryParams map[string]string,
+) (*TransactionsResponse, error) {
+	res, err := c.c.R().
+		SetContext(ctx).
+		SetQueryParams(queryParams).
+		Get("/transactions")
+	if err != nil {
+		return nil, errs.New(err)
+	}
+	body := res.Body()
+	if res.IsError() {
+		return nil, errs.New(body)
+	}
+
+	transRes := new(TransactionsResponse)
+	if err := json.Unmarshal(body, transRes); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return transRes, nil
 }
 
 func (c *Client) setTransactionAmount(

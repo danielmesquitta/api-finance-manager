@@ -11,13 +11,16 @@ import (
 
 type BalanceHandler struct {
 	gb *usecase.GetBalance
+	sb *usecase.SyncBalances
 }
 
 func NewBalanceHandler(
 	gb *usecase.GetBalance,
+	sb *usecase.SyncBalances,
 ) *BalanceHandler {
 	return &BalanceHandler{
 		gb: gb,
+		sb: sb,
 	}
 }
 
@@ -66,4 +69,22 @@ func (h *BalanceHandler) Get(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, res)
+}
+
+// @Summary Sync account balances from open finance
+// @Description Sync account balances from open finance
+// @Tags Institution
+// @Security BasicAuth
+// @Accept json
+// @Produce json
+// @Success 204
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/admin/balances/sync [post]
+func (h BalanceHandler) Sync(c echo.Context) error {
+	ctx := c.Request().Context()
+	if err := h.sb.Execute(ctx); err != nil {
+		return errs.New(err)
+	}
+
+	return c.NoContent(http.StatusNoContent)
 }

@@ -127,3 +127,8 @@ type UpdateUserParams struct {
 	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
 	SynchronizedAt        *time.Time `json:"synchronized_at"`
 }
+
+type UpdateUserSynchronizedAtParams struct {
+	ID             uuid.UUID  `json:"id"`
+	SynchronizedAt *time.Time `json:"synchronized_at"`
+}

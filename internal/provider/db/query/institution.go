@@ -26,7 +26,7 @@ func (qb *QueryBuilder) ListInstitutions(
 	query := goqu.
 		From(tableInstitution).
 		Select(fmt.Sprintf("%s.*", tableInstitution)).
-		Where(goqu.Ex{tableInstitution.ColumnDeletedAt(): nil})
+		Where(goqu.I(tableInstitution.ColumnDeletedAt()).IsNull())
 
 	qb.buildInstitutionJoins(query, options)
 
@@ -59,7 +59,7 @@ func (qb *QueryBuilder) CountInstitutions(
 	query := goqu.
 		From(tableInstitution).
 		Select(goqu.COUNT("*")).
-		Where(goqu.Ex{tableInstitution.ColumnDeletedAt(): nil})
+		Where(goqu.I(tableInstitution.ColumnDeletedAt()).IsNull())
 
 	query = qb.buildInstitutionJoins(query, options)
 
@@ -132,17 +132,12 @@ func (qb *QueryBuilder) buildInstitutionQuery(
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
 ) *goqu.SelectDataset {
-	if len(whereExps) == 1 {
-		query = query.
-			Where(whereExps[0])
-	} else if len(whereExps) > 0 {
-		query = query.
-			Where(goqu.And(whereExps...))
+	if len(whereExps) > 0 {
+		query = query.Where(whereExps...)
 	}
 
 	if len(orderedExps) > 0 {
-		query = query.
-			Order(orderedExps...)
+		query = query.Order(orderedExps...)
 	}
 
 	if options.Limit > 0 {

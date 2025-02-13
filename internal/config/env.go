@@ -25,7 +25,8 @@ type Env struct {
 	Environment                      Environment `validate:"required,oneof=development production staging test" mapstructure:"ENVIRONMENT"`
 	Host                             string      `                                                              mapstructure:"HOST"`
 	Port                             string      `                                                              mapstructure:"PORT"`
-	DatabaseURL                      string      `validate:"required"                                           mapstructure:"DATABASE_URL"`
+	PostgresDatabaseURL              string      `validate:"required"                                           mapstructure:"POSTGRES_DATABASE_URL"`
+	RedisDatabaseURL                 string      `validate:"required"                                           mapstructure:"REDIS_DATABASE_URL"`
 	JWTAccessTokenSecretKey          string      `validate:"required"                                           mapstructure:"JWT_ACCESS_TOKEN_SECRET_KEY"`
 	JWTRefreshTokenSecretKey         string      `validate:"required"                                           mapstructure:"JWT_REFRESH_TOKEN_SECRET_KEY"`
 	PluggyClientID                   string      `validate:"required"                                           mapstructure:"PLUGGY_CLIENT_ID"`
@@ -33,6 +34,8 @@ type Env struct {
 	BasicAuthUsername                string      `validate:"required"                                           mapstructure:"BASIC_AUTH_USERNAME"`
 	BasicAuthPassword                string      `validate:"required"                                           mapstructure:"BASIC_AUTH_PASSWORD"`
 	MaxLevenshteinDistancePercentage float64     `validate:"required,min=0,max=1"                               mapstructure:"MAX_LEVENSHTEIN_DISTANCE_PERCENTAGE"`
+	SyncBalancesMaxAccounts          int         `validate:"required,min=1"                                     mapstructure:"SYNC_BALANCES_MAX_ACCOUNTS"`
+	SyncTransactionsMaxAccounts      int         `validate:"required,min=1"                                     mapstructure:"SYNC_TRANSACTIONS_MAX_ACCOUNTS"`
 }
 
 func (e *Env) loadEnv() error {

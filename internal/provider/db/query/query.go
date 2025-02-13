@@ -24,6 +24,11 @@ func NewQueryBuilder(
 	}
 }
 
+type Join struct {
+	Table     exp.Expression
+	Condition exp.JoinCondition
+}
+
 func (qb *QueryBuilder) calculateMaxLevenshteinDistance(search string) int {
 	searchLength := float64(len(search))
 	maxLevenshteinDistance := int(

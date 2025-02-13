@@ -128,66 +128,6 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
-const listPremiumActiveUsersWithAccounts = `-- name: ListPremiumActiveUsersWithAccounts :many
-SELECT users.id, users.provider, users.name, users.email, users.verified_email, users.tier, users.avatar, users.subscription_expires_at, users.synchronized_at, users.created_at, users.updated_at, users.deleted_at, users.auth_id, users.open_finance_id,
-  accounts.id, accounts.external_id, accounts.name, accounts.type, accounts.created_at, accounts.updated_at, accounts.deleted_at, accounts.user_id, accounts.institution_id
-FROM users
-  JOIN accounts ON accounts.user_id = users.id
-WHERE tier IN ('PREMIUM', 'TRIAL')
-  AND subscription_expires_at > NOW()
-  AND users.deleted_at IS NULL
-  AND accounts.deleted_at IS NULL
-`
-
-type ListPremiumActiveUsersWithAccountsRow struct {
-	User    User    `json:"user"`
-	Account Account `json:"account"`
-}
-
-func (q *Queries) ListPremiumActiveUsersWithAccounts(ctx context.Context) ([]ListPremiumActiveUsersWithAccountsRow, error) {
-	rows, err := q.db.Query(ctx, listPremiumActiveUsersWithAccounts)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []ListPremiumActiveUsersWithAccountsRow
-	for rows.Next() {
-		var i ListPremiumActiveUsersWithAccountsRow
-		if err := rows.Scan(
-			&i.User.ID,
-			&i.User.Provider,
-			&i.User.Name,
-			&i.User.Email,
-			&i.User.VerifiedEmail,
-			&i.User.Tier,
-			&i.User.Avatar,
-			&i.User.SubscriptionExpiresAt,
-			&i.User.SynchronizedAt,
-			&i.User.CreatedAt,
-			&i.User.UpdatedAt,
-			&i.User.DeletedAt,
-			&i.User.AuthID,
-			&i.User.OpenFinanceID,
-			&i.Account.ID,
-			&i.Account.ExternalID,
-			&i.Account.Name,
-			&i.Account.Type,
-			&i.Account.CreatedAt,
-			&i.Account.UpdatedAt,
-			&i.Account.DeletedAt,
-			&i.Account.UserID,
-			&i.Account.InstitutionID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const listUsers = `-- name: ListUsers :many
 SELECT id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
 FROM users
@@ -291,4 +231,20 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.OpenFinanceID,
 	)
 	return i, err
+}
+
+const updateUserSynchronizedAt = `-- name: UpdateUserSynchronizedAt :exec
+UPDATE users
+SET synchronized_at = $2
+WHERE id = $1
+`
+
+type UpdateUserSynchronizedAtParams struct {
+	ID             uuid.UUID  `json:"id"`
+	SynchronizedAt *time.Time `json:"synchronized_at"`
+}
+
+func (q *Queries) UpdateUserSynchronizedAt(ctx context.Context, arg UpdateUserSynchronizedAtParams) error {
+	_, err := q.db.Exec(ctx, updateUserSynchronizedAt, arg.ID, arg.SynchronizedAt)
+	return err
 }

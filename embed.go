@@ -2,7 +2,6 @@ package root
 
 import (
 	"embed"
-	_ "embed"
 )
 
 //go:embed .env

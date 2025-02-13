@@ -110,6 +110,24 @@ func (r *UserPgRepo) UpdateUser(
 	return &result, nil
 }
 
+func (r *UserPgRepo) UpdateUserSynchronizedAt(
+	ctx context.Context,
+	params repo.UpdateUserSynchronizedAtParams,
+) error {
+	dbParams := sqlc.UpdateUserSynchronizedAtParams{}
+	if err := copier.Copy(&dbParams, params); err != nil {
+		return errs.New(err)
+	}
+
+	tx := r.db.UseTx(ctx)
+	err := tx.UpdateUserSynchronizedAt(ctx, dbParams)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return nil
+}
+
 func (r *UserPgRepo) ListUsers(
 	ctx context.Context,
 ) ([]entity.User, error) {
@@ -124,46 +142,6 @@ func (r *UserPgRepo) ListUsers(
 	}
 
 	return results, nil
-}
-
-func (r *UserPgRepo) ListPremiumActiveUsersWithAccounts(
-	ctx context.Context,
-) ([]entity.User, []entity.Account, error) {
-	rows, err := r.db.ListPremiumActiveUsersWithAccounts(ctx)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil, nil
-		}
-		return nil, nil, errs.New(err)
-	}
-
-	uniqueUsers := map[uuid.UUID]entity.User{}
-	uniqueAccounts := map[uuid.UUID]entity.Account{}
-	for _, row := range rows {
-		user := entity.User{}
-		if err := copier.Copy(&user, row.User); err != nil {
-			return nil, nil, errs.New(err)
-		}
-		uniqueUsers[user.ID] = user
-
-		account := entity.Account{}
-		if err := copier.Copy(&account, row.Account); err != nil {
-			return nil, nil, errs.New(err)
-		}
-		uniqueAccounts[account.ID] = account
-	}
-
-	users := []entity.User{}
-	for _, user := range uniqueUsers {
-		users = append(users, user)
-	}
-
-	accounts := []entity.Account{}
-	for _, account := range uniqueAccounts {
-		accounts = append(accounts, account)
-	}
-
-	return users, accounts, nil
 }
 
 var _ repo.UserRepo = &UserPgRepo{}

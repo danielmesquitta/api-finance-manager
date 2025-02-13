@@ -7,6 +7,23 @@ import (
 	"github.com/google/uuid"
 )
 
+type PremiumUserOptions struct {
+	Limit  uint `json:"-"`
+	Offset uint `json:"-"`
+}
+
+type PremiumUserOption func(*PremiumUserOptions)
+
+func WithPremiumUserPagination(
+	limit uint,
+	offset uint,
+) PremiumUserOption {
+	return func(o *PremiumUserOptions) {
+		o.Limit = limit
+		o.Offset = offset
+	}
+}
+
 type UserRepo interface {
 	CreateUser(
 		ctx context.Context,
@@ -14,12 +31,13 @@ type UserRepo interface {
 	) (*entity.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (*entity.User, error)
-	ListPremiumActiveUsersWithAccounts(
-		ctx context.Context,
-	) ([]entity.User, []entity.Account, error)
 	ListUsers(ctx context.Context) ([]entity.User, error)
 	UpdateUser(
 		ctx context.Context,
 		params UpdateUserParams,
 	) (*entity.User, error)
+	UpdateUserSynchronizedAt(
+		ctx context.Context,
+		arg UpdateUserSynchronizedAtParams,
+	) error
 }

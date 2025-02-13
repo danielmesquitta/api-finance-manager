@@ -42,13 +42,13 @@ func (r *TransactionPgRepo) ListTransactions(
 	return transactions, nil
 }
 
-func (r *TransactionPgRepo) ListTransactionsWithCategoriesAndInstitutions(
+func (r *TransactionPgRepo) ListFullTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
 ) ([]entity.FullTransaction, error) {
 	transactions, err := r.qb.
-		ListTransactionsWithCategoriesAndInstitutions(ctx, userID, opts...)
+		ListFullTransactions(ctx, userID, opts...)
 	if err != nil {
 		return nil, errs.New(err)
 	}

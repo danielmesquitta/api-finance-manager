@@ -77,7 +77,8 @@ func (h TransactionHandler) Get(c echo.Context) error {
 // @Router /v1/admin/transactions/sync [post]
 func (h *TransactionHandler) Sync(c echo.Context) error {
 	ctx := c.Request().Context()
-	if err := h.sa.Execute(ctx); err != nil {
+	in := usecase.SyncTransactionsInput{}
+	if err := h.sa.Execute(ctx, in); err != nil {
 		return errs.New(err)
 	}
 

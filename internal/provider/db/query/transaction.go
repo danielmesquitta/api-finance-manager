@@ -28,7 +28,7 @@ func (qb *QueryBuilder) ListTransactions(
 	query := goqu.
 		From(tableTransaction).
 		Select("*").
-		Where(goqu.Ex{tableTransaction.ColumnDeletedAt(): nil})
+		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
 
@@ -47,7 +47,7 @@ func (qb *QueryBuilder) ListTransactions(
 	return transactions, nil
 }
 
-func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
+func (qb *QueryBuilder) ListFullTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
@@ -90,7 +90,7 @@ func (qb *QueryBuilder) ListTransactionsWithCategoriesAndInstitutions(
 						Eq(goqu.I(tablePaymentMethod.ColumnID())),
 				),
 		).
-		Where(goqu.Ex{tableTransaction.ColumnDeletedAt(): nil})
+		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
 
@@ -130,7 +130,7 @@ func (qb *QueryBuilder) CountTransactions(
 	query := goqu.
 		From(tableTransaction).
 		Select(goqu.COUNT("*")).
-		Where(goqu.Ex{tableTransaction.ColumnDeletedAt(): nil})
+		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
 
@@ -163,7 +163,7 @@ func (qb *QueryBuilder) SumTransactions(
 	query := goqu.
 		From(tableTransaction).
 		Select(goqu.SUM(tableTransaction.ColumnAmount())).
-		Where(goqu.Ex{tableTransaction.ColumnDeletedAt(): nil})
+		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
 
@@ -199,7 +199,7 @@ func (qb *QueryBuilder) SumTransactionsByCategory(
 			goqu.I(tableTransaction.ColumnCategoryID()),
 			goqu.SUM(tableTransaction.ColumnAmount()).As("sum"),
 		).
-		Where(goqu.Ex{tableTransaction.ColumnDeletedAt(): nil}).
+		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull()).
 		GroupBy(goqu.I(tableTransaction.ColumnCategoryID()))
 
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
@@ -329,17 +329,12 @@ func (qb *QueryBuilder) buildTransactionsQuery(
 	whereExps []goqu.Expression,
 	orderedExps []exp.OrderedExpression,
 ) *goqu.SelectDataset {
-	if len(whereExps) == 1 {
-		query = query.
-			Where(whereExps[0])
-	} else if len(whereExps) > 0 {
-		query = query.
-			Where(goqu.And(whereExps...))
+	if len(whereExps) > 0 {
+		query = query.Where(whereExps...)
 	}
 
 	if len(orderedExps) > 0 {
-		query = query.
-			Order(orderedExps...)
+		query = query.Order(orderedExps...)
 	}
 
 	if options.Limit > 0 {

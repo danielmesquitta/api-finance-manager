@@ -13,6 +13,8 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/rediscache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
@@ -40,6 +42,8 @@ func NewDev(
 	db.NewDB,
 	wire.Bind(new(tx.TX), new(*tx.PgxTX)),
 	tx.NewPgxTX,
+	wire.Bind(new(cache.Cache), new(*rediscache.RedisCache)),
+	rediscache.NewRedisCache,
 	wire.Bind(new(repo.UserRepo), new(*pgrepo.UserPgRepo)),
 	pgrepo.NewUserPgRepo,
 	wire.Bind(new(repo.InstitutionRepo), new(*pgrepo.InstitutionPgRepo)),
@@ -69,7 +73,7 @@ func NewDev(
 	usecase.NewGetBudget,
 	usecase.NewDeleteBudget,
 	usecase.NewGetUser,
-	usecase.NewSyncAccounts,
+	usecase.NewCreateAccounts,
 	usecase.NewSyncTransactions,
 	usecase.NewCalculateCashVsInstallments,
 	usecase.NewListTransactions,
@@ -79,6 +83,7 @@ func NewDev(
 	usecase.NewGetTransaction,
 	usecase.NewUpdateTransaction,
 	usecase.NewGetBalance,
+	usecase.NewSyncBalances,
 	handler.NewAuthHandler,
 	handler.NewHealthHandler,
 	handler.NewCalculatorHandler,
@@ -113,6 +118,8 @@ func NewProd(
 	db.NewDB,
 	wire.Bind(new(tx.TX), new(*tx.PgxTX)),
 	tx.NewPgxTX,
+	wire.Bind(new(cache.Cache), new(*rediscache.RedisCache)),
+	rediscache.NewRedisCache,
 	wire.Bind(new(repo.UserRepo), new(*pgrepo.UserPgRepo)),
 	pgrepo.NewUserPgRepo,
 	wire.Bind(new(repo.InstitutionRepo), new(*pgrepo.InstitutionPgRepo)),
@@ -142,7 +149,7 @@ func NewProd(
 	usecase.NewGetBudget,
 	usecase.NewDeleteBudget,
 	usecase.NewGetUser,
-	usecase.NewSyncAccounts,
+	usecase.NewCreateAccounts,
 	usecase.NewSyncTransactions,
 	usecase.NewCalculateCashVsInstallments,
 	usecase.NewListTransactions,
@@ -152,6 +159,7 @@ func NewProd(
 	usecase.NewGetTransaction,
 	usecase.NewUpdateTransaction,
 	usecase.NewGetBalance,
+	usecase.NewSyncBalances,
 	handler.NewAuthHandler,
 	handler.NewHealthHandler,
 	handler.NewCalculatorHandler,

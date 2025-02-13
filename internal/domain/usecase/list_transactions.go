@@ -68,7 +68,7 @@ func (uc *ListTransactions) Execute(
 
 	g.Go(func() error {
 		var err error
-		transactions, err = uc.tr.ListTransactionsWithCategoriesAndInstitutions(
+		transactions, err = uc.tr.ListFullTransactions(
 			gCtx,
 			in.UserID,
 			opts...,

@@ -47,7 +47,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/admin/accounts/sync": {
+        "/v1/admin/accounts": {
             "post": {
                 "security": [
                     {
@@ -72,7 +72,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.SyncAccountsRequest"
+                            "$ref": "#/definitions/dto.CreateAccountsRequest"
                         }
                     }
                 ],
@@ -85,6 +85,37 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.ErrorResponse"
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/admin/balances/sync": {
+            "post": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "Sync account balances from open finance",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Institution"
+                ],
+                "summary": "Sync account balances from open finance",
+                "responses": {
+                    "204": {
+                        "description": "No Content"
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -1573,6 +1604,29 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateAccountsRequest": {
+            "type": "object",
+            "required": [
+                "clientUserId",
+                "connector",
+                "executionStatus",
+                "id"
+            ],
+            "properties": {
+                "clientUserId": {
+                    "type": "string"
+                },
+                "connector": {
+                    "$ref": "#/definitions/usecase.CreateAccountsInstitution"
+                },
+                "executionStatus": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.EmergencyReserveRequest": {
             "type": "object",
             "required": [
@@ -2045,29 +2099,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.SyncAccountsRequest": {
-            "type": "object",
-            "required": [
-                "clientUserId",
-                "connector",
-                "executionStatus",
-                "id"
-            ],
-            "properties": {
-                "clientUserId": {
-                    "type": "string"
-                },
-                "connector": {
-                    "$ref": "#/definitions/usecase.SyncAccountsInstitution"
-                },
-                "executionStatus": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.UpdateTransactionRequest": {
             "type": "object",
             "required": [
@@ -2416,6 +2447,17 @@ const docTemplate = `{
                 }
             }
         },
+        "usecase.CreateAccountsInstitution": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "usecase.GetBudgetBudgetCategories": {
             "type": "object",
             "properties": {
@@ -2461,17 +2503,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "total_interest": {
-                    "type": "integer"
-                }
-            }
-        },
-        "usecase.SyncAccountsInstitution": {
-            "type": "object",
-            "required": [
-                "id"
-            ],
-            "properties": {
-                "id": {
                     "type": "integer"
                 }
             }
