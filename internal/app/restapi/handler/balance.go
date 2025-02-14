@@ -73,7 +73,7 @@ func (h *BalanceHandler) Get(c echo.Context) error {
 
 // @Summary Sync account balances from open finance
 // @Description Sync account balances from open finance
-// @Tags Institution
+// @Tags Balance
 // @Security BasicAuth
 // @Accept json
 // @Produce json

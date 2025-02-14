@@ -24,7 +24,7 @@ func (qb *QueryBuilder) ListInstitutions(
 	}
 
 	query := goqu.
-		From(tableInstitution).
+		From(tableInstitution.String()).
 		Select(fmt.Sprintf("%s.*", tableInstitution)).
 		Where(goqu.I(tableInstitution.ColumnDeletedAt()).IsNull())
 
@@ -57,7 +57,7 @@ func (qb *QueryBuilder) CountInstitutions(
 	}
 
 	query := goqu.
-		From(tableInstitution).
+		From(tableInstitution.String()).
 		Select(goqu.COUNT("*")).
 		Where(goqu.I(tableInstitution.ColumnDeletedAt()).IsNull())
 

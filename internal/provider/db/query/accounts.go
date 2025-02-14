@@ -25,7 +25,7 @@ func (qb *QueryBuilder) ListAccounts(
 	}
 
 	query := goqu.
-		From(tableAccount).
+		From(tableAccount.String()).
 		Select(fmt.Sprintf("%s.*", tableAccount)).
 		Where(goqu.I(tableAccount.ColumnDeletedAt()).IsNull())
 
@@ -58,7 +58,7 @@ func (qb *QueryBuilder) ListFullAccounts(
 	}
 
 	query := goqu.
-		From(tableAccount).
+		From(tableAccount.String()).
 		Select(
 			fmt.Sprintf("%s.*", tableAccount),
 			goqu.I(tableUser.ColumnSynchronizedAt()).As("synchronized_at"),
@@ -95,7 +95,7 @@ func (qb *QueryBuilder) CountAccounts(
 	}
 
 	query := goqu.
-		From(tableAccount).
+		From(tableAccount.String()).
 		Select(goqu.COUNT(fmt.Sprintf("%s.*", tableAccount))).
 		Where(goqu.I(tableAccount.ColumnDeletedAt()).IsNull())
 

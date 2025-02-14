@@ -18,7 +18,7 @@ packages=(
 echo "Installing and updating Go packages..."
 
 for package in "${packages[@]}"; do
-    echo "Installing and/or updating $package..."
+    echo "$package..."
     go install "$package"
 done
 

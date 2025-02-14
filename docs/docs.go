@@ -110,7 +110,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Institution"
+                    "Balance"
                 ],
                 "summary": "Sync account balances from open finance",
                 "responses": {
@@ -206,6 +206,18 @@ const docTemplate = `{
                     "Transaction"
                 ],
                 "summary": "Sync transactions from open finance",
+                "parameters": [
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "User IDs",
+                        "name": "user_ids",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No Content"

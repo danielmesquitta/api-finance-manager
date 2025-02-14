@@ -22,7 +22,7 @@ func (qb *QueryBuilder) ListPaymentMethods(
 	}
 
 	query := goqu.
-		From(tablePaymentMethod).
+		From(tablePaymentMethod.String()).
 		Select("*").
 		Where(goqu.I(tablePaymentMethod.ColumnDeletedAt()).IsNull())
 
@@ -58,7 +58,7 @@ func (qb *QueryBuilder) CountPaymentMethods(
 	}
 
 	query := goqu.
-		From(tablePaymentMethod).
+		From(tablePaymentMethod.String()).
 		Select(goqu.COUNT("*")).
 		Where(goqu.I(tablePaymentMethod.ColumnDeletedAt()).IsNull())
 

@@ -779,7 +779,7 @@ paths:
                 - BasicAuth: []
             summary: Sync account balances from open finance
             tags:
-                - Institution
+                - Balance
     /v1/admin/institutions/sync:
         post:
             description: Sync institutions from open finance
@@ -817,6 +817,14 @@ paths:
     /v1/admin/transactions/sync:
         post:
             description: Webhook to sync transactions from open finance
+            parameters:
+                - description: User IDs
+                  in: query
+                  name: user_ids
+                  schema:
+                    items:
+                        type: string
+                    type: array
             responses:
                 "204":
                     description: No Content

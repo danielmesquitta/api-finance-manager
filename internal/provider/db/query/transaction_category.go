@@ -22,7 +22,7 @@ func (qb *QueryBuilder) ListTransactionCategories(
 	}
 
 	query := goqu.
-		From(tableTransactionCategory).
+		From(tableTransactionCategory.String()).
 		Select("*").
 		Where(goqu.I(tableTransactionCategory.ColumnDeletedAt()).IsNull())
 
@@ -58,7 +58,7 @@ func (qb *QueryBuilder) CountTransactionCategories(
 	}
 
 	query := goqu.
-		From(tableTransactionCategory).
+		From(tableTransactionCategory.String()).
 		Select(goqu.COUNT("*")).
 		Where(goqu.I(tableTransactionCategory.ColumnDeletedAt()).IsNull())
 

@@ -1,6 +1,10 @@
 package errs
 
 var (
+	ErrOpenFinanceAccountsNotFound = NewWithType(
+		"Não foi possível encontrar sua conta na integração com o OpenFinance",
+		ErrTypeNotFound,
+	)
 	ErrAccountsAlreadyRegistered = NewWithType(
 		"Essa conta já está registrada",
 		ErrTypeForbidden,

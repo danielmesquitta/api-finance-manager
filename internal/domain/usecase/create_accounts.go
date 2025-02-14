@@ -3,8 +3,9 @@ package usecase
 import (
 	"context"
 	"log/slog"
+	"maps"
+	"slices"
 	"strconv"
-	"time"
 
 	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
@@ -55,7 +56,7 @@ type CreateAccountsInput struct {
 	ItemID          string                    `json:"id"              validate:"required"`
 	Institution     CreateAccountsInstitution `json:"connector"       validate:"required"`
 	ExecutionStatus string                    `json:"executionStatus" validate:"required"`
-	ClientUserID    uuid.UUID                 `json:"clientUserId"    validate:"required"`
+	ClientUserID    string                    `json:"clientUserId"    validate:"required,uuid"`
 }
 
 type CreateAccountsInstitution struct {
@@ -78,6 +79,8 @@ func (uc *CreateAccounts) Execute(
 		return nil
 	}
 
+	userID := uuid.MustParse(in.ClientUserID)
+
 	var (
 		user                *entity.User
 		institution         *entity.Institution
@@ -87,7 +90,7 @@ func (uc *CreateAccounts) Execute(
 
 	g.Go(func() error {
 		var err error
-		user, err = uc.ur.GetUserByID(gCtx, in.ClientUserID)
+		user, err = uc.ur.GetUserByID(gCtx, userID)
 		return err
 	})
 
@@ -119,27 +122,30 @@ func (uc *CreateAccounts) Execute(
 	}
 
 	if len(openFinanceAccounts) == 0 {
-		return errs.New("no open finance accounts found")
+		return errs.ErrOpenFinanceAccountsNotFound
 	}
 
-	var (
-		createAccountsParams []repo.CreateAccountsParams
-		accountExternalIDs   []string
-	)
+	createAccountsParamsByExternalID := map[string][]repo.CreateAccountsParams{}
 	for _, account := range openFinanceAccounts {
-		accountExternalIDs = append(accountExternalIDs, account.ExternalID)
-
 		param := repo.CreateAccountsParams{}
 		if err := copier.Copy(&param, account); err != nil {
 			return errs.New(err)
 		}
 
+		param.ID = uuid.New()
 		param.UserID = user.ID
 		param.InstitutionID = institution.ID
-		createAccountsParams = append(createAccountsParams, param)
+		createAccountsParamsByExternalID[account.ExternalID] = append(
+			createAccountsParamsByExternalID[account.ExternalID],
+			param,
+		)
 	}
 
-	accounts, err := uc.ar.ListAccounts(
+	accountExternalIDs := slices.Collect(
+		maps.Keys(createAccountsParamsByExternalID),
+	)
+
+	registeredAccounts, err := uc.ar.ListAccounts(
 		ctx,
 		repo.WithAccountExternalIDs(accountExternalIDs),
 	)
@@ -147,8 +153,22 @@ func (uc *CreateAccounts) Execute(
 		return errs.New(err)
 	}
 
-	if len(accounts) == len(accountExternalIDs) {
+	if len(registeredAccounts) == len(accountExternalIDs) {
 		return nil
+	}
+
+	if len(registeredAccounts) > 0 {
+		for _, registeredAccount := range registeredAccounts {
+			delete(
+				createAccountsParamsByExternalID,
+				registeredAccount.ExternalID,
+			)
+		}
+	}
+
+	createAccountsParams := []repo.CreateAccountsParams{}
+	for _, params := range createAccountsParamsByExternalID {
+		createAccountsParams = append(createAccountsParams, params...)
 	}
 
 	err = uc.tx.Do(ctx, func(ctx context.Context) error {
@@ -156,20 +176,8 @@ func (uc *CreateAccounts) Execute(
 			return errs.New(err)
 		}
 
-		accounts, err = uc.ar.ListAccounts(
-			ctx,
-			repo.WithAccountExternalIDs(accountExternalIDs),
-		)
-		if err != nil {
-			return errs.New(err)
-		}
-
-		if len(accountExternalIDs) != len(accounts) {
-			return errs.New("failed to sync accounts")
-		}
-
 		accountIDByExternalID := map[string]uuid.UUID{}
-		for _, account := range accounts {
+		for _, account := range createAccountsParams {
 			accountIDByExternalID[account.ExternalID] = account.ID
 		}
 
@@ -206,24 +214,6 @@ func (uc *CreateAccounts) Execute(
 	if err != nil {
 		return errs.New(err)
 	}
-
-	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-		defer cancel()
-
-		syncTransactionsIn := SyncTransactionsInput{
-			UserIDs: []uuid.UUID{user.ID},
-		}
-
-		err := uc.st.Execute(ctx, syncTransactionsIn)
-		if err != nil {
-			slog.Error(
-				"failed to sync transactions after creating accounts",
-				"error", err,
-				"user_id", user.ID,
-			)
-		}
-	}()
 
 	return nil
 }

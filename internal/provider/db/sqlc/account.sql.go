@@ -12,6 +12,7 @@ import (
 )
 
 type CreateAccountsParams struct {
+	ID            uuid.UUID `json:"id"`
 	ExternalID    string    `json:"external_id"`
 	Name          string    `json:"name"`
 	Type          string    `json:"type"`

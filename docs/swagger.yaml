@@ -770,7 +770,7 @@ paths:
       - BasicAuth: []
       summary: Sync account balances from open finance
       tags:
-      - Institution
+      - Balance
   /v1/admin/institutions/sync:
     post:
       consumes:
@@ -814,6 +814,14 @@ paths:
       consumes:
       - application/json
       description: Webhook to sync transactions from open finance
+      parameters:
+      - collectionFormat: csv
+        description: User IDs
+        in: query
+        items:
+          type: string
+        name: user_ids
+        type: array
       produces:
       - application/json
       responses:

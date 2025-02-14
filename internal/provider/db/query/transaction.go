@@ -26,7 +26,7 @@ func (qb *QueryBuilder) ListTransactions(
 	}
 
 	query := goqu.
-		From(tableTransaction).
+		From(tableTransaction.String()).
 		Select("*").
 		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
 
@@ -58,7 +58,7 @@ func (qb *QueryBuilder) ListFullTransactions(
 	}
 
 	query := goqu.
-		From(tableTransaction).
+		From(tableTransaction.String()).
 		Select(
 			fmt.Sprintf("%s.*", tableTransaction),
 			goqu.I(tableTransactionCategory.ColumnName()).As("category_name"),
@@ -128,7 +128,7 @@ func (qb *QueryBuilder) CountTransactions(
 	}
 
 	query := goqu.
-		From(tableTransaction).
+		From(tableTransaction.String()).
 		Select(goqu.COUNT("*")).
 		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
 
@@ -161,7 +161,7 @@ func (qb *QueryBuilder) SumTransactions(
 	}
 
 	query := goqu.
-		From(tableTransaction).
+		From(tableTransaction.String()).
 		Select(goqu.SUM(tableTransaction.ColumnAmount())).
 		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
 
@@ -194,7 +194,7 @@ func (qb *QueryBuilder) SumTransactionsByCategory(
 	}
 
 	query := goqu.
-		From(tableTransaction).
+		From(tableTransaction.String()).
 		Select(
 			goqu.I(tableTransaction.ColumnCategoryID()),
 			goqu.SUM(tableTransaction.ColumnAmount()).As("sum"),

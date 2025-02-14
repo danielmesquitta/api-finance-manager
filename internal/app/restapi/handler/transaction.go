@@ -71,13 +71,22 @@ func (h TransactionHandler) Get(c echo.Context) error {
 // @Security BasicAuth
 // @Accept json
 // @Produce json
+// @Param user_ids query []string false "User IDs"
 // @Success 204
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/admin/transactions/sync [post]
 func (h *TransactionHandler) Sync(c echo.Context) error {
+	userIDs, err := parseUUIDsParam(c, queryParamUserIDs)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	in := usecase.SyncTransactionsInput{
+		UserIDs: userIDs,
+	}
+
 	ctx := c.Request().Context()
-	in := usecase.SyncTransactionsInput{}
 	if err := h.sa.Execute(ctx, in); err != nil {
 		return errs.New(err)
 	}

@@ -1,12 +1,10 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
-	"golang.org/x/sync/errgroup"
 
 	root "github.com/danielmesquitta/api-finance-manager"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
@@ -60,7 +58,7 @@ func main() {
 		SetBasicAuth(e.BasicAuthUsername, e.BasicAuthPassword)
 
 	res, err = client.R().
-		Post("/v1/admin/categories/sync")
+		Post("/v1/admin/transactions/categories/sync")
 	if err != nil {
 		panic(err)
 	}
@@ -77,40 +75,41 @@ func main() {
 		panic(string(res.Body()))
 	}
 
-	data, err := root.TestData.ReadFile("test/data/pluggy/items.json")
+	jsonData, err := root.TestData.ReadFile("test/data/pluggy/items.json")
 	if err != nil {
 		panic(err)
 	}
 
-	syncAccountsReqs := []dto.CreateAccountsRequest{}
-	if err := json.Unmarshal(data, &syncAccountsReqs); err != nil {
+	createAccountsReqs := []dto.CreateAccountsRequest{}
+	if err := json.Unmarshal(jsonData, &createAccountsReqs); err != nil {
 		panic(err)
 	}
 
-	for i := range syncAccountsReqs {
-		syncAccountsReqs[i].ClientUserID = signInRes.User.ID
+	for i := range createAccountsReqs {
+		createAccountsReqs[i].ClientUserID = signInRes.User.ID.String()
 	}
 
-	g, ctx := errgroup.WithContext(context.Background())
+	createAccountsReqs = createAccountsReqs[:2]
 
-	for _, syncAccountsReq := range syncAccountsReqs {
-		g.Go(func() error {
-			res, err := client.R().
-				SetContext(ctx).
-				SetBody(syncAccountsReq).
-				Post("/v1/admin/accounts/sync")
-			if err != nil {
-				return err
-			}
-			if res.IsError() {
-				panic(string(res.Body()))
-			}
-
-			return nil
-		})
+	for _, createAccountsReq := range createAccountsReqs {
+		res, err := client.R().
+			SetBody(createAccountsReq).
+			Post("/v1/admin/accounts")
+		if err != nil {
+			panic(err)
+		}
+		if res.IsError() {
+			panic(string(res.Body()))
+		}
 	}
 
-	if err := g.Wait(); err != nil {
+	res, err = client.R().
+		SetQueryParam("user_ids", signInRes.User.ID.String()).
+		Post("/v1/admin/transactions/sync")
+	if err != nil {
 		panic(err)
+	}
+	if res.IsError() {
+		panic(string(res.Body()))
 	}
 }

@@ -28,7 +28,7 @@ func NewSyncCategories(
 }
 
 func (uc *SyncCategories) Execute(ctx context.Context) error {
-	var openFinanceCategories, institutions []entity.TransactionCategory
+	var openFinanceCategories, categories []entity.TransactionCategory
 
 	g, gCtx := errgroup.WithContext(ctx)
 
@@ -40,7 +40,7 @@ func (uc *SyncCategories) Execute(ctx context.Context) error {
 
 	g.Go(func() error {
 		var err error
-		institutions, err = uc.cr.ListTransactionCategories(gCtx)
+		categories, err = uc.cr.ListTransactionCategories(gCtx)
 		return err
 	})
 
@@ -48,14 +48,14 @@ func (uc *SyncCategories) Execute(ctx context.Context) error {
 		return errs.New(err)
 	}
 
-	institutionsByExternalID := make(map[string]entity.TransactionCategory)
-	for _, i := range institutions {
-		institutionsByExternalID[i.ExternalID] = i
+	categoriesByExternalID := make(map[string]entity.TransactionCategory)
+	for _, i := range categories {
+		categoriesByExternalID[i.ExternalID] = i
 	}
 
 	params := []repo.CreateTransactionCategoriesParams{}
 	for _, i := range openFinanceCategories {
-		if _, ok := institutionsByExternalID[i.ExternalID]; ok {
+		if _, ok := categoriesByExternalID[i.ExternalID]; ok {
 			continue
 		}
 		param := repo.CreateTransactionCategoriesParams{}

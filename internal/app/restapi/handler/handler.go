@@ -16,18 +16,19 @@ import (
 type QueryParam = string
 
 const (
-	queryParamSearch          QueryParam = "search"
-	queryParamPage            QueryParam = "page"
-	queryParamPageSize        QueryParam = "page_size"
-	queryParamDate            QueryParam = "date"
-	queryParamStartDate       QueryParam = "start_date"
-	queryParamEndDate         QueryParam = "end_date"
-	queryParamInstitutionID   QueryParam = "institution_id"
-	queryParamCategoryID      QueryParam = "category_id"
-	queryParamIsExpense       QueryParam = "is_expense"
-	queryParamIsIncome        QueryParam = "is_income"
-	queryParamIsIgnored       QueryParam = "is_ignored"
-	queryParamPaymentMethodID QueryParam = "payment_method_id"
+	queryParamSearch           QueryParam = "search"
+	queryParamPage             QueryParam = "page"
+	queryParamPageSize         QueryParam = "page_size"
+	queryParamDate             QueryParam = "date"
+	queryParamStartDate        QueryParam = "start_date"
+	queryParamEndDate          QueryParam = "end_date"
+	queryParamInstitutionIDs   QueryParam = "institution_ids"
+	queryParamCategoryIDs      QueryParam = "category_ids"
+	queryParamUserIDs          QueryParam = "user_ids"
+	queryParamIsExpense        QueryParam = "is_expense"
+	queryParamIsIncome         QueryParam = "is_income"
+	queryParamIsIgnored        QueryParam = "is_ignored"
+	queryParamPaymentMethodIDs QueryParam = "payment_method_ids"
 )
 
 type PathParam = string
@@ -141,17 +142,17 @@ func prepareTransactionOptions(
 ) (*repo.TransactionOptions, error) {
 	search := c.QueryParam(queryParamSearch)
 
-	paymentMethodIDs, err := parseUUIDsParam(c, queryParamPaymentMethodID)
+	paymentMethodIDs, err := parseUUIDsParam(c, queryParamPaymentMethodIDs)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	institutionIDs, err := parseUUIDsParam(c, queryParamInstitutionID)
+	institutionIDs, err := parseUUIDsParam(c, queryParamInstitutionIDs)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	categoryIDs, err := parseUUIDsParam(c, queryParamCategoryID)
+	categoryIDs, err := parseUUIDsParam(c, queryParamCategoryIDs)
 	if err != nil {
 		return nil, errs.New(err)
 	}
