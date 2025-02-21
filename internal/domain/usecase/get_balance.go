@@ -32,7 +32,7 @@ func NewGetBalance(
 
 type GetBalanceInput struct {
 	repo.TransactionOptions
-	Date   time.Time `json:"date,omitempty"    validate:"required"`
+	Date   time.Time `json:"date,omitempty"`
 	UserID uuid.UUID `json:"user_id,omitempty" validate:"required"`
 }
 

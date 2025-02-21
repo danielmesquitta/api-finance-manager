@@ -104,6 +104,8 @@ func (h *TransactionHandler) Sync(c echo.Context) error {
 // @Param page query int false "Page"
 // @Param page_size query int false "Page size"
 // @Param date query string false "Date" format(date)
+// @Param start_date query string false "Start date" format(date)
+// @Param end_date query string false "End date" format(date)
 // @Param institution_ids query []string false "Institution IDs"
 // @Param category_ids query []string false "Category IDs"
 // @Param payment_method_ids query []string false "Payment method IDs"

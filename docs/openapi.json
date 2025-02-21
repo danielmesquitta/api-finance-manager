@@ -1433,6 +1433,24 @@
                         }
                     },
                     {
+                        "description": "Start date",
+                        "in": "query",
+                        "name": "start_date",
+                        "schema": {
+                            "format": "date",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "End date",
+                        "in": "query",
+                        "name": "end_date",
+                        "schema": {
+                            "format": "date",
+                            "type": "string"
+                        }
+                    },
+                    {
                         "description": "Institution IDs",
                         "in": "query",
                         "name": "institution_ids",
@@ -2353,6 +2371,24 @@
                         "description": "Date",
                         "in": "query",
                         "name": "date",
+                        "schema": {
+                            "format": "date",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "Start date",
+                        "in": "query",
+                        "name": "start_date",
+                        "schema": {
+                            "format": "date",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "description": "End date",
+                        "in": "query",
+                        "name": "end_date",
                         "schema": {
                             "format": "date",
                             "type": "string"

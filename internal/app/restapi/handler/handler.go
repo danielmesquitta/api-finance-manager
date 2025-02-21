@@ -172,6 +172,16 @@ func prepareTransactionOptions(
 		return nil, errs.New(err)
 	}
 
+	startDate, err := parseDateParam(c, queryParamStartDate)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	endDate, err := parseDateParam(c, queryParamEndDate)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
 	return &repo.TransactionOptions{
 		Search:           search,
 		CategoryIDs:      categoryIDs,
@@ -180,5 +190,7 @@ func prepareTransactionOptions(
 		IsExpense:        isExpense,
 		IsIncome:         isIncome,
 		IsIgnored:        isIgnored,
+		StartDate:        startDate,
+		EndDate:          endDate,
 	}, nil
 }

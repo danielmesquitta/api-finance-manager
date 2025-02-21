@@ -921,6 +921,16 @@ paths:
         in: query
         name: date
         type: string
+      - description: Start date
+        format: date
+        in: query
+        name: start_date
+        type: string
+      - description: End date
+        format: date
+        in: query
+        name: end_date
+        type: string
       - collectionFormat: csv
         description: Institution IDs
         in: query
@@ -1413,6 +1423,16 @@ paths:
         format: date
         in: query
         name: date
+        type: string
+      - description: Start date
+        format: date
+        in: query
+        name: start_date
+        type: string
+      - description: End date
+        format: date
+        in: query
+        name: end_date
         type: string
       - collectionFormat: csv
         description: Institution IDs

@@ -31,7 +31,7 @@ func NewListTransactions(
 type ListTransactionsInput struct {
 	PaginationInput
 	repo.TransactionOptions
-	Date   time.Time `json:"date"    validate:"required"`
+	Date   time.Time `json:"date"`
 	UserID uuid.UUID `json:"user_id" validate:"required"`
 }
 
