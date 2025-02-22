@@ -75,4 +75,4 @@ func (r *RedisCache) Delete(
 	return r.c.Del(ctx, ks...).Err()
 }
 
-var _ cache.Cache = &RedisCache{}
+var _ cache.Cache = (*RedisCache)(nil)

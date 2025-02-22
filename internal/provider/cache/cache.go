@@ -7,12 +7,14 @@ import (
 
 type Cache interface {
 	Scan(ctx context.Context, key Key, value any) (ok bool, err error)
+
 	Set(
 		ctx context.Context,
 		key Key,
 		value any,
 		expiration time.Duration,
 	) error
+
 	Delete(
 		ctx context.Context,
 		keys ...Key,

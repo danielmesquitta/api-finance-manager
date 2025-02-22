@@ -14,6 +14,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/fibercache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/rediscache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
@@ -40,6 +41,7 @@ func NewDev(
 	db.NewPGXPool,
 	query.NewQueryBuilder,
 	db.NewDB,
+	fibercache.NewFiberCache,
 	wire.Bind(new(tx.TX), new(*tx.PgxTX)),
 	tx.NewPgxTX,
 	wire.Bind(new(cache.Cache), new(*rediscache.RedisCache)),
@@ -115,6 +117,7 @@ func NewProd(
 	db.NewPGXPool,
 	query.NewQueryBuilder,
 	db.NewDB,
+	fibercache.NewFiberCache,
 	wire.Bind(new(tx.TX), new(*tx.PgxTX)),
 	tx.NewPgxTX,
 	wire.Bind(new(cache.Cache), new(*rediscache.RedisCache)),
