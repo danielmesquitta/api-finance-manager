@@ -21,7 +21,7 @@ type Cache interface {
 	) error
 }
 
-type Key string
+type Key = string
 
 const (
 	KeySyncTransactionsOffset Key = "sync_transactions_offset"

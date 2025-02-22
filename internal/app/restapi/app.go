@@ -5,10 +5,11 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/router"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/fibercache"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cache"
+	middlewareCache "github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/healthcheck"
@@ -26,7 +27,7 @@ type App struct {
 func newApp(
 	m *middleware.Middleware,
 	r *router.Router,
-	fc *fibercache.FiberCache,
+	c cache.Cache,
 ) *App {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: m.ErrorHandler,
@@ -36,19 +37,19 @@ func newApp(
 	app.Use(recover.New())
 	app.Use(healthcheck.New())
 	app.Use(requestid.New())
-	app.Use(cache.New(
-		cache.Config{
-			Storage: fc,
+	app.Use(middlewareCache.New(
+		middlewareCache.Config{
+			Storage: fibercache.NewFiberCache(c),
 		},
 	))
 	app.Use(limiter.New(limiter.Config{
 		Max:        20,
 		Expiration: 1 * time.Minute,
-		Storage:    fc,
+		Storage:    fibercache.NewFiberCache(c),
 	}))
 	app.Use(idempotency.New(
 		idempotency.Config{
-			Storage: fc,
+			Storage: fibercache.NewFiberCache(c),
 		},
 	))
 	app.Use(helmet.New())

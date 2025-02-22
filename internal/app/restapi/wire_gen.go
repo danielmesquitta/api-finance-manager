@@ -15,7 +15,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/fibercache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/rediscache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
@@ -83,8 +82,7 @@ func NewDev(v *validator.Validator, e *config.Env) *App {
 	syncBalances := usecase.NewSyncBalances(e, mockpluggyClient, redisCache, accountPgRepo, accountBalancePgRepo)
 	balanceHandler := handler.NewBalanceHandler(getBalance, syncBalances)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler)
-	fiberCache := fibercache.NewFiberCache(redisCache)
-	app := newApp(middlewareMiddleware, routerRouter, fiberCache)
+	app := newApp(middlewareMiddleware, routerRouter, redisCache)
 	return app
 }
 
@@ -142,8 +140,7 @@ func NewProd(v *validator.Validator, e *config.Env) *App {
 	syncBalances := usecase.NewSyncBalances(e, client, redisCache, accountPgRepo, accountBalancePgRepo)
 	balanceHandler := handler.NewBalanceHandler(getBalance, syncBalances)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler)
-	fiberCache := fibercache.NewFiberCache(redisCache)
-	app := newApp(middlewareMiddleware, routerRouter, fiberCache)
+	app := newApp(middlewareMiddleware, routerRouter, redisCache)
 	return app
 }
 
