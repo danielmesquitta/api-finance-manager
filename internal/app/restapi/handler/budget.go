@@ -122,7 +122,7 @@ func (h BudgetHandler) GetTransactionCategory(c *fiber.Ctx) error {
 	userID := uuid.MustParse(claims.Issuer)
 
 	date := c.Query(queryParamDate)
-	categoryID := uuid.MustParse(c.Path(pathParamCategoryID))
+	categoryID := uuid.MustParse(c.Params(pathParamCategoryID))
 
 	ctx := c.UserContext()
 	out, err := h.gbc.Execute(ctx, usecase.GetBudgetCategoryInput{
@@ -165,7 +165,7 @@ func (h *BudgetHandler) ListCategoryTransactions(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	categoryID := uuid.MustParse(c.Path(pathParamCategoryID))
+	categoryID := uuid.MustParse(c.Params(pathParamCategoryID))
 
 	in := usecase.ListBudgetCategoryTransactionsInput{
 		PaginationInput: paginationIn,

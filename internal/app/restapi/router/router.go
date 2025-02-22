@@ -1,14 +1,8 @@
 package router
 
 import (
-	"net/http"
-	"strings"
-
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/filesystem"
-	fiberSwagger "github.com/swaggo/fiber-swagger"
 
-	root "github.com/danielmesquitta/api-finance-manager"
 	_ "github.com/danielmesquitta/api-finance-manager/docs" // swagger docs
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
@@ -18,6 +12,7 @@ import (
 type Router struct {
 	e   *config.Env
 	m   *middleware.Middleware
+	dh  *handler.DocHandler
 	ah  *handler.AuthHandler
 	ch  *handler.CalculatorHandler
 	ih  *handler.InstitutionHandler
@@ -32,6 +27,7 @@ type Router struct {
 func NewRouter(
 	e *config.Env,
 	m *middleware.Middleware,
+	dh *handler.DocHandler,
 	ah *handler.AuthHandler,
 	ch *handler.CalculatorHandler,
 	ih *handler.InstitutionHandler,
@@ -45,6 +41,7 @@ func NewRouter(
 	return &Router{
 		e:   e,
 		m:   m,
+		dh:  dh,
 		ah:  ah,
 		ch:  ch,
 		ih:  ih,
@@ -64,23 +61,7 @@ func (r *Router) Register(
 
 	api := app.Group(basePath)
 
-	api.Use("/docs", func(c *fiber.Ctx) error {
-		h := fiberSwagger.WrapHandler
-
-		url := c.OriginalURL()
-		split := strings.Split(url, "/")
-		lastPathParam := split[len(split)-1]
-
-		if lastPathParam == "openapi.yaml" || lastPathParam == "openapi.json" {
-			h = filesystem.New(filesystem.Config{
-				Root:       http.FS(root.StaticFiles),
-				PathPrefix: "docs",
-				Browse:     true,
-			})
-		}
-
-		return h(c)
-	})
+	api.Use("/docs", r.dh.Get)
 
 	apiV1 := app.Group(basePath + "/v1")
 	apiV1.Post("/auth/sign-in", r.ah.SignIn)
@@ -126,3 +107,5 @@ func (r *Router) Register(
 	usersApiV1.Get("/transactions/:transaction_id", r.th.Get)
 	usersApiV1.Put("/transactions/:transaction_id", r.th.Update)
 }
+
+func serveDocs() {}

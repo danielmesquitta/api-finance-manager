@@ -47,7 +47,7 @@ func (h TransactionHandler) Get(c *fiber.Ctx) error {
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	transactionID := uuid.MustParse(c.Path(pathParamTransactionID))
+	transactionID := uuid.MustParse(c.Params(pathParamTransactionID))
 
 	in := usecase.GetTransactionInput{
 		TransactionID: transactionID,
@@ -165,7 +165,7 @@ func (h TransactionHandler) Update(c *fiber.Ctx) error {
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	transactionID := uuid.MustParse(c.Path(pathParamTransactionID))
+	transactionID := uuid.MustParse(c.Params(pathParamTransactionID))
 
 	in := usecase.UpdateTransactionInput{
 		ID:     transactionID,

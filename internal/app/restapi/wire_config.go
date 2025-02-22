@@ -103,6 +103,7 @@ var providers = []any{
 	handler.NewAccountHandler,
 	handler.NewTransactionHandler,
 	handler.NewBalanceHandler,
+	handler.NewDocHandler,
 
 	middleware.NewMiddleware,
 

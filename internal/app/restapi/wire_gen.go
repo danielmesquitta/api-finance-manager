@@ -31,6 +31,7 @@ import (
 func NewDev(v *validator.Validator, e *config.Env) *App {
 	jwt := jwtutil.NewJWT(e)
 	middlewareMiddleware := middleware.NewMiddleware(e, jwt)
+	docHandler := handler.NewDocHandler()
 	pool := db.NewPGXPool(e)
 	dbDB := db.NewDB(pool)
 	userPgRepo := pgrepo.NewUserPgRepo(dbDB)
@@ -81,7 +82,7 @@ func NewDev(v *validator.Validator, e *config.Env) *App {
 	getBalance := usecase.NewGetBalance(v, transactionPgRepo, accountBalancePgRepo)
 	syncBalances := usecase.NewSyncBalances(e, mockpluggyClient, redisCache, accountPgRepo, accountBalancePgRepo)
 	balanceHandler := handler.NewBalanceHandler(getBalance, syncBalances)
-	routerRouter := router.NewRouter(e, middlewareMiddleware, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler)
+	routerRouter := router.NewRouter(e, middlewareMiddleware, docHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler)
 	app := newApp(middlewareMiddleware, routerRouter, redisCache)
 	return app
 }
@@ -90,6 +91,7 @@ func NewDev(v *validator.Validator, e *config.Env) *App {
 func NewProd(v *validator.Validator, e *config.Env) *App {
 	jwt := jwtutil.NewJWT(e)
 	middlewareMiddleware := middleware.NewMiddleware(e, jwt)
+	docHandler := handler.NewDocHandler()
 	pool := db.NewPGXPool(e)
 	dbDB := db.NewDB(pool)
 	userPgRepo := pgrepo.NewUserPgRepo(dbDB)
@@ -139,7 +141,7 @@ func NewProd(v *validator.Validator, e *config.Env) *App {
 	getBalance := usecase.NewGetBalance(v, transactionPgRepo, accountBalancePgRepo)
 	syncBalances := usecase.NewSyncBalances(e, client, redisCache, accountPgRepo, accountBalancePgRepo)
 	balanceHandler := handler.NewBalanceHandler(getBalance, syncBalances)
-	routerRouter := router.NewRouter(e, middlewareMiddleware, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler)
+	routerRouter := router.NewRouter(e, middlewareMiddleware, docHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler)
 	app := newApp(middlewareMiddleware, routerRouter, redisCache)
 	return app
 }
