@@ -1,31 +1,18 @@
 package middleware
 
 import (
-	"crypto/subtle"
-
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/basicauth"
 )
 
-func (m *Middleware) BasicAuth(next echo.HandlerFunc) echo.HandlerFunc {
-	middlewareFunc := middleware.BasicAuth(
-		func(username, password string, _ echo.Context) (bool, error) {
-			usernameMatches := subtle.ConstantTimeCompare(
-				[]byte(username),
-				[]byte(m.e.BasicAuthUsername),
-			) == 1
-			passwordMatches := subtle.ConstantTimeCompare(
-				[]byte(password),
-				[]byte(m.e.BasicAuthPassword),
-			) == 1
-
-			if usernameMatches && passwordMatches {
-				return true, nil
-			}
-
-			return false, nil
+func (m *Middleware) BasicAuth() fiber.Handler {
+	middlewareFunc := basicauth.New(
+		basicauth.Config{
+			Users: map[string]string{
+				m.e.BasicAuthUsername: m.e.BasicAuthPassword,
+			},
 		},
 	)
 
-	return middlewareFunc(next)
+	return middlewareFunc
 }

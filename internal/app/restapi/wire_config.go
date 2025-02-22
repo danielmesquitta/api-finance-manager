@@ -95,7 +95,6 @@ var providers = []any{
 	usecase.NewSyncBalances,
 
 	handler.NewAuthHandler,
-	handler.NewHealthHandler,
 	handler.NewCalculatorHandler,
 	handler.NewInstitutionHandler,
 	handler.NewCategoryHandler,

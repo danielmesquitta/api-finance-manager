@@ -1,13 +1,11 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type AuthHandler struct {
@@ -37,27 +35,26 @@ func NewAuthHandler(
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/auth/sign-in [post]
-func (h AuthHandler) SignIn(c echo.Context) error {
-	token := c.Request().Header.Get("Authorization")
+func (h AuthHandler) SignIn(c *fiber.Ctx) error {
+	token := c.Get(fiber.HeaderAuthorization)
 	if token == "" {
 		return errs.ErrUnauthorized
 	}
 
 	var body dto.SignInRequest
-	if err := c.Bind(&body); err != nil {
+	if err := c.BodyParser(&body); err != nil {
 		return errs.New(err)
 	}
 
-	ctx := c.Request().Context()
 	out, err := h.si.Execute(
-		ctx,
+		c.UserContext(),
 		usecase.SignInInput{Token: token, Provider: body.Provider},
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, out)
+	return c.JSON(out)
 }
 
 // @Summary Refresh token
@@ -71,18 +68,17 @@ func (h AuthHandler) SignIn(c echo.Context) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/auth/refresh [post]
-func (h AuthHandler) RefreshToken(c echo.Context) error {
-	claims := getUserClaims(c)
+func (h AuthHandler) RefreshToken(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	ctx := c.Request().Context()
 	out, err := h.rt.Execute(
-		ctx,
+		c.UserContext(),
 		userID,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, out)
+	return c.JSON(out)
 }

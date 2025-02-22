@@ -45,12 +45,12 @@ type Result struct {
 }
 
 type CreditCardMetadata struct {
-	CardNumber        *string    `json:"cardNumber,omitempty"`
-	PurchaseDate      *time.Time `json:"purchaseDate,omitempty"`
-	TotalInstallments *int64     `json:"totalInstallments,omitempty"`
-	InstallmentNumber *int64     `json:"installmentNumber,omitempty"`
-	BillID            *string    `json:"billId,omitempty"`
-	PayeeMCC          *int64     `json:"payeeMCC,omitempty"`
+	CardNumber        *string    `json:"cardNumber,omitzero"`
+	PurchaseDate      *time.Time `json:"purchaseDate,omitzero"`
+	TotalInstallments *int64     `json:"totalInstallments,omitzero"`
+	InstallmentNumber *int64     `json:"installmentNumber,omitzero"`
+	BillID            *string    `json:"billId,omitzero"`
+	PayeeMCC          *int64     `json:"payeeMCC,omitzero"`
 }
 
 type PaymentData struct {

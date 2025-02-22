@@ -137,13 +137,13 @@ func calculateComparisonDates(date time.Time) *ComparisonDates {
 }
 
 type ComparisonDates struct {
-	IsCurrentMonth                 bool      `json:"is_current_month,omitempty"`
-	MonthStart                     time.Time `json:"current_month_start_date,omitempty"`
-	MonthEnd                       time.Time `json:"current_month_end_date,omitempty"`
-	MonthComparisonEndDate         time.Time `json:"current_month_comparison_end_date,omitempty"`
-	PreviousMonthStart             time.Time `json:"previous_month_start_date,omitempty"`
-	PreviousMonthEnd               time.Time `json:"previous_month_end_date,omitempty"`
-	PreviousMonthComparisonEndDate time.Time `json:"previous_month_comparison_end_date,omitempty"`
+	IsCurrentMonth                 bool      `json:"is_current_month,omitzero"`
+	MonthStart                     time.Time `json:"current_month_start_date,omitzero"`
+	MonthEnd                       time.Time `json:"current_month_end_date,omitzero"`
+	MonthComparisonEndDate         time.Time `json:"current_month_comparison_end_date,omitzero"`
+	PreviousMonthStart             time.Time `json:"previous_month_start_date,omitzero"`
+	PreviousMonthEnd               time.Time `json:"previous_month_end_date,omitzero"`
+	PreviousMonthComparisonEndDate time.Time `json:"previous_month_comparison_end_date,omitzero"`
 }
 
 func prepareTransactionOptions(

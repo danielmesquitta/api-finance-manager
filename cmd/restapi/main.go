@@ -32,7 +32,7 @@ func main() {
 		app = restapi.NewDev(v, e)
 	}
 
-	if err := app.Start(":" + e.Port); err != nil {
+	if err := app.Listen(":" + e.Port); err != nil {
 		log.Fatalf("failed to start server: %v", err)
 	}
 }

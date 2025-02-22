@@ -193,8 +193,25 @@
                 },
                 "type": "object"
             },
+            "dto.ErrorItem": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "reason": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "dto.ErrorResponse": {
                 "properties": {
+                    "errors": {
+                        "items": {
+                            "$ref": "#/components/schemas/dto.ErrorItem"
+                        },
+                        "type": "array"
+                    },
                     "message": {
                         "type": "string"
                     }
@@ -358,14 +375,6 @@
                     },
                     "user_id": {
                         "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "dto.HealthResponse": {
-                "properties": {
-                    "ok": {
-                        "type": "boolean"
                     }
                 },
                 "type": "object"
@@ -1066,37 +1075,6 @@
     },
     "openapi": "3.0.3",
     "paths": {
-        "/health": {
-            "get": {
-                "description": "Health check",
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.HealthResponse"
-                                }
-                            }
-                        },
-                        "description": "OK"
-                    },
-                    "500": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/dto.ErrorResponse"
-                                }
-                            }
-                        },
-                        "description": "Internal Server Error"
-                    }
-                },
-                "summary": "Health check",
-                "tags": [
-                    "Health"
-                ]
-            }
-        },
         "/v1/admin/accounts": {
             "post": {
                 "description": "Webhook to sync user accounts from open finance",

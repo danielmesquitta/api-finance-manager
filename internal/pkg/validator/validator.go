@@ -52,14 +52,20 @@ func (v *Validator) Validate(
 	}
 
 	strErrs := make([]string, len(validationErrs))
+	errItems := make([]errs.ErrorItem, len(validationErrs))
 	for i, validationErr := range validationErrs {
 		strErrs[i] = validationErr.Translate(v.t)
+		errItems[i] = errs.ErrorItem{
+			Name:   validationErr.Field(),
+			Reason: validationErr.Error(),
+		}
 	}
 
-	errMsg := strings.Join(
-		strErrs,
-		", ",
-	)
+	errMsg := strings.Join(strErrs, ", ") + "."
 
-	return errs.NewWithType(errMsg, errs.ErrTypeValidation)
+	return &errs.Err{
+		Message: errMsg,
+		Code:    errs.ErrCodeValidation,
+		Errors:  errItems,
+	}
 }

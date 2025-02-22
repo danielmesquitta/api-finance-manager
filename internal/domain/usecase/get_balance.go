@@ -32,16 +32,16 @@ func NewGetBalance(
 
 type GetBalanceInput struct {
 	repo.TransactionOptions
-	Date   time.Time `json:"date,omitempty"`
-	UserID uuid.UUID `json:"user_id,omitempty" validate:"required"`
+	Date   time.Time `json:"date,omitzero"`
+	UserID uuid.UUID `json:"user_id,omitzero" validate:"required"`
 }
 
 type GetBalanceOutput struct {
 	ComparisonDates                   ComparisonDates `json:"comparison_dates"`
-	CurrentBalance                    int64           `json:"current_balance,omitempty"`
-	CurrentBalancePercentageVariation int64           `json:"current_balance_percentage_variation,omitempty"`
-	MonthlyBalance                    int64           `json:"monthly_balance,omitempty"`
-	MonthlyBalancePercentageVariation int64           `json:"monthly_balance_percentage_variation,omitempty"`
+	CurrentBalance                    int64           `json:"current_balance,omitzero"`
+	CurrentBalancePercentageVariation int64           `json:"current_balance_percentage_variation,omitzero"`
+	MonthlyBalance                    int64           `json:"monthly_balance,omitzero"`
+	MonthlyBalancePercentageVariation int64           `json:"monthly_balance_percentage_variation,omitzero"`
 }
 
 func (uc *GetBalance) Execute(

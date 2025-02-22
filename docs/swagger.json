@@ -11,35 +11,6 @@
     },
     "basePath": "/api",
     "paths": {
-        "/health": {
-            "get": {
-                "description": "Health check",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Health"
-                ],
-                "summary": "Health check",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.HealthResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
         "/v1/admin/accounts": {
             "post": {
                 "security": [
@@ -1707,9 +1678,26 @@
                 }
             }
         },
+        "dto.ErrorItem": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "reason": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.ErrorResponse": {
             "type": "object",
             "properties": {
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ErrorItem"
+                    }
+                },
                 "message": {
                     "type": "string"
                 }
@@ -1873,14 +1861,6 @@
                 },
                 "user_id": {
                     "type": "string"
-                }
-            }
-        },
-        "dto.HealthResponse": {
-            "type": "object",
-            "properties": {
-                "ok": {
-                    "type": "boolean"
                 }
             }
         },

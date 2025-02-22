@@ -1,12 +1,10 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
-	"github.com/labstack/echo/v4"
+	"github.com/gofiber/fiber/v2"
 )
 
 type CalculatorHandler struct {
@@ -45,21 +43,21 @@ func NewCalculatorHandler(
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/calculator/compound-interest [post]
-func (h CalculatorHandler) CompoundInterest(c echo.Context) error {
+func (h CalculatorHandler) CompoundInterest(c *fiber.Ctx) error {
 	body := &dto.CompoundInterestRequest{}
-	if err := c.Bind(body); err != nil {
+	if err := c.BodyParser(body); err != nil {
 		return errs.New(err)
 	}
 
 	output, err := h.cci.Execute(
-		c.Request().Context(),
+		c.UserContext(),
 		body.CalculateCompoundInterestInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.CompoundInterestResponse{
+	return c.JSON(dto.CompoundInterestResponse{
 		CalculateCompoundInterestOutput: *output,
 	})
 }
@@ -76,21 +74,21 @@ func (h CalculatorHandler) CompoundInterest(c echo.Context) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/calculator/emergency-reserve [post]
-func (h CalculatorHandler) EmergencyReserve(c echo.Context) error {
+func (h CalculatorHandler) EmergencyReserve(c *fiber.Ctx) error {
 	body := &dto.EmergencyReserveRequest{}
-	if err := c.Bind(body); err != nil {
+	if err := c.BodyParser(body); err != nil {
 		return errs.New(err)
 	}
 
 	output, err := h.cer.Execute(
-		c.Request().Context(),
+		c.UserContext(),
 		body.CalculateEmergencyReserveInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.EmergencyReserveResponse{
+	return c.JSON(dto.EmergencyReserveResponse{
 		CalculateEmergencyReserveOutput: *output,
 	})
 }
@@ -107,21 +105,21 @@ func (h CalculatorHandler) EmergencyReserve(c echo.Context) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/calculator/retirement [post]
-func (h CalculatorHandler) Retirement(c echo.Context) error {
+func (h CalculatorHandler) Retirement(c *fiber.Ctx) error {
 	body := &dto.RetirementRequest{}
-	if err := c.Bind(body); err != nil {
+	if err := c.BodyParser(body); err != nil {
 		return errs.New(err)
 	}
 
 	output, err := h.cr.Execute(
-		c.Request().Context(),
+		c.UserContext(),
 		body.CalculateRetirementInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.RetirementResponse{
+	return c.JSON(dto.RetirementResponse{
 		CalculateRetirementOutput: *output,
 	})
 }
@@ -138,21 +136,21 @@ func (h CalculatorHandler) Retirement(c echo.Context) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/calculator/simple-interest [post]
-func (h CalculatorHandler) SimpleInterest(c echo.Context) error {
+func (h CalculatorHandler) SimpleInterest(c *fiber.Ctx) error {
 	body := &dto.SimpleInterestRequest{}
-	if err := c.Bind(body); err != nil {
+	if err := c.BodyParser(body); err != nil {
 		return errs.New(err)
 	}
 
 	output, err := h.csi.Execute(
-		c.Request().Context(),
+		c.UserContext(),
 		body.CalculateSimpleInterestInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.SimpleInterestResponse{
+	return c.JSON(dto.SimpleInterestResponse{
 		CalculateSimpleInterestOutput: *output,
 	})
 }
@@ -169,21 +167,21 @@ func (h CalculatorHandler) SimpleInterest(c echo.Context) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/calculator/cash-vs-installments [post]
-func (h CalculatorHandler) CashVsInstallments(c echo.Context) error {
+func (h CalculatorHandler) CashVsInstallments(c *fiber.Ctx) error {
 	body := &dto.CashVsInstallmentsRequest{}
-	if err := c.Bind(body); err != nil {
+	if err := c.BodyParser(body); err != nil {
 		return errs.New(err)
 	}
 
 	output, err := h.cvi.Execute(
-		c.Request().Context(),
+		c.UserContext(),
 		body.CalculateCashVsInstallmentsInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.CashVsInstallmentsResponse{
+	return c.JSON(dto.CashVsInstallmentsResponse{
 		CalculateCashVsInstallmentsOutput: *output,
 	})
 }

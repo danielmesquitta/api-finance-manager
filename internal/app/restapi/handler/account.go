@@ -5,7 +5,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
-	"github.com/labstack/echo/v4"
+	"github.com/gofiber/fiber/v2"
 )
 
 type AccountHandler struct {
@@ -31,16 +31,16 @@ func NewAccountHandler(
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/admin/accounts [post]
-func (h AccountHandler) Create(c echo.Context) error {
+func (h AccountHandler) Create(c *fiber.Ctx) error {
 	in := usecase.CreateAccountsInput{}
-	if err := c.Bind(&in); err != nil {
+	if err := c.BodyParser(&in); err != nil {
 		return errs.New(err)
 	}
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	if err := h.ca.Execute(ctx, in); err != nil {
 		return errs.New(err)
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return c.SendStatus(http.StatusNoContent)
 }

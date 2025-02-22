@@ -1,12 +1,12 @@
 package errs
 
 var (
-	ErrSubscriptionExpired = NewWithType(
+	ErrSubscriptionExpired = New(
 		"Assinatura expirada",
-		ErrTypeUnauthorized,
+		ErrCodeUnauthorized,
 	)
-	ErrUnauthorized = NewWithType(
+	ErrUnauthorized = New(
 		"Usuário não autorizado",
-		ErrTypeUnauthorized,
+		ErrCodeUnauthorized,
 	)
 )

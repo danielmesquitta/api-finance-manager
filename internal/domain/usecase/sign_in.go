@@ -13,7 +13,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
@@ -165,11 +164,12 @@ func (uc *SignIn) signIn(
 	default:
 	}
 
-	tokenClaims := jwtutil.UserClaims{}
-	tokenClaims.Issuer = user.ID.String()
-	tokenClaims.IssuedAt = jwt.NewNumericDate(time.Now())
 	in7Days := time.Now().Add(time.Hour * 24 * 7)
-	tokenClaims.ExpiresAt = jwt.NewNumericDate(in7Days)
+	tokenClaims := jwtutil.UserClaims{
+		Issuer:    user.ID.String(),
+		IssuedAt:  time.Now(),
+		ExpiresAt: in7Days,
+	}
 
 	refreshToken, err := uc.j.NewToken(tokenClaims, jwtutil.TokenTypeRefresh)
 	if err != nil {
@@ -179,7 +179,7 @@ func (uc *SignIn) signIn(
 	tokenClaims.Tier = entity.Tier(user.Tier)
 	tokenClaims.SubscriptionExpiresAt = user.SubscriptionExpiresAt
 	in24Hours := time.Now().Add(time.Hour * 24)
-	tokenClaims.ExpiresAt = jwt.NewNumericDate(in24Hours)
+	tokenClaims.ExpiresAt = in24Hours
 
 	accessToken, err := uc.j.NewToken(
 		tokenClaims,

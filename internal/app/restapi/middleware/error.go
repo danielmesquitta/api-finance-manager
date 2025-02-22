@@ -1,78 +1,101 @@
 package middleware
 
 import (
+	"errors"
 	"log/slog"
 	"net/http"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/labstack/echo/v4"
+	"github.com/gofiber/fiber/v2"
 )
 
-var mapErrTypeToStatusCode = map[errs.Type]int{
-	errs.ErrTypeForbidden:    http.StatusForbidden,
-	errs.ErrTypeUnauthorized: http.StatusUnauthorized,
-	errs.ErrTypeValidation:   http.StatusBadRequest,
-	errs.ErrTypeUnknown:      http.StatusInternalServerError,
-	errs.ErrTypeNotFound:     http.StatusNotFound,
+var mapAppErrToHTTPError = map[errs.Code]int{
+	errs.ErrCodeForbidden:    http.StatusForbidden,
+	errs.ErrCodeUnauthorized: http.StatusUnauthorized,
+	errs.ErrCodeValidation:   http.StatusBadRequest,
+	errs.ErrCodeUnknown:      http.StatusInternalServerError,
+	errs.ErrCodeNotFound:     http.StatusNotFound,
 }
 
-func (m *Middleware) ErrorHandler(
-	defaultErrorHandler echo.HTTPErrorHandler,
-) echo.HTTPErrorHandler {
-	return func(err error, c echo.Context) {
-		if c.Response().Committed {
-			return
+func (m *Middleware) ErrorHandler(ctx *fiber.Ctx, err error) error {
+	var appErr *errs.Err
+	if errors.As(err, &appErr) {
+		code, ok := mapAppErrToHTTPError[appErr.Code]
+		if !ok {
+			code = http.StatusInternalServerError
 		}
 
-		if appErr, ok := err.(*errs.Err); ok {
-			statusCode := mapErrTypeToStatusCode[appErr.Type]
-			isInternalServerError := statusCode >= 500 || statusCode == 0
-			if isInternalServerError {
-				if err := m.handleInternalServerError(c, appErr); err != nil {
-					slog.Error(
-						"failed to handle internal server error",
-						"err",
-						err,
-					)
-				}
-				return
-			}
-
-			if err := c.JSON(
-				statusCode,
-				dto.ErrorResponse{Message: appErr.Error()},
-			); err != nil {
-				slog.Error("failed to handle app err", "err", err)
-			}
-			return
+		if code >= 500 {
+			return m.handleInternalServerError(ctx, appErr)
 		}
 
-		defaultErrorHandler(err, c)
+		return ctx.Status(code).JSON(
+			dto.ErrorResponse{Message: appErr.Message},
+		)
 	}
+
+	var fiberErr *fiber.Error
+	if errors.As(err, &fiberErr) {
+		code := fiberErr.Code
+
+		if code >= 500 {
+			return m.handleInternalServerError(ctx, errs.New(fiberErr))
+		}
+
+		return ctx.Status(code).JSON(
+			dto.ErrorResponse{Message: fiberErr.Message},
+		)
+	}
+
+	return nil
 }
 
 func (m *Middleware) handleInternalServerError(
-	c echo.Context,
+	c *fiber.Ctx,
 	appErr *errs.Err,
 ) error {
-	statusCode := mapErrTypeToStatusCode[appErr.Type]
-	req := c.Request()
+	statusCode := mapAppErrToHTTPError[appErr.Code]
+
+	args := []any{
+		"method", c.Method(),
+		"url", c.BaseURL(),
+	}
+
+	queries := c.Queries()
+	if len(queries) > 0 {
+		args = append(args, "query", queries)
+	}
+
+	requestId := c.Get(fiber.HeaderXRequestID)
+	if requestId != "" {
+		args = append(args, "request_id", requestId)
+	}
+
+	userId := ""
+	claims := handler.GetUserClaims(c)
+	if claims != nil {
+		userId = claims.Issuer
+	}
+	if userId != "" {
+		args = append(args, "user_id", userId)
+	}
 
 	requestData := map[string]any{}
-	_ = c.Bind(&requestData)
+	_ = c.BodyParser(&requestData)
+	if len(requestData) > 0 {
+		args = append(args, "body", requestData)
+	}
+
+	args = append(args, "stacktrace", appErr.StackTrace)
 
 	slog.Error(
 		appErr.Error(),
-		"url", req.URL.Path,
-		"body", requestData,
-		"query", c.QueryParams(),
-		"params", c.ParamValues(),
-		"stacktrace", appErr.StackTrace,
+		args...,
 	)
 
-	return c.JSON(
-		statusCode,
+	return c.Status(statusCode).JSON(
 		dto.ErrorResponse{Message: "internal server error"},
 	)
 }

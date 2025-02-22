@@ -1,12 +1,12 @@
 package errs
 
 var (
-	ErrCategoryNotFound = NewWithType(
+	ErrCategoryNotFound = New(
 		"Categoria não encontrada",
-		ErrTypeNotFound,
+		ErrCodeNotFound,
 	)
-	ErrCategoriesNotFound = NewWithType(
+	ErrCategoriesNotFound = New(
 		"Uma ou mais categorias não foram encontradas",
-		ErrTypeNotFound,
+		ErrCodeNotFound,
 	)
 )

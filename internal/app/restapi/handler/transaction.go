@@ -6,8 +6,8 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type TransactionHandler struct {
@@ -43,24 +43,24 @@ func NewTransactionHandler(
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions/{transaction_id} [get]
-func (h TransactionHandler) Get(c echo.Context) error {
-	claims := getUserClaims(c)
+func (h TransactionHandler) Get(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	transactionID := uuid.MustParse(c.Param(pathParamTransactionID))
+	transactionID := uuid.MustParse(c.Path(pathParamTransactionID))
 
 	in := usecase.GetTransactionInput{
 		TransactionID: transactionID,
 		UserID:        userID,
 	}
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	transaction, err := h.gt.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.GetTransactionResponse{
+	return c.JSON(dto.GetTransactionResponse{
 		FullTransaction: *transaction,
 	})
 }
@@ -76,7 +76,7 @@ func (h TransactionHandler) Get(c echo.Context) error {
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/admin/transactions/sync [post]
-func (h *TransactionHandler) Sync(c echo.Context) error {
+func (h *TransactionHandler) Sync(c *fiber.Ctx) error {
 	userIDs, err := parseUUIDsParam(c, queryParamUserIDs)
 	if err != nil {
 		return errs.New(err)
@@ -86,12 +86,12 @@ func (h *TransactionHandler) Sync(c echo.Context) error {
 		UserIDs: userIDs,
 	}
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	if err := h.sa.Execute(ctx, in); err != nil {
 		return errs.New(err)
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return c.SendStatus(http.StatusNoContent)
 }
 
 // @Summary List transactions
@@ -116,8 +116,8 @@ func (h *TransactionHandler) Sync(c echo.Context) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions [get]
-func (h *TransactionHandler) List(c echo.Context) error {
-	claims := getUserClaims(c)
+func (h *TransactionHandler) List(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
 	paginationIn := parsePaginationParams(c)
@@ -139,13 +139,13 @@ func (h *TransactionHandler) List(c echo.Context) error {
 		UserID:             userID,
 	}
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	res, err := h.lt.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(res)
 }
 
 // @Summary Update transaction
@@ -161,21 +161,21 @@ func (h *TransactionHandler) List(c echo.Context) error {
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions/{transaction_id} [put]
-func (h TransactionHandler) Update(c echo.Context) error {
-	claims := getUserClaims(c)
+func (h TransactionHandler) Update(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	transactionID := uuid.MustParse(c.Param(pathParamTransactionID))
+	transactionID := uuid.MustParse(c.Path(pathParamTransactionID))
 
 	in := usecase.UpdateTransactionInput{
 		ID:     transactionID,
 		UserID: userID,
 	}
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	if err := h.ut.Execute(ctx, in); err != nil {
 		return errs.New(err)
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return c.SendStatus(http.StatusNoContent)
 }

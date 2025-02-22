@@ -5,8 +5,8 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type BalanceHandler struct {
@@ -44,8 +44,8 @@ func NewBalanceHandler(
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/balances [get]
-func (h *BalanceHandler) Get(c echo.Context) error {
-	claims := getUserClaims(c)
+func (h *BalanceHandler) Get(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
 	date, err := parseDateParam(c, queryParamDate)
@@ -64,13 +64,12 @@ func (h *BalanceHandler) Get(c echo.Context) error {
 		UserID:             userID,
 	}
 
-	ctx := c.Request().Context()
-	res, err := h.gb.Execute(ctx, in)
+	out, err := h.gb.Execute(c.UserContext(), in)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(out)
 }
 
 // @Summary Sync account balances from open finance
@@ -82,11 +81,10 @@ func (h *BalanceHandler) Get(c echo.Context) error {
 // @Success 204
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/admin/balances/sync [post]
-func (h BalanceHandler) Sync(c echo.Context) error {
-	ctx := c.Request().Context()
-	if err := h.sb.Execute(ctx); err != nil {
+func (h BalanceHandler) Sync(c *fiber.Ctx) error {
+	if err := h.sb.Execute(c.UserContext()); err != nil {
 		return errs.New(err)
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return c.SendStatus(http.StatusNoContent)
 }

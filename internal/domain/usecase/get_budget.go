@@ -41,7 +41,7 @@ type GetBudgetBudgetCategories struct {
 	entity.BudgetCategory
 	Spent     int64                      `json:"spent"`
 	Available int64                      `json:"available"`
-	Category  entity.TransactionCategory `json:"category,omitempty"`
+	Category  entity.TransactionCategory `json:"category,omitzero"`
 }
 
 type GetBudgetOutput struct {
@@ -49,8 +49,8 @@ type GetBudgetOutput struct {
 	Spent                              int64                       `json:"spent"`
 	Available                          int64                       `json:"available"`
 	AvailablePercentageVariation       int64                       `json:"available_percentage_variation"`
-	AvailablePerDay                    int64                       `json:"available_per_day,omitempty"`
-	AvailablePerDayPercentageVariation int64                       `json:"available_per_day_percentage_variation,omitempty"`
+	AvailablePerDay                    int64                       `json:"available_per_day,omitzero"`
+	AvailablePerDayPercentageVariation int64                       `json:"available_per_day_percentage_variation,omitzero"`
 	ComparisonDates                    ComparisonDates             `json:"comparison_dates"`
 	BudgetCategories                   []GetBudgetBudgetCategories `json:"budget_categories"`
 }

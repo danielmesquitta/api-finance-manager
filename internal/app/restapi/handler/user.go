@@ -1,13 +1,11 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type UserHandler struct {
@@ -33,16 +31,16 @@ func NewUserHandler(
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/users/profile [get]
-func (h UserHandler) Profile(c echo.Context) error {
-	claims := getUserClaims(c)
+func (h UserHandler) Profile(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	user, err := h.gu.Execute(c.Request().Context(), userID)
+	user, err := h.gu.Execute(c.UserContext(), userID)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.UserProfileResponse{
+	return c.JSON(dto.UserProfileResponse{
 		User: *user,
 	})
 }

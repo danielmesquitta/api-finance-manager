@@ -2,15 +2,17 @@ package handler
 
 import (
 	"strconv"
+	"strings"
 	"time"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
+	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type QueryParam = string
@@ -39,16 +41,10 @@ const (
 )
 
 func parsePaginationParams(
-	c echo.Context,
+	c *fiber.Ctx,
 ) usecase.PaginationInput {
-	page, _ := strconv.Atoi(c.QueryParam(queryParamPage))
-	if page < 1 {
-		page = 1
-	}
-	pageSize, _ := strconv.Atoi(c.QueryParam(queryParamPageSize))
-	if pageSize < 1 {
-		pageSize = 20
-	}
+	page := c.QueryInt(queryParamPage, 1)
+	pageSize := c.QueryInt(queryParamPageSize, 20)
 
 	return usecase.PaginationInput{
 		Page:     uint(page),
@@ -57,10 +53,10 @@ func parsePaginationParams(
 }
 
 func parseDateParam(
-	c echo.Context,
+	c *fiber.Ctx,
 	param QueryParam,
 ) (time.Time, error) {
-	paramValue := c.QueryParam(param)
+	paramValue := c.Query(param)
 	if paramValue == "" {
 		return time.Time{}, nil
 	}
@@ -74,20 +70,22 @@ func parseDateParam(
 }
 
 func parseUUIDsParam(
-	c echo.Context,
+	c *fiber.Ctx,
 	param QueryParam,
 ) ([]uuid.UUID, error) {
-	values := c.QueryParams()[param]
-	if len(values) == 0 {
+	paramValue := c.Query(param)
+	if paramValue == "" {
 		return nil, nil
 	}
+
+	values := strings.Split(paramValue, ",")
 
 	var uuids []uuid.UUID
 	for _, value := range values {
 		if value == "" {
 			continue
 		}
-		id, err := uuid.Parse(value)
+		id, err := uuid.Parse(strings.TrimSpace(value))
 		if err != nil {
 			return nil, errs.ErrInvalidUUID
 		}
@@ -98,27 +96,18 @@ func parseUUIDsParam(
 }
 
 func parseBoolParam(
-	c echo.Context,
+	c *fiber.Ctx,
 	param QueryParam,
 ) (bool, error) {
-	paramValue := c.QueryParam(param)
-	if paramValue == "" {
-		return false, nil
-	}
-
-	b, err := strconv.ParseBool(paramValue)
-	if err != nil {
-		return false, errs.ErrInvalidBool
-	}
-
-	return b, nil
+	paramValue := c.QueryBool(param)
+	return paramValue, nil
 }
 
 func parseNillableBoolParam(
-	c echo.Context,
+	c *fiber.Ctx,
 	param QueryParam,
 ) (*bool, error) {
-	paramValue := c.QueryParam(param)
+	paramValue := c.Query(param)
 	if paramValue == "" {
 		return nil, nil
 	}
@@ -131,16 +120,32 @@ func parseNillableBoolParam(
 	return &b, nil
 }
 
-func getUserClaims(
-	c echo.Context,
+func GetUserClaims(
+	c *fiber.Ctx,
 ) *jwtutil.UserClaims {
-	return c.Get(middleware.ClaimsKey).(*jwtutil.UserClaims)
+	token := c.Locals(jwtutil.ClaimsKey).(*jwt.Token)
+	if token == nil {
+		return nil
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil
+	}
+
+	return &jwtutil.UserClaims{
+		Issuer:                (claims)["iss"].(string),
+		IssuedAt:              time.Unix(int64((claims)["iat"].(float64)), 0),
+		ExpiresAt:             time.Unix(int64((claims)["exp"].(float64)), 0),
+		Tier:                  (claims)["tier"].(entity.Tier),
+		SubscriptionExpiresAt: (claims)["subscription_expires_at"].(*time.Time),
+	}
 }
 
 func prepareTransactionOptions(
-	c echo.Context,
+	c *fiber.Ctx,
 ) (*repo.TransactionOptions, error) {
-	search := c.QueryParam(queryParamSearch)
+	search := c.Query(queryParamSearch)
 
 	paymentMethodIDs, err := parseUUIDsParam(c, queryParamPaymentMethodIDs)
 	if err != nil {

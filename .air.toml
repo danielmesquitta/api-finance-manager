@@ -36,6 +36,7 @@ watcher = "cyan"
 
 [log]
 main_only = true
+silent = false
 time = false
 
 [misc]

@@ -7,30 +7,40 @@ import (
 )
 
 type Err struct {
-	Message    string `json:"message,omitempty"`
-	StackTrace string `json:"stack_trace,omitempty"`
-	Type       Type   `json:"type,omitempty"`
+	Message    string
+	StackTrace string
+	Code       Code
+	Errors     []ErrorItem
 }
 
-type Type string
+type ErrorItem struct {
+	Name   string `json:"name"`
+	Reason string `json:"reason"`
+}
+
+type Code string
 
 const (
-	ErrTypeUnknown      Type = "unknown"
-	ErrTypeNotFound     Type = "not_found"
-	ErrTypeUnauthorized Type = "unauthorized"
-	ErrTypeForbidden    Type = "forbidden"
-	ErrTypeValidation   Type = "validation_error"
+	ErrCodeUnknown      Code = "unknown"
+	ErrCodeNotFound     Code = "not_found"
+	ErrCodeUnauthorized Code = "unauthorized"
+	ErrCodeForbidden    Code = "forbidden"
+	ErrCodeValidation   Code = "validation_error"
 )
 
 // NewErr creates a new Err instance from either an error or a string,
-// and sets the Type flag to unknown. This is useful when you want to
+// and sets the Code flag to unknown. This is useful when you want to
 // create an error that is not expected to happen, and you want to
 // log it with stack tracing.
-func New(err any) *Err {
-	return NewWithType(err, ErrTypeUnknown)
+func New(err any, codes ...Code) *Err {
+	if len(codes) > 0 {
+		return newErr(err, codes[0])
+	}
+
+	return newErr(err, ErrCodeUnknown)
 }
 
-func NewWithType(err any, t Type) *Err {
+func newErr(err any, c Code) *Err {
 	if err == nil {
 		return nil
 	}
@@ -41,19 +51,19 @@ func NewWithType(err any, t Type) *Err {
 		return &Err{
 			Message:    v.Error(),
 			StackTrace: string(debug.Stack()),
-			Type:       t,
+			Code:       c,
 		}
 	case string:
 		return &Err{
 			Message:    v,
 			StackTrace: string(debug.Stack()),
-			Type:       t,
+			Code:       c,
 		}
 	case []byte:
 		return &Err{
 			Message:    string(v),
 			StackTrace: string(debug.Stack()),
-			Type:       t,
+			Code:       c,
 		}
 
 	default:
@@ -62,13 +72,13 @@ func NewWithType(err any, t Type) *Err {
 			return &Err{
 				Message:    fmt.Sprintf("unsupported err type %T: %+v", v, err),
 				StackTrace: string(debug.Stack()),
-				Type:       t,
+				Code:       c,
 			}
 		}
 		return &Err{
 			Message:    string(jsonData),
 			StackTrace: string(debug.Stack()),
-			Type:       t,
+			Code:       c,
 		}
 	}
 }

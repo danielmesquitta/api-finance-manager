@@ -23,7 +23,7 @@ func (c *Client) ListInstitutions(
 		opt(&opts)
 	}
 
-	data, err := root.TestData.ReadFile("test/data/pluggy/connectors.json")
+	data, err := root.TestData.ReadFile("testdata/pluggy/connectors.json")
 	if err != nil {
 		return nil, errs.New(err)
 	}

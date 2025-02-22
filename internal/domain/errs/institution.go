@@ -1,8 +1,8 @@
 package errs
 
 var (
-	ErrInstitutionNotFound = NewWithType(
+	ErrInstitutionNotFound = New(
 		"Instituição não encontrada",
-		ErrTypeNotFound,
+		ErrCodeNotFound,
 	)
 )

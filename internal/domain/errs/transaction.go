@@ -1,12 +1,12 @@
 package errs
 
 var (
-	ErrTransactionNotFound = NewWithType(
+	ErrTransactionNotFound = New(
 		"Transação não encontrada",
-		ErrTypeNotFound,
+		ErrCodeNotFound,
 	)
-	ErrInvalidDateRange = NewWithType(
+	ErrInvalidDateRange = New(
 		"Intervalo de datas inválido",
-		ErrTypeValidation,
+		ErrCodeValidation,
 	)
 )

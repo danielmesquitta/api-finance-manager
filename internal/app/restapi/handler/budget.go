@@ -6,8 +6,8 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type BudgetHandler struct {
@@ -46,17 +46,17 @@ func NewBudgetHandler(
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets [post]
-func (h BudgetHandler) Upsert(c echo.Context) error {
+func (h BudgetHandler) Upsert(c *fiber.Ctx) error {
 	var body dto.UpsertBudgetRequest
-	if err := c.Bind(&body); err != nil {
+	if err := c.BodyParser(&body); err != nil {
 		return errs.New(err)
 	}
 
-	claims := getUserClaims(c)
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 	body.UserID = userID
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	if err := h.ub.Execute(
 		ctx,
 		body.UpsertBudgetInput,
@@ -64,7 +64,7 @@ func (h BudgetHandler) Upsert(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return c.SendStatus(http.StatusNoContent)
 }
 
 // @Summary Get budget
@@ -80,8 +80,8 @@ func (h BudgetHandler) Upsert(c echo.Context) error {
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets [get]
-func (h BudgetHandler) Get(c echo.Context) error {
-	claims := getUserClaims(c)
+func (h BudgetHandler) Get(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
 	date, err := parseDateParam(c, queryParamDate)
@@ -89,7 +89,7 @@ func (h BudgetHandler) Get(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	out, err := h.gb.Execute(ctx, usecase.GetBudgetInput{
 		UserID: userID,
 		Date:   date,
@@ -98,7 +98,7 @@ func (h BudgetHandler) Get(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.GetBudgetResponse{
+	return c.JSON(dto.GetBudgetResponse{
 		GetBudgetOutput: *out,
 	})
 }
@@ -117,14 +117,14 @@ func (h BudgetHandler) Get(c echo.Context) error {
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets/categories/{category_id} [get]
-func (h BudgetHandler) GetTransactionCategory(c echo.Context) error {
-	claims := getUserClaims(c)
+func (h BudgetHandler) GetTransactionCategory(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	date := c.QueryParam(queryParamDate)
-	categoryID := uuid.MustParse(c.Param(pathParamCategoryID))
+	date := c.Query(queryParamDate)
+	categoryID := uuid.MustParse(c.Path(pathParamCategoryID))
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	out, err := h.gbc.Execute(ctx, usecase.GetBudgetCategoryInput{
 		UserID:     userID,
 		Date:       date,
@@ -134,7 +134,7 @@ func (h BudgetHandler) GetTransactionCategory(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, dto.GetBudgetCategoryResponse{
+	return c.JSON(dto.GetBudgetCategoryResponse{
 		GetBudgetCategoryOutput: *out,
 	})
 }
@@ -154,8 +154,8 @@ func (h BudgetHandler) GetTransactionCategory(c echo.Context) error {
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets/categories/{category_id}/transactions [get]
-func (h *BudgetHandler) ListCategoryTransactions(c echo.Context) error {
-	claims := getUserClaims(c)
+func (h *BudgetHandler) ListCategoryTransactions(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
 	paginationIn := parsePaginationParams(c)
@@ -165,7 +165,7 @@ func (h *BudgetHandler) ListCategoryTransactions(c echo.Context) error {
 		return errs.New(err)
 	}
 
-	categoryID := uuid.MustParse(c.Param(pathParamCategoryID))
+	categoryID := uuid.MustParse(c.Path(pathParamCategoryID))
 
 	in := usecase.ListBudgetCategoryTransactionsInput{
 		PaginationInput: paginationIn,
@@ -174,13 +174,13 @@ func (h *BudgetHandler) ListCategoryTransactions(c echo.Context) error {
 		CategoryID:      categoryID,
 	}
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	res, err := h.lbct.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(res)
 }
 
 // @Summary Delete budget
@@ -195,15 +195,15 @@ func (h *BudgetHandler) ListCategoryTransactions(c echo.Context) error {
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets [delete]
-func (h BudgetHandler) Delete(c echo.Context) error {
-	claims := getUserClaims(c)
+func (h BudgetHandler) Delete(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
 	userID := uuid.Must(uuid.Parse(claims.Issuer))
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	err := h.db.Execute(ctx, userID)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return c.SendStatus(http.StatusNoContent)
 }

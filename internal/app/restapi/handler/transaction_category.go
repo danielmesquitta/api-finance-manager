@@ -6,7 +6,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
-	"github.com/labstack/echo/v4"
+	"github.com/gofiber/fiber/v2"
 )
 
 type CategoryHandler struct {
@@ -33,12 +33,12 @@ func NewCategoryHandler(
 // @Success 204
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/admin/transactions/categories/sync [post]
-func (h CategoryHandler) Sync(c echo.Context) error {
-	if err := h.sc.Execute(c.Request().Context()); err != nil {
+func (h CategoryHandler) Sync(c *fiber.Ctx) error {
+	if err := h.sc.Execute(c.UserContext()); err != nil {
 		return errs.New(err)
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return c.SendStatus(http.StatusNoContent)
 }
 
 // @Summary List categories
@@ -54,8 +54,8 @@ func (h CategoryHandler) Sync(c echo.Context) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions/categories [get]
-func (h CategoryHandler) List(c echo.Context) error {
-	search := c.QueryParam(queryParamSearch)
+func (h CategoryHandler) List(c *fiber.Ctx) error {
+	search := c.Query(queryParamSearch)
 	paginationIn := parsePaginationParams(c)
 
 	in := usecase.ListCategoriesInput{
@@ -65,11 +65,11 @@ func (h CategoryHandler) List(c echo.Context) error {
 		},
 	}
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	res, err := h.lc.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(res)
 }

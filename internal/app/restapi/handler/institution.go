@@ -6,8 +6,8 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
+	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
 
 type InstitutionHandler struct {
@@ -34,12 +34,12 @@ func NewInstitutionHandler(
 // @Success 204
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/admin/institutions/sync [post]
-func (h InstitutionHandler) Sync(c echo.Context) error {
-	if err := h.si.Execute(c.Request().Context()); err != nil {
+func (h InstitutionHandler) Sync(c *fiber.Ctx) error {
+	if err := h.si.Execute(c.UserContext()); err != nil {
 		return errs.New(err)
 	}
 
-	return c.NoContent(http.StatusNoContent)
+	return c.SendStatus(http.StatusNoContent)
 }
 
 // @Summary List institutions
@@ -55,8 +55,8 @@ func (h InstitutionHandler) Sync(c echo.Context) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/institutions [get]
-func (h InstitutionHandler) List(c echo.Context) error {
-	search := c.QueryParam(queryParamSearch)
+func (h InstitutionHandler) List(c *fiber.Ctx) error {
+	search := c.Query(queryParamSearch)
 	paginationIn := parsePaginationParams(c)
 
 	in := usecase.ListInstitutionsInput{
@@ -66,13 +66,13 @@ func (h InstitutionHandler) List(c echo.Context) error {
 		},
 	}
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	res, err := h.li.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(res)
 }
 
 // @Summary List user institutions
@@ -88,10 +88,10 @@ func (h InstitutionHandler) List(c echo.Context) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/users/institutions [get]
-func (h InstitutionHandler) ListUserInstitutions(c echo.Context) error {
-	search := c.QueryParam(queryParamSearch)
+func (h InstitutionHandler) ListUserInstitutions(c *fiber.Ctx) error {
+	search := c.Query(queryParamSearch)
 	paginationIn := parsePaginationParams(c)
-	claims := getUserClaims(c)
+	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
 	in := usecase.ListInstitutionsInput{
@@ -102,11 +102,11 @@ func (h InstitutionHandler) ListUserInstitutions(c echo.Context) error {
 		},
 	}
 
-	ctx := c.Request().Context()
+	ctx := c.UserContext()
 	res, err := h.li.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(res)
 }

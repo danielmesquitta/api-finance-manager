@@ -8,8 +8,8 @@ import (
 )
 
 type InstitutionOptions struct {
-	Types  []string `json:"types,omitempty"`
-	Search string   `json:"search,omitempty"`
+	Types  []string `json:"types,omitzero"`
+	Search string   `json:"search,omitzero"`
 }
 
 type InstitutionOption func(*InstitutionOptions)
@@ -27,8 +27,8 @@ func WithInstitutionSearch(search string) InstitutionOption {
 }
 
 type TransactionOptions struct {
-	StartDate time.Time `json:"startDate,omitempty"`
-	EndDate   time.Time `json:"endDate,omitempty"`
+	StartDate time.Time `json:"startDate,omitzero"`
+	EndDate   time.Time `json:"endDate,omitzero"`
 }
 
 type TransactionOption func(*TransactionOptions)

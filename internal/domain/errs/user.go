@@ -1,12 +1,12 @@
 package errs
 
 var (
-	ErrUserNotFound = NewWithType(
+	ErrUserNotFound = New(
 		"Usuário não encontrado",
-		ErrTypeNotFound,
+		ErrCodeNotFound,
 	)
-	ErrPremiumUsersNotFound = NewWithType(
+	ErrPremiumUsersNotFound = New(
 		"Não foi possível encontrar usuários com tier premium ou trial",
-		ErrTypeNotFound,
+		ErrCodeNotFound,
 	)
 )

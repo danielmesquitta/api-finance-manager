@@ -1,16 +1,16 @@
 package errs
 
 var (
-	ErrInvalidTotalBudgetCategoryAmount = NewWithType(
+	ErrInvalidTotalBudgetCategoryAmount = New(
 		"O valor total das categorias do orçamento deve ser menor ou igual ao valor do orçamento",
-		ErrTypeValidation,
+		ErrCodeValidation,
 	)
-	ErrBudgetNotFound = NewWithType(
+	ErrBudgetNotFound = New(
 		"Você não possui um orçamento cadastrado",
-		ErrTypeNotFound,
+		ErrCodeNotFound,
 	)
-	ErrBudgetCategoryNotFound = NewWithType(
+	ErrBudgetCategoryNotFound = New(
 		"Você não possui um orçamento cadastrado para essa categoria",
-		ErrTypeNotFound,
+		ErrCodeNotFound,
 	)
 )

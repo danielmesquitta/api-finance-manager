@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
+	"github.com/gofiber/fiber/v2"
 
 	root "github.com/danielmesquitta/api-finance-manager"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
@@ -41,7 +42,7 @@ func main() {
 	signInRes := dto.SignInResponse{}
 
 	res, err = client.R().
-		SetHeader("Authorization", mockoauth.MockToken).
+		SetHeader(fiber.HeaderAuthorization, mockoauth.MockToken).
 		SetBody(dto.SignInRequest{SignInInput: usecase.SignInInput{
 			Provider: entity.ProviderMock,
 		}}).
@@ -75,7 +76,7 @@ func main() {
 		panic(string(res.Body()))
 	}
 
-	jsonData, err := root.TestData.ReadFile("test/data/pluggy/items.json")
+	jsonData, err := root.TestData.ReadFile("testdata/pluggy/items.json")
 	if err != nil {
 		panic(err)
 	}

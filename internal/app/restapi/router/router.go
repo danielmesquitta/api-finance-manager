@@ -1,13 +1,9 @@
 package router
 
 import (
-	"io/fs"
-	"net/http"
+	"github.com/gofiber/fiber/v2"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 
-	"github.com/labstack/echo/v4"
-	echoSwagger "github.com/swaggo/echo-swagger"
-
-	root "github.com/danielmesquitta/api-finance-manager"
 	_ "github.com/danielmesquitta/api-finance-manager/docs" // swagger docs
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
@@ -17,7 +13,6 @@ import (
 type Router struct {
 	e   *config.Env
 	m   *middleware.Middleware
-	hh  *handler.HealthHandler
 	ah  *handler.AuthHandler
 	ch  *handler.CalculatorHandler
 	ih  *handler.InstitutionHandler
@@ -32,7 +27,6 @@ type Router struct {
 func NewRouter(
 	e *config.Env,
 	m *middleware.Middleware,
-	hh *handler.HealthHandler,
 	ah *handler.AuthHandler,
 	ch *handler.CalculatorHandler,
 	ih *handler.InstitutionHandler,
@@ -46,7 +40,6 @@ func NewRouter(
 	return &Router{
 		e:   e,
 		m:   m,
-		hh:  hh,
 		ah:  ah,
 		ch:  ch,
 		ih:  ih,
@@ -60,68 +53,55 @@ func NewRouter(
 }
 
 func (r *Router) Register(
-	app *echo.Echo,
+	app *fiber.App,
 ) {
 	basePath := "/api"
 
 	api := app.Group(basePath)
 
-	api.GET("/health", r.hh.Health)
-
-	staticFiles, _ := fs.Sub(root.StaticFiles, "docs")
-	staticFilesHandler := http.FileServer(http.FS(staticFiles))
-	for _, ext := range []string{".json", ".yaml"} {
-		api.GET(
-			"/docs/openapi"+ext,
-			echo.WrapHandler(
-				http.StripPrefix("/api/docs/", staticFilesHandler),
-			),
-		)
-	}
-
-	api.GET("/docs/*", echoSwagger.WrapHandler)
+	api.Get("/docs/*", fiberSwagger.WrapHandler)
 
 	apiV1 := app.Group(basePath + "/v1")
-	apiV1.POST("/auth/sign-in", r.ah.SignIn)
-	apiV1.POST("/auth/refresh", r.ah.RefreshToken, r.m.BearerAuthRefreshToken)
+	apiV1.Post("/auth/sign-in", r.ah.SignIn)
+	apiV1.Post("/auth/refresh", r.ah.RefreshToken, r.m.BearerAuthRefreshToken())
 
-	adminApiV1 := apiV1.Group("/admin", r.m.BasicAuth)
-	adminApiV1.POST("/institutions/sync", r.ih.Sync)
-	adminApiV1.POST("/accounts", r.ach.Create)
-	adminApiV1.POST("/transactions/categories/sync", r.cth.Sync)
-	adminApiV1.POST("/transactions/sync", r.th.Sync)
-	adminApiV1.POST("/balances/sync", r.bah.Sync)
+	adminApiV1 := apiV1.Group("/admin", r.m.BasicAuth())
+	adminApiV1.Post("/institutions/sync", r.ih.Sync)
+	adminApiV1.Post("/accounts", r.ach.Create)
+	adminApiV1.Post("/transactions/categories/sync", r.cth.Sync)
+	adminApiV1.Post("/transactions/sync", r.th.Sync)
+	adminApiV1.Post("/balances/sync", r.bah.Sync)
 
 	usersApiV1 := apiV1.Group("", r.m.BearerAuthAccessToken())
 
-	usersApiV1.GET("/users/profile", r.uh.Profile)
+	usersApiV1.Get("/users/profile", r.uh.Profile)
 
-	usersApiV1.POST("/calculator/compound-interest", r.ch.CompoundInterest)
-	usersApiV1.POST("/calculator/emergency-reserve", r.ch.EmergencyReserve)
-	usersApiV1.POST("/calculator/retirement", r.ch.Retirement)
-	usersApiV1.POST("/calculator/simple-interest", r.ch.SimpleInterest)
-	usersApiV1.POST("/calculator/cash-vs-installments", r.ch.CashVsInstallments)
+	usersApiV1.Post("/calculator/compound-interest", r.ch.CompoundInterest)
+	usersApiV1.Post("/calculator/emergency-reserve", r.ch.EmergencyReserve)
+	usersApiV1.Post("/calculator/retirement", r.ch.Retirement)
+	usersApiV1.Post("/calculator/simple-interest", r.ch.SimpleInterest)
+	usersApiV1.Post("/calculator/cash-vs-installments", r.ch.CashVsInstallments)
 
-	usersApiV1.GET("/transactions/categories", r.cth.List)
+	usersApiV1.Get("/transactions/categories", r.cth.List)
 
-	usersApiV1.GET("/institutions", r.ih.List)
-	usersApiV1.GET("/users/institutions", r.ih.ListUserInstitutions)
+	usersApiV1.Get("/institutions", r.ih.List)
+	usersApiV1.Get("/users/institutions", r.ih.ListUserInstitutions)
 
-	usersApiV1.POST("/budgets", r.bh.Upsert)
-	usersApiV1.GET("/budgets", r.bh.Get)
-	usersApiV1.GET(
+	usersApiV1.Post("/budgets", r.bh.Upsert)
+	usersApiV1.Get("/budgets", r.bh.Get)
+	usersApiV1.Get(
 		"/budgets/categories/:category_id",
 		r.bh.GetTransactionCategory,
 	)
-	usersApiV1.GET(
+	usersApiV1.Get(
 		"/budgets/categories/:category_id/transactions",
 		r.bh.ListCategoryTransactions,
 	)
-	usersApiV1.DELETE("/budgets", r.bh.Delete)
+	usersApiV1.Delete("/budgets", r.bh.Delete)
 
-	usersApiV1.GET("/balances", r.bah.Get)
+	usersApiV1.Get("/balances", r.bah.Get)
 
-	usersApiV1.GET("/transactions", r.th.List)
-	usersApiV1.GET("/transactions/:transaction_id", r.th.Get)
-	usersApiV1.PUT("/transactions/:transaction_id", r.th.Update)
+	usersApiV1.Get("/transactions", r.th.List)
+	usersApiV1.Get("/transactions/:transaction_id", r.th.Get)
+	usersApiV1.Put("/transactions/:transaction_id", r.th.Update)
 }
