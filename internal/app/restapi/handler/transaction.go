@@ -103,7 +103,6 @@ func (h *TransactionHandler) Sync(c *fiber.Ctx) error {
 // @Param search query string false "Search"
 // @Param page query int false "Page"
 // @Param page_size query int false "Page size"
-// @Param date query string false "Date" format(date)
 // @Param start_date query string false "Start date" format(date)
 // @Param end_date query string false "End date" format(date)
 // @Param institution_ids query []string false "Institution IDs"
@@ -122,11 +121,6 @@ func (h *TransactionHandler) List(c *fiber.Ctx) error {
 
 	paginationIn := parsePaginationParams(c)
 
-	date, err := parseDateParam(c, queryParamDate)
-	if err != nil {
-		return errs.New(err)
-	}
-
 	transactionOptions, err := prepareTransactionOptions(c)
 	if err != nil {
 		return errs.New(err)
@@ -135,7 +129,6 @@ func (h *TransactionHandler) List(c *fiber.Ctx) error {
 	in := usecase.ListTransactionsInput{
 		PaginationInput:    paginationIn,
 		TransactionOptions: *transactionOptions,
-		Date:               date,
 		UserID:             userID,
 	}
 

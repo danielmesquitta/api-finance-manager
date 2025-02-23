@@ -75,7 +75,7 @@ func (uc *CalculateCompoundInterest) execute(
 		return nil, errs.New(err)
 	}
 
-	output := &CalculateCompoundInterestOutput{
+	out := &CalculateCompoundInterestOutput{
 		ByMonth: make(map[int]CompoundInterestResult, in.PeriodInMonths),
 	}
 
@@ -99,7 +99,7 @@ func (uc *CalculateCompoundInterest) execute(
 		totalDeposit += monthlyDeposit
 		totalInterest += monthlyInterest
 
-		output.ByMonth[month] = CompoundInterestResult{
+		out.ByMonth[month] = CompoundInterestResult{
 			TotalAmount:     money.ToCents(currentBalance),
 			TotalInterest:   money.ToCents(totalInterest),
 			TotalDeposit:    money.ToCents(totalDeposit),
@@ -107,11 +107,11 @@ func (uc *CalculateCompoundInterest) execute(
 		}
 	}
 
-	output.TotalAmount = money.ToCents(currentBalance)
-	output.TotalInterest = money.ToCents(totalInterest)
-	output.TotalDeposit = money.ToCents(totalDeposit)
+	out.TotalAmount = money.ToCents(currentBalance)
+	out.TotalInterest = money.ToCents(totalInterest)
+	out.TotalDeposit = money.ToCents(totalDeposit)
 
-	return output, nil
+	return out, nil
 }
 
 func (uc *CalculateCompoundInterest) validate(

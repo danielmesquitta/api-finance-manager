@@ -2,13 +2,12 @@ package usecase
 
 import (
 	"context"
-	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -32,16 +31,20 @@ func NewGetBalance(
 
 type GetBalanceInput struct {
 	repo.TransactionOptions
-	Date   time.Time `json:"date,omitzero"`
-	UserID uuid.UUID `json:"user_id,omitzero" validate:"required"`
+	UserID uuid.UUID `json:"user_id" validate:"required"`
 }
 
 type GetBalanceOutput struct {
-	ComparisonDates                   ComparisonDates `json:"comparison_dates"`
-	CurrentBalance                    int64           `json:"current_balance,omitzero"`
-	CurrentBalancePercentageVariation int64           `json:"current_balance_percentage_variation,omitzero"`
-	MonthlyBalance                    int64           `json:"monthly_balance,omitzero"`
-	MonthlyBalancePercentageVariation int64           `json:"monthly_balance_percentage_variation,omitzero"`
+	ComparisonDates            ComparisonDates `json:"comparison_dates"`
+	CurrentBalance             int64           `json:"current_balance"`
+	PreviousBalance            int64           `json:"previous_balance"`
+	BalancePercentageVariation int64           `json:"balance_percentage_variation"`
+	CurrentIncome              int64           `json:"current_income"`
+	PreviousIncome             int64           `json:"previous_income"`
+	IncomePercentageVariation  int64           `json:"income_percentage_variation"`
+	CurrentExpense             int64           `json:"current_expense"`
+	PreviousExpense            int64           `json:"previous_expense"`
+	ExpensePercentageVariation int64           `json:"expense_percentage_variation"`
 }
 
 func (uc *GetBalance) Execute(
@@ -52,10 +55,11 @@ func (uc *GetBalance) Execute(
 		return nil, errs.New(err)
 	}
 
-	comparisonDates := calculateComparisonDates(in.Date)
+	cmpDates := calculateComparisonDates(in.StartDate, in.EndDate)
 
 	g, gCtx := errgroup.WithContext(ctx)
-	var currentBalance, previousMonthBalance, monthlyBalance, previousMonthlyBalance int64
+	var currentBalance, previousBalance, currentIncome,
+		previousIncome, currentExpense, previousExpense int64
 
 	g.Go(func() error {
 		var err error
@@ -63,7 +67,7 @@ func (uc *GetBalance) Execute(
 			gCtx,
 			repo.GetUserBalanceOnDateParams{
 				UserID: in.UserID,
-				Date:   comparisonDates.MonthComparisonEndDate,
+				Date:   cmpDates.EndDate,
 			},
 		)
 		return err
@@ -71,11 +75,11 @@ func (uc *GetBalance) Execute(
 
 	g.Go(func() error {
 		var err error
-		previousMonthBalance, err = uc.abr.GetUserBalanceOnDate(
+		previousBalance, err = uc.abr.GetUserBalanceOnDate(
 			gCtx,
 			repo.GetUserBalanceOnDateParams{
 				UserID: in.UserID,
-				Date:   comparisonDates.PreviousMonthComparisonEndDate,
+				Date:   cmpDates.ComparisonEndDate,
 			},
 		)
 		return err
@@ -83,10 +87,17 @@ func (uc *GetBalance) Execute(
 
 	g.Go(func() error {
 		var err error
-		in.TransactionOptions.StartDate = comparisonDates.MonthStart
-		in.TransactionOptions.EndDate = comparisonDates.MonthComparisonEndDate
-		opts := prepareTransactionOptions(in.TransactionOptions, time.Time{})
-		monthlyBalance, err = uc.tr.SumTransactions(
+
+		var inOpts repo.TransactionOptions
+		if err := copier.Copy(&inOpts, in.TransactionOptions); err != nil {
+			return err
+		}
+		inOpts.StartDate = cmpDates.StartDate
+		inOpts.EndDate = cmpDates.EndDate
+		inOpts.IsIncome = true
+		opts := prepareTransactionOptions(inOpts)
+
+		currentIncome, err = uc.tr.SumTransactions(
 			gCtx,
 			in.UserID,
 			opts...,
@@ -96,10 +107,57 @@ func (uc *GetBalance) Execute(
 
 	g.Go(func() error {
 		var err error
-		in.TransactionOptions.StartDate = comparisonDates.PreviousMonthStart
-		in.TransactionOptions.EndDate = comparisonDates.PreviousMonthComparisonEndDate
-		opts := prepareTransactionOptions(in.TransactionOptions, time.Time{})
-		previousMonthlyBalance, err = uc.tr.SumTransactions(
+
+		var inOpts repo.TransactionOptions
+		if err := copier.Copy(&inOpts, in.TransactionOptions); err != nil {
+			return err
+		}
+		inOpts.StartDate = cmpDates.ComparisonStartDate
+		inOpts.EndDate = cmpDates.ComparisonEndDate
+		inOpts.IsIncome = true
+		opts := prepareTransactionOptions(inOpts)
+
+		previousIncome, err = uc.tr.SumTransactions(
+			gCtx,
+			in.UserID,
+			opts...,
+		)
+		return err
+	})
+
+	g.Go(func() error {
+		var err error
+
+		var inOpts repo.TransactionOptions
+		if err := copier.Copy(&inOpts, in.TransactionOptions); err != nil {
+			return err
+		}
+		inOpts.StartDate = cmpDates.StartDate
+		inOpts.EndDate = cmpDates.EndDate
+		inOpts.IsExpense = true
+		opts := prepareTransactionOptions(inOpts)
+
+		currentExpense, err = uc.tr.SumTransactions(
+			gCtx,
+			in.UserID,
+			opts...,
+		)
+		return err
+	})
+
+	g.Go(func() error {
+		var err error
+
+		var inOpts repo.TransactionOptions
+		if err := copier.Copy(&inOpts, in.TransactionOptions); err != nil {
+			return err
+		}
+		inOpts.StartDate = cmpDates.ComparisonStartDate
+		inOpts.EndDate = cmpDates.ComparisonEndDate
+		inOpts.IsExpense = true
+		opts := prepareTransactionOptions(inOpts)
+
+		previousExpense, err = uc.tr.SumTransactions(
 			gCtx,
 			in.UserID,
 			opts...,
@@ -111,32 +169,33 @@ func (uc *GetBalance) Execute(
 		return nil, errs.New(err)
 	}
 
-	currentBalancePercentageVariation := uc.calculatePercentageVariation(
+	balancePercentageVariation := calculatePercentageVariation(
 		currentBalance,
-		previousMonthBalance,
+		previousBalance,
 	)
 
-	monthlyBalancePercentageVariation := uc.calculatePercentageVariation(
-		monthlyBalance,
-		previousMonthlyBalance,
+	incomePercentageVariation := calculatePercentageVariation(
+		currentIncome,
+		previousIncome,
+	)
+
+	expensePercentageVariation := calculatePercentageVariation(
+		currentExpense,
+		previousExpense,
 	)
 
 	out := &GetBalanceOutput{
-		ComparisonDates:                   *comparisonDates,
-		CurrentBalance:                    currentBalance,
-		CurrentBalancePercentageVariation: currentBalancePercentageVariation,
-		MonthlyBalance:                    monthlyBalance,
-		MonthlyBalancePercentageVariation: monthlyBalancePercentageVariation,
+		ComparisonDates:            *cmpDates,
+		CurrentBalance:             currentBalance,
+		PreviousBalance:            previousBalance,
+		BalancePercentageVariation: balancePercentageVariation,
+		CurrentIncome:              currentIncome,
+		PreviousIncome:             previousIncome,
+		IncomePercentageVariation:  incomePercentageVariation,
+		CurrentExpense:             currentExpense,
+		PreviousExpense:            previousExpense,
+		ExpensePercentageVariation: expensePercentageVariation,
 	}
 
 	return out, nil
-}
-
-func (uc *GetBalance) calculatePercentageVariation(
-	a, b int64,
-) int64 {
-	if b == 0 {
-		return 0
-	}
-	return money.FromPercentage(1 - (float64(a) / float64(b)))
 }

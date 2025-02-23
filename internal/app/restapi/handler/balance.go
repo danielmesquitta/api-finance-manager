@@ -31,7 +31,6 @@ func NewBalanceHandler(
 // @Accept json
 // @Produce json
 // @Param search query string false "Search"
-// @Param date query string false "Date" format(date)
 // @Param start_date query string false "Start date" format(date)
 // @Param end_date query string false "End date" format(date)
 // @Param institution_ids query []string false "Institution IDs"
@@ -48,11 +47,6 @@ func (h *BalanceHandler) Get(c *fiber.Ctx) error {
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	date, err := parseDateParam(c, queryParamDate)
-	if err != nil {
-		return errs.New(err)
-	}
-
 	transactionOptions, err := prepareTransactionOptions(c)
 	if err != nil {
 		return errs.New(err)
@@ -60,11 +54,11 @@ func (h *BalanceHandler) Get(c *fiber.Ctx) error {
 
 	in := usecase.GetBalanceInput{
 		TransactionOptions: *transactionOptions,
-		Date:               date,
 		UserID:             userID,
 	}
 
-	out, err := h.gb.Execute(c.UserContext(), in)
+	ctx := c.UserContext()
+	out, err := h.gb.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}
@@ -82,7 +76,8 @@ func (h *BalanceHandler) Get(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/admin/balances/sync [post]
 func (h BalanceHandler) Sync(c *fiber.Ctx) error {
-	if err := h.sb.Execute(c.UserContext()); err != nil {
+	ctx := c.UserContext()
+	if err := h.sb.Execute(ctx); err != nil {
 		return errs.New(err)
 	}
 

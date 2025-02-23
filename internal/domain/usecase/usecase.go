@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 )
 
@@ -32,6 +33,41 @@ func preparePaginationOutput[T any](
 	out.PageSize = in.PageSize
 	out.TotalItems = uint(count)
 	out.TotalPages = uint(math.Ceil(float64(count) / float64(in.PageSize)))
+}
+
+func toDayStart(
+	date time.Time,
+) time.Time {
+	dayStart := time.Date(
+		date.Year(),
+		date.Month(),
+		date.Day(),
+		0,
+		0,
+		0,
+		0,
+		time.Local,
+	)
+	return dayStart
+}
+
+func toDayEnd(
+	date time.Time,
+) time.Time {
+	monthEnd := time.Date(
+		date.Year(),
+		date.Month(),
+		date.Day()+1,
+		0,
+		0,
+		0,
+		0,
+		time.Local,
+	)
+
+	monthEnd = monthEnd.Add(-time.Nanosecond)
+
+	return monthEnd
 }
 
 func toMonthStart(
@@ -106,49 +142,67 @@ func getStartOfDay(date time.Time) time.Time {
 	return startOfDay
 }
 
-func calculateComparisonDates(date time.Time) *ComparisonDates {
-	now := time.Now()
-	isCurrentMonth := date.Year() == now.Year() && date.Month() == now.Month()
-
-	MonthStart := toMonthStart(date)
-	MonthEnd := toMonthEnd(date)
-	currentMonthSameDayAsToday := toMonthDay(MonthStart, now.Day())
-
-	previousMonthStartDate := MonthStart.AddDate(0, -1, 0)
-	previousMonthEndDate := toMonthEnd(previousMonthStartDate)
-	previousMonthSameDayAsToday := toMonthDay(previousMonthStartDate, now.Day())
-
-	monthComparisonEndDate := MonthEnd
-	previousMonthComparisonEndDate := previousMonthEndDate
-	if isCurrentMonth {
-		monthComparisonEndDate = currentMonthSameDayAsToday
-		previousMonthComparisonEndDate = previousMonthSameDayAsToday
-	}
-
-	return &ComparisonDates{
-		IsCurrentMonth:                 isCurrentMonth,
-		MonthStart:                     MonthStart,
-		MonthEnd:                       MonthEnd,
-		MonthComparisonEndDate:         monthComparisonEndDate,
-		PreviousMonthStart:             previousMonthStartDate,
-		PreviousMonthEnd:               previousMonthEndDate,
-		PreviousMonthComparisonEndDate: previousMonthComparisonEndDate,
-	}
+type ComparisonDates struct {
+	StartDate           time.Time `json:"start_date,omitzero"`
+	EndDate             time.Time `json:"end_date,omitzero"`
+	ComparisonStartDate time.Time `json:"comparison_start_date,omitzero"`
+	ComparisonEndDate   time.Time `json:"comparison_end_date,omitzero"`
 }
 
-type ComparisonDates struct {
-	IsCurrentMonth                 bool      `json:"is_current_month,omitzero"`
-	MonthStart                     time.Time `json:"current_month_start_date,omitzero"`
-	MonthEnd                       time.Time `json:"current_month_end_date,omitzero"`
-	MonthComparisonEndDate         time.Time `json:"current_month_comparison_end_date,omitzero"`
-	PreviousMonthStart             time.Time `json:"previous_month_start_date,omitzero"`
-	PreviousMonthEnd               time.Time `json:"previous_month_end_date,omitzero"`
-	PreviousMonthComparisonEndDate time.Time `json:"previous_month_comparison_end_date,omitzero"`
+func calculateComparisonDates(startDate, endDate time.Time) *ComparisonDates {
+	if endDate.After(time.Now()) {
+		endDate = time.Now()
+	}
+
+	if startDate.After(endDate) {
+		startDate = endDate
+	}
+
+	startDate = toDayStart(startDate)
+	endDate = toDayEnd(endDate)
+
+	out := &ComparisonDates{
+		StartDate: startDate,
+		EndDate:   endDate,
+	}
+
+	isMonthComparison := startDate.Month() == endDate.Month() &&
+		startDate.Year() == endDate.Year()
+	isFullMonthComparison := startDate.Equal(toMonthStart(startDate)) &&
+		endDate.Equal(toMonthEnd(endDate))
+
+	if isMonthComparison {
+		comparisonStartDate := startDate.AddDate(0, -1, 0)
+		if comparisonStartDate.Month() == startDate.Month() {
+			days := comparisonStartDate.Day()
+			comparisonStartDate = comparisonStartDate.AddDate(0, 0, -days)
+		}
+
+		comparisonEndDate := endDate.AddDate(0, -1, 0)
+		if comparisonEndDate.Month() == endDate.Month() {
+			days := comparisonEndDate.Day()
+			comparisonStartDate = comparisonStartDate.AddDate(0, 0, -days)
+		}
+
+		if isFullMonthComparison {
+			comparisonStartDate = toMonthStart(comparisonStartDate)
+			comparisonEndDate = toMonthEnd(comparisonEndDate)
+		}
+
+		out.ComparisonStartDate = comparisonStartDate
+		out.ComparisonEndDate = comparisonEndDate
+	} else {
+		duration := endDate.Sub(startDate)
+		durationDays := int(duration.Hours() / 24)
+		out.ComparisonEndDate = startDate.AddDate(0, 0, -1)
+		out.ComparisonStartDate = out.ComparisonEndDate.AddDate(0, 0, -durationDays)
+	}
+
+	return out
 }
 
 func prepareTransactionOptions(
 	in repo.TransactionOptions,
-	date time.Time,
 ) []repo.TransactionOption {
 	opts := []repo.TransactionOption{}
 
@@ -177,27 +231,17 @@ func prepareTransactionOptions(
 		)
 	}
 
-	startDate, endDate := in.StartDate, in.EndDate
-	if !date.IsZero() {
-		if startDate.IsZero() {
-			startDate = toMonthStart(date)
-		}
-		if endDate.IsZero() {
-			endDate = toMonthEnd(date)
-		}
-	}
-
-	if !startDate.IsZero() {
+	if !in.StartDate.IsZero() {
 		opts = append(
 			opts,
-			repo.WithTransactionDateAfter(startDate),
+			repo.WithTransactionDateAfter(in.StartDate),
 		)
 	}
 
-	if !endDate.IsZero() {
+	if !in.EndDate.IsZero() {
 		opts = append(
 			opts,
-			repo.WithTransactionDateBefore(endDate),
+			repo.WithTransactionDateBefore(in.EndDate),
 		)
 	}
 
@@ -223,4 +267,13 @@ func prepareTransactionOptions(
 	}
 
 	return opts
+}
+
+func calculatePercentageVariation(
+	a, b int64,
+) int64 {
+	if b == 0 {
+		return 0
+	}
+	return money.FromPercentage(1 - (float64(a) / float64(b)))
 }

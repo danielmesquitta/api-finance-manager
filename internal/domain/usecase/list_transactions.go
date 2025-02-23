@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"time"
 
 	"golang.org/x/sync/errgroup"
 
@@ -31,7 +30,6 @@ func NewListTransactions(
 type ListTransactionsInput struct {
 	PaginationInput
 	repo.TransactionOptions
-	Date   time.Time `json:"date"`
 	UserID uuid.UUID `json:"user_id" validate:"required"`
 }
 
@@ -49,7 +47,7 @@ func (uc *ListTransactions) Execute(
 	var transactions []entity.FullTransaction
 	var count int64
 
-	opts := prepareTransactionOptions(in.TransactionOptions, in.Date)
+	opts := prepareTransactionOptions(in.TransactionOptions)
 
 	g.Go(func() error {
 		var err error

@@ -49,8 +49,9 @@ func (h CalculatorHandler) CompoundInterest(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	output, err := h.cci.Execute(
-		c.UserContext(),
+	ctx := c.UserContext()
+	out, err := h.cci.Execute(
+		ctx,
 		body.CalculateCompoundInterestInput,
 	)
 	if err != nil {
@@ -58,7 +59,7 @@ func (h CalculatorHandler) CompoundInterest(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(dto.CompoundInterestResponse{
-		CalculateCompoundInterestOutput: *output,
+		CalculateCompoundInterestOutput: *out,
 	})
 }
 
@@ -80,8 +81,9 @@ func (h CalculatorHandler) EmergencyReserve(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	output, err := h.cer.Execute(
-		c.UserContext(),
+	ctx := c.UserContext()
+	out, err := h.cer.Execute(
+		ctx,
 		body.CalculateEmergencyReserveInput,
 	)
 	if err != nil {
@@ -89,7 +91,7 @@ func (h CalculatorHandler) EmergencyReserve(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(dto.EmergencyReserveResponse{
-		CalculateEmergencyReserveOutput: *output,
+		CalculateEmergencyReserveOutput: *out,
 	})
 }
 
@@ -111,8 +113,9 @@ func (h CalculatorHandler) Retirement(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	output, err := h.cr.Execute(
-		c.UserContext(),
+	ctx := c.UserContext()
+	out, err := h.cr.Execute(
+		ctx,
 		body.CalculateRetirementInput,
 	)
 	if err != nil {
@@ -120,7 +123,7 @@ func (h CalculatorHandler) Retirement(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(dto.RetirementResponse{
-		CalculateRetirementOutput: *output,
+		CalculateRetirementOutput: *out,
 	})
 }
 
@@ -142,8 +145,9 @@ func (h CalculatorHandler) SimpleInterest(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	output, err := h.csi.Execute(
-		c.UserContext(),
+	ctx := c.UserContext()
+	out, err := h.csi.Execute(
+		ctx,
 		body.CalculateSimpleInterestInput,
 	)
 	if err != nil {
@@ -151,7 +155,7 @@ func (h CalculatorHandler) SimpleInterest(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(dto.SimpleInterestResponse{
-		CalculateSimpleInterestOutput: *output,
+		CalculateSimpleInterestOutput: *out,
 	})
 }
 
@@ -173,8 +177,9 @@ func (h CalculatorHandler) CashVsInstallments(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	output, err := h.cvi.Execute(
-		c.UserContext(),
+	ctx := c.UserContext()
+	out, err := h.cvi.Execute(
+		ctx,
 		body.CalculateCashVsInstallmentsInput,
 	)
 	if err != nil {
@@ -182,6 +187,6 @@ func (h CalculatorHandler) CashVsInstallments(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(dto.CashVsInstallmentsResponse{
-		CalculateCashVsInstallmentsOutput: *output,
+		CalculateCashVsInstallmentsOutput: *out,
 	})
 }

@@ -63,11 +63,14 @@ func (uc *GetBudget) Execute(
 		return nil, errs.New(err)
 	}
 
-	comparisonDates := calculateComparisonDates(in.Date)
+	cmpDates := calculateComparisonDates(
+		toMonthStart(in.Date),
+		toMonthEnd(in.Date),
+	)
 
 	budget, err := uc.br.GetBudget(ctx, repo.GetBudgetParams{
 		UserID: in.UserID,
-		Date:   comparisonDates.MonthStart,
+		Date:   cmpDates.StartDate,
 	})
 	if err != nil {
 		return nil, errs.New(err)
@@ -98,9 +101,9 @@ func (uc *GetBudget) Execute(
 	g.Go(func() error {
 		opts := append(
 			baseTransactionOpts,
-			repo.WithTransactionDateAfter(comparisonDates.MonthStart),
+			repo.WithTransactionDateAfter(cmpDates.StartDate),
 			repo.WithTransactionDateBefore(
-				comparisonDates.MonthComparisonEndDate,
+				cmpDates.EndDate,
 			),
 		)
 		spentByCategoryID, err = uc.tr.SumTransactionsByCategory(
@@ -114,9 +117,9 @@ func (uc *GetBudget) Execute(
 	g.Go(func() error {
 		opts := append(
 			baseTransactionOpts,
-			repo.WithTransactionDateAfter(comparisonDates.PreviousMonthStart),
+			repo.WithTransactionDateAfter(cmpDates.StartDate),
 			repo.WithTransactionDateBefore(
-				comparisonDates.PreviousMonthComparisonEndDate,
+				cmpDates.EndDate,
 			),
 		)
 		spentPreviousMonth, err = uc.tr.SumTransactions(
@@ -145,26 +148,30 @@ func (uc *GetBudget) Execute(
 	available := budget.Amount - spent
 	availablePreviousMonth := budget.Amount - spentPreviousMonth
 
-	availablePercentageVariation := money.FromPercentage(
-		1 - (float64(available) / float64(availablePreviousMonth)),
+	availablePercentageVariation := calculatePercentageVariation(
+		available, availablePreviousMonth,
 	)
 
+	now := time.Now()
+	isCurrentMonth := cmpDates.StartDate.Month() == now.Month() &&
+		cmpDates.StartDate.Year() == now.Year()
+
 	var availablePerDay, availablePerDayPercentageVariation int64
-	if comparisonDates.IsCurrentMonth {
+	if isCurrentMonth {
 		availablePerDay = uc.calculateAvailablePerDay(
 			available,
-			comparisonDates.MonthEnd,
-			comparisonDates.MonthComparisonEndDate.Day(),
+			toMonthEnd(cmpDates.EndDate),
+			cmpDates.EndDate.Day(),
 		)
 
 		availablePreviousMonthPerDay := uc.calculateAvailablePerDay(
 			availablePreviousMonth,
-			comparisonDates.PreviousMonthEnd,
-			comparisonDates.PreviousMonthComparisonEndDate.Day(),
+			toMonthEnd(cmpDates.ComparisonEndDate),
+			cmpDates.ComparisonEndDate.Day(),
 		)
 
-		availablePerDayPercentageVariation = money.FromPercentage(
-			1 - (float64(availablePerDay) / float64(availablePreviousMonthPerDay)),
+		availablePerDayPercentageVariation = calculatePercentageVariation(
+			availablePerDay, availablePreviousMonthPerDay,
 		)
 	}
 
@@ -175,7 +182,7 @@ func (uc *GetBudget) Execute(
 		AvailablePercentageVariation:       availablePercentageVariation,
 		AvailablePerDay:                    availablePerDay,
 		AvailablePerDayPercentageVariation: availablePerDayPercentageVariation,
-		ComparisonDates:                    *comparisonDates,
+		ComparisonDates:                    *cmpDates,
 		BudgetCategories:                   []GetBudgetBudgetCategories{},
 	}
 

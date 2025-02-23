@@ -35,7 +35,8 @@ func (h UserHandler) Profile(c *fiber.Ctx) error {
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	user, err := h.gu.Execute(c.UserContext(), userID)
+	ctx := c.UserContext()
+	user, err := h.gu.Execute(ctx, userID)
 	if err != nil {
 		return errs.New(err)
 	}

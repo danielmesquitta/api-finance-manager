@@ -339,13 +339,6 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "format": "date",
-                        "description": "Date",
-                        "name": "date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "format": "date",
                         "description": "Start date",
                         "name": "start_date",
                         "in": "query"
@@ -1120,13 +1113,6 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "format": "date",
-                        "description": "Date",
-                        "name": "date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "format": "date",
                         "description": "Start date",
                         "name": "start_date",
                         "in": "query"
@@ -1713,19 +1699,34 @@ const docTemplate = `{
         "dto.GetBalanceResponse": {
             "type": "object",
             "properties": {
+                "balance_percentage_variation": {
+                    "type": "integer"
+                },
                 "comparison_dates": {
                     "$ref": "#/definitions/usecase.ComparisonDates"
                 },
                 "current_balance": {
                     "type": "integer"
                 },
-                "current_balance_percentage_variation": {
+                "current_expense": {
                     "type": "integer"
                 },
-                "monthly_balance": {
+                "current_income": {
                     "type": "integer"
                 },
-                "monthly_balance_percentage_variation": {
+                "expense_percentage_variation": {
+                    "type": "integer"
+                },
+                "income_percentage_variation": {
+                    "type": "integer"
+                },
+                "previous_balance": {
+                    "type": "integer"
+                },
+                "previous_expense": {
+                    "type": "integer"
+                },
+                "previous_income": {
                     "type": "integer"
                 }
             }
@@ -2427,25 +2428,16 @@ const docTemplate = `{
         "usecase.ComparisonDates": {
             "type": "object",
             "properties": {
-                "current_month_comparison_end_date": {
+                "comparison_end_date": {
                     "type": "string"
                 },
-                "current_month_end_date": {
+                "comparison_start_date": {
                     "type": "string"
                 },
-                "current_month_start_date": {
+                "end_date": {
                     "type": "string"
                 },
-                "is_current_month": {
-                    "type": "boolean"
-                },
-                "previous_month_comparison_end_date": {
-                    "type": "string"
-                },
-                "previous_month_end_date": {
-                    "type": "string"
-                },
-                "previous_month_start_date": {
+                "start_date": {
                     "type": "string"
                 }
             }

@@ -46,8 +46,9 @@ func (h AuthHandler) SignIn(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
+	ctx := c.UserContext()
 	out, err := h.si.Execute(
-		c.UserContext(),
+		ctx,
 		usecase.SignInInput{Token: token, Provider: body.Provider},
 	)
 	if err != nil {
@@ -72,8 +73,9 @@ func (h AuthHandler) RefreshToken(c *fiber.Ctx) error {
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
+	ctx := c.UserContext()
 	out, err := h.rt.Execute(
-		c.UserContext(),
+		ctx,
 		userID,
 	)
 	if err != nil {

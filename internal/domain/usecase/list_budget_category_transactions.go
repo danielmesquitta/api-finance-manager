@@ -46,9 +46,10 @@ func (uc *ListBudgetCategoryTransactions) Execute(
 
 	transactions, err := uc.lt.Execute(ctx, ListTransactionsInput{
 		PaginationInput: in.PaginationInput,
-		Date:            in.Date,
 		UserID:          in.UserID,
 		TransactionOptions: repo.TransactionOptions{
+			StartDate:   toMonthStart(in.Date),
+			EndDate:     toMonthEnd(in.Date),
 			CategoryIDs: categoryIDs,
 			IsExpense:   true,
 			IsIgnored:   &isIgnored,

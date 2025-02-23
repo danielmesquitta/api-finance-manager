@@ -71,7 +71,7 @@ func (uc *CalculateSimpleInterest) execute(
 		return nil, errs.New(err)
 	}
 
-	output := &CalculateSimpleInterestOutput{
+	out := &CalculateSimpleInterestOutput{
 		ByMonth: make(map[int]SimpleInterestResult, in.PeriodInMonths),
 	}
 
@@ -94,16 +94,16 @@ func (uc *CalculateSimpleInterest) execute(
 		currentBalance += monthlyInterest
 		totalInterest += monthlyInterest
 
-		output.ByMonth[month] = SimpleInterestResult{
+		out.ByMonth[month] = SimpleInterestResult{
 			TotalAmount:   money.ToCents(currentBalance),
 			TotalInterest: money.ToCents(totalInterest),
 			TotalDeposit:  money.ToCents(totalDeposit),
 		}
 	}
 
-	output.TotalAmount = money.ToCents(currentBalance)
-	output.TotalInterest = money.ToCents(totalInterest)
-	output.TotalDeposit = money.ToCents(totalDeposit)
+	out.TotalAmount = money.ToCents(currentBalance)
+	out.TotalInterest = money.ToCents(totalInterest)
+	out.TotalDeposit = money.ToCents(totalDeposit)
 
-	return output, nil
+	return out, nil
 }
