@@ -5,7 +5,34 @@
 
 package sqlc
 
+import (
+	"context"
+
+	"github.com/google/uuid"
+)
+
 type CreatePaymentMethodsParams struct {
 	ExternalID string `json:"external_id"`
 	Name       string `json:"name"`
+}
+
+const getPaymentMethod = `-- name: GetPaymentMethod :one
+SELECT id, external_id, name, created_at, updated_at, deleted_at
+FROM payment_methods
+WHERE id = $1
+  AND deleted_at IS NULL
+`
+
+func (q *Queries) GetPaymentMethod(ctx context.Context, id uuid.UUID) (PaymentMethod, error) {
+	row := q.db.QueryRow(ctx, getPaymentMethod, id)
+	var i PaymentMethod
+	err := row.Scan(
+		&i.ID,
+		&i.ExternalID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
 }

@@ -11,11 +11,11 @@ import (
 )
 
 type ListTransactionCategories struct {
-	cr repo.CategoryRepo
+	cr repo.TransactionCategoryRepo
 }
 
 func NewListTransactionCategories(
-	cr repo.CategoryRepo,
+	cr repo.TransactionCategoryRepo,
 ) *ListTransactionCategories {
 	return &ListTransactionCategories{
 		cr: cr,

@@ -15,14 +15,14 @@ type GetBudgetCategory struct {
 	v  *validator.Validator
 	br repo.BudgetRepo
 	tr repo.TransactionRepo
-	cr repo.CategoryRepo
+	cr repo.TransactionCategoryRepo
 }
 
 func NewGetBudgetCategory(
 	v *validator.Validator,
 	br repo.BudgetRepo,
 	tr repo.TransactionRepo,
-	cr repo.CategoryRepo,
+	cr repo.TransactionCategoryRepo,
 ) *GetBudgetCategory {
 	return &GetBudgetCategory{
 		v:  v,

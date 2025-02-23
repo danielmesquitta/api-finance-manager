@@ -14,12 +14,12 @@ import (
 
 type SyncCategories struct {
 	o  openfinance.Client
-	cr repo.CategoryRepo
+	cr repo.TransactionCategoryRepo
 }
 
 func NewSyncCategories(
 	o openfinance.Client,
-	cr repo.CategoryRepo,
+	cr repo.TransactionCategoryRepo,
 ) *SyncCategories {
 	return &SyncCategories{
 		o:  o,

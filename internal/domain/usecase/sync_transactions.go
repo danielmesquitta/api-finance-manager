@@ -26,7 +26,7 @@ type SyncTransactions struct {
 	ar  repo.AccountRepo
 	ur  repo.UserRepo
 	tr  repo.TransactionRepo
-	cr  repo.CategoryRepo
+	cr  repo.TransactionCategoryRepo
 	pmr repo.PaymentMethodRepo
 }
 
@@ -38,7 +38,7 @@ func NewSyncTransactions(
 	ar repo.AccountRepo,
 	ur repo.UserRepo,
 	tr repo.TransactionRepo,
-	cr repo.CategoryRepo,
+	cr repo.TransactionCategoryRepo,
 	pmr repo.PaymentMethodRepo,
 ) *SyncTransactions {
 	return &SyncTransactions{

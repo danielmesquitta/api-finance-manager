@@ -2,6 +2,8 @@ package pgrepo
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
@@ -9,6 +11,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
+	"github.com/google/uuid"
 
 	"github.com/jinzhu/copier"
 )
@@ -63,6 +66,26 @@ func (r *PaymentMethodPgRepo) CreatePaymentMethods(
 	}
 
 	return nil
+}
+
+func (r *PaymentMethodPgRepo) GetPaymentMethod(
+	ctx context.Context,
+	id uuid.UUID,
+) (*entity.PaymentMethod, error) {
+	paymentMethod, err := r.db.GetPaymentMethod(ctx, id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, errs.New(err)
+	}
+
+	result := entity.PaymentMethod{}
+	if err := copier.Copy(&result, paymentMethod); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return &result, nil
 }
 
 var _ repo.PaymentMethodRepo = &PaymentMethodPgRepo{}

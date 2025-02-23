@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
+	"github.com/google/uuid"
 )
 
 type PaymentMethodOptions struct {
@@ -43,4 +44,8 @@ type PaymentMethodRepo interface {
 		ctx context.Context,
 		params []CreatePaymentMethodsParams,
 	) error
+	GetPaymentMethod(
+		ctx context.Context,
+		id uuid.UUID,
+	) (*entity.PaymentMethod, error)
 }

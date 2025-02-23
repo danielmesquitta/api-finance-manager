@@ -48,7 +48,10 @@ func NewDev(
 	pgrepo.NewUserPgRepo,
 	wire.Bind(new(repo.InstitutionRepo), new(*pgrepo.InstitutionPgRepo)),
 	pgrepo.NewInstitutionPgRepo,
-	wire.Bind(new(repo.CategoryRepo), new(*pgrepo.CategoryPgRepo)),
+	wire.Bind(
+	new(repo.TransactionCategoryRepo),
+	new(*pgrepo.TransactionCategoryPgRepo),
+	),
 	pgrepo.NewCategoryPgRepo,
 	wire.Bind(new(repo.BudgetRepo), new(*pgrepo.BudgetPgRepo)),
 	pgrepo.NewBudgetPgRepo,
@@ -125,7 +128,10 @@ func NewProd(
 	pgrepo.NewUserPgRepo,
 	wire.Bind(new(repo.InstitutionRepo), new(*pgrepo.InstitutionPgRepo)),
 	pgrepo.NewInstitutionPgRepo,
-	wire.Bind(new(repo.CategoryRepo), new(*pgrepo.CategoryPgRepo)),
+	wire.Bind(
+	new(repo.TransactionCategoryRepo),
+	new(*pgrepo.TransactionCategoryPgRepo),
+	),
 	pgrepo.NewCategoryPgRepo,
 	wire.Bind(new(repo.BudgetRepo), new(*pgrepo.BudgetPgRepo)),
 	pgrepo.NewBudgetPgRepo,

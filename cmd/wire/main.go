@@ -38,10 +38,10 @@ func NewDev(
 ) *App {
 	wire.Build(
 {{- range .Providers }}
-	{{.}},
+	{{.}}
 {{- end }}
 {{- range .DevProviders }}
-	{{.}},
+	{{.}}
 {{- end }}
 	)
 	return &App{}
@@ -54,10 +54,10 @@ func NewProd(
 ) *App {
 	wire.Build(
 {{- range .Providers }}
-	{{.}},
+	{{.}}
 {{- end }}
 {{- range .ProdProviders }}
-	{{.}},
+	{{.}}
 {{- end }}
 	)
 	return &App{}
@@ -65,7 +65,7 @@ func NewProd(
 `
 
 func main() {
-	wireConfigFilename := "internal/app/restapi/wire_config.go"     // Source
+	wireConfigFilename := "internal/app/restapi/config.go"          // Source
 	wireOutputFilename := "internal/app/restapi/wire_config_gen.go" // Destination
 
 	data, err := parseWireConfig(wireConfigFilename)
@@ -154,8 +154,7 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 			continue
 		}
 		if inProviders && line != "var providers = []any{" {
-			trimmed := strings.TrimRight(line, ",")
-			trimmed = strings.TrimSpace(trimmed)
+			trimmed := strings.TrimSpace(line)
 			if trimmed != "" && trimmed != "}" {
 				data.Providers = append(data.Providers, trimmed)
 			}
@@ -172,8 +171,7 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 			continue
 		}
 		if inDevProviders && line != "var devProviders = []any{" {
-			trimmed := strings.TrimRight(line, ",")
-			trimmed = strings.TrimSpace(trimmed)
+			trimmed := strings.TrimSpace(line)
 			if trimmed != "" && trimmed != "}" {
 				data.DevProviders = append(data.DevProviders, trimmed)
 			}
@@ -190,8 +188,7 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 			continue
 		}
 		if inProdProviders && line != "var prodProviders = []any{" {
-			trimmed := strings.TrimRight(line, ",")
-			trimmed = strings.TrimSpace(trimmed)
+			trimmed := strings.TrimSpace(line)
 			if trimmed != "" && trimmed != "}" {
 				data.ProdProviders = append(data.ProdProviders, trimmed)
 			}

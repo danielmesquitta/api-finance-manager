@@ -31,7 +31,7 @@ func WithTransactionCategorySearch(search string) TransactionCategoryOption {
 	}
 }
 
-type CategoryRepo interface {
+type TransactionCategoryRepo interface {
 	ListTransactionCategories(
 		ctx context.Context,
 		opts ...TransactionCategoryOption,

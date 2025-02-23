@@ -17,14 +17,14 @@ type UpsertBudget struct {
 	v  *validator.Validator
 	tx tx.TX
 	br repo.BudgetRepo
-	cr repo.CategoryRepo
+	cr repo.TransactionCategoryRepo
 }
 
 func NewUpsertBudget(
 	v *validator.Validator,
 	tx tx.TX,
 	br repo.BudgetRepo,
-	cr repo.CategoryRepo,
+	cr repo.TransactionCategoryRepo,
 ) *UpsertBudget {
 	return &UpsertBudget{
 		v:  v,

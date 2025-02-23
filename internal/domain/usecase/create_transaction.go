@@ -9,20 +9,30 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
+	"golang.org/x/sync/errgroup"
 )
 
 type CreateTransaction struct {
-	v  *validator.Validator
-	tr repo.TransactionRepo
+	v   *validator.Validator
+	tr  repo.TransactionRepo
+	ur  repo.UserRepo
+	tcr repo.TransactionCategoryRepo
+	pmr repo.PaymentMethodRepo
 }
 
 func NewCreateTransaction(
 	v *validator.Validator,
 	tr repo.TransactionRepo,
+	ur repo.UserRepo,
+	tcr repo.TransactionCategoryRepo,
+	pmr repo.PaymentMethodRepo,
 ) *CreateTransaction {
 	return &CreateTransaction{
-		v:  v,
-		tr: tr,
+		v:   v,
+		tr:  tr,
+		ur:  ur,
+		tcr: tcr,
+		pmr: pmr,
 	}
 }
 
@@ -40,6 +50,48 @@ func (uc *CreateTransaction) Execute(
 	in CreateTransactionInput,
 ) error {
 	if err := uc.v.Validate(in); err != nil {
+		return errs.New(err)
+	}
+
+	g, gCtx := errgroup.WithContext(ctx)
+
+	g.Go(func() error {
+		user, err := uc.ur.GetUserByID(gCtx, in.UserID)
+		if err != nil {
+			return err
+		}
+		if user == nil {
+			return errs.ErrUserNotFound
+		}
+		return nil
+	})
+
+	g.Go(func() error {
+		paymentMethod, err := uc.pmr.GetPaymentMethod(ctx, in.PaymentMethodID)
+		if err != nil {
+			return err
+		}
+		if paymentMethod == nil {
+			return errs.ErrPaymentMethodNotFound
+		}
+		return nil
+	})
+
+	g.Go(func() error {
+		if in.CategoryID == nil {
+			return nil
+		}
+		category, err := uc.tcr.GetTransactionCategory(ctx, *in.CategoryID)
+		if err != nil {
+			return errs.New(err)
+		}
+		if category == nil {
+			return errs.ErrCategoryNotFound
+		}
+		return nil
+	})
+
+	if err := g.Wait(); err != nil {
 		return errs.New(err)
 	}
 

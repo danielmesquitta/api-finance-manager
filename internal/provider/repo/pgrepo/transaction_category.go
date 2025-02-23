@@ -16,7 +16,7 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type CategoryPgRepo struct {
+type TransactionCategoryPgRepo struct {
 	db *db.DB
 	qb *query.QueryBuilder
 }
@@ -24,14 +24,14 @@ type CategoryPgRepo struct {
 func NewCategoryPgRepo(
 	db *db.DB,
 	qb *query.QueryBuilder,
-) *CategoryPgRepo {
-	return &CategoryPgRepo{
+) *TransactionCategoryPgRepo {
+	return &TransactionCategoryPgRepo{
 		db: db,
 		qb: qb,
 	}
 }
 
-func (r *CategoryPgRepo) ListTransactionCategories(
+func (r *TransactionCategoryPgRepo) ListTransactionCategories(
 	ctx context.Context,
 	opts ...repo.TransactionCategoryOption,
 ) ([]entity.TransactionCategory, error) {
@@ -43,21 +43,21 @@ func (r *CategoryPgRepo) ListTransactionCategories(
 	return categories, nil
 }
 
-func (r *CategoryPgRepo) CountTransactionCategories(
+func (r *TransactionCategoryPgRepo) CountTransactionCategories(
 	ctx context.Context,
 	opts ...repo.TransactionCategoryOption,
 ) (int64, error) {
 	return r.qb.CountTransactionCategories(ctx, opts...)
 }
 
-func (r *CategoryPgRepo) CountTransactionCategoriesByIDs(
+func (r *TransactionCategoryPgRepo) CountTransactionCategoriesByIDs(
 	ctx context.Context,
 	ids []uuid.UUID,
 ) (int64, error) {
 	return r.db.CountTransactionCategoriesByIDs(ctx, ids)
 }
 
-func (r *CategoryPgRepo) CreateTransactionCategories(
+func (r *TransactionCategoryPgRepo) CreateTransactionCategories(
 	ctx context.Context,
 	params []repo.CreateTransactionCategoriesParams,
 ) error {
@@ -75,7 +75,7 @@ func (r *CategoryPgRepo) CreateTransactionCategories(
 	return nil
 }
 
-func (r *CategoryPgRepo) ListTransactionCategoriesByExternalIDs(
+func (r *TransactionCategoryPgRepo) ListTransactionCategoriesByExternalIDs(
 	ctx context.Context,
 	externalIDs []string,
 ) ([]entity.TransactionCategory, error) {
@@ -95,7 +95,7 @@ func (r *CategoryPgRepo) ListTransactionCategoriesByExternalIDs(
 	return results, nil
 }
 
-func (r *CategoryPgRepo) GetTransactionCategory(
+func (r *TransactionCategoryPgRepo) GetTransactionCategory(
 	ctx context.Context,
 	id uuid.UUID,
 ) (*entity.TransactionCategory, error) {
@@ -115,4 +115,4 @@ func (r *CategoryPgRepo) GetTransactionCategory(
 	return &result, nil
 }
 
-var _ repo.CategoryRepo = &CategoryPgRepo{}
+var _ repo.TransactionCategoryRepo = &TransactionCategoryPgRepo{}
