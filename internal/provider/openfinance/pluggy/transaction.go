@@ -222,7 +222,7 @@ func (c *Client) parseTransactionResultToEntity(
 ) (*openfinance.Transaction, error) {
 	transaction := openfinance.Transaction{
 		Transaction: entity.Transaction{
-			ExternalID: r.ID,
+			ExternalID: &r.ID,
 			Name:       r.Description,
 			Date:       r.Date,
 		},

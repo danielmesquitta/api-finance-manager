@@ -99,6 +99,24 @@ components:
                 - executionStatus
                 - id
             type: object
+        dto.CreateTransactionRequest:
+            properties:
+                amount:
+                    type: integer
+                category_id:
+                    type: string
+                date:
+                    type: string
+                name:
+                    type: string
+                payment_method_id:
+                    type: string
+            required:
+                - amount
+                - date
+                - name
+                - payment_method_id
+            type: object
         dto.EmergencyReserveRequest:
             properties:
                 job_type:
@@ -1557,6 +1575,36 @@ paths:
             security:
                 - BearerAuth: []
             summary: List transactions
+            tags:
+                - Transaction
+        post:
+            description: Create transactions
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.CreateTransactionRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "201":
+                    description: Created
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Create transactions
             tags:
                 - Transaction
     /v1/transactions/{transaction_id}:

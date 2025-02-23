@@ -15,6 +15,7 @@ type TransactionHandler struct {
 	lt *usecase.ListTransactions
 	gt *usecase.GetTransaction
 	ut *usecase.UpdateTransaction
+	ct *usecase.CreateTransaction
 }
 
 func NewTransactionHandler(
@@ -22,13 +23,42 @@ func NewTransactionHandler(
 	lt *usecase.ListTransactions,
 	gt *usecase.GetTransaction,
 	ut *usecase.UpdateTransaction,
+	ct *usecase.CreateTransaction,
 ) *TransactionHandler {
 	return &TransactionHandler{
 		sa: sa,
 		lt: lt,
 		gt: gt,
 		ut: ut,
+		ct: ct,
 	}
+}
+
+// @Summary Create transactions
+// @Description Create transactions
+// @Tags Transaction
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateTransactionRequest true "Request body"
+// @Success 201
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/transactions [post]
+func (h *TransactionHandler) Create(c *fiber.Ctx) error {
+	in := usecase.CreateTransactionInput{}
+	if err := c.BodyParser(&in); err != nil {
+		return errs.New(err)
+	}
+
+	in.UserID = uuid.MustParse(GetUserClaims(c).Issuer)
+
+	ctx := c.UserContext()
+	if err := h.ct.Execute(ctx, in); err != nil {
+		return errs.New(err)
+	}
+
+	return c.SendStatus(http.StatusCreated)
 }
 
 // @Summary Get transaction

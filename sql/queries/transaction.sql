@@ -11,6 +11,16 @@ INSERT INTO transactions (
     category_id
   )
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+-- name: CreateTransaction :exec
+INSERT INTO transactions (
+    name,
+    amount,
+    payment_method_id,
+    date,
+    user_id,
+    category_id
+  )
+VALUES ($1, $2, $3, $4, $5, $6);
 -- name: UpdateTransaction :exec
 UPDATE transactions
 SET name = $2,

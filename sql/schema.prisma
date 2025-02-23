@@ -40,7 +40,7 @@ model User {
 
 model Transaction {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String    @unique
+  external_id String?
   name        String
   amount      BigInt
   is_ignored  Boolean   @default(false)

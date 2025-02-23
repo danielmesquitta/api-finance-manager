@@ -100,6 +100,10 @@ type TransactionRepo interface {
 		userID uuid.UUID,
 		opts ...TransactionOption,
 	) (int64, error)
+	CreateTransaction(
+		ctx context.Context,
+		params CreateTransactionParams,
+	) error
 	CreateTransactions(
 		ctx context.Context,
 		params []CreateTransactionsParams,

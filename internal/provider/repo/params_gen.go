@@ -69,8 +69,17 @@ type CreatePaymentMethodsParams struct {
 	Name       string `json:"name"`
 }
 
+type CreateTransactionParams struct {
+	Name            string     `json:"name"`
+	Amount          int64      `json:"amount"`
+	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
+	Date            time.Time  `json:"date"`
+	UserID          uuid.UUID  `json:"user_id"`
+	CategoryID      *uuid.UUID `json:"category_id"`
+}
+
 type CreateTransactionsParams struct {
-	ExternalID      string     `json:"external_id"`
+	ExternalID      *string    `json:"external_id"`
 	Name            string     `json:"name"`
 	Amount          int64      `json:"amount"`
 	PaymentMethodID uuid.UUID  `json:"payment_method_id"`

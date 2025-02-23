@@ -26,7 +26,7 @@ type User struct {
 
 type Transaction struct {
 	ID              uuid.UUID  `json:"id,omitempty"`
-	ExternalID      string     `json:"external_id,omitempty"`
+	ExternalID      *string    `json:"external_id,omitempty"`
 	Name            string     `json:"name,omitempty"`
 	Amount          int64      `json:"amount,omitempty"`
 	IsIgnored       bool       `json:"is_ignored,omitempty"`

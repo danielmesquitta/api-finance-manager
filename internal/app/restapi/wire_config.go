@@ -93,6 +93,7 @@ var providers = []any{
 	usecase.NewUpdateTransaction,
 	usecase.NewGetBalance,
 	usecase.NewSyncBalances,
+	usecase.NewCreateTransaction,
 
 	handler.NewAuthHandler,
 	handler.NewCalculatorHandler,

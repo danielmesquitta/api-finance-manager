@@ -12,8 +12,41 @@ import (
 	"github.com/google/uuid"
 )
 
+const createTransaction = `-- name: CreateTransaction :exec
+INSERT INTO transactions (
+    name,
+    amount,
+    payment_method_id,
+    date,
+    user_id,
+    category_id
+  )
+VALUES ($1, $2, $3, $4, $5, $6)
+`
+
+type CreateTransactionParams struct {
+	Name            string     `json:"name"`
+	Amount          int64      `json:"amount"`
+	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
+	Date            time.Time  `json:"date"`
+	UserID          uuid.UUID  `json:"user_id"`
+	CategoryID      *uuid.UUID `json:"category_id"`
+}
+
+func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionParams) error {
+	_, err := q.db.Exec(ctx, createTransaction,
+		arg.Name,
+		arg.Amount,
+		arg.PaymentMethodID,
+		arg.Date,
+		arg.UserID,
+		arg.CategoryID,
+	)
+	return err
+}
+
 type CreateTransactionsParams struct {
-	ExternalID      string     `json:"external_id"`
+	ExternalID      *string    `json:"external_id"`
 	Name            string     `json:"name"`
 	Amount          int64      `json:"amount"`
 	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
@@ -46,7 +79,7 @@ type GetTransactionParams struct {
 
 type GetTransactionRow struct {
 	ID                uuid.UUID  `json:"id"`
-	ExternalID        string     `json:"external_id"`
+	ExternalID        *string    `json:"external_id"`
 	Name              string     `json:"name"`
 	Amount            int64      `json:"amount"`
 	IsIgnored         bool       `json:"is_ignored"`

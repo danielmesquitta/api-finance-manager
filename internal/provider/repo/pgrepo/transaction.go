@@ -97,6 +97,23 @@ func (r *TransactionPgRepo) CreateTransactions(
 	return nil
 }
 
+func (r *TransactionPgRepo) CreateTransaction(
+	ctx context.Context,
+	params repo.CreateTransactionParams,
+) error {
+	var dbParams sqlc.CreateTransactionParams
+	if err := copier.Copy(&dbParams, params); err != nil {
+		return errs.New(err)
+	}
+
+	tx := r.db.UseTx(ctx)
+	if err := tx.CreateTransaction(ctx, dbParams); err != nil {
+		return errs.New(err)
+	}
+
+	return nil
+}
+
 func (r *TransactionPgRepo) GetTransaction(
 	ctx context.Context,
 	params repo.GetTransactionParams,

@@ -99,6 +99,24 @@ definitions:
     - executionStatus
     - id
     type: object
+  dto.CreateTransactionRequest:
+    properties:
+      amount:
+        type: integer
+      category_id:
+        type: string
+      date:
+        type: string
+      name:
+        type: string
+      payment_method_id:
+        type: string
+    required:
+    - amount
+    - date
+    - name
+    - payment_method_id
+    type: object
   dto.EmergencyReserveRequest:
     properties:
       job_type:
@@ -1466,6 +1484,35 @@ paths:
       security:
       - BearerAuth: []
       summary: List transactions
+      tags:
+      - Transaction
+    post:
+      consumes:
+      - application/json
+      description: Create transactions
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTransactionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create transactions
       tags:
       - Transaction
   /v1/transactions/{transaction_id}:

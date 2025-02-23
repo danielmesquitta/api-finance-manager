@@ -103,9 +103,8 @@ func (r *Router) Register(
 
 	usersApiV1.Get("/balances", r.bah.Get)
 
+	usersApiV1.Post("/transactions", r.th.Create)
 	usersApiV1.Get("/transactions", r.th.List)
 	usersApiV1.Get("/transactions/:transaction_id", r.th.Get)
 	usersApiV1.Put("/transactions/:transaction_id", r.th.Update)
 }
-
-func serveDocs() {}

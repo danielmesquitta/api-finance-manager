@@ -336,7 +336,10 @@ func (uc *SyncTransactions) syncUserTransactions(
 		len(transactions),
 	)
 	for _, t := range transactions {
-		transactionsByExternalID[t.ExternalID] = t
+		if t.ExternalID == nil {
+			continue
+		}
+		transactionsByExternalID[*t.ExternalID] = t
 	}
 
 	params := uc.buildCreateTransactionsParams(
@@ -375,7 +378,11 @@ func (uc *SyncTransactions) buildCreateTransactionsParams(
 		account := accountsByID[accountID]
 
 		for _, ofTrans := range ofTransactions {
-			if _, ok := transactionsByExternalID[ofTrans.ExternalID]; ok {
+			if ofTrans.ExternalID == nil {
+				continue
+			}
+
+			if _, ok := transactionsByExternalID[*ofTrans.ExternalID]; ok {
 				continue
 			}
 

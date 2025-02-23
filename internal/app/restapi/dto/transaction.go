@@ -16,3 +16,7 @@ type GetTransactionResponse struct {
 type UpdateTransactionRequest struct {
 	usecase.UpdateTransactionInput
 }
+
+type CreateTransactionRequest struct {
+	usecase.CreateTransactionInput
+}

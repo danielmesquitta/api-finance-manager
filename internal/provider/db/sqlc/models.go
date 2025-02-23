@@ -96,7 +96,7 @@ type PaymentMethod struct {
 
 type Transaction struct {
 	ID              uuid.UUID  `json:"id"`
-	ExternalID      string     `json:"external_id"`
+	ExternalID      *string    `json:"external_id"`
 	Name            string     `json:"name"`
 	Amount          int64      `json:"amount"`
 	IsIgnored       bool       `json:"is_ignored"`
