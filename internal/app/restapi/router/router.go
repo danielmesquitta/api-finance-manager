@@ -76,7 +76,9 @@ func (r *Router) Register(
 
 	usersApiV1 := apiV1.Group("", r.m.BearerAuthAccessToken())
 
-	usersApiV1.Get("/users/profile", r.uh.Profile)
+	usersApiV1.Get("/users/profile", r.uh.GetProfile)
+	usersApiV1.Put("/users/profile", r.uh.UpdateProfile)
+	usersApiV1.Delete("/users/profile", r.uh.DeleteProfile)
 
 	usersApiV1.Post("/calculator/compound-interest", r.ch.CompoundInterest)
 	usersApiV1.Post("/calculator/emergency-reserve", r.ch.EmergencyReserve)

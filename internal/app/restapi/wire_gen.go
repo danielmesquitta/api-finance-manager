@@ -12,6 +12,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/router"
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/hash"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
@@ -32,12 +33,13 @@ func NewDev(v *validator.Validator, e *config.Env) *App {
 	jwt := jwtutil.NewJWT(e)
 	middlewareMiddleware := middleware.NewMiddleware(e, jwt)
 	docHandler := handler.NewDocHandler()
+	hasher := hash.NewHasher(e)
 	pool := db.NewPGXPool(e)
 	dbDB := db.NewDB(pool)
 	userPgRepo := pgrepo.NewUserPgRepo(dbDB)
 	googleOAuth := googleoauth.NewGoogleOAuth()
 	mockOAuth := mockoauth.NewMockOAuth(e)
-	signIn := usecase.NewSignIn(v, userPgRepo, jwt, googleOAuth, mockOAuth)
+	signIn := usecase.NewSignIn(v, hasher, userPgRepo, jwt, googleOAuth, mockOAuth)
 	refreshToken := usecase.NewRefreshToken(signIn)
 	authHandler := handler.NewAuthHandler(signIn, refreshToken)
 	calculateCompoundInterest := usecase.NewCalculateCompoundInterest(v)
@@ -68,7 +70,9 @@ func NewDev(v *validator.Validator, e *config.Env) *App {
 	listBudgetCategoryTransactions := usecase.NewListBudgetCategoryTransactions(v, listTransactions)
 	budgetHandler := handler.NewBudgetHandler(upsertBudget, getBudget, getBudgetCategory, deleteBudget, listBudgetCategoryTransactions)
 	getUser := usecase.NewGetUser(userPgRepo)
-	userHandler := handler.NewUserHandler(getUser)
+	updateUser := usecase.NewUpdateUser(v, userPgRepo)
+	deleteUser := usecase.NewDeleteUser(hasher, userPgRepo)
+	userHandler := handler.NewUserHandler(getUser, updateUser, deleteUser)
 	accountPgRepo := pgrepo.NewAccountPgRepo(dbDB, queryBuilder)
 	accountBalancePgRepo := pgrepo.NewAccountBalancePgRepo(dbDB)
 	redisCache := rediscache.NewRedisCache(e)
@@ -93,12 +97,13 @@ func NewProd(v *validator.Validator, e *config.Env) *App {
 	jwt := jwtutil.NewJWT(e)
 	middlewareMiddleware := middleware.NewMiddleware(e, jwt)
 	docHandler := handler.NewDocHandler()
+	hasher := hash.NewHasher(e)
 	pool := db.NewPGXPool(e)
 	dbDB := db.NewDB(pool)
 	userPgRepo := pgrepo.NewUserPgRepo(dbDB)
 	googleOAuth := googleoauth.NewGoogleOAuth()
 	mockOAuth := _wireMockOAuthValue
-	signIn := usecase.NewSignIn(v, userPgRepo, jwt, googleOAuth, mockOAuth)
+	signIn := usecase.NewSignIn(v, hasher, userPgRepo, jwt, googleOAuth, mockOAuth)
 	refreshToken := usecase.NewRefreshToken(signIn)
 	authHandler := handler.NewAuthHandler(signIn, refreshToken)
 	calculateCompoundInterest := usecase.NewCalculateCompoundInterest(v)
@@ -128,7 +133,9 @@ func NewProd(v *validator.Validator, e *config.Env) *App {
 	listBudgetCategoryTransactions := usecase.NewListBudgetCategoryTransactions(v, listTransactions)
 	budgetHandler := handler.NewBudgetHandler(upsertBudget, getBudget, getBudgetCategory, deleteBudget, listBudgetCategoryTransactions)
 	getUser := usecase.NewGetUser(userPgRepo)
-	userHandler := handler.NewUserHandler(getUser)
+	updateUser := usecase.NewUpdateUser(v, userPgRepo)
+	deleteUser := usecase.NewDeleteUser(hasher, userPgRepo)
+	userHandler := handler.NewUserHandler(getUser, updateUser, deleteUser)
 	accountPgRepo := pgrepo.NewAccountPgRepo(dbDB, queryBuilder)
 	accountBalancePgRepo := pgrepo.NewAccountBalancePgRepo(dbDB)
 	redisCache := rediscache.NewRedisCache(e)

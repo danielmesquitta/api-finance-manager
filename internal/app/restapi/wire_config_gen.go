@@ -11,6 +11,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/router"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/hash"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
@@ -35,6 +36,7 @@ func NewDev(
 ) *App {
 	wire.Build(
 	jwtutil.NewJWT,
+	hash.NewHasher,
 	googleoauth.NewGoogleOAuth,
 	pluggy.NewClient,
 	db.NewPGXPool,
@@ -88,6 +90,8 @@ func NewDev(
 	usecase.NewGetBalance,
 	usecase.NewSyncBalances,
 	usecase.NewCreateTransaction,
+	usecase.NewUpdateUser,
+	usecase.NewDeleteUser,
 	handler.NewAuthHandler,
 	handler.NewCalculatorHandler,
 	handler.NewInstitutionHandler,
@@ -115,6 +119,7 @@ func NewProd(
 ) *App {
 	wire.Build(
 	jwtutil.NewJWT,
+	hash.NewHasher,
 	googleoauth.NewGoogleOAuth,
 	pluggy.NewClient,
 	db.NewPGXPool,
@@ -168,6 +173,8 @@ func NewProd(
 	usecase.NewGetBalance,
 	usecase.NewSyncBalances,
 	usecase.NewCreateTransaction,
+	usecase.NewUpdateUser,
+	usecase.NewDeleteUser,
 	handler.NewAuthHandler,
 	handler.NewCalculatorHandler,
 	handler.NewInstitutionHandler,

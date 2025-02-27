@@ -29,6 +29,14 @@ type UserRepo interface {
 		ctx context.Context,
 		params CreateUserParams,
 	) (*entity.User, error)
+	DeleteUser(
+		ctx context.Context,
+		params DeleteUserParams,
+	) error
+	DestroyUser(
+		ctx context.Context,
+		id uuid.UUID,
+	) error
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (*entity.User, error)
 	ListUsers(ctx context.Context) ([]entity.User, error)

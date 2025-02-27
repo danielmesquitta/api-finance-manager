@@ -124,6 +124,12 @@ type CreateUserParams struct {
 	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
 }
 
+type DeleteUserParams struct {
+	ID    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Email string    `json:"email"`
+}
+
 type UpdateUserParams struct {
 	ID                    uuid.UUID  `json:"id"`
 	AuthID                string     `json:"auth_id"`

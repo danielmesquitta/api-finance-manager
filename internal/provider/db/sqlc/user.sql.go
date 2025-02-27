@@ -72,6 +72,35 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
+const deleteUser = `-- name: DeleteUser :exec
+UPDATE users
+SET deleted_at = NOW(),
+  name = $2,
+  email = $3
+WHERE id = $1
+`
+
+type DeleteUserParams struct {
+	ID    uuid.UUID `json:"id"`
+	Name  string    `json:"name"`
+	Email string    `json:"email"`
+}
+
+func (q *Queries) DeleteUser(ctx context.Context, arg DeleteUserParams) error {
+	_, err := q.db.Exec(ctx, deleteUser, arg.ID, arg.Name, arg.Email)
+	return err
+}
+
+const destroyUser = `-- name: DestroyUser :exec
+DELETE FROM users
+WHERE id = $1
+`
+
+func (q *Queries) DestroyUser(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, destroyUser, id)
+	return err
+}
+
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
 FROM users

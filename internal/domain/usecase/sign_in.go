@@ -8,6 +8,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/hash"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
@@ -19,6 +20,7 @@ import (
 
 type SignIn struct {
 	v  *validator.Validator
+	h  *hash.Hasher
 	ur repo.UserRepo
 	j  *jwtutil.JWT
 	g  *googleoauth.GoogleOAuth
@@ -27,6 +29,7 @@ type SignIn struct {
 
 func NewSignIn(
 	v *validator.Validator,
+	h *hash.Hasher,
 	ur repo.UserRepo,
 	j *jwtutil.JWT,
 	g *googleoauth.GoogleOAuth,
@@ -34,6 +37,7 @@ func NewSignIn(
 ) *SignIn {
 	return &SignIn{
 		v:  v,
+		h:  h,
 		ur: ur,
 		j:  j,
 		g:  g,
@@ -99,6 +103,23 @@ func (uc *SignIn) signInWithGoogle(
 		return uc.signIn(ctx, updatedUser)
 	}
 
+	hashedEmail, err := uc.h.Hash(oauthUser.Email)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	deletedUser, err := uc.ur.GetUserByEmail(ctx, hashedEmail)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	if deletedUser != nil {
+		err := uc.ur.DestroyUser(ctx, deletedUser.ID)
+		if err != nil {
+			return nil, errs.New(err)
+		}
+	}
+
 	user, err := uc.createUser(ctx, oauthUser)
 	if err != nil {
 		return nil, errs.New(err)
@@ -129,6 +150,23 @@ func (uc *SignIn) signInWithMock(
 		}
 
 		return uc.signIn(ctx, updatedUser)
+	}
+
+	hashedEmail, err := uc.h.Hash(oauthUser.Email)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	deletedUser, err := uc.ur.GetUserByEmail(ctx, hashedEmail)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	if deletedUser != nil {
+		err := uc.ur.DestroyUser(ctx, deletedUser.ID)
+		if err != nil {
+			return nil, errs.New(err)
+		}
 	}
 
 	user, err := uc.createUser(ctx, oauthUser)
@@ -235,6 +273,16 @@ func (uc *SignIn) updateUser(
 		copier.Option{IgnoreEmpty: true},
 	); err != nil {
 		return nil, errs.New(err)
+	}
+
+	// do not update user's
+	// email and name if it is already set
+	if user.Name != "" {
+		params.Name = user.Name
+	}
+
+	if user.Email != "" {
+		params.Email = user.Email
 	}
 
 	updatedUser, err := uc.ur.UpdateUser(ctx, params)

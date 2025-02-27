@@ -42,3 +42,12 @@ WHERE id = $1;
 SELECT *
 FROM users
 WHERE deleted_at IS NULL;
+-- name: DeleteUser :exec
+UPDATE users
+SET deleted_at = NOW(),
+  name = $2,
+  email = $3
+WHERE id = $1;
+-- name: DestroyUser :exec
+DELETE FROM users
+WHERE id = $1;

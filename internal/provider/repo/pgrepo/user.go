@@ -144,4 +144,35 @@ func (r *UserPgRepo) ListUsers(
 	return results, nil
 }
 
+func (r *UserPgRepo) DeleteUser(
+	ctx context.Context,
+	params repo.DeleteUserParams,
+) error {
+	dbParams := sqlc.DeleteUserParams{}
+	if err := copier.Copy(&dbParams, params); err != nil {
+		return errs.New(err)
+	}
+
+	tx := r.db.UseTx(ctx)
+	err := tx.DeleteUser(ctx, dbParams)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return nil
+}
+
+func (r *UserPgRepo) DestroyUser(
+	ctx context.Context,
+	id uuid.UUID,
+) error {
+	tx := r.db.UseTx(ctx)
+	err := tx.DestroyUser(ctx, id)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return nil
+}
+
 var _ repo.UserRepo = &UserPgRepo{}

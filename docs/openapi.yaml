@@ -447,6 +447,13 @@ components:
                 total_interest:
                     type: integer
             type: object
+        dto.UpdateProfileRequest:
+            properties:
+                email:
+                    type: string
+                name:
+                    type: string
+            type: object
         dto.UpdateTransactionRequest:
             properties:
                 account_id:
@@ -1779,6 +1786,34 @@ paths:
             tags:
                 - Institution
     /v1/users/profile:
+        delete:
+            description: Delete logged-in user
+            responses:
+                "204":
+                    description: No Content
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Delete logged-in user
+            tags:
+                - User
         get:
             description: Get logged-in user profile
             responses:
@@ -1809,5 +1844,41 @@ paths:
             security:
                 - BearerAuth: []
             summary: Get logged-in user profile
+            tags:
+                - User
+        put:
+            description: Update logged-in user
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.UpdateProfileRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "204":
+                    description: No Content
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Update logged-in user
             tags:
                 - User

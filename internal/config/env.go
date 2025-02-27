@@ -22,20 +22,21 @@ const (
 type Env struct {
 	v *validator.Validator
 
-	Environment                      Environment `validate:"required,oneof=development production staging test" mapstructure:"ENVIRONMENT"`
-	Host                             string      `                                                              mapstructure:"HOST"`
-	Port                             string      `                                                              mapstructure:"PORT"`
-	PostgresDatabaseURL              string      `validate:"required"                                           mapstructure:"POSTGRES_DATABASE_URL"`
-	RedisDatabaseURL                 string      `validate:"required"                                           mapstructure:"REDIS_DATABASE_URL"`
-	JWTAccessTokenSecretKey          string      `validate:"required"                                           mapstructure:"JWT_ACCESS_TOKEN_SECRET_KEY"`
-	JWTRefreshTokenSecretKey         string      `validate:"required"                                           mapstructure:"JWT_REFRESH_TOKEN_SECRET_KEY"`
-	PluggyClientID                   string      `validate:"required"                                           mapstructure:"PLUGGY_CLIENT_ID"`
-	PluggyClientSecret               string      `validate:"required"                                           mapstructure:"PLUGGY_CLIENT_SECRET"`
-	BasicAuthUsername                string      `validate:"required"                                           mapstructure:"BASIC_AUTH_USERNAME"`
-	BasicAuthPassword                string      `validate:"required"                                           mapstructure:"BASIC_AUTH_PASSWORD"`
-	MaxLevenshteinDistancePercentage float64     `validate:"required,min=0,max=1"                               mapstructure:"MAX_LEVENSHTEIN_DISTANCE_PERCENTAGE"`
-	SyncBalancesMaxAccounts          int         `validate:"required,min=1"                                     mapstructure:"SYNC_BALANCES_MAX_ACCOUNTS"`
-	SyncTransactionsMaxAccounts      int         `validate:"required,min=1"                                     mapstructure:"SYNC_TRANSACTIONS_MAX_ACCOUNTS"`
+	Environment                      Environment `mapstructure:"ENVIRONMENT"                         validate:"required,oneof=development production staging test"`
+	Host                             string      `mapstructure:"HOST"`
+	Port                             string      `mapstructure:"PORT"`
+	PostgresDatabaseURL              string      `mapstructure:"POSTGRES_DATABASE_URL"               validate:"required"`
+	RedisDatabaseURL                 string      `mapstructure:"REDIS_DATABASE_URL"                  validate:"required"`
+	JWTAccessTokenSecretKey          string      `mapstructure:"JWT_ACCESS_TOKEN_SECRET_KEY"         validate:"required"`
+	JWTRefreshTokenSecretKey         string      `mapstructure:"JWT_REFRESH_TOKEN_SECRET_KEY"        validate:"required"`
+	HashSecretKey                    string      `mapstructure:"HASH_SECRET_KEY"                     validate:"required"`
+	PluggyClientID                   string      `mapstructure:"PLUGGY_CLIENT_ID"                    validate:"required"`
+	PluggyClientSecret               string      `mapstructure:"PLUGGY_CLIENT_SECRET"                validate:"required"`
+	BasicAuthUsername                string      `mapstructure:"BASIC_AUTH_USERNAME"                 validate:"required"`
+	BasicAuthPassword                string      `mapstructure:"BASIC_AUTH_PASSWORD"                 validate:"required"`
+	MaxLevenshteinDistancePercentage float64     `mapstructure:"MAX_LEVENSHTEIN_DISTANCE_PERCENTAGE" validate:"required,min=0,max=1"`
+	SyncBalancesMaxAccounts          int         `mapstructure:"SYNC_BALANCES_MAX_ACCOUNTS"          validate:"required,min=1"`
+	SyncTransactionsMaxAccounts      int         `mapstructure:"SYNC_TRANSACTIONS_MAX_ACCOUNTS"      validate:"required,min=1"`
 }
 
 func (e *Env) loadEnv() error {

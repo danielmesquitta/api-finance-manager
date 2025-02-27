@@ -10,13 +10,19 @@ import (
 
 type UserHandler struct {
 	gu *usecase.GetUser
+	uu *usecase.UpdateUser
+	du *usecase.DeleteUser
 }
 
 func NewUserHandler(
 	gu *usecase.GetUser,
+	uu *usecase.UpdateUser,
+	du *usecase.DeleteUser,
 ) *UserHandler {
 	return &UserHandler{
 		gu: gu,
+		uu: uu,
+		du: du,
 	}
 }
 
@@ -31,7 +37,7 @@ func NewUserHandler(
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/users/profile [get]
-func (h UserHandler) Profile(c *fiber.Ctx) error {
+func (h UserHandler) GetProfile(c *fiber.Ctx) error {
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
@@ -44,4 +50,62 @@ func (h UserHandler) Profile(c *fiber.Ctx) error {
 	return c.JSON(dto.UserProfileResponse{
 		User: *user,
 	})
+}
+
+// @Summary Update logged-in user
+// @Description Update logged-in user
+// @Tags User
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param request body dto.UpdateProfileRequest true "Request body"
+// @Success 204
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/users/profile [put]
+func (h UserHandler) UpdateProfile(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
+	userID := uuid.MustParse(claims.Issuer)
+
+	var req dto.UpdateProfileRequest
+	if err := c.BodyParser(&req); err != nil {
+		return errs.New(err)
+	}
+
+	in := usecase.UpdateUserInput{
+		ID:    userID,
+		Name:  req.Name,
+		Email: req.Email,
+	}
+
+	ctx := c.UserContext()
+	if err := h.uu.Execute(ctx, in); err != nil {
+		return errs.New(err)
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
+}
+
+// @Summary Delete logged-in user
+// @Description Delete logged-in user
+// @Tags User
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Success 204
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 404 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/users/profile [delete]
+func (h UserHandler) DeleteProfile(c *fiber.Ctx) error {
+	claims := GetUserClaims(c)
+	userID := uuid.MustParse(claims.Issuer)
+
+	ctx := c.UserContext()
+	if err := h.du.Execute(ctx, userID); err != nil {
+		return errs.New(err)
+	}
+
+	return c.SendStatus(fiber.StatusNoContent)
 }

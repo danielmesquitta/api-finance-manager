@@ -447,6 +447,13 @@ definitions:
       total_interest:
         type: integer
     type: object
+  dto.UpdateProfileRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    type: object
   dto.UpdateTransactionRequest:
     properties:
       account_id:
@@ -1667,6 +1674,32 @@ paths:
       tags:
       - Institution
   /v1/users/profile:
+    delete:
+      consumes:
+      - application/json
+      description: Delete logged-in user
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete logged-in user
+      tags:
+      - User
     get:
       consumes:
       - application/json
@@ -1693,6 +1726,39 @@ paths:
       security:
       - BearerAuth: []
       summary: Get logged-in user profile
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      description: Update logged-in user
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update logged-in user
       tags:
       - User
 securityDefinitions:

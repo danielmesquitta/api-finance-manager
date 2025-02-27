@@ -7,6 +7,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/router"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/hash"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
@@ -30,6 +31,7 @@ func init() {
 
 var providers = []any{
 	jwtutil.NewJWT,
+	hash.NewHasher,
 
 	googleoauth.NewGoogleOAuth,
 
@@ -97,6 +99,8 @@ var providers = []any{
 	usecase.NewGetBalance,
 	usecase.NewSyncBalances,
 	usecase.NewCreateTransaction,
+	usecase.NewUpdateUser,
+	usecase.NewDeleteUser,
 
 	handler.NewAuthHandler,
 	handler.NewCalculatorHandler,
