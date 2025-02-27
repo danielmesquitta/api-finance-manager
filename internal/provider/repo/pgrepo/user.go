@@ -175,4 +175,4 @@ func (r *UserPgRepo) DestroyUser(
 	return nil
 }
 
-var _ repo.UserRepo = &UserPgRepo{}
+var _ repo.UserRepo = (*UserPgRepo)(nil)

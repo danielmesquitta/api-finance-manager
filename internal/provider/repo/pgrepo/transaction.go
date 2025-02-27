@@ -152,4 +152,4 @@ func (r *TransactionPgRepo) UpdateTransaction(
 	return tx.UpdateTransaction(ctx, dbParams)
 }
 
-var _ repo.TransactionRepo = &TransactionPgRepo{}
+var _ repo.TransactionRepo = (*TransactionPgRepo)(nil)

@@ -58,6 +58,11 @@ type UpdateBudgetParams struct {
 	Date   time.Time `json:"date"`
 }
 
+type CreateFeedbackParams struct {
+	Message string     `json:"message"`
+	UserID  *uuid.UUID `json:"user_id"`
+}
+
 type CreateInstitutionsParams struct {
 	ExternalID string  `json:"external_id"`
 	Name       string  `json:"name"`

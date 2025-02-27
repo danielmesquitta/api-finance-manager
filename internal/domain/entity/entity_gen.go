@@ -133,3 +133,11 @@ type BudgetCategory struct {
 	BudgetID   uuid.UUID  `json:"budget_id,omitempty"`
 	CategoryID uuid.UUID  `json:"category_id,omitempty"`
 }
+
+type Feedback struct {
+	ID        uuid.UUID  `json:"id,omitempty"`
+	Message   string     `json:"message,omitempty"`
+	CreatedAt time.Time  `json:"created_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	UserID    *uuid.UUID `json:"user_id,omitempty"`
+}

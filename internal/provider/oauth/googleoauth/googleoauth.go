@@ -19,4 +19,4 @@ func NewGoogleOAuth() *GoogleOAuth {
 	}
 }
 
-var _ oauth.Provider = &GoogleOAuth{}
+var _ oauth.Provider = (*GoogleOAuth)(nil)

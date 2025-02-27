@@ -59,4 +59,4 @@ func (r *AccountPgRepo) CreateAccounts(
 	return nil
 }
 
-var _ repo.AccountRepo = &AccountPgRepo{}
+var _ repo.AccountRepo = (*AccountPgRepo)(nil)

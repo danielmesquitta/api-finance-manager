@@ -88,4 +88,4 @@ func (r *PaymentMethodPgRepo) GetPaymentMethod(
 	return &result, nil
 }
 
-var _ repo.PaymentMethodRepo = &PaymentMethodPgRepo{}
+var _ repo.PaymentMethodRepo = (*PaymentMethodPgRepo)(nil)

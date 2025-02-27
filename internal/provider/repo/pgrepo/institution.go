@@ -91,4 +91,4 @@ func (r *InstitutionPgRepo) GetInstitutionByExternalID(
 	return &result, nil
 }
 
-var _ repo.InstitutionRepo = &InstitutionPgRepo{}
+var _ repo.InstitutionRepo = (*InstitutionPgRepo)(nil)

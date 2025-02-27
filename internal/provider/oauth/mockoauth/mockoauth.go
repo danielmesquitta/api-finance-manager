@@ -52,4 +52,4 @@ func (m *MockOAuth) GetUser(
 	return m.users[MockToken], nil
 }
 
-var _ oauth.Provider = &MockOAuth{}
+var _ oauth.Provider = (*MockOAuth)(nil)

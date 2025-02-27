@@ -180,4 +180,4 @@ func (r *BudgetPgRepo) UpdateBudget(
 	return tx.UpdateBudget(ctx, dbParams)
 }
 
-var _ repo.BudgetRepo = &BudgetPgRepo{}
+var _ repo.BudgetRepo = (*BudgetPgRepo)(nil)

@@ -49,4 +49,4 @@ func (r *AccountBalancePgRepo) GetUserBalanceOnDate(
 	return r.db.GetUserBalanceOnDate(ctx, dbParams)
 }
 
-var _ repo.AccountBalanceRepo = &AccountBalancePgRepo{}
+var _ repo.AccountBalanceRepo = (*AccountBalancePgRepo)(nil)

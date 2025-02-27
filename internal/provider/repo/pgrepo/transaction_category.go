@@ -115,4 +115,4 @@ func (r *TransactionCategoryPgRepo) GetTransactionCategory(
 	return &result, nil
 }
 
-var _ repo.TransactionCategoryRepo = &TransactionCategoryPgRepo{}
+var _ repo.TransactionCategoryRepo = (*TransactionCategoryPgRepo)(nil)

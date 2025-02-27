@@ -52,6 +52,14 @@ type BudgetCategory struct {
 	CategoryID uuid.UUID  `json:"category_id"`
 }
 
+type Feedback struct {
+	ID        uuid.UUID  `json:"id"`
+	Message   string     `json:"message"`
+	CreatedAt time.Time  `json:"created_at"`
+	DeletedAt *time.Time `json:"deleted_at"`
+	UserID    *uuid.UUID `json:"user_id"`
+}
+
 type Institution struct {
 	ID         uuid.UUID  `json:"id"`
 	ExternalID string     `json:"external_id"`
