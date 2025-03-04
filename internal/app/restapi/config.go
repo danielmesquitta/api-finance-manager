@@ -47,32 +47,41 @@ var providers = []any{
 	wire.Bind(new(cache.Cache), new(*rediscache.RedisCache)),
 	rediscache.NewRedisCache,
 
-	wire.Bind(new(repo.UserRepo), new(*pgrepo.UserPgRepo)),
-	pgrepo.NewUserPgRepo,
+	wire.Bind(new(repo.UserRepo), new(*pgrepo.UserRepo)),
+	pgrepo.NewUserRepo,
 
-	wire.Bind(new(repo.InstitutionRepo), new(*pgrepo.InstitutionPgRepo)),
-	pgrepo.NewInstitutionPgRepo,
+	wire.Bind(new(repo.InstitutionRepo), new(*pgrepo.InstitutionRepo)),
+	pgrepo.NewInstitutionRepo,
 
 	wire.Bind(
 		new(repo.TransactionCategoryRepo),
-		new(*pgrepo.TransactionCategoryPgRepo),
+		new(*pgrepo.TransactionCategoryRepo),
 	),
-	pgrepo.NewCategoryPgRepo,
+	pgrepo.NewCategoryRepo,
 
-	wire.Bind(new(repo.BudgetRepo), new(*pgrepo.BudgetPgRepo)),
-	pgrepo.NewBudgetPgRepo,
+	wire.Bind(new(repo.BudgetRepo), new(*pgrepo.BudgetRepo)),
+	pgrepo.NewBudgetRepo,
 
-	wire.Bind(new(repo.AccountRepo), new(*pgrepo.AccountPgRepo)),
-	pgrepo.NewAccountPgRepo,
+	wire.Bind(new(repo.AccountRepo), new(*pgrepo.AccountRepo)),
+	pgrepo.NewAccountRepo,
 
-	wire.Bind(new(repo.TransactionRepo), new(*pgrepo.TransactionPgRepo)),
-	pgrepo.NewTransactionPgRepo,
+	wire.Bind(new(repo.TransactionRepo), new(*pgrepo.TransactionRepo)),
+	pgrepo.NewTransactionRepo,
 
-	wire.Bind(new(repo.PaymentMethodRepo), new(*pgrepo.PaymentMethodPgRepo)),
-	pgrepo.NewPaymentMethodPgRepo,
+	wire.Bind(new(repo.PaymentMethodRepo), new(*pgrepo.PaymentMethodRepo)),
+	pgrepo.NewPaymentMethodRepo,
 
-	wire.Bind(new(repo.AccountBalanceRepo), new(*pgrepo.AccountBalancePgRepo)),
-	pgrepo.NewAccountBalancePgRepo,
+	wire.Bind(new(repo.AccountBalanceRepo), new(*pgrepo.AccountBalanceRepo)),
+	pgrepo.NewAccountBalanceRepo,
+
+	wire.Bind(new(repo.FeedbackRepo), new(*pgrepo.FeedbackRepo)),
+	pgrepo.NewFeedbackRepo,
+
+	wire.Bind(new(repo.AIChatRepo), new(*pgrepo.AIChatRepo)),
+	pgrepo.NewAIChatRepo,
+
+	wire.Bind(new(repo.AIChatMessageRepo), new(*pgrepo.AIChatMessageRepo)),
+	pgrepo.NewAIChatMessageRepo,
 
 	usecase.NewSignIn,
 	usecase.NewRefreshToken,
@@ -101,6 +110,13 @@ var providers = []any{
 	usecase.NewCreateTransaction,
 	usecase.NewUpdateUser,
 	usecase.NewDeleteUser,
+	usecase.NewCreateFeedback,
+	usecase.NewListPaymentMethods,
+	usecase.NewListAIChats,
+	usecase.NewListAIChatMessages,
+	usecase.NewCreateAIChat,
+	usecase.NewDeleteAIChat,
+	usecase.NewUpdateAIChat,
 
 	handler.NewAuthHandler,
 	handler.NewCalculatorHandler,
@@ -112,6 +128,10 @@ var providers = []any{
 	handler.NewTransactionHandler,
 	handler.NewBalanceHandler,
 	handler.NewDocHandler,
+	handler.NewFeedbackHandler,
+	handler.NewPaymentMethodHandler,
+	handler.NewAIChatHandler,
+	handler.NewAIChatMessageHandler,
 
 	middleware.NewMiddleware,
 

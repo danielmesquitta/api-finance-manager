@@ -83,6 +83,21 @@ definitions:
       total_interest:
         type: integer
     type: object
+  dto.CreateAIChatResponse:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
   dto.CreateAccountsRequest:
     properties:
       clientUserId:
@@ -98,6 +113,13 @@ definitions:
     - connector
     - executionStatus
     - id
+    type: object
+  dto.CreateFeedbackRequest:
+    properties:
+      message:
+        type: string
+    required:
+    - message
     type: object
   dto.CreateTransactionRequest:
     properties:
@@ -280,6 +302,36 @@ definitions:
       user_id:
         type: string
     type: object
+  dto.ListAIChatMessagesResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/entity.AIChatMessage'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  dto.ListAIChatsResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/entity.AIChat'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
   dto.ListCategoriesResponse:
     properties:
       items:
@@ -300,6 +352,21 @@ definitions:
       items:
         items:
           $ref: '#/definitions/entity.Institution'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  dto.ListPaymentMethodsResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/entity.PaymentMethod'
         type: array
       page:
         type: integer
@@ -447,6 +514,13 @@ definitions:
       total_interest:
         type: integer
     type: object
+  dto.UpdateAIChatRequest:
+    properties:
+      title:
+        type: string
+    required:
+    - title
+    type: object
   dto.UpdateProfileRequest:
     properties:
       email:
@@ -519,6 +593,38 @@ definitions:
         type: string
       verified_email:
         type: boolean
+    type: object
+  entity.AIChat:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entity.AIChatMessage:
+    properties:
+      ai_chat_id:
+        type: string
+      created_at:
+        type: string
+      created_by_user_id:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      message:
+        type: string
+      updated_at:
+        type: string
     type: object
   entity.FullTransaction:
     properties:
@@ -594,6 +700,21 @@ definitions:
     - JobTypeEntrepreneur
     - JobTypeEmployee
     - JobTypeCivilServant
+  entity.PaymentMethod:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      external_id:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
   entity.Provider:
     enum:
     - GOOGLE
@@ -856,6 +977,176 @@ paths:
       summary: Sync transactions from open finance
       tags:
       - Transaction
+  /v1/ai-chats:
+    get:
+      consumes:
+      - application/json
+      description: List ai chats
+      parameters:
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ListAIChatsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List ai chats
+      tags:
+      - AI Chat
+    post:
+      consumes:
+      - application/json
+      description: Create ai chat
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateAIChatResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create ai chat
+      tags:
+      - AI Chat
+  /v1/ai-chats/{ai_chat_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete ai chat
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete ai chat
+      tags:
+      - AI Chat
+    put:
+      consumes:
+      - application/json
+      description: Update ai chat
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateAIChatRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update ai chat
+      tags:
+      - AI Chat
+  /v1/ai-chats/{ai_chat_id}/messages:
+    get:
+      consumes:
+      - application/json
+      description: List ai chat messages
+      parameters:
+      - description: AI Chat ID
+        format: uuid
+        in: path
+        name: ai_chat_id
+        required: true
+        type: string
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ListAIChatMessagesResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List ai chat messages
+      tags:
+      - AI Chat
   /v1/auth/refresh:
     post:
       consumes:
@@ -1374,6 +1665,40 @@ paths:
       summary: Calculate simple interest
       tags:
       - Calculator
+  /v1/feedbacks:
+    post:
+      consumes:
+      - application/json
+      description: Create feedback
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateFeedbackRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create feedback
+      tags:
+      - Feedback
   /v1/institutions:
     get:
       consumes:
@@ -1412,6 +1737,44 @@ paths:
       summary: List institutions
       tags:
       - Institution
+  /v1/payment-methods:
+    get:
+      consumes:
+      - application/json
+      description: List payment methods
+      parameters:
+      - description: Search
+        in: query
+        name: search
+        type: string
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ListPaymentMethodsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: List payment methods
+      tags:
+      - Payment Method
   /v1/transactions:
     get:
       consumes:

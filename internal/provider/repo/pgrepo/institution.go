@@ -14,22 +14,22 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type InstitutionPgRepo struct {
+type InstitutionRepo struct {
 	db *db.DB
 	qb *query.QueryBuilder
 }
 
-func NewInstitutionPgRepo(
+func NewInstitutionRepo(
 	db *db.DB,
 	qb *query.QueryBuilder,
-) *InstitutionPgRepo {
-	return &InstitutionPgRepo{
+) *InstitutionRepo {
+	return &InstitutionRepo{
 		db: db,
 		qb: qb,
 	}
 }
 
-func (r *InstitutionPgRepo) ListInstitutions(
+func (r *InstitutionRepo) ListInstitutions(
 	ctx context.Context,
 	opts ...repo.InstitutionOption,
 ) ([]entity.Institution, error) {
@@ -46,14 +46,14 @@ func (r *InstitutionPgRepo) ListInstitutions(
 	return results, nil
 }
 
-func (r *InstitutionPgRepo) CountInstitutions(
+func (r *InstitutionRepo) CountInstitutions(
 	ctx context.Context,
 	opts ...repo.InstitutionOption,
 ) (int64, error) {
 	return r.qb.CountInstitutions(ctx, opts...)
 }
 
-func (r *InstitutionPgRepo) CreateInstitutions(
+func (r *InstitutionRepo) CreateInstitutions(
 	ctx context.Context,
 	params []repo.CreateInstitutionsParams,
 ) error {
@@ -71,7 +71,7 @@ func (r *InstitutionPgRepo) CreateInstitutions(
 	return nil
 }
 
-func (r *InstitutionPgRepo) GetInstitutionByExternalID(
+func (r *InstitutionRepo) GetInstitutionByExternalID(
 	ctx context.Context,
 	externalID string,
 ) (*entity.Institution, error) {
@@ -91,4 +91,4 @@ func (r *InstitutionPgRepo) GetInstitutionByExternalID(
 	return &result, nil
 }
 
-var _ repo.InstitutionRepo = (*InstitutionPgRepo)(nil)
+var _ repo.InstitutionRepo = (*InstitutionRepo)(nil)

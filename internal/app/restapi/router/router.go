@@ -10,18 +10,22 @@ import (
 )
 
 type Router struct {
-	e   *config.Env
-	m   *middleware.Middleware
-	dh  *handler.DocHandler
-	ah  *handler.AuthHandler
-	ch  *handler.CalculatorHandler
-	ih  *handler.InstitutionHandler
-	cth *handler.CategoryHandler
-	bh  *handler.BudgetHandler
-	uh  *handler.UserHandler
-	ach *handler.AccountHandler
-	th  *handler.TransactionHandler
-	bah *handler.BalanceHandler
+	e    *config.Env
+	m    *middleware.Middleware
+	dh   *handler.DocHandler
+	ah   *handler.AuthHandler
+	ch   *handler.CalculatorHandler
+	ih   *handler.InstitutionHandler
+	cth  *handler.CategoryHandler
+	bh   *handler.BudgetHandler
+	uh   *handler.UserHandler
+	ach  *handler.AccountHandler
+	th   *handler.TransactionHandler
+	bah  *handler.BalanceHandler
+	fh   *handler.FeedbackHandler
+	pmh  *handler.PaymentMethodHandler
+	aih  *handler.AIChatHandler
+	acmh *handler.AIChatMessageHandler
 }
 
 func NewRouter(
@@ -37,20 +41,28 @@ func NewRouter(
 	ach *handler.AccountHandler,
 	th *handler.TransactionHandler,
 	bah *handler.BalanceHandler,
+	fh *handler.FeedbackHandler,
+	pmh *handler.PaymentMethodHandler,
+	aih *handler.AIChatHandler,
+	acmh *handler.AIChatMessageHandler,
 ) *Router {
 	return &Router{
-		e:   e,
-		m:   m,
-		dh:  dh,
-		ah:  ah,
-		ch:  ch,
-		ih:  ih,
-		cth: cth,
-		bh:  bh,
-		uh:  uh,
-		ach: ach,
-		th:  th,
-		bah: bah,
+		e:    e,
+		m:    m,
+		dh:   dh,
+		ah:   ah,
+		ch:   ch,
+		ih:   ih,
+		cth:  cth,
+		bh:   bh,
+		uh:   uh,
+		ach:  ach,
+		th:   th,
+		bah:  bah,
+		fh:   fh,
+		pmh:  pmh,
+		aih:  aih,
+		acmh: acmh,
 	}
 }
 
@@ -109,4 +121,15 @@ func (r *Router) Register(
 	usersApiV1.Get("/transactions", r.th.List)
 	usersApiV1.Get("/transactions/:transaction_id", r.th.Get)
 	usersApiV1.Put("/transactions/:transaction_id", r.th.Update)
+
+	usersApiV1.Post("/feedback", r.fh.Create)
+
+	usersApiV1.Get("/payment-methods", r.pmh.List)
+
+	usersApiV1.Post("/ai-chats", r.aih.Create)
+	usersApiV1.Delete("/ai-chats/:ai_chat_id", r.aih.Delete)
+	usersApiV1.Put("/ai-chats/:ai_chat_id", r.aih.Update)
+	usersApiV1.Get("/ai-chats", r.aih.List)
+
+	usersApiV1.Get("/ai-chats/:ai_chat_id/messages", r.acmh.List)
 }

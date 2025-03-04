@@ -38,6 +38,7 @@ type PathParam = string
 const (
 	pathParamCategoryID    PathParam = "category_id"
 	pathParamTransactionID PathParam = "transaction_id"
+	pathParamAIChatID      PathParam = "ai_chat_id"
 )
 
 func parsePaginationParams(

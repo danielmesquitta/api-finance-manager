@@ -37,6 +37,7 @@ type Env struct {
 	MaxLevenshteinDistancePercentage float64     `mapstructure:"MAX_LEVENSHTEIN_DISTANCE_PERCENTAGE" validate:"required,min=0,max=1"`
 	SyncBalancesMaxAccounts          int         `mapstructure:"SYNC_BALANCES_MAX_ACCOUNTS"          validate:"required,min=1"`
 	SyncTransactionsMaxAccounts      int         `mapstructure:"SYNC_TRANSACTIONS_MAX_ACCOUNTS"      validate:"required,min=1"`
+	OpenAIAPIKey                     string      `mapstructure:"OPEN_AI_API_KEY"                     validate:"required"`
 }
 
 func (e *Env) loadEnv() error {

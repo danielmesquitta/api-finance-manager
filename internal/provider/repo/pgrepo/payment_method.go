@@ -16,22 +16,22 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type PaymentMethodPgRepo struct {
+type PaymentMethodRepo struct {
 	db *db.DB
 	qb *query.QueryBuilder
 }
 
-func NewPaymentMethodPgRepo(
+func NewPaymentMethodRepo(
 	db *db.DB,
 	qb *query.QueryBuilder,
-) *PaymentMethodPgRepo {
-	return &PaymentMethodPgRepo{
+) *PaymentMethodRepo {
+	return &PaymentMethodRepo{
 		db: db,
 		qb: qb,
 	}
 }
 
-func (r *PaymentMethodPgRepo) ListPaymentMethods(
+func (r *PaymentMethodRepo) ListPaymentMethods(
 	ctx context.Context,
 	opts ...repo.PaymentMethodOption,
 ) ([]entity.PaymentMethod, error) {
@@ -43,14 +43,14 @@ func (r *PaymentMethodPgRepo) ListPaymentMethods(
 	return paymentMethods, nil
 }
 
-func (r *PaymentMethodPgRepo) CountPaymentMethods(
+func (r *PaymentMethodRepo) CountPaymentMethods(
 	ctx context.Context,
 	opts ...repo.PaymentMethodOption,
 ) (int64, error) {
 	return r.qb.CountPaymentMethods(ctx, opts...)
 }
 
-func (r *PaymentMethodPgRepo) CreatePaymentMethods(
+func (r *PaymentMethodRepo) CreatePaymentMethods(
 	ctx context.Context,
 	params []repo.CreatePaymentMethodsParams,
 ) error {
@@ -68,7 +68,7 @@ func (r *PaymentMethodPgRepo) CreatePaymentMethods(
 	return nil
 }
 
-func (r *PaymentMethodPgRepo) GetPaymentMethod(
+func (r *PaymentMethodRepo) GetPaymentMethod(
 	ctx context.Context,
 	id uuid.UUID,
 ) (*entity.PaymentMethod, error) {
@@ -88,4 +88,4 @@ func (r *PaymentMethodPgRepo) GetPaymentMethod(
 	return &result, nil
 }
 
-var _ repo.PaymentMethodRepo = (*PaymentMethodPgRepo)(nil)
+var _ repo.PaymentMethodRepo = (*PaymentMethodRepo)(nil)

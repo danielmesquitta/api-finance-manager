@@ -141,3 +141,22 @@ type Feedback struct {
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 	UserID    *uuid.UUID `json:"user_id,omitempty"`
 }
+
+type AIChat struct {
+	ID        uuid.UUID  `json:"id,omitempty"`
+	Title     *string    `json:"title,omitempty"`
+	CreatedAt time.Time  `json:"created_at,omitempty"`
+	UpdatedAt time.Time  `json:"updated_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	UserID    uuid.UUID  `json:"user_id,omitempty"`
+}
+
+type AIChatMessage struct {
+	ID              uuid.UUID  `json:"id,omitempty"`
+	Message         string     `json:"message,omitempty"`
+	CreatedAt       time.Time  `json:"created_at,omitempty"`
+	UpdatedAt       time.Time  `json:"updated_at,omitempty"`
+	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
+	CreatedByUserID *uuid.UUID `json:"created_by_user_id,omitempty"`
+	AiChatID        uuid.UUID  `json:"ai_chat_id,omitempty"`
+}

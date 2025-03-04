@@ -30,6 +30,11 @@ type GetUserBalanceOnDateParams struct {
 	Date   time.Time `json:"date"`
 }
 
+type UpdateAIChatParams struct {
+	ID    uuid.UUID `json:"id"`
+	Title *string   `json:"title"`
+}
+
 type CreateBudgetParams struct {
 	Amount int64     `json:"amount"`
 	Date   time.Time `json:"date"`

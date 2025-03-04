@@ -10,17 +10,17 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type AccountBalancePgRepo struct {
+type AccountBalanceRepo struct {
 	db *db.DB
 }
 
-func NewAccountBalancePgRepo(db *db.DB) *AccountBalancePgRepo {
-	return &AccountBalancePgRepo{
+func NewAccountBalanceRepo(db *db.DB) *AccountBalanceRepo {
+	return &AccountBalanceRepo{
 		db: db,
 	}
 }
 
-func (r *AccountBalancePgRepo) CreateAccountBalances(
+func (r *AccountBalanceRepo) CreateAccountBalances(
 	ctx context.Context,
 	params []repo.CreateAccountBalancesParams,
 ) error {
@@ -37,7 +37,7 @@ func (r *AccountBalancePgRepo) CreateAccountBalances(
 	return nil
 }
 
-func (r *AccountBalancePgRepo) GetUserBalanceOnDate(
+func (r *AccountBalanceRepo) GetUserBalanceOnDate(
 	ctx context.Context,
 	params repo.GetUserBalanceOnDateParams,
 ) (int64, error) {
@@ -49,4 +49,4 @@ func (r *AccountBalancePgRepo) GetUserBalanceOnDate(
 	return r.db.GetUserBalanceOnDate(ctx, dbParams)
 }
 
-var _ repo.AccountBalanceRepo = (*AccountBalancePgRepo)(nil)
+var _ repo.AccountBalanceRepo = (*AccountBalanceRepo)(nil)

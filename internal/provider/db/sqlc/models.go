@@ -32,6 +32,25 @@ type AccountBalance struct {
 	UserID    uuid.UUID  `json:"user_id"`
 }
 
+type AiChat struct {
+	ID        uuid.UUID  `json:"id"`
+	Title     *string    `json:"title"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at"`
+	UserID    uuid.UUID  `json:"user_id"`
+}
+
+type AiChatMessage struct {
+	ID              uuid.UUID  `json:"id"`
+	Message         string     `json:"message"`
+	CreatedAt       time.Time  `json:"created_at"`
+	UpdatedAt       time.Time  `json:"updated_at"`
+	DeletedAt       *time.Time `json:"deleted_at"`
+	CreatedByUserID *uuid.UUID `json:"created_by_user_id"`
+	AiChatID        uuid.UUID  `json:"ai_chat_id"`
+}
+
 type Budget struct {
 	ID        uuid.UUID  `json:"id"`
 	Amount    int64      `json:"amount"`

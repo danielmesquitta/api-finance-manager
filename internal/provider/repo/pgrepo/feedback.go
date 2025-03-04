@@ -10,17 +10,17 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type FeedbackPgRepo struct {
+type FeedbackRepo struct {
 	db *db.DB
 }
 
-func NewFeedbackPgRepo(db *db.DB) *FeedbackPgRepo {
-	return &FeedbackPgRepo{
+func NewFeedbackRepo(db *db.DB) *FeedbackRepo {
+	return &FeedbackRepo{
 		db: db,
 	}
 }
 
-func (r *FeedbackPgRepo) CreateFeedback(
+func (r *FeedbackRepo) CreateFeedback(
 	ctx context.Context,
 	params repo.CreateFeedbackParams,
 ) error {
@@ -37,4 +37,4 @@ func (r *FeedbackPgRepo) CreateFeedback(
 	return nil
 }
 
-var _ repo.FeedbackRepo = (*FeedbackPgRepo)(nil)
+var _ repo.FeedbackRepo = (*FeedbackRepo)(nil)

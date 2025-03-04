@@ -99,6 +99,13 @@ components:
                 - executionStatus
                 - id
             type: object
+        dto.CreateFeedbackRequest:
+            properties:
+                message:
+                    type: string
+            required:
+                - message
+            type: object
         dto.CreateTransactionRequest:
             properties:
                 amount:
@@ -280,6 +287,36 @@ components:
                 user_id:
                     type: string
             type: object
+        dto.ListAIChatMessagesResponse:
+            properties:
+                items:
+                    items:
+                        $ref: '#/components/schemas/entity.AIChatMessage'
+                    type: array
+                page:
+                    type: integer
+                page_size:
+                    type: integer
+                total_items:
+                    type: integer
+                total_pages:
+                    type: integer
+            type: object
+        dto.ListAIChatsResponse:
+            properties:
+                items:
+                    items:
+                        $ref: '#/components/schemas/entity.AIChat'
+                    type: array
+                page:
+                    type: integer
+                page_size:
+                    type: integer
+                total_items:
+                    type: integer
+                total_pages:
+                    type: integer
+            type: object
         dto.ListCategoriesResponse:
             properties:
                 items:
@@ -300,6 +337,21 @@ components:
                 items:
                     items:
                         $ref: '#/components/schemas/entity.Institution'
+                    type: array
+                page:
+                    type: integer
+                page_size:
+                    type: integer
+                total_items:
+                    type: integer
+                total_pages:
+                    type: integer
+            type: object
+        dto.ListPaymentMethodsResponse:
+            properties:
+                items:
+                    items:
+                        $ref: '#/components/schemas/entity.PaymentMethod'
                     type: array
                 page:
                     type: integer
@@ -520,6 +572,38 @@ components:
                 verified_email:
                     type: boolean
             type: object
+        entity.AIChat:
+            properties:
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                id:
+                    type: string
+                title:
+                    type: string
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
+        entity.AIChatMessage:
+            properties:
+                ai_chat_id:
+                    type: string
+                created_at:
+                    type: string
+                created_by_user_id:
+                    type: string
+                deleted_at:
+                    type: string
+                id:
+                    type: string
+                message:
+                    type: string
+                updated_at:
+                    type: string
+            type: object
         entity.FullTransaction:
             properties:
                 account_id:
@@ -594,6 +678,21 @@ components:
                 - JobTypeEntrepreneur
                 - JobTypeEmployee
                 - JobTypeCivilServant
+        entity.PaymentMethod:
+            properties:
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                name:
+                    type: string
+                updated_at:
+                    type: string
+            type: object
         entity.Provider:
             enum:
                 - GOOGLE
@@ -861,6 +960,99 @@ paths:
             summary: Sync transactions from open finance
             tags:
                 - Transaction
+    /v1/ai-chats:
+        get:
+            description: List ai chats
+            parameters:
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListAIChatsResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List ai chats
+            tags:
+                - AI Chat
+    /v1/ai-chats/{ai_chat_id}/messages:
+        get:
+            description: List ai chat messages
+            parameters:
+                - description: AI Chat ID
+                  in: path
+                  name: ai_chat_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListAIChatMessagesResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List ai chat messages
+            tags:
+                - AI Chat
     /v1/auth/refresh:
         post:
             description: Use refresh token to generate new access token
@@ -1450,6 +1642,43 @@ paths:
             summary: Calculate simple interest
             tags:
                 - Calculator
+    /v1/feedbacks:
+        post:
+            description: Create feedback
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.CreateFeedbackRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Create feedback
+            tags:
+                - Budget
     /v1/institutions:
         get:
             description: List all institutions
@@ -1493,6 +1722,49 @@ paths:
             summary: List institutions
             tags:
                 - Institution
+    /v1/payment-methods:
+        get:
+            description: List payment methods
+            parameters:
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListPaymentMethodsResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List payment methods
+            tags:
+                - Payment Method
     /v1/transactions:
         get:
             description: List transactions

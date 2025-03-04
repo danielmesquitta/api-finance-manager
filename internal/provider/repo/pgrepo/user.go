@@ -14,17 +14,17 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type UserPgRepo struct {
+type UserRepo struct {
 	db *db.DB
 }
 
-func NewUserPgRepo(db *db.DB) *UserPgRepo {
-	return &UserPgRepo{
+func NewUserRepo(db *db.DB) *UserRepo {
+	return &UserRepo{
 		db: db,
 	}
 }
 
-func (r *UserPgRepo) CreateUser(
+func (r *UserRepo) CreateUser(
 	ctx context.Context,
 	params repo.CreateUserParams,
 ) (*entity.User, error) {
@@ -47,7 +47,7 @@ func (r *UserPgRepo) CreateUser(
 	return &result, nil
 }
 
-func (r *UserPgRepo) GetUserByEmail(
+func (r *UserRepo) GetUserByEmail(
 	ctx context.Context,
 	email string,
 ) (*entity.User, error) {
@@ -67,7 +67,7 @@ func (r *UserPgRepo) GetUserByEmail(
 	return &result, nil
 }
 
-func (r *UserPgRepo) GetUserByID(
+func (r *UserRepo) GetUserByID(
 	ctx context.Context,
 	id uuid.UUID,
 ) (*entity.User, error) {
@@ -87,7 +87,7 @@ func (r *UserPgRepo) GetUserByID(
 	return &result, nil
 }
 
-func (r *UserPgRepo) UpdateUser(
+func (r *UserRepo) UpdateUser(
 	ctx context.Context,
 	params repo.UpdateUserParams,
 ) (*entity.User, error) {
@@ -110,7 +110,7 @@ func (r *UserPgRepo) UpdateUser(
 	return &result, nil
 }
 
-func (r *UserPgRepo) UpdateUserSynchronizedAt(
+func (r *UserRepo) UpdateUserSynchronizedAt(
 	ctx context.Context,
 	params repo.UpdateUserSynchronizedAtParams,
 ) error {
@@ -128,7 +128,7 @@ func (r *UserPgRepo) UpdateUserSynchronizedAt(
 	return nil
 }
 
-func (r *UserPgRepo) ListUsers(
+func (r *UserRepo) ListUsers(
 	ctx context.Context,
 ) ([]entity.User, error) {
 	users, err := r.db.ListUsers(ctx)
@@ -144,7 +144,7 @@ func (r *UserPgRepo) ListUsers(
 	return results, nil
 }
 
-func (r *UserPgRepo) DeleteUser(
+func (r *UserRepo) DeleteUser(
 	ctx context.Context,
 	params repo.DeleteUserParams,
 ) error {
@@ -162,7 +162,7 @@ func (r *UserPgRepo) DeleteUser(
 	return nil
 }
 
-func (r *UserPgRepo) DestroyUser(
+func (r *UserRepo) DestroyUser(
 	ctx context.Context,
 	id uuid.UUID,
 ) error {
@@ -175,4 +175,4 @@ func (r *UserPgRepo) DestroyUser(
 	return nil
 }
 
-var _ repo.UserRepo = (*UserPgRepo)(nil)
+var _ repo.UserRepo = (*UserRepo)(nil)

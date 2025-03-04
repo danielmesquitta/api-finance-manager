@@ -14,17 +14,17 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type BudgetPgRepo struct {
+type BudgetRepo struct {
 	db *db.DB
 }
 
-func NewBudgetPgRepo(db *db.DB) *BudgetPgRepo {
-	return &BudgetPgRepo{
+func NewBudgetRepo(db *db.DB) *BudgetRepo {
+	return &BudgetRepo{
 		db: db,
 	}
 }
 
-func (r *BudgetPgRepo) CreateBudget(
+func (r *BudgetRepo) CreateBudget(
 	ctx context.Context,
 	params repo.CreateBudgetParams,
 ) (*entity.Budget, error) {
@@ -47,7 +47,7 @@ func (r *BudgetPgRepo) CreateBudget(
 	return &result, nil
 }
 
-func (r *BudgetPgRepo) DeleteBudgetCategories(
+func (r *BudgetRepo) DeleteBudgetCategories(
 	ctx context.Context,
 	userID uuid.UUID,
 ) error {
@@ -55,7 +55,7 @@ func (r *BudgetPgRepo) DeleteBudgetCategories(
 	return tx.DeleteBudgetCategories(ctx, userID)
 }
 
-func (r *BudgetPgRepo) DeleteBudgets(
+func (r *BudgetRepo) DeleteBudgets(
 	ctx context.Context,
 	userID uuid.UUID,
 ) error {
@@ -63,7 +63,7 @@ func (r *BudgetPgRepo) DeleteBudgets(
 	return tx.DeleteBudgets(ctx, userID)
 }
 
-func (r *BudgetPgRepo) GetBudget(
+func (r *BudgetRepo) GetBudget(
 	ctx context.Context,
 	params repo.GetBudgetParams,
 ) (*entity.Budget, error) {
@@ -88,7 +88,7 @@ func (r *BudgetPgRepo) GetBudget(
 	return &result, nil
 }
 
-func (r *BudgetPgRepo) GetBudgetCategory(
+func (r *BudgetRepo) GetBudgetCategory(
 	ctx context.Context,
 	params repo.GetBudgetCategoryParams,
 ) (*entity.BudgetCategory, *entity.TransactionCategory, error) {
@@ -118,7 +118,7 @@ func (r *BudgetPgRepo) GetBudgetCategory(
 	return &budgetCategory, &category, nil
 }
 
-func (r *BudgetPgRepo) CreateBudgetCategories(
+func (r *BudgetRepo) CreateBudgetCategories(
 	ctx context.Context,
 	params []repo.CreateBudgetCategoriesParams,
 ) error {
@@ -136,7 +136,7 @@ func (r *BudgetPgRepo) CreateBudgetCategories(
 	return nil
 }
 
-func (r *BudgetPgRepo) ListBudgetCategories(
+func (r *BudgetRepo) ListBudgetCategories(
 	ctx context.Context,
 	budgetID uuid.UUID,
 ) ([]entity.BudgetCategory, []entity.TransactionCategory, error) {
@@ -167,7 +167,7 @@ func (r *BudgetPgRepo) ListBudgetCategories(
 	return budgetCategories, categories, nil
 }
 
-func (r *BudgetPgRepo) UpdateBudget(
+func (r *BudgetRepo) UpdateBudget(
 	ctx context.Context,
 	params repo.UpdateBudgetParams,
 ) error {
@@ -180,4 +180,4 @@ func (r *BudgetPgRepo) UpdateBudget(
 	return tx.UpdateBudget(ctx, dbParams)
 }
 
-var _ repo.BudgetRepo = (*BudgetPgRepo)(nil)
+var _ repo.BudgetRepo = (*BudgetRepo)(nil)

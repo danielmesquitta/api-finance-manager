@@ -12,36 +12,36 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type AccountPgRepo struct {
+type AccountRepo struct {
 	db *db.DB
 	qb *query.QueryBuilder
 }
 
-func NewAccountPgRepo(
+func NewAccountRepo(
 	db *db.DB,
 	qb *query.QueryBuilder,
-) *AccountPgRepo {
-	return &AccountPgRepo{
+) *AccountRepo {
+	return &AccountRepo{
 		db: db,
 		qb: qb,
 	}
 }
 
-func (r *AccountPgRepo) ListAccounts(
+func (r *AccountRepo) ListAccounts(
 	ctx context.Context,
 	opts ...repo.AccountOption,
 ) ([]entity.Account, error) {
 	return r.qb.ListAccounts(ctx, opts...)
 }
 
-func (r *AccountPgRepo) ListFullAccounts(
+func (r *AccountRepo) ListFullAccounts(
 	ctx context.Context,
 	opts ...repo.AccountOption,
 ) ([]entity.FullAccount, error) {
 	return r.qb.ListFullAccounts(ctx, opts...)
 }
 
-func (r *AccountPgRepo) CreateAccounts(
+func (r *AccountRepo) CreateAccounts(
 	ctx context.Context,
 	params []repo.CreateAccountsParams,
 ) error {
@@ -59,4 +59,4 @@ func (r *AccountPgRepo) CreateAccounts(
 	return nil
 }
 
-var _ repo.AccountRepo = (*AccountPgRepo)(nil)
+var _ repo.AccountRepo = (*AccountRepo)(nil)

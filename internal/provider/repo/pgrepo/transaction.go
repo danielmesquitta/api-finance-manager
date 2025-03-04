@@ -15,22 +15,22 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type TransactionPgRepo struct {
+type TransactionRepo struct {
 	db *db.DB
 	qb *query.QueryBuilder
 }
 
-func NewTransactionPgRepo(
+func NewTransactionRepo(
 	db *db.DB,
 	qb *query.QueryBuilder,
-) *TransactionPgRepo {
-	return &TransactionPgRepo{
+) *TransactionRepo {
+	return &TransactionRepo{
 		db: db,
 		qb: qb,
 	}
 }
 
-func (r *TransactionPgRepo) ListTransactions(
+func (r *TransactionRepo) ListTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
@@ -42,7 +42,7 @@ func (r *TransactionPgRepo) ListTransactions(
 	return transactions, nil
 }
 
-func (r *TransactionPgRepo) ListFullTransactions(
+func (r *TransactionRepo) ListFullTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
@@ -55,7 +55,7 @@ func (r *TransactionPgRepo) ListFullTransactions(
 	return transactions, nil
 }
 
-func (r *TransactionPgRepo) CountTransactions(
+func (r *TransactionRepo) CountTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
@@ -63,7 +63,7 @@ func (r *TransactionPgRepo) CountTransactions(
 	return r.qb.CountTransactions(ctx, userID, opts...)
 }
 
-func (r *TransactionPgRepo) SumTransactions(
+func (r *TransactionRepo) SumTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
@@ -71,7 +71,7 @@ func (r *TransactionPgRepo) SumTransactions(
 	return r.qb.SumTransactions(ctx, userID, opts...)
 }
 
-func (r *TransactionPgRepo) SumTransactionsByCategory(
+func (r *TransactionRepo) SumTransactionsByCategory(
 	ctx context.Context,
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
@@ -79,7 +79,7 @@ func (r *TransactionPgRepo) SumTransactionsByCategory(
 	return r.qb.SumTransactionsByCategory(ctx, userID, opts...)
 }
 
-func (r *TransactionPgRepo) CreateTransactions(
+func (r *TransactionRepo) CreateTransactions(
 	ctx context.Context,
 	params []repo.CreateTransactionsParams,
 ) error {
@@ -97,7 +97,7 @@ func (r *TransactionPgRepo) CreateTransactions(
 	return nil
 }
 
-func (r *TransactionPgRepo) CreateTransaction(
+func (r *TransactionRepo) CreateTransaction(
 	ctx context.Context,
 	params repo.CreateTransactionParams,
 ) error {
@@ -114,7 +114,7 @@ func (r *TransactionPgRepo) CreateTransaction(
 	return nil
 }
 
-func (r *TransactionPgRepo) GetTransaction(
+func (r *TransactionRepo) GetTransaction(
 	ctx context.Context,
 	params repo.GetTransactionParams,
 ) (*entity.FullTransaction, error) {
@@ -139,7 +139,7 @@ func (r *TransactionPgRepo) GetTransaction(
 	return &result, nil
 }
 
-func (r *TransactionPgRepo) UpdateTransaction(
+func (r *TransactionRepo) UpdateTransaction(
 	ctx context.Context,
 	params repo.UpdateTransactionParams,
 ) error {
@@ -152,4 +152,4 @@ func (r *TransactionPgRepo) UpdateTransaction(
 	return tx.UpdateTransaction(ctx, dbParams)
 }
 
-var _ repo.TransactionRepo = (*TransactionPgRepo)(nil)
+var _ repo.TransactionRepo = (*TransactionRepo)(nil)

@@ -37,6 +37,10 @@ model User {
 
   feedbacks Feedback[]
 
+  ai_chats AIChat[]
+
+  ai_chat_messages AIChatMessage[]
+
   @@map("users")
 }
 
@@ -226,4 +230,35 @@ model Feedback {
   user_id String? @db.Uuid
 
   @@map("feedbacks")
+}
+
+model AIChat {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title      String?
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
+
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id String @db.Uuid
+
+  ai_chat_messages AIChatMessage[]
+
+  @@map("ai_chats")
+}
+
+model AIChatMessage {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  message    String
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
+
+  created_by_user    User?   @relation(fields: [created_by_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_by_user_id String? @db.Uuid
+
+  ai_chat    AIChat @relation(fields: [ai_chat_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ai_chat_id String @db.Uuid
+
+  @@map("ai_chat_messages")
 }
