@@ -49,7 +49,7 @@ func (h *AuthHandler) SignIn(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	out, err := h.si.Execute(
 		ctx,
-		usecase.SignInInput{Token: "token", Provider: body.Provider},
+		usecase.SignInInput{Token: token, Provider: body.Provider},
 	)
 	if err != nil {
 		return errs.New(err)

@@ -1,10 +1,7 @@
 package restapi
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"io"
 	"net/http"
 	"testing"
 
@@ -12,7 +9,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
-	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +16,7 @@ func TestSignInRoute(t *testing.T) {
 	tests := []struct {
 		description        string
 		body               *dto.SignInRequest
-		headers            map[string]string
+		token              string
 		expectedCode       int
 		expectedUserAuthID string
 	}{
@@ -31,12 +27,20 @@ func TestSignInRoute(t *testing.T) {
 					Provider: entity.ProviderMock,
 				},
 			},
-			headers: map[string]string{
-				fiber.HeaderContentType:   fiber.MIMEApplicationJSON,
-				fiber.HeaderAuthorization: "Bearer " + mockoauth.MockToken,
-			},
+			token:              mockoauth.DefaultMockToken,
 			expectedCode:       200,
-			expectedUserAuthID: mockoauth.Users[mockoauth.MockToken].AuthID,
+			expectedUserAuthID: mockoauth.Users[mockoauth.DefaultMockToken].AuthID,
+		},
+		{
+			description: "Sign in with unregistered user",
+			body: &dto.SignInRequest{
+				SignInInput: usecase.SignInInput{
+					Provider: entity.ProviderMock,
+				},
+			},
+			token:              mockoauth.UnregisteredUserMockToken,
+			expectedCode:       200,
+			expectedUserAuthID: mockoauth.Users[mockoauth.UnregisteredUserMockToken].AuthID,
 		},
 	}
 
@@ -44,48 +48,35 @@ func TestSignInRoute(t *testing.T) {
 		t.Run(test.description, func(t *testing.T) {
 			t.Parallel()
 
-			app, cleanUp := Setup(t)
+			app, cleanUp := NewTestApp(t)
 			defer func() {
 				err := cleanUp(context.Background())
 				assert.Nil(t, err)
 			}()
 
-			jsonBody, err := json.Marshal(test.body)
-			assert.Nil(t, err)
-
-			req, _ := http.NewRequest(
+			var out dto.SignInResponse
+			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPost,
 				"/api/v1/auth/sign-in",
-				bytes.NewReader(jsonBody),
+				WithBody(test.body),
+				WithToken(test.token),
+				WithResponse(&out),
 			)
-
-			for key, value := range test.headers {
-				req.Header.Add(key, value)
-			}
-
-			res, err := app.Test(req, -1)
 			assert.Nil(t, err)
 
 			assert.Equal(
 				t,
 				test.expectedCode,
-				res.StatusCode,
+				statusCode,
 			)
 
-			bytesBody, err := io.ReadAll(res.Body)
-			assert.Nil(t, err)
-
-			var response dto.SignInResponse
-			err = json.Unmarshal(bytesBody, &response)
-			assert.Nil(t, err)
-
-			assert.NotEmpty(t, response.AccessToken, string(bytesBody))
-			assert.NotEmpty(t, response.RefreshToken, string(bytesBody))
+			assert.NotEmpty(t, out.AccessToken, rawBody)
+			assert.NotEmpty(t, out.RefreshToken, rawBody)
 			assert.Equal(
 				t,
 				test.expectedUserAuthID,
-				response.User.AuthID,
-				string(bytesBody),
+				out.User.AuthID,
+				rawBody,
 			)
 		})
 	}

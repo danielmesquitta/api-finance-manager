@@ -13,10 +13,11 @@ type MockOAuth struct {
 	e *config.Env
 }
 
-const MockToken = "mock_token"
+const DefaultMockToken = "mock_token"
+const UnregisteredUserMockToken = "unregistered_user_mock_token"
 
 var Users = map[string]*entity.User{
-	MockToken: func() *entity.User {
+	DefaultMockToken: func() *entity.User {
 		avatar := "https://avatars.githubusercontent.com/u/60039311"
 		subscriptionExpiresAt := time.Now().AddDate(0, 1, 0)
 		return &entity.User{
@@ -28,6 +29,17 @@ var Users = map[string]*entity.User{
 			Tier:                  string(entity.TierPremium),
 			SubscriptionExpiresAt: &subscriptionExpiresAt,
 			VerifiedEmail:         true,
+		}
+	}(),
+	UnregisteredUserMockToken: func() *entity.User {
+		return &entity.User{
+			AuthID:        "016aecbd-fae5-4ff0-9046-03b7eabf6a5c",
+			Name:          "Jane Doe",
+			Email:         "janedoe@email.com",
+			Avatar:        nil,
+			Provider:      string(entity.ProviderMock),
+			Tier:          string(entity.TierFree),
+			VerifiedEmail: true,
 		}
 	}(),
 }
@@ -50,7 +62,7 @@ func (m *MockOAuth) GetUser(
 ) (*entity.User, error) {
 	user, ok := Users[token]
 	if !ok {
-		return Users[MockToken], nil
+		return Users[DefaultMockToken], nil
 	}
 
 	return user, nil

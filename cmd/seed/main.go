@@ -34,7 +34,7 @@ func main() {
 	signInRes := dto.SignInResponse{}
 
 	res, err := client.R().
-		SetHeader(fiber.HeaderAuthorization, mockoauth.MockToken).
+		SetHeader(fiber.HeaderAuthorization, mockoauth.DefaultMockToken).
 		SetBody(dto.SignInRequest{SignInInput: usecase.SignInInput{
 			Provider: entity.ProviderMock,
 		}}).

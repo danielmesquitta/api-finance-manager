@@ -2,8 +2,6 @@ package restapi
 
 import (
 	"context"
-	"encoding/json"
-	"io"
 	"net/http"
 	"testing"
 
@@ -14,13 +12,11 @@ import (
 func TestHealthRoutes(t *testing.T) {
 	tests := []struct {
 		description  string
-		route        string
 		expectedCode int
 		expectedBody *dto.HealthResponse
 	}{
 		{
-			description:  "live route",
-			route:        "/api/health",
+			description:  "Health check",
 			expectedCode: 200,
 			expectedBody: &dto.HealthResponse{Status: "ok"},
 		},
@@ -30,39 +26,31 @@ func TestHealthRoutes(t *testing.T) {
 		t.Run(test.description, func(t *testing.T) {
 			t.Parallel()
 
-			app, cleanUp := Setup(t)
+			app, cleanUp := NewTestApp(t)
 			defer func() {
 				err := cleanUp(context.Background())
 				assert.Nil(t, err)
 			}()
 
-			req, _ := http.NewRequest(
+			var out dto.HealthResponse
+			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodGet,
-				test.route,
-				nil,
+				"/api/health",
+				WithResponse(&out),
 			)
-
-			res, err := app.Test(req, -1)
 			assert.Nil(t, err)
 
 			assert.Equal(
 				t,
 				test.expectedCode,
-				res.StatusCode,
+				statusCode,
 			)
-
-			bytesBody, err := io.ReadAll(res.Body)
-			assert.Nil(t, err)
-
-			var response dto.HealthResponse
-			err = json.Unmarshal(bytesBody, &response)
-			assert.Nil(t, err)
 
 			assert.Equal(
 				t,
 				test.expectedBody,
-				&response,
-				string(bytesBody),
+				&out,
+				rawBody,
 			)
 		})
 	}
