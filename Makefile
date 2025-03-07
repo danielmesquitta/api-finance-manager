@@ -3,6 +3,25 @@
 include .env
 schema=sql/schema.prisma
 
+define create_migration_sequence
+	$(MAKE) zip_migrations
+	prisma-client-go migrate dev --schema=$(schema) --skip-generate && prisma-to-go triggers --schema=$(schema)
+	$(MAKE) migrate
+	$(MAKE) unzip_migrations
+endef
+
+define migrate_sequence
+	$(MAKE) zip_migrations
+	prisma-client-go migrate deploy --schema=$(schema)
+	$(MAKE) unzip_migrations
+endef
+
+define reset_db_sequence
+	$(MAKE) zip_migrations
+	prisma-client-go migrate reset --schema=$(schema) --skip-generate
+	$(MAKE) unzip_migrations
+endef
+
 default: run
 
 install:
@@ -23,12 +42,16 @@ lint:
 	@golangci-lint run && nilaway ./...
 lint-fix:
 	@golangci-lint run --fix && golines **/*.go -w -m 80 && go run cmd/lintfix/main.go
+zip_migrations:
+	@prisma-to-go zip --schema ./sql/schema.prisma
+unzip_migrations:
+	@prisma-to-go unzip --schema ./sql/schema.prisma
 create_migration:
-	@prisma-client-go migrate dev --schema=$(schema) --skip-generate && prisma-to-go triggers --schema=$(schema) && make migrate
+	@$(create_migration_sequence)
 migrate:
-	@prisma-client-go migrate deploy --schema=$(schema)
+	@$(migrate_sequence)
 reset_db:
-	@prisma-client-go migrate reset --schema=$(schema) --skip-generate
+	@$(reset_db_sequence)
 studio:
 	@npx prisma studio --schema=$(schema)
 test:

@@ -2,10 +2,8 @@ package container
 
 import (
 	"context"
-	"fmt"
 	"path/filepath"
 	"runtime"
-	"slices"
 	"time"
 
 	"github.com/testcontainers/testcontainers-go"
@@ -21,28 +19,20 @@ func NewPostgresContainer(
 	projectRoot := filepath.Join(baseDir, "..", "..")
 
 	migrations, err := filepath.Glob(
-		filepath.Join(projectRoot, "sql", "migrations", "**", "*.sql"),
+		filepath.Join(projectRoot, "sql", "migrations", "*.sql"),
 	)
 	if err != nil {
 		panic(err)
 	}
 
-	slices.Sort(migrations)
-
-	// testdata, err := filepath.Glob(
-	// 	filepath.Join(projectRoot, "sql", "testdata", "*.sql"),
-	// )
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	testdata := []string{}
+	testdata, err := filepath.Glob(
+		filepath.Join(projectRoot, "sql", "testdata", "*.sql"),
+	)
+	if err != nil {
+		panic(err)
+	}
 
 	initScripts := append(migrations, testdata...)
-
-	initScripts = initScripts[0:2]
-
-	fmt.Println(initScripts)
 
 	pgCont, err := postgres.Run(ctx,
 		"postgres:alpine",
