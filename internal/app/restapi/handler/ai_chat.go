@@ -66,6 +66,7 @@ func (h *AIChatHandler) Create(c *fiber.Ctx) error {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
+// @Param ai_chat_id path string true "AI Chat ID" format(uuid)
 // @Success 204
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
@@ -88,6 +89,7 @@ func (h *AIChatHandler) Delete(c *fiber.Ctx) error {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
+// @Param ai_chat_id path string true "AI Chat ID" format(uuid)
 // @Param request body dto.UpdateAIChatRequest true "Request body"
 // @Success 204
 // @Failure 400 {object} dto.ErrorResponse

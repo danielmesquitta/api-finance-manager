@@ -11,9 +11,13 @@ import (
 
 type PgxTX struct {
 	db *pgxpool.Pool
+	l  *slog.Logger
 }
 
-func NewPgxTX(db *pgxpool.Pool) *PgxTX {
+func NewPgxTX(
+	db *pgxpool.Pool,
+	l *slog.Logger,
+) *PgxTX {
 	return &PgxTX{
 		db: db,
 	}
@@ -31,7 +35,7 @@ func (t *PgxTX) Do(
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		if err := tx.Rollback(ctx); err != nil && err != pgx.ErrTxClosed {
-			slog.Error("failed to rollback transaction", "error", err)
+			t.l.Error("failed to rollback transaction", "error", err)
 		}
 	}()
 

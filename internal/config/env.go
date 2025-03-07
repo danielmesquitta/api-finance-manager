@@ -3,12 +3,16 @@ package config
 import (
 	"bytes"
 	_ "embed"
+	"fmt"
+	"os"
 
 	root "github.com/danielmesquitta/api-finance-manager"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/spf13/viper"
 )
+
+const defaultEnvFileName = ".env"
 
 type Environment string
 
@@ -41,9 +45,14 @@ type Env struct {
 }
 
 func (e *Env) loadEnv() error {
-	viper.SetConfigType("env")
-	err := viper.ReadConfig(bytes.NewBuffer(root.Env))
+	envFile, err := e.getEnvFile()
 	if err != nil {
+		return errs.New(err)
+	}
+
+	viper.SetConfigType("env")
+
+	if err := viper.ReadConfig(bytes.NewBuffer(envFile)); err != nil {
 		return errs.New(err)
 	}
 
@@ -58,6 +67,25 @@ func (e *Env) loadEnv() error {
 	}
 
 	return nil
+}
+
+func (e *Env) getEnvFile() (envFile []byte, err error) {
+	environment := os.Getenv("ENVIRONMENT")
+
+	if environment != "" {
+		envFileName := fmt.Sprintf("%s.%s", defaultEnvFileName, environment)
+		envFile, err = root.Env.ReadFile(envFileName)
+		if err == nil {
+			return envFile, nil
+		}
+	}
+
+	envFile, err = root.Env.ReadFile(defaultEnvFileName)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	return envFile, nil
 }
 
 func (e *Env) validate() error {

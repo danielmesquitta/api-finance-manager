@@ -22,33 +22,33 @@ import (
 type CreateAccounts struct {
 	v   *validator.Validator
 	o   openfinance.Client
+	l   *slog.Logger
 	tx  tx.TX
 	ur  repo.UserRepo
 	ar  repo.AccountRepo
 	abr repo.AccountBalanceRepo
 	ir  repo.InstitutionRepo
-	st  *SyncTransactions
 }
 
 func NewCreateAccounts(
 	v *validator.Validator,
 	o openfinance.Client,
+	l *slog.Logger,
 	tx tx.TX,
 	ur repo.UserRepo,
 	ar repo.AccountRepo,
 	abr repo.AccountBalanceRepo,
 	ir repo.InstitutionRepo,
-	st *SyncTransactions,
 ) *CreateAccounts {
 	return &CreateAccounts{
 		v:   v,
 		o:   o,
+		l:   l,
 		tx:  tx,
 		ur:  ur,
 		ar:  ar,
 		abr: abr,
 		ir:  ir,
-		st:  st,
 	}
 }
 
@@ -72,7 +72,7 @@ func (uc *CreateAccounts) Execute(
 	}
 
 	if in.ExecutionStatus != "SUCCESS" {
-		slog.Info(
+		uc.l.Info(
 			"sync-accounts: execution status is not SUCCESS",
 			"execution_status", in.ExecutionStatus,
 		)

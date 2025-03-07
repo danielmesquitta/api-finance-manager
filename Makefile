@@ -32,6 +32,6 @@ reset_db:
 studio:
 	@npx prisma studio --schema=$(schema)
 test:
-	@go test ./test/integration/...
+	@ENVIRONMENT=test go test ./test/integration/...
 seed:
 	@go run cmd/seed/main.go

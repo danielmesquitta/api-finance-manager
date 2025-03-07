@@ -12,6 +12,7 @@ import (
 type Router struct {
 	e    *config.Env
 	m    *middleware.Middleware
+	hh   *handler.HealthHandler
 	dh   *handler.DocHandler
 	ah   *handler.AuthHandler
 	ch   *handler.CalculatorHandler
@@ -31,6 +32,7 @@ type Router struct {
 func NewRouter(
 	e *config.Env,
 	m *middleware.Middleware,
+	hh *handler.HealthHandler,
 	dh *handler.DocHandler,
 	ah *handler.AuthHandler,
 	ch *handler.CalculatorHandler,
@@ -49,6 +51,7 @@ func NewRouter(
 	return &Router{
 		e:    e,
 		m:    m,
+		hh:   hh,
 		dh:   dh,
 		ah:   ah,
 		ch:   ch,
@@ -74,8 +77,10 @@ func (r *Router) Register(
 	api := app.Group(basePath)
 
 	api.Use("/docs", r.dh.Get)
+	api.Get("/health", r.hh.Health)
 
 	apiV1 := app.Group(basePath + "/v1")
+
 	apiV1.Post("/auth/sign-in", r.ah.SignIn)
 	apiV1.Post("/auth/refresh", r.ah.RefreshToken, r.m.BearerAuthRefreshToken())
 

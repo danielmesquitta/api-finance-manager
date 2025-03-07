@@ -11,8 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	middlewareCache "github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/csrf"
-	"github.com/gofiber/fiber/v2/middleware/healthcheck"
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/idempotency"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
@@ -35,7 +33,6 @@ func newApp(
 
 	app.Use(cors.New())
 	app.Use(recover.New())
-	app.Use(healthcheck.New())
 	app.Use(requestid.New())
 	app.Use(middlewareCache.New(
 		middlewareCache.Config{
@@ -53,7 +50,6 @@ func newApp(
 		},
 	))
 	app.Use(helmet.New())
-	app.Use(csrf.New())
 	app.Use(m.Timeout(60 * time.Second))
 
 	r.Register(app)

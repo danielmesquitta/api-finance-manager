@@ -35,7 +35,7 @@ func NewAuthHandler(
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/auth/sign-in [post]
-func (h AuthHandler) SignIn(c *fiber.Ctx) error {
+func (h *AuthHandler) SignIn(c *fiber.Ctx) error {
 	token := c.Get(fiber.HeaderAuthorization)
 	if token == "" {
 		return errs.ErrUnauthorized
@@ -49,7 +49,7 @@ func (h AuthHandler) SignIn(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	out, err := h.si.Execute(
 		ctx,
-		usecase.SignInInput{Token: token, Provider: body.Provider},
+		usecase.SignInInput{Token: "token", Provider: body.Provider},
 	)
 	if err != nil {
 		return errs.New(err)
@@ -69,7 +69,7 @@ func (h AuthHandler) SignIn(c *fiber.Ctx) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/auth/refresh [post]
-func (h AuthHandler) RefreshToken(c *fiber.Ctx) error {
+func (h *AuthHandler) RefreshToken(c *fiber.Ctx) error {
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 

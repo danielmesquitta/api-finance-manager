@@ -17,7 +17,5 @@ func LoadConfig(v *validator.Validator) *Env {
 
 	setServerTimeZone()
 
-	setDefaultLogger(e)
-
 	return e
 }

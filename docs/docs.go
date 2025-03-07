@@ -332,6 +332,14 @@ const docTemplate = `{
                 "summary": "Update ai chat",
                 "parameters": [
                     {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "AI Chat ID",
+                        "name": "ai_chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Request body",
                         "name": "request",
                         "in": "body",
@@ -382,6 +390,16 @@ const docTemplate = `{
                     "AI Chat"
                 ],
                 "summary": "Delete ai chat",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "AI Chat ID",
+                        "name": "ai_chat_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No Content"
@@ -523,12 +541,7 @@ const docTemplate = `{
         },
         "/v1/auth/sign-in": {
             "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Authenticate user through Google or Apple token",
+                "description": "Health check",
                 "consumes": [
                     "application/json"
                 ],
@@ -536,37 +549,14 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Auth"
+                    "Health"
                 ],
-                "summary": "Sign in",
-                "parameters": [
-                    {
-                        "description": "Request body",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.SignInRequest"
-                        }
-                    }
-                ],
+                "summary": "Health check",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.SignInResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
+                            "$ref": "#/definitions/dto.HealthResponse"
                         }
                     },
                     "500": {
@@ -2448,6 +2438,14 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.HealthResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
                     "type": "string"
                 }
             }

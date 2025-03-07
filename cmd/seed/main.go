@@ -31,17 +31,9 @@ func main() {
 		SetBaseURL(baseURL).
 		SetDebug(true)
 
-	res, err := client.R().Get("/health")
-	if err != nil {
-		panic(err)
-	}
-	if res.IsError() {
-		panic(string(res.Body()))
-	}
-
 	signInRes := dto.SignInResponse{}
 
-	res, err = client.R().
+	res, err := client.R().
 		SetHeader(fiber.HeaderAuthorization, mockoauth.MockToken).
 		SetBody(dto.SignInRequest{SignInInput: usecase.SignInInput{
 			Provider: entity.ProviderMock,

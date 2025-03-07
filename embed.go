@@ -4,8 +4,8 @@ import (
 	"embed"
 )
 
-//go:embed .env
-var Env []byte
+//go:embed .env*
+var Env embed.FS
 
 //go:embed docs/openapi.yaml docs/openapi.json
 var StaticFiles embed.FS

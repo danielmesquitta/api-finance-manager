@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"log/slog"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi"
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
@@ -23,13 +24,21 @@ func main() {
 	v := validator.New()
 	e := config.LoadConfig(v)
 
+	slog.Info("Starting server...")
+
 	var app *restapi.App
-	if e.Environment == config.EnvironmentProduction {
-		log.Println("starting production server")
-		app = restapi.NewProd(v, e)
-	} else {
-		log.Println("starting development server")
-		app = restapi.NewDev(v, e)
+	switch e.Environment {
+	case config.EnvironmentProduction:
+		app = restapi.NewProd(v, e, nil)
+
+	case config.EnvironmentTest:
+		app = restapi.NewTest(v, e, nil)
+
+	case config.EnvironmentStaging:
+		app = restapi.NewStaging(v, e, nil)
+
+	default:
+		app = restapi.NewDev(v, e, nil)
 	}
 
 	if err := app.Listen(":" + e.Port); err != nil {

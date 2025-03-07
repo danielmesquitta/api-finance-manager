@@ -83,6 +83,21 @@ components:
                 total_interest:
                     type: integer
             type: object
+        dto.CreateAIChatResponse:
+            properties:
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                id:
+                    type: string
+                title:
+                    type: string
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
         dto.CreateAccountsRequest:
             properties:
                 clientUserId:
@@ -285,6 +300,11 @@ components:
                 updated_at:
                     type: string
                 user_id:
+                    type: string
+            type: object
+        dto.HealthResponse:
+            properties:
+                status:
                     type: string
             type: object
         dto.ListAIChatMessagesResponse:
@@ -498,6 +518,13 @@ components:
                     type: integer
                 total_interest:
                     type: integer
+            type: object
+        dto.UpdateAIChatRequest:
+            properties:
+                title:
+                    type: string
+            required:
+                - title
             type: object
         dto.UpdateProfileRequest:
             properties:
@@ -1003,6 +1030,119 @@ paths:
             summary: List ai chats
             tags:
                 - AI Chat
+        post:
+            description: Create ai chat
+            responses:
+                "201":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.CreateAIChatResponse'
+                    description: Created
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Create ai chat
+            tags:
+                - AI Chat
+    /v1/ai-chats/{ai_chat_id}:
+        delete:
+            description: Delete ai chat
+            parameters:
+                - description: AI Chat ID
+                  in: path
+                  name: ai_chat_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Delete ai chat
+            tags:
+                - AI Chat
+        put:
+            description: Update ai chat
+            parameters:
+                - description: AI Chat ID
+                  in: path
+                  name: ai_chat_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.UpdateAIChatRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Update ai chat
+            tags:
+                - AI Chat
     /v1/ai-chats/{ai_chat_id}/messages:
         get:
             description: List ai chat messages
@@ -1088,45 +1228,23 @@ paths:
                 - Auth
     /v1/auth/sign-in:
         post:
-            description: Authenticate user through Google or Apple token
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: '#/components/schemas/dto.SignInRequest'
-                description: Request body
-                required: true
-                x-originalParamName: request
+            description: Health check
             responses:
                 "200":
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/dto.SignInResponse'
+                                $ref: '#/components/schemas/dto.HealthResponse'
                     description: OK
-                "400":
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/dto.ErrorResponse'
-                    description: Bad Request
-                "401":
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/dto.ErrorResponse'
-                    description: Unauthorized
                 "500":
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/dto.ErrorResponse'
                     description: Internal Server Error
-            security:
-                - BearerAuth: []
-            summary: Sign in
+            summary: Health check
             tags:
-                - Auth
+                - Health
     /v1/balances:
         get:
             description: Gets user total balance and transactions monthly balance with previous month comparison
@@ -1678,7 +1796,7 @@ paths:
                 - BearerAuth: []
             summary: Create feedback
             tags:
-                - Budget
+                - Feedback
     /v1/institutions:
         get:
             description: List all institutions

@@ -124,8 +124,8 @@ func parseNillableBoolParam(
 func GetUserClaims(
 	c *fiber.Ctx,
 ) *jwtutil.UserClaims {
-	token := c.Locals(jwtutil.ClaimsKey).(*jwt.Token)
-	if token == nil {
+	token, ok := c.Locals(jwtutil.ClaimsKey).(*jwt.Token)
+	if !ok {
 		return nil
 	}
 

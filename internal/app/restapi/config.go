@@ -14,6 +14,8 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/rediscache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/log/jsonlog"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/log/testlog"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
@@ -26,6 +28,8 @@ import (
 func init() {
 	_ = providers
 	_ = devProviders
+	_ = testProviders
+	_ = stagingProviders
 	_ = prodProviders
 }
 
@@ -132,6 +136,7 @@ var providers = []any{
 	handler.NewPaymentMethodHandler,
 	handler.NewAIChatHandler,
 	handler.NewAIChatMessageHandler,
+	handler.NewHealthHandler,
 
 	middleware.NewMiddleware,
 
@@ -142,6 +147,23 @@ var providers = []any{
 
 var devProviders = []any{
 	mockoauth.NewMockOAuth,
+	jsonlog.NewLogger,
+
+	wire.Bind(new(openfinance.Client), new(*mockpluggy.Client)),
+	mockpluggy.NewClient,
+}
+
+var testProviders = []any{
+	mockoauth.NewMockOAuth,
+	testlog.NewLogger,
+
+	wire.Bind(new(openfinance.Client), new(*mockpluggy.Client)),
+	mockpluggy.NewClient,
+}
+
+var stagingProviders = []any{
+	mockoauth.NewMockOAuth,
+	jsonlog.NewLogger,
 
 	wire.Bind(new(openfinance.Client), new(*mockpluggy.Client)),
 	mockpluggy.NewClient,
@@ -149,6 +171,7 @@ var devProviders = []any{
 
 var prodProviders = []any{
 	wire.Value((*mockoauth.MockOAuth)(nil)),
+	jsonlog.NewLogger,
 
 	wire.Bind(new(openfinance.Client), new(*pluggy.Client)),
 }

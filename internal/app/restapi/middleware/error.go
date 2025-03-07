@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"log/slog"
 	"net/http"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
@@ -90,7 +89,7 @@ func (m *Middleware) handleInternalServerError(
 
 	args = append(args, "stacktrace", appErr.StackTrace)
 
-	slog.Error(
+	m.l.Error(
 		appErr.Error(),
 		args...,
 	)

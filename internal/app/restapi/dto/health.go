@@ -1,5 +1,5 @@
 package dto
 
 type HealthResponse struct {
-	Ok bool `json:"ok"`
+	Status string `json:"status"`
 }
