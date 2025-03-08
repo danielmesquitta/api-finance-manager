@@ -21,8 +21,8 @@ import (
 )
 
 type TestApp struct {
-	t *testing.T
-	a *restapi.App
+	t   *testing.T
+	App *restapi.App
 }
 
 func NewTestApp(
@@ -71,8 +71,8 @@ func NewTestApp(
 	}
 
 	app = &TestApp{
-		t: t,
-		a: restapi.NewTest(v, e, t),
+		t:   t,
+		App: restapi.NewTest(v, e, t),
 	}
 
 	return app, cleanUp
@@ -184,7 +184,7 @@ func (ta *TestApp) MakeRequest(
 		req.Header.Set(k, v)
 	}
 
-	res, err := ta.a.Test(req, -1)
+	res, err := ta.App.Test(req, -1)
 	assert.Nil(ta.t, err)
 
 	bytesBody, err := io.ReadAll(res.Body)

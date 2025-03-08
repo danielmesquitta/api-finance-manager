@@ -6,6 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
@@ -23,9 +24,9 @@ func (qb *QueryBuilder) ListAIChats(
 	}
 
 	query := goqu.
-		From(tableAIChat.String()).
-		Select(tableAIChat.ColumnAll()).
-		Where(goqu.I(tableAIChat.ColumnDeletedAt()).IsNull())
+		From(db.TableAiChat.String()).
+		Select(db.TableAiChat.ColumnAll()).
+		Where(goqu.I(db.TableAiChat.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildAIChatExpressions(options)
 
@@ -59,9 +60,9 @@ func (qb *QueryBuilder) CountAIChats(
 	}
 
 	query := goqu.
-		From(tableAIChat.String()).
-		Select(goqu.COUNT(tableAIChat.ColumnAll())).
-		Where(goqu.I(tableAIChat.ColumnDeletedAt()).IsNull())
+		From(db.TableAiChat.String()).
+		Select(goqu.COUNT(db.TableAiChat.ColumnAll())).
+		Where(goqu.I(db.TableAiChat.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildAIChatExpressions(options)
 
@@ -88,7 +89,7 @@ func (qb *QueryBuilder) buildAIChatExpressions(
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			tableAIChat.ColumnTitle(),
+			db.TableAiChat.ColumnTitle(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -96,13 +97,13 @@ func (qb *QueryBuilder) buildAIChatExpressions(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(tableAIChat.ColumnUpdatedAt()).Desc(),
+		goqu.I(db.TableAiChat.ColumnUpdatedAt()).Desc(),
 	)
 
 	if options.UserID != uuid.Nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(tableAIChat.ColumnUserID()).Eq(options.UserID),
+			goqu.I(db.TableAiChat.ColumnUserID()).Eq(options.UserID),
 		)
 	}
 

@@ -8,6 +8,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
@@ -24,9 +25,9 @@ func (qb *QueryBuilder) ListAccounts(
 	}
 
 	query := goqu.
-		From(tableAccount.String()).
-		Select(tableAccount.ColumnAll()).
-		Where(goqu.I(tableAccount.ColumnDeletedAt()).IsNull())
+		From(db.TableAccount.String()).
+		Select(db.TableAccount.ColumnAll()).
+		Where(goqu.I(db.TableAccount.ColumnDeletedAt()).IsNull())
 
 	joins := qb.buildAccountJoins(options)
 
@@ -57,15 +58,15 @@ func (qb *QueryBuilder) ListFullAccounts(
 	}
 
 	query := goqu.
-		From(tableAccount.String()).
+		From(db.TableAccount.String()).
 		Select(
-			tableAccount.ColumnAll(),
-			goqu.I(tableUser.ColumnSynchronizedAt()).As("synchronized_at"),
-			goqu.I(tableUser.ColumnOpenFinanceID()).As("open_finance_id"),
+			db.TableAccount.ColumnAll(),
+			goqu.I(db.TableUser.ColumnSynchronizedAt()).As("synchronized_at"),
+			goqu.I(db.TableUser.ColumnOpenFinanceID()).As("open_finance_id"),
 		).
-		Where(goqu.I(tableAccount.ColumnDeletedAt()).IsNull())
+		Where(goqu.I(db.TableAccount.ColumnDeletedAt()).IsNull())
 
-	joins := qb.buildAccountJoins(options, tableUser.String())
+	joins := qb.buildAccountJoins(options, db.TableUser.String())
 
 	whereExps, orderedExps := qb.buildAccountExpressions(options)
 
@@ -94,9 +95,9 @@ func (qb *QueryBuilder) CountAccounts(
 	}
 
 	query := goqu.
-		From(tableAccount.String()).
-		Select(goqu.COUNT(tableAccount.ColumnAll())).
-		Where(goqu.I(tableAccount.ColumnDeletedAt()).IsNull())
+		From(db.TableAccount.String()).
+		Select(goqu.COUNT(db.TableAccount.ColumnAll())).
+		Where(goqu.I(db.TableAccount.ColumnDeletedAt()).IsNull())
 
 	joins := qb.buildAccountJoins(options)
 
@@ -122,7 +123,7 @@ func (qb *QueryBuilder) accountShouldJoinUser(
 	options repo.AccountOptions,
 	defaultTablesToJoin ...string,
 ) bool {
-	if slices.Contains(defaultTablesToJoin, tableUser.String()) {
+	if slices.Contains(defaultTablesToJoin, db.TableUser.String()) {
 		return true
 	}
 
@@ -147,11 +148,11 @@ func (qb *QueryBuilder) buildAccountJoins(
 
 	if shouldJoinUser {
 		join := Join{
-			Table: goqu.I(tableUser.String()),
+			Table: goqu.I(db.TableUser.String()),
 			Condition: goqu.
 				On(
-					goqu.I(tableAccount.ColumnUserID()).
-						Eq(goqu.I(tableUser.ColumnID())),
+					goqu.I(db.TableAccount.ColumnUserID()).
+						Eq(goqu.I(db.TableUser.ColumnID())),
 				),
 		}
 		joins = append(joins, join)
@@ -167,30 +168,31 @@ func (qb *QueryBuilder) buildAccountExpressions(
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			tableAccount.ColumnName(),
+			db.TableAccount.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
 	}
 
 	if len(options.UserIDs) > 0 {
-		exp := goqu.I(tableAccount.ColumnUserID()).In(options.UserIDs)
+		exp := goqu.I(db.TableAccount.ColumnUserID()).In(options.UserIDs)
 		whereExps = append(whereExps, exp)
 	}
 
 	if len(options.ExternalIDs) > 0 {
-		exp := goqu.I(tableAccount.ColumnExternalID()).In(options.ExternalIDs)
+		exp := goqu.I(db.TableAccount.ColumnExternalID()).
+			In(options.ExternalIDs)
 		whereExps = append(whereExps, exp)
 	}
 
 	if len(options.UserTiers) > 0 {
-		exp := goqu.I(tableUser.ColumnTier()).In(options.UserTiers)
+		exp := goqu.I(db.TableUser.ColumnTier()).In(options.UserTiers)
 		whereExps = append(whereExps, exp)
 	}
 
 	if options.IsSubscriptionActive != nil {
 		var exp goqu.Expression
-		ident := goqu.I(tableUser.ColumnSubscriptionExpiresAt())
+		ident := goqu.I(db.TableUser.ColumnSubscriptionExpiresAt())
 		if *options.IsSubscriptionActive {
 			exp = ident.Gte(time.Now())
 		} else {
@@ -200,13 +202,13 @@ func (qb *QueryBuilder) buildAccountExpressions(
 	}
 
 	if shouldJoinUser := qb.accountShouldJoinUser(options); shouldJoinUser {
-		exp := goqu.I(tableUser.ColumnDeletedAt()).IsNull()
+		exp := goqu.I(db.TableUser.ColumnDeletedAt()).IsNull()
 		whereExps = append(whereExps, exp)
 	}
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(tableAccount.ColumnName()).Asc(),
+		goqu.I(db.TableAccount.ColumnName()).Asc(),
 	)
 
 	return whereExps, orderedExps

@@ -6,6 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
@@ -22,9 +23,9 @@ func (qb *QueryBuilder) ListTransactionCategories(
 	}
 
 	query := goqu.
-		From(tableTransactionCategory.String()).
-		Select(tableTransactionCategory.ColumnAll()).
-		Where(goqu.I(tableTransactionCategory.ColumnDeletedAt()).IsNull())
+		From(db.TableTransactionCategory.String()).
+		Select(db.TableTransactionCategory.ColumnAll()).
+		Where(goqu.I(db.TableTransactionCategory.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildCategoryExpressions(options)
 
@@ -58,9 +59,9 @@ func (qb *QueryBuilder) CountTransactionCategories(
 	}
 
 	query := goqu.
-		From(tableTransactionCategory.String()).
-		Select(goqu.COUNT(tableTransactionCategory.ColumnAll())).
-		Where(goqu.I(tableTransactionCategory.ColumnDeletedAt()).IsNull())
+		From(db.TableTransactionCategory.String()).
+		Select(goqu.COUNT(db.TableTransactionCategory.ColumnAll())).
+		Where(goqu.I(db.TableTransactionCategory.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildCategoryExpressions(options)
 
@@ -87,7 +88,7 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			tableTransactionCategory.ColumnName(),
+			db.TableTransactionCategory.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -95,7 +96,7 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(tableTransactionCategory.ColumnName()).Asc(),
+		goqu.I(db.TableTransactionCategory.ColumnName()).Asc(),
 	)
 
 	return whereExps, orderedExps

@@ -6,6 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
@@ -25,9 +26,9 @@ func (qb *QueryBuilder) ListTransactions(
 	}
 
 	query := goqu.
-		From(tableTransaction.String()).
-		Select(tableTransaction.ColumnAll()).
-		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
+		From(db.TableTransaction.String()).
+		Select(db.TableTransaction.ColumnAll()).
+		Where(goqu.I(db.TableTransaction.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
 
@@ -57,39 +58,41 @@ func (qb *QueryBuilder) ListFullTransactions(
 	}
 
 	query := goqu.
-		From(tableTransaction.String()).
+		From(db.TableTransaction.String()).
 		Select(
-			tableTransaction.ColumnAll(),
-			goqu.I(tableTransactionCategory.ColumnName()).As("category_name"),
-			goqu.I(tableInstitution.ColumnName()).As("institution_name"),
-			goqu.I(tableInstitution.ColumnLogo()).As("institution_logo"),
-			goqu.I(tablePaymentMethod.ColumnName()).As("payment_method_name"),
+			db.TableTransaction.ColumnAll(),
+			goqu.I(db.TableTransactionCategory.ColumnName()).
+				As("category_name"),
+			goqu.I(db.TableInstitution.ColumnName()).As("institution_name"),
+			goqu.I(db.TableInstitution.ColumnLogo()).As("institution_logo"),
+			goqu.I(db.TablePaymentMethod.ColumnName()).
+				As("payment_method_name"),
 		).
 		LeftJoin(
-			goqu.I(tableTransactionCategory.String()),
+			goqu.I(db.TableTransactionCategory.String()),
 			goqu.
 				On(
-					goqu.I(tableTransaction.ColumnCategoryID()).
-						Eq(goqu.I(tableTransactionCategory.ColumnID())),
+					goqu.I(db.TableTransaction.ColumnCategoryID()).
+						Eq(goqu.I(db.TableTransactionCategory.ColumnID())),
 				),
 		).
 		LeftJoin(
-			goqu.I(tableInstitution.String()),
+			goqu.I(db.TableInstitution.String()),
 			goqu.
 				On(
-					goqu.I(tableTransaction.ColumnInstitutionID()).
-						Eq(goqu.I(tableInstitution.ColumnID())),
+					goqu.I(db.TableTransaction.ColumnInstitutionID()).
+						Eq(goqu.I(db.TableInstitution.ColumnID())),
 				),
 		).
 		LeftJoin(
-			goqu.I(tablePaymentMethod.String()),
+			goqu.I(db.TablePaymentMethod.String()),
 			goqu.
 				On(
-					goqu.I(tableTransaction.ColumnPaymentMethodID()).
-						Eq(goqu.I(tablePaymentMethod.ColumnID())),
+					goqu.I(db.TableTransaction.ColumnPaymentMethodID()).
+						Eq(goqu.I(db.TablePaymentMethod.ColumnID())),
 				),
 		).
-		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
+		Where(goqu.I(db.TableTransaction.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
 
@@ -127,9 +130,9 @@ func (qb *QueryBuilder) CountTransactions(
 	}
 
 	query := goqu.
-		From(tableTransaction.String()).
-		Select(goqu.COUNT(tableTransaction.ColumnAll())).
-		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
+		From(db.TableTransaction.String()).
+		Select(goqu.COUNT(db.TableTransaction.ColumnAll())).
+		Where(goqu.I(db.TableTransaction.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
 
@@ -160,9 +163,9 @@ func (qb *QueryBuilder) SumTransactions(
 	}
 
 	query := goqu.
-		From(tableTransaction.String()).
-		Select(goqu.SUM(tableTransaction.ColumnAmount())).
-		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
+		From(db.TableTransaction.String()).
+		Select(goqu.SUM(db.TableTransaction.ColumnAmount())).
+		Where(goqu.I(db.TableTransaction.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
 
@@ -193,13 +196,13 @@ func (qb *QueryBuilder) SumTransactionsByCategory(
 	}
 
 	query := goqu.
-		From(tableTransaction.String()).
+		From(db.TableTransaction.String()).
 		Select(
-			goqu.I(tableTransaction.ColumnCategoryID()),
-			goqu.SUM(tableTransaction.ColumnAmount()).As("sum"),
+			goqu.I(db.TableTransaction.ColumnCategoryID()),
+			goqu.SUM(db.TableTransaction.ColumnAmount()).As("sum"),
 		).
-		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull()).
-		GroupBy(goqu.I(tableTransaction.ColumnCategoryID()))
+		Where(goqu.I(db.TableTransaction.ColumnDeletedAt()).IsNull()).
+		GroupBy(goqu.I(db.TableTransaction.ColumnCategoryID()))
 
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
 
@@ -242,14 +245,14 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	whereExps = append(
 		whereExps,
-		goqu.I(tableTransaction.ColumnUserID()).Eq(userID),
+		goqu.I(db.TableTransaction.ColumnUserID()).Eq(userID),
 	)
 
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			tableTransaction.ColumnName(),
+			db.TableTransaction.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -258,7 +261,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if len(options.CategoryIDs) > 0 {
 		whereExps = append(
 			whereExps,
-			goqu.I(tableTransaction.ColumnCategoryID()).
+			goqu.I(db.TableTransaction.ColumnCategoryID()).
 				In(options.CategoryIDs),
 		)
 	}
@@ -266,7 +269,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if len(options.InstitutionIDs) > 0 {
 		whereExps = append(
 			whereExps,
-			goqu.I(tableTransaction.ColumnInstitutionID()).
+			goqu.I(db.TableTransaction.ColumnInstitutionID()).
 				In(options.InstitutionIDs),
 		)
 	}
@@ -274,7 +277,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if len(options.PaymentMethodIDs) > 0 {
 		whereExps = append(
 			whereExps,
-			goqu.I(tableTransaction.ColumnPaymentMethodID()).
+			goqu.I(db.TableTransaction.ColumnPaymentMethodID()).
 				In(options.PaymentMethodIDs),
 		)
 	}
@@ -282,41 +285,42 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if !options.StartDate.IsZero() {
 		whereExps = append(
 			whereExps,
-			goqu.I(tableTransaction.ColumnDate()).Gte(options.StartDate),
+			goqu.I(db.TableTransaction.ColumnDate()).Gte(options.StartDate),
 		)
 	}
 
 	if !options.EndDate.IsZero() {
 		whereExps = append(
 			whereExps,
-			goqu.I(tableTransaction.ColumnDate()).Lte(options.EndDate),
+			goqu.I(db.TableTransaction.ColumnDate()).Lte(options.EndDate),
 		)
 	}
 
 	if options.IsExpense {
 		whereExps = append(
 			whereExps,
-			goqu.I(tableTransaction.ColumnAmount()).Lt(0),
+			goqu.I(db.TableTransaction.ColumnAmount()).Lt(0),
 		)
 	}
 
 	if options.IsIncome {
 		whereExps = append(
 			whereExps,
-			goqu.I(tableTransaction.ColumnAmount()).Gt(0),
+			goqu.I(db.TableTransaction.ColumnAmount()).Gt(0),
 		)
 	}
 
 	if options.IsIgnored != nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(tableTransaction.ColumnIsIgnored()).Eq(*options.IsIgnored),
+			goqu.I(db.TableTransaction.ColumnIsIgnored()).
+				Eq(*options.IsIgnored),
 		)
 	}
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(tableTransaction.ColumnName()).Asc(),
+		goqu.I(db.TableTransaction.ColumnName()).Asc(),
 	)
 
 	return whereExps, orderedExps
