@@ -11,17 +11,13 @@ import (
 type wireConfigData struct {
 	PackageName      string
 	Imports          []string
-	Providers        []string
-	DevProviders     []string
-	StagingProviders []string
-	TestProviders    []string
-	ProdProviders    []string
+	DefaultProviders []string
 	Environments     []environmentConfig
 }
 
 type environmentConfig struct {
 	Name      string
-	Providers string
+	Providers []string
 }
 
 // Use a text/template to generate the final wire.go.
@@ -46,7 +42,9 @@ func New{{ .Name }}(
     t *testing.T,
 ) *App {
     wire.Build(
-{{- .Providers }}
+  {{- range .Providers }}
+      {{.}}
+  {{- end }}
     )
     return &App{}
 }
@@ -80,11 +78,7 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 
 	data := &wireConfigData{
 		Imports:          []string{},
-		Providers:        []string{},
-		DevProviders:     []string{},
-		StagingProviders: []string{},
-		TestProviders:    []string{},
-		ProdProviders:    []string{},
+		DefaultProviders: []string{},
 		Environments:     []environmentConfig{},
 	}
 
@@ -93,13 +87,23 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 	inImportBlock := false
 	currentSection := ""
 
+	environmentNames := []string{"Dev", "Staging", "Test", "Prod"}
+
 	// Map to track provider sections and their corresponding slices
 	providerSections := map[string]*[]string{
-		"var providers = []any{":        &data.Providers,
-		"var devProviders = []any{":     &data.DevProviders,
-		"var stagingProviders = []any{": &data.StagingProviders,
-		"var testProviders = []any{":    &data.TestProviders,
-		"var prodProviders = []any{":    &data.ProdProviders,
+		"var providers = []any{": &data.DefaultProviders,
+	}
+
+	environments := map[string]*environmentConfig{}
+	for _, env := range environmentNames {
+		envConfig := environmentConfig{
+			Name:      env,
+			Providers: []string{},
+		}
+		environments[env] = &envConfig
+
+		key := fmt.Sprintf("var %sProviders = []any{", strings.ToLower(env))
+		providerSections[key] = &envConfig.Providers
 	}
 
 	// Keep track of imports in a set to avoid duplicates
@@ -188,33 +192,12 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 		}
 	}
 
-	// Setup environment configurations
-	environments := []struct {
-		Name      string
-		Providers *[]string
-	}{
-		{"Dev", &data.DevProviders},
-		{"Staging", &data.StagingProviders},
-		{"Test", &data.TestProviders},
-		{"Prod", &data.ProdProviders},
-	}
-
 	for _, env := range environments {
-		providerBlock := ""
-
-		// First add common providers
-		for _, provider := range data.Providers {
-			providerBlock += "\n\t" + provider
-		}
-
-		// Then add environment-specific providers
-		for _, provider := range *env.Providers {
-			providerBlock += "\n\t" + provider
-		}
+		providers := append(env.Providers, data.DefaultProviders...)
 
 		data.Environments = append(data.Environments, environmentConfig{
 			Name:      env.Name,
-			Providers: providerBlock,
+			Providers: providers,
 		})
 	}
 
