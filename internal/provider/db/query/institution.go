@@ -2,7 +2,6 @@ package query
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
@@ -25,7 +24,7 @@ func (qb *QueryBuilder) ListInstitutions(
 
 	query := goqu.
 		From(tableInstitution.String()).
-		Select(fmt.Sprintf("%s.*", tableInstitution)).
+		Select(tableInstitution.ColumnAll()).
 		Where(goqu.I(tableInstitution.ColumnDeletedAt()).IsNull())
 
 	qb.buildInstitutionJoins(query, options)
@@ -58,7 +57,7 @@ func (qb *QueryBuilder) CountInstitutions(
 
 	query := goqu.
 		From(tableInstitution.String()).
-		Select(goqu.COUNT("*")).
+		Select(goqu.COUNT(tableInstitution.ColumnAll())).
 		Where(goqu.I(tableInstitution.ColumnDeletedAt()).IsNull())
 
 	query = qb.buildInstitutionJoins(query, options)

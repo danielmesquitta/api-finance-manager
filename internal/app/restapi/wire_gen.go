@@ -107,7 +107,7 @@ func NewDev(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	listAIChatMessages := usecase.NewListAIChatMessages(aiChatMessageRepo)
 	aiChatMessageHandler := handler.NewAIChatMessageHandler(listAIChatMessages)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler, feedbackHandler, paymentMethodHandler, aiChatHandler, aiChatMessageHandler)
-	app := newApp(middlewareMiddleware, routerRouter, redisCache)
+	app := newApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 
@@ -187,7 +187,7 @@ func NewStaging(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	listAIChatMessages := usecase.NewListAIChatMessages(aiChatMessageRepo)
 	aiChatMessageHandler := handler.NewAIChatMessageHandler(listAIChatMessages)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler, feedbackHandler, paymentMethodHandler, aiChatHandler, aiChatMessageHandler)
-	app := newApp(middlewareMiddleware, routerRouter, redisCache)
+	app := newApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 
@@ -267,7 +267,7 @@ func NewTest(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	listAIChatMessages := usecase.NewListAIChatMessages(aiChatMessageRepo)
 	aiChatMessageHandler := handler.NewAIChatMessageHandler(listAIChatMessages)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler, feedbackHandler, paymentMethodHandler, aiChatHandler, aiChatMessageHandler)
-	app := newApp(middlewareMiddleware, routerRouter, redisCache)
+	app := newApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 
@@ -346,7 +346,7 @@ func NewProd(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	listAIChatMessages := usecase.NewListAIChatMessages(aiChatMessageRepo)
 	aiChatMessageHandler := handler.NewAIChatMessageHandler(listAIChatMessages)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler, feedbackHandler, paymentMethodHandler, aiChatHandler, aiChatMessageHandler)
-	app := newApp(middlewareMiddleware, routerRouter, redisCache)
+	app := newApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 

@@ -24,7 +24,7 @@ func (qb *QueryBuilder) ListAIChats(
 
 	query := goqu.
 		From(tableAIChat.String()).
-		Select("*").
+		Select(tableAIChat.ColumnAll()).
 		Where(goqu.I(tableAIChat.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildAIChatExpressions(options)
@@ -60,7 +60,7 @@ func (qb *QueryBuilder) CountAIChats(
 
 	query := goqu.
 		From(tableAIChat.String()).
-		Select(goqu.COUNT("*")).
+		Select(goqu.COUNT(tableAIChat.ColumnAll())).
 		Where(goqu.I(tableAIChat.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildAIChatExpressions(options)

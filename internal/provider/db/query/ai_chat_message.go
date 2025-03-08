@@ -23,7 +23,7 @@ func (qb *QueryBuilder) ListAIChatMessages(
 
 	query := goqu.
 		From(tableAIChatMessage.String()).
-		Select("*").
+		Select(tableAIChatMessage.ColumnAll()).
 		Where(goqu.I(tableAIChatMessage.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildAIChatMessageExpressions(options)
@@ -59,7 +59,7 @@ func (qb *QueryBuilder) CountAIChatMessages(
 
 	query := goqu.
 		From(tableAIChatMessage.String()).
-		Select(goqu.COUNT("*")).
+		Select(goqu.COUNT(tableAIChatMessage.ColumnAll())).
 		Where(goqu.I(tableAIChatMessage.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildAIChatMessageExpressions(options)

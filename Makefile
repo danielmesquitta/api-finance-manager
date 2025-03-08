@@ -5,7 +5,7 @@ schema=sql/schema.prisma
 
 define create_migration_sequence
 	$(MAKE) zip_migrations
-	prisma-client-go migrate dev --schema=$(schema) --skip-generate && prisma-to-go triggers --schema=$(schema)
+	prisma-client-go migrate dev --schema=$(schema) --skip-generate && prisma-go-tools triggers --schema=$(schema)
 	$(MAKE) migrate
 	$(MAKE) unzip_migrations
 endef
@@ -43,9 +43,9 @@ lint:
 lint-fix:
 	@golangci-lint run --fix && golines **/*.go -w -m 80 && go run cmd/lintfix/main.go
 zip_migrations:
-	@prisma-to-go zip --schema ./sql/schema.prisma
+	@prisma-go-tools zip --schema ./sql/schema.prisma
 unzip_migrations:
-	@prisma-to-go unzip --schema ./sql/schema.prisma
+	@prisma-go-tools unzip --schema ./sql/schema.prisma
 create_migration:
 	@$(create_migration_sequence)
 migrate:

@@ -2,7 +2,6 @@ package query
 
 import (
 	"context"
-	"fmt"
 	"slices"
 	"strings"
 	"time"
@@ -26,7 +25,7 @@ func (qb *QueryBuilder) ListAccounts(
 
 	query := goqu.
 		From(tableAccount.String()).
-		Select(fmt.Sprintf("%s.*", tableAccount)).
+		Select(tableAccount.ColumnAll()).
 		Where(goqu.I(tableAccount.ColumnDeletedAt()).IsNull())
 
 	joins := qb.buildAccountJoins(options)
@@ -60,7 +59,7 @@ func (qb *QueryBuilder) ListFullAccounts(
 	query := goqu.
 		From(tableAccount.String()).
 		Select(
-			fmt.Sprintf("%s.*", tableAccount),
+			tableAccount.ColumnAll(),
 			goqu.I(tableUser.ColumnSynchronizedAt()).As("synchronized_at"),
 			goqu.I(tableUser.ColumnOpenFinanceID()).As("open_finance_id"),
 		).
@@ -96,7 +95,7 @@ func (qb *QueryBuilder) CountAccounts(
 
 	query := goqu.
 		From(tableAccount.String()).
-		Select(goqu.COUNT(fmt.Sprintf("%s.*", tableAccount))).
+		Select(goqu.COUNT(tableAccount.ColumnAll())).
 		Where(goqu.I(tableAccount.ColumnDeletedAt()).IsNull())
 
 	joins := qb.buildAccountJoins(options)

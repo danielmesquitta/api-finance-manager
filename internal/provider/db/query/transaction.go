@@ -2,7 +2,6 @@ package query
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
@@ -27,7 +26,7 @@ func (qb *QueryBuilder) ListTransactions(
 
 	query := goqu.
 		From(tableTransaction.String()).
-		Select("*").
+		Select(tableTransaction.ColumnAll()).
 		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
@@ -60,7 +59,7 @@ func (qb *QueryBuilder) ListFullTransactions(
 	query := goqu.
 		From(tableTransaction.String()).
 		Select(
-			fmt.Sprintf("%s.*", tableTransaction),
+			tableTransaction.ColumnAll(),
 			goqu.I(tableTransactionCategory.ColumnName()).As("category_name"),
 			goqu.I(tableInstitution.ColumnName()).As("institution_name"),
 			goqu.I(tableInstitution.ColumnLogo()).As("institution_logo"),
@@ -129,7 +128,7 @@ func (qb *QueryBuilder) CountTransactions(
 
 	query := goqu.
 		From(tableTransaction.String()).
-		Select(goqu.COUNT("*")).
+		Select(goqu.COUNT(tableTransaction.ColumnAll())).
 		Where(goqu.I(tableTransaction.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)

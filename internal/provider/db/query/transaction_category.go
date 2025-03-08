@@ -23,7 +23,7 @@ func (qb *QueryBuilder) ListTransactionCategories(
 
 	query := goqu.
 		From(tableTransactionCategory.String()).
-		Select("*").
+		Select(tableTransactionCategory.ColumnAll()).
 		Where(goqu.I(tableTransactionCategory.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildCategoryExpressions(options)
@@ -59,7 +59,7 @@ func (qb *QueryBuilder) CountTransactionCategories(
 
 	query := goqu.
 		From(tableTransactionCategory.String()).
-		Select(goqu.COUNT("*")).
+		Select(goqu.COUNT(tableTransactionCategory.ColumnAll())).
 		Where(goqu.I(tableTransactionCategory.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildCategoryExpressions(options)

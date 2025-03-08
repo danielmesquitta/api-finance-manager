@@ -8,7 +8,7 @@ packages=(
     "github.com/steebchen/prisma-client-go@latest"
     "github.com/sqlc-dev/sqlc/cmd/sqlc@latest"
     "github.com/google/wire/cmd/wire@latest"
-    "github.com/danielmesquitta/prisma-to-go@latest"
+    "github.com/danielmesquitta/prisma-go-tools@latest"
     "github.com/danielmesquitta/copy-sqlc-params@latest"
     "github.com/swaggo/swag/cmd/swag@latest"
     "github.com/zxmfke/swagger2openapi3/cmd/swag2op@latest"
