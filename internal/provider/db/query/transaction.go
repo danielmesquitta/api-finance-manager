@@ -10,9 +10,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
-	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
 )
 
 func (qb *QueryBuilder) ListTransactions(
@@ -34,13 +32,8 @@ func (qb *QueryBuilder) ListTransactions(
 
 	query = qb.buildTransactionsQuery(query, options, whereExps, orderedExps)
 
-	sql, args, err := query.ToSQL()
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
 	var transactions []entity.Transaction
-	if err := pgxscan.Select(ctx, qb.db, &transactions, sql, args...); err != nil {
+	if err := qb.Scan(ctx, query, &transactions); err != nil {
 		return nil, errs.New(err)
 	}
 
@@ -103,16 +96,8 @@ func (qb *QueryBuilder) ListFullTransactions(
 		orderedExps,
 	)
 
-	sql, args, err := query.ToSQL()
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
 	var transactions []entity.FullTransaction
-	if err := pgxscan.Select(ctx, qb.db, &transactions, sql, args...); err != nil {
-		if err == pgx.ErrNoRows {
-			return nil, nil
-		}
+	if err := qb.Scan(ctx, query, &transactions); err != nil {
 		return nil, errs.New(err)
 	}
 
@@ -138,14 +123,8 @@ func (qb *QueryBuilder) CountTransactions(
 
 	query = qb.buildTransactionsQuery(query, options, whereExps, nil)
 
-	sql, args, err := query.ToSQL()
-	if err != nil {
-		return 0, errs.New(err)
-	}
-
-	row := qb.db.QueryRow(ctx, sql, args...)
 	var count int64
-	if err := row.Scan(&count); err != nil {
+	if err := qb.Scan(ctx, query, &count); err != nil {
 		return 0, errs.New(err)
 	}
 
@@ -171,14 +150,8 @@ func (qb *QueryBuilder) SumTransactions(
 
 	query = qb.buildTransactionsQuery(query, options, whereExps, nil)
 
-	sql, args, err := query.ToSQL()
-	if err != nil {
-		return 0, errs.New(err)
-	}
-
-	row := qb.db.QueryRow(ctx, sql, args...)
 	var count int64
-	if err := row.Scan(&count); err != nil {
+	if err := qb.Scan(ctx, query, &count); err != nil {
 		return 0, errs.New(err)
 	}
 

@@ -10,7 +10,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
-	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/google/uuid"
 )
 
@@ -37,13 +36,8 @@ func (qb *QueryBuilder) ListAIChats(
 		orderedExps,
 	)
 
-	sql, args, err := query.ToSQL()
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
 	var aiChats []entity.AIChat
-	if err := pgxscan.Select(ctx, qb.db, &aiChats, sql, args...); err != nil {
+	if err := qb.Scan(ctx, query, &aiChats); err != nil {
 		return nil, errs.New(err)
 	}
 
@@ -68,14 +62,8 @@ func (qb *QueryBuilder) CountAIChats(
 
 	query = qb.buildAIChatQuery(query, options, whereExps, nil)
 
-	sql, args, err := query.ToSQL()
-	if err != nil {
-		return 0, errs.New(err)
-	}
-
-	row := qb.db.QueryRow(ctx, sql, args...)
 	var count int64
-	if err := row.Scan(&count); err != nil {
+	if err := qb.Scan(ctx, query, &count); err != nil {
 		return 0, errs.New(err)
 	}
 

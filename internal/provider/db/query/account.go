@@ -12,7 +12,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
-	"github.com/georgysavva/scany/v2/pgxscan"
 )
 
 func (qb *QueryBuilder) ListAccounts(
@@ -35,13 +34,8 @@ func (qb *QueryBuilder) ListAccounts(
 
 	query = qb.buildAccountsQuery(query, options, whereExps, joins, orderedExps)
 
-	sql, args, err := query.ToSQL()
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
 	var accounts []entity.Account
-	if err := pgxscan.Select(ctx, qb.db, &accounts, sql, args...); err != nil {
+	if err := qb.Scan(ctx, query, &accounts); err != nil {
 		return nil, errs.New(err)
 	}
 
@@ -72,13 +66,8 @@ func (qb *QueryBuilder) ListFullAccounts(
 
 	query = qb.buildAccountsQuery(query, options, whereExps, joins, orderedExps)
 
-	sql, args, err := query.ToSQL()
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
 	var accounts []entity.FullAccount
-	if err := pgxscan.Select(ctx, qb.db, &accounts, sql, args...); err != nil {
+	if err := qb.Scan(ctx, query, &accounts); err != nil {
 		return nil, errs.New(err)
 	}
 
@@ -105,14 +94,8 @@ func (qb *QueryBuilder) CountAccounts(
 
 	query = qb.buildAccountsQuery(query, options, whereExps, joins, nil)
 
-	sql, args, err := query.ToSQL()
-	if err != nil {
-		return 0, errs.New(err)
-	}
-
-	row := qb.db.QueryRow(ctx, sql, args...)
 	var count int64
-	if err := row.Scan(&count); err != nil {
+	if err := qb.Scan(ctx, query, &count); err != nil {
 		return 0, errs.New(err)
 	}
 

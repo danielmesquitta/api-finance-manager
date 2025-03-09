@@ -134,12 +134,20 @@ func GetUserClaims(
 		return nil
 	}
 
+	subscriptionExpiresAt, err := time.Parse(
+		time.RFC3339,
+		(claims)["subscription_expires_at"].(string),
+	)
+	if err != nil {
+		panic(err)
+	}
+
 	return &jwtutil.UserClaims{
 		Issuer:                (claims)["iss"].(string),
 		IssuedAt:              time.Unix(int64((claims)["iat"].(float64)), 0),
 		ExpiresAt:             time.Unix(int64((claims)["exp"].(float64)), 0),
-		Tier:                  (claims)["tier"].(entity.Tier),
-		SubscriptionExpiresAt: (claims)["subscription_expires_at"].(*time.Time),
+		Tier:                  entity.Tier((claims)["tier"].(string)),
+		SubscriptionExpiresAt: &subscriptionExpiresAt,
 	}
 }
 
@@ -168,7 +176,7 @@ func prepareTransactionOptions(
 		return nil, errs.New(err)
 	}
 
-	isIncome, err := parseBoolParam(c, queryParamIsExpense)
+	isIncome, err := parseBoolParam(c, queryParamIsIncome)
 	if err != nil {
 		return nil, errs.New(err)
 	}

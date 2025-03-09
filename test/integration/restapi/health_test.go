@@ -10,6 +10,8 @@ import (
 )
 
 func TestHealthRoutes(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		description  string
 		expectedCode int

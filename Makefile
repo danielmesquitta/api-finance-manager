@@ -1,11 +1,12 @@
 .PHONY: default install update run clear generate build lint create_migration migrate reset_db docs test seed
 
 include .env
-schema=sql/schema.prisma
+schema=./sql/schema.prisma
 
 define create_migration_sequence
 	$(MAKE) zip_migrations
-	prisma-client-go migrate dev --schema=$(schema) --skip-generate && prisma-go-tools triggers --schema=$(schema)
+	prisma-client-go migrate dev --schema=$(schema) --skip-generate
+	$(MAKE) triggers
 	$(MAKE) migrate
 	$(MAKE) unzip_migrations
 endef
@@ -43,9 +44,9 @@ lint:
 lint-fix:
 	@golangci-lint run --fix && golines **/*.go -w -m 80 && go run cmd/lintfix/main.go
 zip_migrations:
-	@prisma-go-tools zip --schema ./sql/schema.prisma
+	@prisma-go-tools zip --schema=$(schema)
 unzip_migrations:
-	@prisma-go-tools unzip --schema ./sql/schema.prisma
+	@prisma-go-tools unzip --schema=$(schema)
 create_migration:
 	@$(create_migration_sequence)
 migrate:
@@ -55,6 +56,10 @@ reset_db:
 studio:
 	@npx prisma studio --schema=$(schema)
 test:
-	@ENVIRONMENT=test go test ./test/integration/...
+	@ENVIRONMENT=test go test ./test/integration/... -timeout 30s
+triggers:
+	@prisma-go-tools triggers --schema=$(schema)
 seed:
 	@go run cmd/seed/main.go
+%::
+	@true

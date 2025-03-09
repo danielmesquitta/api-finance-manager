@@ -13,6 +13,8 @@ import (
 )
 
 func TestSignInRoute(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		description        string
 		body               *dto.SignInRequest

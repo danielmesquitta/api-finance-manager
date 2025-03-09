@@ -7,7 +7,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/router"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/fibercache"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 
 	"github.com/gofiber/fiber/v2"
 	middlewareCache "github.com/gofiber/fiber/v2/middleware/cache"
@@ -21,14 +21,15 @@ import (
 
 type App struct {
 	*fiber.App
-	DB *db.DB
+
+	QueryBuilder *query.QueryBuilder
 }
 
 func newApp(
 	m *middleware.Middleware,
 	r *router.Router,
 	c cache.Cache,
-	db *db.DB,
+	qb *query.QueryBuilder,
 ) *App {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: m.ErrorHandler,
@@ -58,7 +59,7 @@ func newApp(
 	r.Register(app)
 
 	return &App{
-		App: app,
-		DB:  db,
+		App:          app,
+		QueryBuilder: qb,
 	}
 }
