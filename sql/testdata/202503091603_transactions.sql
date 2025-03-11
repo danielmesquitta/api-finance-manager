@@ -253,4 +253,20 @@ VALUES (
     'df25c07b-2db4-407c-a3b6-f8b1406b7a58'::uuid,
     'ce7c4efd-c74a-4eb8-b8b3-7c02b704aa5e'::uuid,
     NULL
+  ),
+  (
+    'cd055628-61c4-4ab6-8b6b-34991e3f583a'::uuid,
+    '32b84940-fff8-43cd-a7ad-77b0727733d1',
+    'Mp *Insiderstore 10/10',
+    3836,
+    false,
+    '2025-03-08 00:00:00-03',
+    '2025-03-09 14:11:20.418619-03',
+    '2025-03-09 14:11:20.418619-03',
+    NULL,
+    'abbedc1f-0812-4ed1-9ec9-f51ca13e1069'::uuid,
+    '5b4694a9-c810-41a2-bca6-74c3f3850fe7'::uuid,
+    'dd9f4599-c2e2-4015-ba46-0a6646152e26'::uuid,
+    'a770232a-0feb-46f1-bf77-96f938a58ec9'::uuid,
+    '03bd0abc-7186-4eb3-9871-e4f624c535b8'::uuid
   );

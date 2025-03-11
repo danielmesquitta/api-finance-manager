@@ -6,7 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/schema"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
@@ -23,9 +23,9 @@ func (qb *QueryBuilder) ListAIChats(
 	}
 
 	query := goqu.
-		From(db.TableAiChat.String()).
-		Select(db.TableAiChat.ColumnAll()).
-		Where(goqu.I(db.TableAiChat.ColumnDeletedAt()).IsNull())
+		From(schema.AIChat.Table()).
+		Select(schema.AIChat.ColumnAll()).
+		Where(goqu.I(schema.AIChat.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildAIChatExpressions(options)
 
@@ -54,9 +54,9 @@ func (qb *QueryBuilder) CountAIChats(
 	}
 
 	query := goqu.
-		From(db.TableAiChat.String()).
-		Select(goqu.COUNT(db.TableAiChat.ColumnAll())).
-		Where(goqu.I(db.TableAiChat.ColumnDeletedAt()).IsNull())
+		From(schema.AIChat.Table()).
+		Select(goqu.COUNT(schema.AIChat.ColumnAll())).
+		Where(goqu.I(schema.AIChat.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildAIChatExpressions(options)
 
@@ -77,7 +77,7 @@ func (qb *QueryBuilder) buildAIChatExpressions(
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			db.TableAiChat.ColumnTitle(),
+			schema.AIChat.ColumnTitle(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -85,13 +85,13 @@ func (qb *QueryBuilder) buildAIChatExpressions(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(db.TableAiChat.ColumnUpdatedAt()).Desc(),
+		goqu.I(schema.AIChat.ColumnUpdatedAt()).Desc(),
 	)
 
 	if options.UserID != uuid.Nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(db.TableAiChat.ColumnUserID()).Eq(options.UserID),
+			goqu.I(schema.AIChat.ColumnUserID()).Eq(options.UserID),
 		)
 	}
 

@@ -8,25 +8,25 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type QueryBuilder struct {
-	e  *config.Env
-	db *db.DB
+	e *config.Env
+	p *pgxpool.Pool
 }
 
 func NewQueryBuilder(
 	e *config.Env,
-	db *db.DB,
+	p *pgxpool.Pool,
 ) *QueryBuilder {
 	return &QueryBuilder{
-		e:  e,
-		db: db,
+		e: e,
+		p: p,
 	}
 }
 
@@ -88,7 +88,7 @@ func (qb *QueryBuilder) Scan(
 
 	switch elemKind {
 	case reflect.Slice:
-		if err := pgxscan.Select(ctx, qb.db, dest, sql, args...); err != nil {
+		if err := pgxscan.Select(ctx, qb.p, dest, sql, args...); err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
 				return nil
 			}
@@ -97,7 +97,7 @@ func (qb *QueryBuilder) Scan(
 		return nil
 
 	case reflect.Struct:
-		if err := pgxscan.Get(ctx, qb.db, dest, sql, args...); err != nil {
+		if err := pgxscan.Get(ctx, qb.p, dest, sql, args...); err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
 				return nil
 			}
@@ -106,7 +106,7 @@ func (qb *QueryBuilder) Scan(
 		return nil
 
 	default:
-		row := qb.db.QueryRow(ctx, sql, args...)
+		row := qb.p.QueryRow(ctx, sql, args...)
 		if err := row.Scan(dest); err != nil {
 			if errors.Is(err, pgx.ErrNoRows) {
 				return nil

@@ -18,7 +18,7 @@ const UnregisteredUserMockToken = "unregistered_user_mock_token"
 
 var Users = map[string]*entity.User{
 	DefaultMockToken: func() *entity.User {
-		avatar := "https://avatars.githubusercontent.com/u/60039311"
+		avatar := "https://avatar.iran.liara.run/public/15"
 		subscriptionExpiresAt := time.Now().AddDate(0, 1, 0)
 		return &entity.User{
 			AuthID:                "6c2342aa-bdac-4efe-a31b-3a018072cff9",
@@ -32,11 +32,12 @@ var Users = map[string]*entity.User{
 		}
 	}(),
 	UnregisteredUserMockToken: func() *entity.User {
+		avatar := "https://avatar.iran.liara.run/public/82"
 		return &entity.User{
 			AuthID:        "016aecbd-fae5-4ff0-9046-03b7eabf6a5c",
 			Name:          "Jane Doe",
 			Email:         "janedoe@email.com",
-			Avatar:        nil,
+			Avatar:        &avatar,
 			Provider:      string(entity.ProviderMock),
 			Tier:          string(entity.TierFree),
 			VerifiedEmail: true,

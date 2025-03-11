@@ -6,7 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/schema"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
@@ -22,9 +22,9 @@ func (qb *QueryBuilder) ListTransactionCategories(
 	}
 
 	query := goqu.
-		From(db.TableTransactionCategory.String()).
-		Select(db.TableTransactionCategory.ColumnAll()).
-		Where(goqu.I(db.TableTransactionCategory.ColumnDeletedAt()).IsNull())
+		From(schema.TransactionCategory.Table()).
+		Select(schema.TransactionCategory.ColumnAll()).
+		Where(goqu.I(schema.TransactionCategory.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildCategoryExpressions(options)
 
@@ -53,9 +53,9 @@ func (qb *QueryBuilder) CountTransactionCategories(
 	}
 
 	query := goqu.
-		From(db.TableTransactionCategory.String()).
-		Select(goqu.COUNT(db.TableTransactionCategory.ColumnAll())).
-		Where(goqu.I(db.TableTransactionCategory.ColumnDeletedAt()).IsNull())
+		From(schema.TransactionCategory.Table()).
+		Select(goqu.COUNT(schema.TransactionCategory.ColumnAll())).
+		Where(goqu.I(schema.TransactionCategory.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildCategoryExpressions(options)
 
@@ -76,7 +76,7 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			db.TableTransactionCategory.ColumnName(),
+			schema.TransactionCategory.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -84,7 +84,7 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(db.TableTransactionCategory.ColumnName()).Asc(),
+		goqu.I(schema.TransactionCategory.ColumnName()).Asc(),
 	)
 
 	return whereExps, orderedExps

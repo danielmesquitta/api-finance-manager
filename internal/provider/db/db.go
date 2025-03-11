@@ -7,6 +7,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -32,13 +33,16 @@ func NewPGXPool(e *config.Env) *pgxpool.Pool {
 
 type DB struct {
 	*sqlc.Queries
-	*pgxpool.Pool
+	*query.QueryBuilder
 }
 
-func NewDB(pool *pgxpool.Pool) *DB {
+func NewDB(
+	p *pgxpool.Pool,
+	qb *query.QueryBuilder,
+) *DB {
 	return &DB{
-		Queries: sqlc.New(pool),
-		Pool:    pool,
+		Queries:      sqlc.New(p),
+		QueryBuilder: qb,
 	}
 }
 
@@ -49,7 +53,6 @@ func (db *DB) UseTx(
 	if ok {
 		return &DB{
 			Queries: db.WithTx(t),
-			Pool:    db.Pool,
 		}
 	}
 	return db

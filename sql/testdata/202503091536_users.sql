@@ -21,7 +21,7 @@ VALUES (
     'johndoe@email.com',
     true,
     'PREMIUM',
-    'https://avatars.githubusercontent.com/u/60039311',
+    'https://avatar.iran.liara.run/public/15',
     NOW() + INTERVAL '1 month',
     '2025-03-07 21:00:00-03',
     '2025-03-09 14:11:19.322842-03',
@@ -29,4 +29,20 @@ VALUES (
     NULL,
     '6c2342aa-bdac-4efe-a31b-3a018072cff9',
     '5de68b44-d82b-482a-a3b6-b2189f201e6b'
-  );
+  ),
+  (
+    '5b4694a9-c810-41a2-bca6-74c3f3850fe7'::uuid,
+    'MOCK',
+    'Jane Doe',
+    'janedoe@email.com',
+    true,
+    'FREE',
+    'https://avatar.iran.liara.run/public/82',
+    NULL,
+    '2025-03-07 21:00:00-03',
+    '2025-03-09 14:11:19.322842-03',
+    '2025-03-09 14:11:20.418619-03',
+    NULL,
+    '016aecbd-fae5-4ff0-9046-03b7eabf6a5c',
+    '8d3ee953-7659-46a2-ab5f-2513ba960a05'
+  )

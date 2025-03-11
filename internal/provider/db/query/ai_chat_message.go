@@ -5,7 +5,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/schema"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
@@ -22,9 +22,9 @@ func (qb *QueryBuilder) ListAIChatMessages(
 	}
 
 	query := goqu.
-		From(db.TableAiChatMessage.String()).
-		Select(db.TableAiChatMessage.ColumnAll()).
-		Where(goqu.I(db.TableAiChatMessage.ColumnDeletedAt()).IsNull())
+		From(schema.AIChatMessage.Table()).
+		Select(schema.AIChatMessage.ColumnAll()).
+		Where(goqu.I(schema.AIChatMessage.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildAIChatMessageExpressions(options)
 
@@ -53,9 +53,9 @@ func (qb *QueryBuilder) CountAIChatMessages(
 	}
 
 	query := goqu.
-		From(db.TableAiChatMessage.String()).
-		Select(goqu.COUNT(db.TableAiChatMessage.ColumnAll())).
-		Where(goqu.I(db.TableAiChatMessage.ColumnDeletedAt()).IsNull())
+		From(schema.AIChatMessage.Table()).
+		Select(goqu.COUNT(schema.AIChatMessage.ColumnAll())).
+		Where(goqu.I(schema.AIChatMessage.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildAIChatMessageExpressions(options)
 
@@ -74,13 +74,13 @@ func (qb *QueryBuilder) buildAIChatMessageExpressions(
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	orderedExps = append(
 		orderedExps,
-		goqu.I(db.TableAiChatMessage.ColumnUpdatedAt()).Desc(),
+		goqu.I(schema.AIChatMessage.ColumnUpdatedAt()).Desc(),
 	)
 
 	if options.AIChatID != uuid.Nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(db.TableAiChatMessage.ColumnAiChatID()).Eq(options.AIChatID),
+			goqu.I(schema.AIChatMessage.ColumnAiChatID()).Eq(options.AIChatID),
 		)
 	}
 

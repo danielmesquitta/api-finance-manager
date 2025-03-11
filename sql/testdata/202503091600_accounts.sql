@@ -52,4 +52,15 @@ VALUES (
     NULL,
     'dd696788-412f-48e6-bdfb-f0db7c497bf6'::uuid,
     '1202269c-ed03-4dfe-bbcd-c61d615a17b5'::uuid
+  ),
+  (
+    'dd9f4599-c2e2-4015-ba46-0a6646152e26'::uuid,
+    '4eac3b0c-3912-4325-85ab-5cca29b826f4',
+    'platinum',
+    'CREDIT',
+    '2025-03-09 14:11:19.681211-03',
+    '2025-03-09 14:11:19.681211-03',
+    NULL,
+    '5b4694a9-c810-41a2-bca6-74c3f3850fe7'::uuid,
+    'a770232a-0feb-46f1-bf77-96f938a58ec9'::uuid
   );

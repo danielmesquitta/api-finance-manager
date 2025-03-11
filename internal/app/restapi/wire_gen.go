@@ -39,7 +39,8 @@ func NewDev(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	docHandler := handler.NewDocHandler()
 	hasher := hash.NewHasher(e)
 	pool := db.NewPGXPool(e)
-	dbDB := db.NewDB(pool)
+	queryBuilder := query.NewQueryBuilder(e, pool)
+	dbDB := db.NewDB(pool, queryBuilder)
 	userRepo := pgrepo.NewUserRepo(dbDB)
 	googleOAuth := googleoauth.NewGoogleOAuth()
 	mockOAuth := mockoauth.NewMockOAuth(e)
@@ -54,7 +55,6 @@ func NewDev(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterest, calculateEmergencyReserve, calculateRetirement, calculateSimpleInterest, calculateCashVsInstallments)
 	client := pluggy.NewClient(e, logger, jwt)
 	mockpluggyClient := mockpluggy.NewClient(client)
-	queryBuilder := query.NewQueryBuilder(e, dbDB)
 	institutionRepo := pgrepo.NewInstitutionRepo(dbDB, queryBuilder)
 	syncInstitutions := usecase.NewSyncInstitutions(mockpluggyClient, institutionRepo)
 	listInstitutions := usecase.NewListInstitutions(institutionRepo)
@@ -106,7 +106,7 @@ func NewDev(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	listAIChatMessages := usecase.NewListAIChatMessages(aiChatMessageRepo)
 	aiChatMessageHandler := handler.NewAIChatMessageHandler(listAIChatMessages)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler, feedbackHandler, paymentMethodHandler, aiChatHandler, aiChatMessageHandler)
-	app := newApp(middlewareMiddleware, routerRouter, redisCache, queryBuilder)
+	app := newApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 
@@ -119,7 +119,8 @@ func NewStaging(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	docHandler := handler.NewDocHandler()
 	hasher := hash.NewHasher(e)
 	pool := db.NewPGXPool(e)
-	dbDB := db.NewDB(pool)
+	queryBuilder := query.NewQueryBuilder(e, pool)
+	dbDB := db.NewDB(pool, queryBuilder)
 	userRepo := pgrepo.NewUserRepo(dbDB)
 	googleOAuth := googleoauth.NewGoogleOAuth()
 	mockOAuth := mockoauth.NewMockOAuth(e)
@@ -134,7 +135,6 @@ func NewStaging(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterest, calculateEmergencyReserve, calculateRetirement, calculateSimpleInterest, calculateCashVsInstallments)
 	client := pluggy.NewClient(e, logger, jwt)
 	mockpluggyClient := mockpluggy.NewClient(client)
-	queryBuilder := query.NewQueryBuilder(e, dbDB)
 	institutionRepo := pgrepo.NewInstitutionRepo(dbDB, queryBuilder)
 	syncInstitutions := usecase.NewSyncInstitutions(mockpluggyClient, institutionRepo)
 	listInstitutions := usecase.NewListInstitutions(institutionRepo)
@@ -186,7 +186,7 @@ func NewStaging(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	listAIChatMessages := usecase.NewListAIChatMessages(aiChatMessageRepo)
 	aiChatMessageHandler := handler.NewAIChatMessageHandler(listAIChatMessages)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler, feedbackHandler, paymentMethodHandler, aiChatHandler, aiChatMessageHandler)
-	app := newApp(middlewareMiddleware, routerRouter, redisCache, queryBuilder)
+	app := newApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 
@@ -199,7 +199,8 @@ func NewTest(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	docHandler := handler.NewDocHandler()
 	hasher := hash.NewHasher(e)
 	pool := db.NewPGXPool(e)
-	dbDB := db.NewDB(pool)
+	queryBuilder := query.NewQueryBuilder(e, pool)
+	dbDB := db.NewDB(pool, queryBuilder)
 	userRepo := pgrepo.NewUserRepo(dbDB)
 	googleOAuth := googleoauth.NewGoogleOAuth()
 	mockOAuth := mockoauth.NewMockOAuth(e)
@@ -214,7 +215,6 @@ func NewTest(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterest, calculateEmergencyReserve, calculateRetirement, calculateSimpleInterest, calculateCashVsInstallments)
 	client := pluggy.NewClient(e, logger, jwt)
 	mockpluggyClient := mockpluggy.NewClient(client)
-	queryBuilder := query.NewQueryBuilder(e, dbDB)
 	institutionRepo := pgrepo.NewInstitutionRepo(dbDB, queryBuilder)
 	syncInstitutions := usecase.NewSyncInstitutions(mockpluggyClient, institutionRepo)
 	listInstitutions := usecase.NewListInstitutions(institutionRepo)
@@ -266,7 +266,7 @@ func NewTest(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	listAIChatMessages := usecase.NewListAIChatMessages(aiChatMessageRepo)
 	aiChatMessageHandler := handler.NewAIChatMessageHandler(listAIChatMessages)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler, feedbackHandler, paymentMethodHandler, aiChatHandler, aiChatMessageHandler)
-	app := newApp(middlewareMiddleware, routerRouter, redisCache, queryBuilder)
+	app := newApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 
@@ -279,7 +279,8 @@ func NewProd(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	docHandler := handler.NewDocHandler()
 	hasher := hash.NewHasher(e)
 	pool := db.NewPGXPool(e)
-	dbDB := db.NewDB(pool)
+	queryBuilder := query.NewQueryBuilder(e, pool)
+	dbDB := db.NewDB(pool, queryBuilder)
 	userRepo := pgrepo.NewUserRepo(dbDB)
 	googleOAuth := googleoauth.NewGoogleOAuth()
 	mockOAuth := _wireMockOAuthValue
@@ -293,7 +294,6 @@ func NewProd(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	calculateCashVsInstallments := usecase.NewCalculateCashVsInstallments(v, calculateCompoundInterest)
 	calculatorHandler := handler.NewCalculatorHandler(calculateCompoundInterest, calculateEmergencyReserve, calculateRetirement, calculateSimpleInterest, calculateCashVsInstallments)
 	client := pluggy.NewClient(e, logger, jwt)
-	queryBuilder := query.NewQueryBuilder(e, dbDB)
 	institutionRepo := pgrepo.NewInstitutionRepo(dbDB, queryBuilder)
 	syncInstitutions := usecase.NewSyncInstitutions(client, institutionRepo)
 	listInstitutions := usecase.NewListInstitutions(institutionRepo)
@@ -345,7 +345,7 @@ func NewProd(v *validator.Validator, e *config.Env, t *testing.T) *App {
 	listAIChatMessages := usecase.NewListAIChatMessages(aiChatMessageRepo)
 	aiChatMessageHandler := handler.NewAIChatMessageHandler(listAIChatMessages)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, categoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, balanceHandler, feedbackHandler, paymentMethodHandler, aiChatHandler, aiChatMessageHandler)
-	app := newApp(middlewareMiddleware, routerRouter, redisCache, queryBuilder)
+	app := newApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 

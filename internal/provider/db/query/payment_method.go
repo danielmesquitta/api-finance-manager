@@ -6,7 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/schema"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
@@ -22,9 +22,9 @@ func (qb *QueryBuilder) ListPaymentMethods(
 	}
 
 	query := goqu.
-		From(db.TablePaymentMethod.String()).
-		Select(db.TablePaymentMethod.ColumnAll()).
-		Where(goqu.I(db.TablePaymentMethod.ColumnDeletedAt()).IsNull())
+		From(schema.PaymentMethod.Table()).
+		Select(schema.PaymentMethod.ColumnAll()).
+		Where(goqu.I(schema.PaymentMethod.ColumnDeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildPaymentMethodExpressions(options)
 
@@ -53,9 +53,9 @@ func (qb *QueryBuilder) CountPaymentMethods(
 	}
 
 	query := goqu.
-		From(db.TablePaymentMethod.String()).
-		Select(goqu.COUNT(db.TablePaymentMethod.ColumnAll())).
-		Where(goqu.I(db.TablePaymentMethod.ColumnDeletedAt()).IsNull())
+		From(schema.PaymentMethod.Table()).
+		Select(goqu.COUNT(schema.PaymentMethod.ColumnAll())).
+		Where(goqu.I(schema.PaymentMethod.ColumnDeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildPaymentMethodExpressions(options)
 
@@ -76,7 +76,7 @@ func (qb *QueryBuilder) buildPaymentMethodExpressions(
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			db.TablePaymentMethod.ColumnName(),
+			schema.PaymentMethod.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -84,7 +84,7 @@ func (qb *QueryBuilder) buildPaymentMethodExpressions(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(db.TablePaymentMethod.ColumnName()).Asc(),
+		goqu.I(schema.PaymentMethod.ColumnName()).Asc(),
 	)
 
 	return whereExps, orderedExps

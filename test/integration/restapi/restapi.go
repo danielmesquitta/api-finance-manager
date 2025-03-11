@@ -17,32 +17,49 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/test/container"
-	"github.com/danielmesquitta/api-finance-manager/test/query"
+	"github.com/danielmesquitta/api-finance-manager/test/db"
 	"github.com/gofiber/fiber/v2"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/sync/errgroup"
 )
 
+var (
+	wg  sync.WaitGroup
+	env *config.Env
+	val *validator.Validator
+)
+
 type TestApp struct {
-	t   *testing.T
-	a   *restapi.App
-	tqb *query.TestQueryBuilder
+	t  *testing.T
+	a  *restapi.App
+	db *db.TestDB
+}
+
+func init() {
+	wg.Add(1)
+	defer wg.Done()
+
+	val = validator.New()
+	env = config.LoadConfig(val)
 }
 
 func NewTestApp(
 	t *testing.T,
 ) (app *TestApp, cleanUp func(context.Context) error) {
+	wg.Wait()
+	v := *val
+	e := *env
 
 	mu := sync.Mutex{}
 	g, gCtx := errgroup.WithContext(context.Background())
 	cleanUps := []func(context.Context) error{}
 
-	var PostgresDatabaseURL string
+	var postgresDatabaseURL string
 	g.Go(func() error {
 		connectionString, cleanUp := container.NewPostgresContainer(gCtx)
 
 		mu.Lock()
-		PostgresDatabaseURL = connectionString
+		postgresDatabaseURL = connectionString
 		cleanUps = append(cleanUps, cleanUp)
 		mu.Unlock()
 
@@ -74,18 +91,15 @@ func NewTestApp(
 		return nil
 	}
 
-	v := validator.New()
-	e := config.LoadConfig(v)
-
-	e.PostgresDatabaseURL = PostgresDatabaseURL
+	e.PostgresDatabaseURL = postgresDatabaseURL
 	e.RedisDatabaseURL = redisDatabaseURL
 
-	restAPI := restapi.NewTest(v, e, t)
+	restAPI := restapi.NewTest(&v, &e, t)
 
 	app = &TestApp{
-		t:   t,
-		a:   restAPI,
-		tqb: query.NewTestQueryBuilder(restAPI.QueryBuilder),
+		t:  t,
+		a:  restAPI,
+		db: db.NewTestDB(restAPI.DB),
 	}
 
 	return app, cleanUp
@@ -188,6 +202,7 @@ func (ta *TestApp) MakeRequest(
 	)
 
 	req.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
+	req.Header.Set(fiber.HeaderAccept, fiber.MIMEApplicationJSON)
 
 	if options.token != "" {
 		req.Header.Set(fiber.HeaderAuthorization, options.token)
@@ -204,8 +219,10 @@ func (ta *TestApp) MakeRequest(
 	res, err := ta.a.Test(req, -1)
 	assert.Nil(ta.t, err)
 
-	bytesBody, err := io.ReadAll(res.Body)
-	assert.Nil(ta.t, err)
+	bytesBody, _ := io.ReadAll(res.Body)
+	if len(bytesBody) == 0 {
+		return res.StatusCode, "", nil
+	}
 
 	if options.response != nil && res.StatusCode >= 200 &&
 		res.StatusCode < 300 {
@@ -217,7 +234,7 @@ func (ta *TestApp) MakeRequest(
 	return res.StatusCode, string(bytesBody), nil
 }
 
-func (ta *TestApp) SignIn(token string) (accessToken string) {
+func (ta *TestApp) SignIn(token string) *dto.SignInResponse {
 	body := dto.SignInRequest{
 		SignInInput: usecase.SignInInput{
 			Provider: entity.ProviderMock,
@@ -235,5 +252,5 @@ func (ta *TestApp) SignIn(token string) (accessToken string) {
 	assert.Nil(ta.t, err)
 	assert.Equal(ta.t, http.StatusOK, statusCode)
 
-	return out.AccessToken
+	return &out
 }

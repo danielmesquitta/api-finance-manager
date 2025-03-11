@@ -80,8 +80,8 @@ func (h TransactionHandler) Get(c *fiber.Ctx) error {
 	transactionID := uuid.MustParse(c.Params(pathParamTransactionID))
 
 	in := usecase.GetTransactionInput{
-		TransactionID: transactionID,
-		UserID:        userID,
+		ID:     transactionID,
+		UserID: userID,
 	}
 
 	ctx := c.UserContext()
@@ -185,15 +185,18 @@ func (h *TransactionHandler) List(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions/{transaction_id} [put]
 func (h TransactionHandler) Update(c *fiber.Ctx) error {
+	in := usecase.UpdateTransactionInput{}
+	if err := c.BodyParser(&in); err != nil {
+		return errs.New(err)
+	}
+
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
 	transactionID := uuid.MustParse(c.Params(pathParamTransactionID))
 
-	in := usecase.UpdateTransactionInput{
-		ID:     transactionID,
-		UserID: userID,
-	}
+	in.ID = transactionID
+	in.UserID = userID
 
 	ctx := c.UserContext()
 	if err := h.ut.Execute(ctx, in); err != nil {

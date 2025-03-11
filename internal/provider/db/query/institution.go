@@ -6,7 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/schema"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
@@ -23,9 +23,9 @@ func (qb *QueryBuilder) ListInstitutions(
 	}
 
 	query := goqu.
-		From(db.TableInstitution.String()).
-		Select(db.TableInstitution.ColumnAll()).
-		Where(goqu.I(db.TableInstitution.ColumnDeletedAt()).IsNull())
+		From(schema.Institution.Table()).
+		Select(schema.Institution.ColumnAll()).
+		Where(goqu.I(schema.Institution.ColumnDeletedAt()).IsNull())
 
 	qb.buildInstitutionJoins(query, options)
 
@@ -51,9 +51,9 @@ func (qb *QueryBuilder) CountInstitutions(
 	}
 
 	query := goqu.
-		From(db.TableInstitution.String()).
-		Select(goqu.COUNT(db.TableInstitution.ColumnAll())).
-		Where(goqu.I(db.TableInstitution.ColumnDeletedAt()).IsNull())
+		From(schema.Institution.Table()).
+		Select(goqu.COUNT(schema.Institution.ColumnAll())).
+		Where(goqu.I(schema.Institution.ColumnDeletedAt()).IsNull())
 
 	query = qb.buildInstitutionJoins(query, options)
 
@@ -75,10 +75,10 @@ func (qb *QueryBuilder) buildInstitutionJoins(
 ) *goqu.SelectDataset {
 	if options.UserID != uuid.Nil {
 		query = query.Join(
-			goqu.I(db.TableAccount.String()),
+			goqu.I(schema.Account.Table()),
 			goqu.On(
-				goqu.I(db.TableAccount.ColumnInstitutionID()).
-					Eq(goqu.I(db.TableInstitution.ColumnID())),
+				goqu.I(schema.Account.ColumnInstitutionID()).
+					Eq(goqu.I(schema.Institution.ColumnID())),
 			),
 		)
 	}
@@ -92,7 +92,7 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 	if options.Search != "" {
 		searchExp, distanceExp := qb.buildSearch(
 			options.Search,
-			db.TableInstitution.ColumnName(),
+			schema.Institution.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, distanceExp.Asc())
@@ -101,14 +101,14 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 	if options.UserID != uuid.Nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(db.TableAccount.ColumnUserID()).
+			goqu.I(schema.Account.ColumnUserID()).
 				Eq(options.UserID),
 		)
 	}
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(db.TableInstitution.ColumnName()).Asc(),
+		goqu.I(schema.Institution.ColumnName()).Asc(),
 	)
 
 	return whereExps, orderedExps
