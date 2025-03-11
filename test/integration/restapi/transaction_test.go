@@ -9,6 +9,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -347,10 +348,13 @@ func TestUpdateTransactionRoute(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			accessToken := ""
+			var (
+				accessToken string
+				user        *entity.User
+			)
 			if test.token != "" {
 				signInRes := app.SignIn(test.token)
-				accessToken = signInRes.AccessToken
+				accessToken, user = signInRes.AccessToken, &signInRes.User
 			}
 
 			statusCode, rawBody, err := app.MakeRequest(
@@ -371,9 +375,12 @@ func TestUpdateTransactionRoute(t *testing.T) {
 				return
 			}
 
-			transaction, err := app.db.GetTransactionByID(
+			transaction, err := app.db.GetTransaction(
 				ctx,
-				test.transactionID,
+				sqlc.GetTransactionParams{
+					ID:     uuid.MustParse(test.transactionID),
+					UserID: user.ID,
+				},
 			)
 			assert.Nil(t, err, rawBody)
 
