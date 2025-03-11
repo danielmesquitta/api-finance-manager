@@ -25,11 +25,18 @@ func (qb *QueryBuilder) ListInstitutions(
 	query := goqu.
 		From(schema.Institution.Table()).
 		Select(schema.Institution.ColumnAll()).
+		Distinct(schema.Institution.ColumnID()).
 		Where(goqu.I(schema.Institution.ColumnDeletedAt()).IsNull())
 
-	qb.buildInstitutionJoins(query, options)
+	query = qb.buildInstitutionJoins(query, options)
 
-	whereExps, orderedExps := qb.buildInstitutionExpressions(options)
+	orderedExps := []exp.OrderedExpression{
+		goqu.I(schema.Institution.ColumnID()).Asc(),
+	}
+
+	whereExps, auxOrderedExps := qb.buildInstitutionExpressions(options)
+
+	orderedExps = append(orderedExps, auxOrderedExps...)
 
 	query = qb.buildInstitutionQuery(query, options, whereExps, orderedExps)
 
@@ -52,7 +59,11 @@ func (qb *QueryBuilder) CountInstitutions(
 
 	query := goqu.
 		From(schema.Institution.Table()).
-		Select(goqu.COUNT(schema.Institution.ColumnAll())).
+		Select(
+			goqu.COUNT(
+				goqu.DISTINCT(schema.Institution.ColumnAll()),
+			),
+		).
 		Where(goqu.I(schema.Institution.ColumnDeletedAt()).IsNull())
 
 	query = qb.buildInstitutionJoins(query, options)
@@ -125,7 +136,9 @@ func (qb *QueryBuilder) buildInstitutionQuery(
 	}
 
 	if len(orderedExps) > 0 {
-		query = query.Order(orderedExps...)
+		query = query.Order(
+			orderedExps...,
+		)
 	}
 
 	if options.Limit > 0 {

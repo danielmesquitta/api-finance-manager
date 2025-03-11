@@ -337,21 +337,6 @@ definitions:
       total_pages:
         type: integer
     type: object
-  dto.ListCategoriesResponse:
-    properties:
-      items:
-        items:
-          $ref: '#/definitions/entity.TransactionCategory'
-        type: array
-      page:
-        type: integer
-      page_size:
-        type: integer
-      total_items:
-        type: integer
-      total_pages:
-        type: integer
-    type: object
   dto.ListInstitutionsResponse:
     properties:
       items:
@@ -372,6 +357,21 @@ definitions:
       items:
         items:
           $ref: '#/definitions/entity.PaymentMethod'
+        type: array
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total_items:
+        type: integer
+      total_pages:
+        type: integer
+    type: object
+  dto.ListTransactionCategoriesResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/entity.TransactionCategory'
         type: array
       page:
         type: integer
@@ -1681,8 +1681,8 @@ paths:
       produces:
       - application/json
       responses:
-        "204":
-          description: No Content
+        "201":
+          description: Created
         "400":
           description: Bad Request
           schema:
@@ -1985,7 +1985,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ListCategoriesResponse'
+            $ref: '#/definitions/dto.ListTransactionCategoriesResponse'
         "401":
           description: Unauthorized
           schema:

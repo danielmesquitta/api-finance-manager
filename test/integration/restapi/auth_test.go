@@ -30,7 +30,7 @@ func TestSignInRoute(t *testing.T) {
 				},
 			},
 			token:              mockoauth.DefaultMockToken,
-			expectedCode:       200,
+			expectedCode:       http.StatusOK,
 			expectedUserAuthID: mockoauth.Users[mockoauth.DefaultMockToken].AuthID,
 		},
 		{
@@ -41,7 +41,7 @@ func TestSignInRoute(t *testing.T) {
 				},
 			},
 			token:              mockoauth.UnregisteredUserMockToken,
-			expectedCode:       200,
+			expectedCode:       http.StatusOK,
 			expectedUserAuthID: mockoauth.Users[mockoauth.UnregisteredUserMockToken].AuthID,
 		},
 	}
@@ -79,6 +79,75 @@ func TestSignInRoute(t *testing.T) {
 				test.expectedUserAuthID,
 				out.User.AuthID,
 				rawBody,
+			)
+		})
+	}
+}
+
+func TestRefreshTokenRoute(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		description        string
+		token              string
+		expectedCode       int
+		expectedUserAuthID string
+	}{
+		{
+			description:        "Refresh token",
+			token:              mockoauth.DefaultMockToken,
+			expectedCode:       http.StatusOK,
+			expectedUserAuthID: mockoauth.Users[mockoauth.DefaultMockToken].AuthID,
+		},
+		{
+			description:        "Fail to refresh token without access token",
+			token:              "",
+			expectedCode:       http.StatusBadRequest,
+			expectedUserAuthID: "",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.description, func(t *testing.T) {
+			t.Parallel()
+
+			app, cleanUp := NewTestApp(t)
+			defer func() {
+				err := cleanUp(context.Background())
+				assert.Nil(t, err)
+			}()
+
+			refreshToken := ""
+			if test.token != "" {
+				signInRes := app.SignIn(test.token)
+				refreshToken = signInRes.RefreshToken
+			}
+
+			var out dto.SignInResponse
+			statusCode, _, err := app.MakeRequest(
+				http.MethodPost,
+				"/api/v1/auth/refresh",
+				WithBearerToken(refreshToken),
+				WithResponse(&out),
+			)
+			assert.Nil(t, err)
+
+			assert.Equal(
+				t,
+				test.expectedCode,
+				statusCode,
+			)
+
+			if test.expectedCode != http.StatusOK {
+				return
+			}
+
+			assert.NotEmpty(t, out.AccessToken)
+			assert.NotEmpty(t, out.RefreshToken)
+			assert.Equal(
+				t,
+				test.expectedUserAuthID,
+				out.User.AuthID,
 			)
 		})
 	}

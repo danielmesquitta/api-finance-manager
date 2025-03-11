@@ -424,7 +424,7 @@ func TestCreateTransactionRoute(t *testing.T) {
 			expectedCode: http.StatusBadRequest,
 		},
 		{
-			description:  "Update transaction",
+			description:  "Create transaction",
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusCreated,
 			body: func() dto.CreateTransactionRequest {

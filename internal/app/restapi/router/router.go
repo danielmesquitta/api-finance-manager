@@ -82,7 +82,7 @@ func (r *Router) Register(
 	apiV1 := app.Group(basePath + "/v1")
 
 	apiV1.Post("/auth/sign-in", r.ah.SignIn)
-	apiV1.Post("/auth/refresh", r.ah.RefreshToken, r.m.BearerAuthRefreshToken())
+	apiV1.Post("/auth/refresh", r.m.BearerAuthRefreshToken(), r.ah.RefreshToken)
 
 	adminApiV1 := apiV1.Group("/admin", r.m.BasicAuth())
 	adminApiV1.Post("/institutions/sync", r.ih.Sync)
@@ -127,7 +127,7 @@ func (r *Router) Register(
 	usersApiV1.Get("/transactions/:transaction_id", r.th.Get)
 	usersApiV1.Put("/transactions/:transaction_id", r.th.Update)
 
-	usersApiV1.Post("/feedback", r.fh.Create)
+	usersApiV1.Post("/feedbacks", r.fh.Create)
 
 	usersApiV1.Get("/payment-methods", r.pmh.List)
 

@@ -50,7 +50,7 @@ func (h CategoryHandler) Sync(c *fiber.Ctx) error {
 // @Param search query string false "Search"
 // @Param page query int false "Page"
 // @Param page_size query int false "Page size"
-// @Success 200 {object} dto.ListCategoriesResponse
+// @Success 200 {object} dto.ListTransactionCategoriesResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions/categories [get]

@@ -4,6 +4,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 )
 
-type ListCategoriesResponse struct {
+type ListTransactionCategoriesResponse struct {
 	entity.PaginatedList[entity.TransactionCategory]
 }

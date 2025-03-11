@@ -134,20 +134,25 @@ func GetUserClaims(
 		return nil
 	}
 
-	subscriptionExpiresAt, err := time.Parse(
-		time.RFC3339,
-		(claims)["subscription_expires_at"].(string),
-	)
-	if err != nil {
-		panic(err)
+	issuer, _ := claims.GetIssuer()
+	issuedAt, _ := claims.GetIssuedAt()
+	expiresAt, _ := claims.GetExpirationTime()
+	tier, _ := claims["tier"].(string)
+
+	var subscriptionExpiresAt *time.Time
+	if expiresAtStr, ok := claims["subscription_expires_at"].(string); ok &&
+		expiresAtStr != "" {
+		if parsed, err := time.Parse(time.RFC3339, expiresAtStr); err == nil {
+			subscriptionExpiresAt = &parsed
+		}
 	}
 
 	return &jwtutil.UserClaims{
-		Issuer:                (claims)["iss"].(string),
-		IssuedAt:              time.Unix(int64((claims)["iat"].(float64)), 0),
-		ExpiresAt:             time.Unix(int64((claims)["exp"].(float64)), 0),
-		Tier:                  entity.Tier((claims)["tier"].(string)),
-		SubscriptionExpiresAt: &subscriptionExpiresAt,
+		Issuer:                issuer,
+		IssuedAt:              issuedAt.Time,
+		ExpiresAt:             expiresAt.Time,
+		Tier:                  entity.Tier(tier),
+		SubscriptionExpiresAt: subscriptionExpiresAt,
 	}
 }
 

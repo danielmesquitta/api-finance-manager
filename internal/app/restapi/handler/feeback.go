@@ -29,7 +29,7 @@ func NewFeedbackHandler(
 // @Accept json
 // @Produce json
 // @Param request body dto.CreateFeedbackRequest true "Request body"
-// @Success 204
+// @Success 201
 // @Failure 400 {object} dto.ErrorResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
@@ -52,5 +52,5 @@ func (h *FeedbackHandler) Create(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	return c.SendStatus(http.StatusNoContent)
+	return c.SendStatus(http.StatusCreated)
 }

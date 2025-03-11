@@ -3,6 +3,7 @@ package query
 import (
 	"context"
 	"errors"
+	"log"
 	"math"
 	"reflect"
 
@@ -78,6 +79,8 @@ func (qb *QueryBuilder) Scan(
 	if err != nil {
 		return errs.New(err)
 	}
+
+	log.Println("SQL: ", sql)
 
 	val := reflect.ValueOf(dest)
 	if val.Kind() != reflect.Ptr {

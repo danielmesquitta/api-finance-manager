@@ -508,29 +508,6 @@
                 },
                 "type": "object"
             },
-            "dto.ListCategoriesResponse": {
-                "properties": {
-                    "items": {
-                        "items": {
-                            "$ref": "#/components/schemas/entity.TransactionCategory"
-                        },
-                        "type": "array"
-                    },
-                    "page": {
-                        "type": "integer"
-                    },
-                    "page_size": {
-                        "type": "integer"
-                    },
-                    "total_items": {
-                        "type": "integer"
-                    },
-                    "total_pages": {
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
             "dto.ListInstitutionsResponse": {
                 "properties": {
                     "items": {
@@ -559,6 +536,29 @@
                     "items": {
                         "items": {
                             "$ref": "#/components/schemas/entity.PaymentMethod"
+                        },
+                        "type": "array"
+                    },
+                    "page": {
+                        "type": "integer"
+                    },
+                    "page_size": {
+                        "type": "integer"
+                    },
+                    "total_items": {
+                        "type": "integer"
+                    },
+                    "total_pages": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "dto.ListTransactionCategoriesResponse": {
+                "properties": {
+                    "items": {
+                        "items": {
+                            "$ref": "#/components/schemas/entity.TransactionCategory"
                         },
                         "type": "array"
                     },
@@ -2792,8 +2792,8 @@
                     "x-originalParamName": "request"
                 },
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "201": {
+                        "description": "Created"
                     },
                     "400": {
                         "content": {
@@ -3211,7 +3211,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/dto.ListCategoriesResponse"
+                                    "$ref": "#/components/schemas/dto.ListTransactionCategoriesResponse"
                                 }
                             }
                         },
