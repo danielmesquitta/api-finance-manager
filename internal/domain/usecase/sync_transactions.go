@@ -77,7 +77,7 @@ func (uc *SyncTransactions) Execute(
 		}
 
 		if offset == -1 {
-			slog.Info("sync transactions already completed")
+			slog.Info("sync-transactions: already completed")
 			return nil
 		}
 
@@ -142,7 +142,7 @@ func (uc *SyncTransactions) Execute(
 			return errs.New(err)
 		}
 
-		slog.Info("sync transactions completed")
+		slog.Info("sync-transactions: completed")
 		return nil
 	}
 
@@ -182,10 +182,13 @@ func (uc *SyncTransactions) Execute(
 			)
 			if err != nil {
 				slog.Error(
-					"error getting open finance transactions",
-					"user", userID,
-					"account", account,
-					"err", err,
+					"sync-transactions: error getting open finance transactions",
+					"user",
+					userID,
+					"account",
+					account,
+					"err",
+					err,
 				)
 				continue
 			}
@@ -226,7 +229,7 @@ func (uc *SyncTransactions) Execute(
 			openFinanceTransactionsByAccountID,
 		); err != nil {
 			slog.Error(
-				"error syncing user transactions",
+				"sync-transactions: error syncing user transactions",
 				"user_id", userID,
 				"accounts", userAccounts,
 				"categories", categories,
@@ -248,7 +251,7 @@ func (uc *SyncTransactions) Execute(
 				return errs.New(err)
 			}
 
-			slog.Info("sync transactions completed")
+			slog.Info("sync-transactions: completed")
 			return nil
 		}
 
@@ -390,6 +393,10 @@ func (uc *SyncTransactions) buildCreateTransactionsParams(
 				ofTrans.CategoryExternalID,
 				categoriesByExternalID,
 			)
+			if categoryID == nil {
+				continue
+			}
+
 			pm := paymentMethodsByExternalID[ofTrans.PaymentMethodExternalID]
 
 			params = append(params, repo.CreateTransactionsParams{
@@ -401,7 +408,7 @@ func (uc *SyncTransactions) buildCreateTransactionsParams(
 				UserID:          userID,
 				AccountID:       &account.ID,
 				InstitutionID:   &account.InstitutionID,
-				CategoryID:      categoryID,
+				CategoryID:      *categoryID,
 			})
 		}
 	}
@@ -488,7 +495,7 @@ func (uc *SyncTransactions) getCategoryID(
 	category, ok := categoriesByExternalID[parentCategoryExternalID]
 	if !ok {
 		slog.Error(
-			"category not found",
+			"sync-transactions: category not found",
 			"category_external_id",
 			categoryExternalID,
 			"parent_category_external_id",

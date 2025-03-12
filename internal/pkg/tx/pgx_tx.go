@@ -33,7 +33,7 @@ func (t *PgxTX) Do(
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		if err := tx.Rollback(ctx); err != nil && err != pgx.ErrTxClosed {
-			slog.Error("failed to rollback transaction", "error", err)
+			slog.Error("tx: failed to rollback transaction", "error", err)
 		}
 	}()
 

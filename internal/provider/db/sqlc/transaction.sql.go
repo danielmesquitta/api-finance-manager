@@ -25,12 +25,12 @@ VALUES ($1, $2, $3, $4, $5, $6)
 `
 
 type CreateTransactionParams struct {
-	Name            string     `json:"name"`
-	Amount          int64      `json:"amount"`
-	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
-	Date            time.Time  `json:"date"`
-	UserID          uuid.UUID  `json:"user_id"`
-	CategoryID      *uuid.UUID `json:"category_id"`
+	Name            string    `json:"name"`
+	Amount          int64     `json:"amount"`
+	PaymentMethodID uuid.UUID `json:"payment_method_id"`
+	Date            time.Time `json:"date"`
+	UserID          uuid.UUID `json:"user_id"`
+	CategoryID      uuid.UUID `json:"category_id"`
 }
 
 func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionParams) error {
@@ -54,11 +54,11 @@ type CreateTransactionsParams struct {
 	UserID          uuid.UUID  `json:"user_id"`
 	AccountID       *uuid.UUID `json:"account_id"`
 	InstitutionID   *uuid.UUID `json:"institution_id"`
-	CategoryID      *uuid.UUID `json:"category_id"`
+	CategoryID      uuid.UUID  `json:"category_id"`
 }
 
 const getTransaction = `-- name: GetTransaction :one
-SELECT transactions.id, transactions.external_id, transactions.name, transactions.amount, transactions.is_ignored, transactions.date, transactions.created_at, transactions.updated_at, transactions.deleted_at, transactions.payment_method_id, transactions.user_id, transactions.account_id, transactions.institution_id, transactions.category_id,
+SELECT transactions.id, transactions.external_id, transactions.name, transactions.amount, transactions.is_ignored, transactions.date, transactions.created_at, transactions.updated_at, transactions.deleted_at, transactions.payment_method_id, transactions.user_id, transactions.category_id, transactions.account_id, transactions.institution_id,
   transaction_categories.name as category_name,
   institutions.name as institution_name,
   institutions.logo as institution_logo,
@@ -89,9 +89,9 @@ type GetTransactionRow struct {
 	DeletedAt         *time.Time `json:"deleted_at"`
 	PaymentMethodID   uuid.UUID  `json:"payment_method_id"`
 	UserID            uuid.UUID  `json:"user_id"`
+	CategoryID        uuid.UUID  `json:"category_id"`
 	AccountID         *uuid.UUID `json:"account_id"`
 	InstitutionID     *uuid.UUID `json:"institution_id"`
-	CategoryID        *uuid.UUID `json:"category_id"`
 	CategoryName      *string    `json:"category_name"`
 	InstitutionName   *string    `json:"institution_name"`
 	InstitutionLogo   *string    `json:"institution_logo"`
@@ -113,9 +113,9 @@ func (q *Queries) GetTransaction(ctx context.Context, arg GetTransactionParams) 
 		&i.DeletedAt,
 		&i.PaymentMethodID,
 		&i.UserID,
+		&i.CategoryID,
 		&i.AccountID,
 		&i.InstitutionID,
-		&i.CategoryID,
 		&i.CategoryName,
 		&i.InstitutionName,
 		&i.InstitutionLogo,
@@ -146,7 +146,7 @@ type UpdateTransactionParams struct {
 	Date            time.Time  `json:"date"`
 	AccountID       *uuid.UUID `json:"account_id"`
 	InstitutionID   *uuid.UUID `json:"institution_id"`
-	CategoryID      *uuid.UUID `json:"category_id"`
+	CategoryID      uuid.UUID  `json:"category_id"`
 	UserID          uuid.UUID  `json:"user_id"`
 }
 

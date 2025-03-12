@@ -80,12 +80,12 @@ type CreatePaymentMethodsParams struct {
 }
 
 type CreateTransactionParams struct {
-	Name            string     `json:"name"`
-	Amount          int64      `json:"amount"`
-	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
-	Date            time.Time  `json:"date"`
-	UserID          uuid.UUID  `json:"user_id"`
-	CategoryID      *uuid.UUID `json:"category_id"`
+	Name            string    `json:"name"`
+	Amount          int64     `json:"amount"`
+	PaymentMethodID uuid.UUID `json:"payment_method_id"`
+	Date            time.Time `json:"date"`
+	UserID          uuid.UUID `json:"user_id"`
+	CategoryID      uuid.UUID `json:"category_id"`
 }
 
 type CreateTransactionsParams struct {
@@ -97,7 +97,7 @@ type CreateTransactionsParams struct {
 	UserID          uuid.UUID  `json:"user_id"`
 	AccountID       *uuid.UUID `json:"account_id"`
 	InstitutionID   *uuid.UUID `json:"institution_id"`
-	CategoryID      *uuid.UUID `json:"category_id"`
+	CategoryID      uuid.UUID  `json:"category_id"`
 }
 
 type GetTransactionParams struct {
@@ -113,7 +113,7 @@ type UpdateTransactionParams struct {
 	Date            time.Time  `json:"date"`
 	AccountID       *uuid.UUID `json:"account_id"`
 	InstitutionID   *uuid.UUID `json:"institution_id"`
-	CategoryID      *uuid.UUID `json:"category_id"`
+	CategoryID      uuid.UUID  `json:"category_id"`
 	UserID          uuid.UUID  `json:"user_id"`
 }
 

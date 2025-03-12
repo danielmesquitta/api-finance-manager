@@ -48,7 +48,7 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 	}
 
 	if offset == -1 {
-		slog.Info("sync balances already completed")
+		slog.Info("sync-balances: already completed")
 		return nil
 	}
 
@@ -69,7 +69,7 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 			return errs.New(err)
 		}
 
-		slog.Info("sync balances completed")
+		slog.Info("sync-balances: completed")
 		return nil
 	}
 
@@ -88,7 +88,7 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 		openFinanceID := userAccounts[0].OpenFinanceID
 		if openFinanceID == nil {
 			slog.Info(
-				"skipping user without open finance id",
+				"sync-balances: skipping user without open finance id",
 				"user_id", userID,
 			)
 			continue
@@ -107,7 +107,7 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 				accountsByExternalIDs,
 			); err != nil {
 				slog.Error(
-					"error creating user balances",
+					"sync-balances: error creating user balances",
 					"user_id", userID,
 					"error", err,
 				)
@@ -124,7 +124,7 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 		if err := uc.c.Set(ctx, cache.KeySyncBalancesOffset, -1, cacheExp); err != nil {
 			return errs.New(err)
 		}
-		slog.Info("sync balances completed")
+		slog.Info("sync-balances: completed")
 		return nil
 	}
 
@@ -147,7 +147,7 @@ func (uc *SyncBalances) createAccountBalances(
 		account, ok := accountsByExternalIDs[openFinanceAccount.ExternalID]
 		if !ok {
 			slog.Error(
-				"account not found",
+				"sync-balances: account not found",
 				"external_id", openFinanceAccount.ExternalID,
 			)
 			continue

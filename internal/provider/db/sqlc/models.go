@@ -133,9 +133,9 @@ type Transaction struct {
 	DeletedAt       *time.Time `json:"deleted_at"`
 	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
 	UserID          uuid.UUID  `json:"user_id"`
+	CategoryID      uuid.UUID  `json:"category_id"`
 	AccountID       *uuid.UUID `json:"account_id"`
 	InstitutionID   *uuid.UUID `json:"institution_id"`
-	CategoryID      *uuid.UUID `json:"category_id"`
 }
 
 type TransactionCategory struct {
@@ -149,6 +149,8 @@ type TransactionCategory struct {
 
 type User struct {
 	ID                    uuid.UUID  `json:"id"`
+	AuthID                string     `json:"auth_id"`
+	OpenFinanceID         *string    `json:"open_finance_id"`
 	Provider              string     `json:"provider"`
 	Name                  string     `json:"name"`
 	Email                 string     `json:"email"`
@@ -160,6 +162,4 @@ type User struct {
 	CreatedAt             time.Time  `json:"created_at"`
 	UpdatedAt             time.Time  `json:"updated_at"`
 	DeletedAt             *time.Time `json:"deleted_at"`
-	AuthID                string     `json:"auth_id"`
-	OpenFinanceID         *string    `json:"open_finance_id"`
 }

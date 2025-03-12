@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"log/slog"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi"
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
@@ -23,8 +22,6 @@ import (
 func main() {
 	v := validator.New()
 	e := config.LoadConfig(v)
-
-	slog.Info("Starting server...")
 
 	var app *restapi.App
 	switch e.Environment {

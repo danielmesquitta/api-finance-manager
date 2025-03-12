@@ -25,7 +25,7 @@ INSERT INTO users (
     subscription_expires_at
   )
 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-RETURNING id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
+RETURNING id, auth_id, open_finance_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 `
 
 type CreateUserParams struct {
@@ -55,6 +55,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.AuthID,
+		&i.OpenFinanceID,
 		&i.Provider,
 		&i.Name,
 		&i.Email,
@@ -66,8 +68,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
-		&i.AuthID,
-		&i.OpenFinanceID,
 	)
 	return i, err
 }
@@ -102,7 +102,7 @@ func (q *Queries) DestroyUser(ctx context.Context, id uuid.UUID) error {
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
+SELECT id, auth_id, open_finance_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 FROM users
 WHERE email = $1
 `
@@ -112,6 +112,8 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.AuthID,
+		&i.OpenFinanceID,
 		&i.Provider,
 		&i.Name,
 		&i.Email,
@@ -123,14 +125,12 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
-		&i.AuthID,
-		&i.OpenFinanceID,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
+SELECT id, auth_id, open_finance_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 FROM users
 WHERE id = $1
 `
@@ -140,6 +140,8 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.AuthID,
+		&i.OpenFinanceID,
 		&i.Provider,
 		&i.Name,
 		&i.Email,
@@ -151,14 +153,12 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
-		&i.AuthID,
-		&i.OpenFinanceID,
 	)
 	return i, err
 }
 
 const listUsers = `-- name: ListUsers :many
-SELECT id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
+SELECT id, auth_id, open_finance_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 FROM users
 WHERE deleted_at IS NULL
 `
@@ -174,6 +174,8 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 		var i User
 		if err := rows.Scan(
 			&i.ID,
+			&i.AuthID,
+			&i.OpenFinanceID,
 			&i.Provider,
 			&i.Name,
 			&i.Email,
@@ -185,8 +187,6 @@ func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DeletedAt,
-			&i.AuthID,
-			&i.OpenFinanceID,
 		); err != nil {
 			return nil, err
 		}
@@ -211,7 +211,7 @@ SET auth_id = $2,
   subscription_expires_at = $10,
   synchronized_at = $11
 WHERE id = $1
-RETURNING id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, auth_id, open_finance_id
+RETURNING id, auth_id, open_finance_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 `
 
 type UpdateUserParams struct {
@@ -245,6 +245,8 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 	var i User
 	err := row.Scan(
 		&i.ID,
+		&i.AuthID,
+		&i.OpenFinanceID,
 		&i.Provider,
 		&i.Name,
 		&i.Email,
@@ -256,8 +258,6 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
-		&i.AuthID,
-		&i.OpenFinanceID,
 	)
 	return i, err
 }

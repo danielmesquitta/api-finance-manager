@@ -199,7 +199,7 @@ func (c *Client) ListTransactions(
 		transaction, err := c.parseTransactionResultToEntity(t)
 		if err != nil {
 			slog.Error(
-				"error parsing transaction result to entity",
+				"openfinance-list-transactions: error parsing transaction result to entity",
 				"transaction",
 				t,
 				"err",
