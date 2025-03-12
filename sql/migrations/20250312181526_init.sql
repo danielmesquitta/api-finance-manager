@@ -7,7 +7,8 @@ CREATE EXTENSION IF NOT EXISTS "unaccent";
 -- CreateTable
 CREATE TABLE "users" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "external_id" TEXT NOT NULL,
+    "auth_id" TEXT NOT NULL,
+    "open_finance_id" TEXT,
     "provider" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -26,7 +27,7 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "transactions" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "external_id" TEXT NOT NULL,
+    "external_id" TEXT,
     "name" TEXT NOT NULL,
     "amount" BIGINT NOT NULL,
     "is_ignored" BOOLEAN NOT NULL DEFAULT false,
@@ -36,9 +37,9 @@ CREATE TABLE "transactions" (
     "deleted_at" TIMESTAMPTZ,
     "payment_method_id" UUID NOT NULL,
     "user_id" UUID NOT NULL,
+    "category_id" UUID NOT NULL,
     "account_id" UUID,
     "institution_id" UUID,
-    "category_id" UUID,
 
     CONSTRAINT "transactions_pkey" PRIMARY KEY ("id")
 );
@@ -119,6 +120,7 @@ CREATE TABLE "account_balances" (
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
     "account_id" UUID NOT NULL,
+    "user_id" UUID NOT NULL,
 
     CONSTRAINT "account_balances_pkey" PRIMARY KEY ("id")
 );
@@ -162,11 +164,44 @@ CREATE TABLE "budget_categories" (
     CONSTRAINT "budget_categories_pkey" PRIMARY KEY ("id")
 );
 
--- CreateIndex
-CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+-- CreateTable
+CREATE TABLE "feedbacks" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "message" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ,
+    "user_id" UUID,
+
+    CONSTRAINT "feedbacks_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ai_chats" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "title" TEXT,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ,
+    "user_id" UUID NOT NULL,
+
+    CONSTRAINT "ai_chats_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ai_chat_messages" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "message" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ,
+    "created_by_user_id" UUID,
+    "ai_chat_id" UUID NOT NULL,
+
+    CONSTRAINT "ai_chat_messages_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateIndex
-CREATE UNIQUE INDEX "transactions_external_id_key" ON "transactions"("external_id");
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "payment_methods_external_id_key" ON "payment_methods"("external_id");
@@ -193,13 +228,13 @@ ALTER TABLE "transactions" ADD CONSTRAINT "transactions_payment_method_id_fkey" 
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "transactions" ADD CONSTRAINT "transactions_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "transaction_categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "transactions" ADD CONSTRAINT "transactions_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "institutions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "transactions" ADD CONSTRAINT "transactions_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "transaction_categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "investments" ADD CONSTRAINT "investments_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "investment_categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -217,6 +252,9 @@ ALTER TABLE "accounts" ADD CONSTRAINT "accounts_institution_id_fkey" FOREIGN KEY
 ALTER TABLE "account_balances" ADD CONSTRAINT "account_balances_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "account_balances" ADD CONSTRAINT "account_balances_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "budgets" ADD CONSTRAINT "budgets_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -224,3 +262,15 @@ ALTER TABLE "budget_categories" ADD CONSTRAINT "budget_categories_budget_id_fkey
 
 -- AddForeignKey
 ALTER TABLE "budget_categories" ADD CONSTRAINT "budget_categories_category_id_fkey" FOREIGN KEY ("category_id") REFERENCES "transaction_categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "feedbacks" ADD CONSTRAINT "feedbacks_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ai_chats" ADD CONSTRAINT "ai_chats_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ai_chat_messages" ADD CONSTRAINT "ai_chat_messages_created_by_user_id_fkey" FOREIGN KEY ("created_by_user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ai_chat_messages" ADD CONSTRAINT "ai_chat_messages_ai_chat_id_fkey" FOREIGN KEY ("ai_chat_id") REFERENCES "ai_chats"("id") ON DELETE CASCADE ON UPDATE CASCADE;

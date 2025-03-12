@@ -59,20 +59,20 @@ func (c *Client) ListTransactionCategories(
 func (c *Client) GetParentCategoryExternalID(
 	externalCategoryID string,
 	categoriesByExternalID map[string]entity.TransactionCategory,
-) (string, bool) {
+) string {
 	defaultCategory := "99999999"
 	if externalCategoryID == "" {
-		return defaultCategory, false
+		return defaultCategory
 	}
 
 	if _, ok := categoriesByExternalID[externalCategoryID]; ok {
-		return externalCategoryID, true
+		return externalCategoryID
 	}
 
 	parentExternalID := externalCategoryID[:2] + "000000"
 	if _, ok := categoriesByExternalID[parentExternalID]; ok {
-		return parentExternalID, true
+		return parentExternalID
 	}
 
-	return defaultCategory, false
+	return defaultCategory
 }

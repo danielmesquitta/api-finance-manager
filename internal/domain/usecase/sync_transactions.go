@@ -480,16 +480,20 @@ func (uc *SyncTransactions) getCategoryID(
 	categoryExternalID string,
 	categoriesByExternalID map[string]entity.TransactionCategory,
 ) *uuid.UUID {
-	parentCategoryExternalID, ok := uc.o.GetParentCategoryExternalID(
+	parentCategoryExternalID := uc.o.GetParentCategoryExternalID(
 		categoryExternalID,
 		categoriesByExternalID,
 	)
-	if !ok {
-		return nil
-	}
 
 	category, ok := categoriesByExternalID[parentCategoryExternalID]
 	if !ok {
+		slog.Error(
+			"category not found",
+			"category_external_id",
+			categoryExternalID,
+			"parent_category_external_id",
+			parentCategoryExternalID,
+		)
 		return nil
 	}
 

@@ -36,9 +36,9 @@ type Transaction struct {
 	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
 	PaymentMethodID uuid.UUID  `json:"payment_method_id,omitempty"`
 	UserID          uuid.UUID  `json:"user_id,omitempty"`
+	CategoryID      uuid.UUID  `json:"category_id,omitempty"`
 	AccountID       *uuid.UUID `json:"account_id,omitempty"`
 	InstitutionID   *uuid.UUID `json:"institution_id,omitempty"`
-	CategoryID      *uuid.UUID `json:"category_id,omitempty"`
 }
 
 type PaymentMethod struct {

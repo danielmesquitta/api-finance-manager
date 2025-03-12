@@ -61,14 +61,14 @@ model Transaction {
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
 
+  category    TransactionCategory @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category_id String              @db.Uuid
+
   account    Account? @relation(fields: [account_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   account_id String?  @db.Uuid
 
   institution    Institution? @relation(fields: [institution_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   institution_id String?      @db.Uuid
-
-  category    TransactionCategory? @relation(fields: [category_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  category_id String?              @db.Uuid
 
   @@map("transactions")
 }

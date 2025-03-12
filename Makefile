@@ -44,7 +44,7 @@ lint:
 lint-fix:
 	@golangci-lint run --fix && golines **/*.go -w -m 80 && go run cmd/lintfix/main.go
 zip_migrations:
-	@prisma-go-tools zip --schema=$(schema)
+	@prisma-go-tools zip --schema=$(schema) || true
 unzip_migrations:
 	@prisma-go-tools unzip --schema=$(schema)
 create_migration:

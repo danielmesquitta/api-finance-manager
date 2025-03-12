@@ -15,6 +15,7 @@ INSERT INTO transactions (
     category_id
   )
 VALUES (
+    -- One of each category
     '61edb9dd-c137-4e7e-8361-bc78a7ef864b'::uuid,
     '601c813f-756f-4d7f-84d6-ef4084656341',
     'Transferência enviada|LE POSTICHE',
