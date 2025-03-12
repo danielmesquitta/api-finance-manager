@@ -115,4 +115,23 @@ func (r *TransactionCategoryRepo) GetTransactionCategory(
 	return &result, nil
 }
 
+func (r *TransactionCategoryRepo) GetDefaultTransactionCategory(
+	ctx context.Context,
+) (*entity.TransactionCategory, error) {
+	category, err := r.db.GetDefaultTransactionCategory(ctx)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, errs.New(err)
+	}
+
+	result := entity.TransactionCategory{}
+	if err := copier.Copy(&result, category); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return &result, nil
+}
+
 var _ repo.TransactionCategoryRepo = (*TransactionCategoryRepo)(nil)

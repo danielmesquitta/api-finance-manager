@@ -70,6 +70,7 @@ func TestCreateFeedbackRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			if test.expectedCode != http.StatusCreated {
@@ -80,7 +81,7 @@ func TestCreateFeedbackRoute(t *testing.T) {
 				ctx,
 				user.ID.String(),
 			)
-			assert.Nil(t, err, rawBody)
+			assert.Nil(t, err)
 
 			expectedFeedback := map[string]any{
 				"Message": test.body.Message,
@@ -92,7 +93,7 @@ func TestCreateFeedbackRoute(t *testing.T) {
 				"UserID":  feedback.UserID.String(),
 			}
 
-			assert.Equal(t, expectedFeedback, actualFeedback, rawBody)
+			assert.Equal(t, expectedFeedback, actualFeedback)
 		})
 	}
 }

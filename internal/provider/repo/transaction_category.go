@@ -56,4 +56,7 @@ type TransactionCategoryRepo interface {
 		ctx context.Context,
 		id uuid.UUID,
 	) (*entity.TransactionCategory, error)
+	GetDefaultTransactionCategory(
+		ctx context.Context,
+	) (*entity.TransactionCategory, error)
 }

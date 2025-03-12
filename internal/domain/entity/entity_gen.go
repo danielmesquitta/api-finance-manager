@@ -8,155 +8,155 @@ import (
 )
 
 type User struct {
-	ID                    uuid.UUID  `json:"id,omitempty"`
-	AuthID                string     `json:"auth_id,omitempty"`
-	OpenFinanceID         *string    `json:"open_finance_id,omitempty"`
-	Provider              string     `json:"provider,omitempty"`
-	Name                  string     `json:"name,omitempty"`
-	Email                 string     `json:"email,omitempty"`
-	VerifiedEmail         bool       `json:"verified_email,omitempty"`
-	Tier                  string     `json:"tier,omitempty"`
-	Avatar                *string    `json:"avatar,omitempty"`
-	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at,omitempty"`
-	SynchronizedAt        *time.Time `json:"synchronized_at,omitempty"`
-	CreatedAt             time.Time  `json:"created_at,omitempty"`
-	UpdatedAt             time.Time  `json:"updated_at,omitempty"`
-	DeletedAt             *time.Time `json:"deleted_at,omitempty"`
+	ID                    uuid.UUID  `json:"id,omitzero"`
+	AuthID                string     `json:"auth_id,omitzero"`
+	OpenFinanceID         *string    `json:"open_finance_id,omitzero"`
+	Provider              string     `json:"provider,omitzero"`
+	Name                  string     `json:"name,omitzero"`
+	Email                 string     `json:"email,omitzero"`
+	VerifiedEmail         bool       `json:"verified_email,omitzero"`
+	Tier                  string     `json:"tier,omitzero"`
+	Avatar                *string    `json:"avatar,omitzero"`
+	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at,omitzero"`
+	SynchronizedAt        *time.Time `json:"synchronized_at,omitzero"`
+	CreatedAt             time.Time  `json:"created_at,omitzero"`
+	UpdatedAt             time.Time  `json:"updated_at,omitzero"`
+	DeletedAt             *time.Time `json:"deleted_at,omitzero"`
 }
 
 type Transaction struct {
-	ID              uuid.UUID  `json:"id,omitempty"`
-	ExternalID      *string    `json:"external_id,omitempty"`
-	Name            string     `json:"name,omitempty"`
-	Amount          int64      `json:"amount,omitempty"`
-	IsIgnored       bool       `json:"is_ignored,omitempty"`
-	Date            time.Time  `json:"date,omitempty"`
-	CreatedAt       time.Time  `json:"created_at,omitempty"`
-	UpdatedAt       time.Time  `json:"updated_at,omitempty"`
-	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
-	PaymentMethodID uuid.UUID  `json:"payment_method_id,omitempty"`
-	UserID          uuid.UUID  `json:"user_id,omitempty"`
-	CategoryID      uuid.UUID  `json:"category_id,omitempty"`
-	AccountID       *uuid.UUID `json:"account_id,omitempty"`
-	InstitutionID   *uuid.UUID `json:"institution_id,omitempty"`
+	ID              uuid.UUID  `json:"id,omitzero"`
+	ExternalID      *string    `json:"external_id,omitzero"`
+	Name            string     `json:"name,omitzero"`
+	Amount          int64      `json:"amount,omitzero"`
+	IsIgnored       bool       `json:"is_ignored,omitzero"`
+	Date            time.Time  `json:"date,omitzero"`
+	CreatedAt       time.Time  `json:"created_at,omitzero"`
+	UpdatedAt       time.Time  `json:"updated_at,omitzero"`
+	DeletedAt       *time.Time `json:"deleted_at,omitzero"`
+	PaymentMethodID uuid.UUID  `json:"payment_method_id,omitzero"`
+	UserID          uuid.UUID  `json:"user_id,omitzero"`
+	CategoryID      uuid.UUID  `json:"category_id,omitzero"`
+	AccountID       *uuid.UUID `json:"account_id,omitzero"`
+	InstitutionID   *uuid.UUID `json:"institution_id,omitzero"`
 }
 
 type PaymentMethod struct {
-	ID         uuid.UUID  `json:"id,omitempty"`
-	ExternalID string     `json:"external_id,omitempty"`
-	Name       string     `json:"name,omitempty"`
-	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
-	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
+	ID         uuid.UUID  `json:"id,omitzero"`
+	ExternalID string     `json:"external_id,omitzero"`
+	Name       string     `json:"name,omitzero"`
+	CreatedAt  time.Time  `json:"created_at,omitzero"`
+	UpdatedAt  time.Time  `json:"updated_at,omitzero"`
+	DeletedAt  *time.Time `json:"deleted_at,omitzero"`
 }
 
 type Investment struct {
-	ID         uuid.UUID  `json:"id,omitempty"`
-	ExternalID string     `json:"external_id,omitempty"`
-	Name       string     `json:"name,omitempty"`
-	Amount     int64      `json:"amount,omitempty"`
-	Rate       int64      `json:"rate,omitempty"`
-	RateType   string     `json:"rateType,omitempty"`
-	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
-	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
-	CategoryID uuid.UUID  `json:"category_id,omitempty"`
-	UserID     uuid.UUID  `json:"user_id,omitempty"`
+	ID         uuid.UUID  `json:"id,omitzero"`
+	ExternalID string     `json:"external_id,omitzero"`
+	Name       string     `json:"name,omitzero"`
+	Amount     int64      `json:"amount,omitzero"`
+	Rate       int64      `json:"rate,omitzero"`
+	RateType   string     `json:"rateType,omitzero"`
+	CreatedAt  time.Time  `json:"created_at,omitzero"`
+	UpdatedAt  time.Time  `json:"updated_at,omitzero"`
+	DeletedAt  *time.Time `json:"deleted_at,omitzero"`
+	CategoryID uuid.UUID  `json:"category_id,omitzero"`
+	UserID     uuid.UUID  `json:"user_id,omitzero"`
 }
 
 type InvestmentCategory struct {
-	ID         uuid.UUID  `json:"id,omitempty"`
-	ExternalID string     `json:"external_id,omitempty"`
-	Name       string     `json:"name,omitempty"`
-	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
-	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
+	ID         uuid.UUID  `json:"id,omitzero"`
+	ExternalID string     `json:"external_id,omitzero"`
+	Name       string     `json:"name,omitzero"`
+	CreatedAt  time.Time  `json:"created_at,omitzero"`
+	UpdatedAt  time.Time  `json:"updated_at,omitzero"`
+	DeletedAt  *time.Time `json:"deleted_at,omitzero"`
 }
 
 type TransactionCategory struct {
-	ID         uuid.UUID  `json:"id,omitempty"`
-	ExternalID string     `json:"external_id,omitempty"`
-	Name       string     `json:"name,omitempty"`
-	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
-	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
+	ID         uuid.UUID  `json:"id,omitzero"`
+	ExternalID string     `json:"external_id,omitzero"`
+	Name       string     `json:"name,omitzero"`
+	CreatedAt  time.Time  `json:"created_at,omitzero"`
+	UpdatedAt  time.Time  `json:"updated_at,omitzero"`
+	DeletedAt  *time.Time `json:"deleted_at,omitzero"`
 }
 
 type Account struct {
-	ID            uuid.UUID  `json:"id,omitempty"`
-	ExternalID    string     `json:"external_id,omitempty"`
-	Name          string     `json:"name,omitempty"`
-	Type          string     `json:"type,omitempty"`
-	CreatedAt     time.Time  `json:"created_at,omitempty"`
-	UpdatedAt     time.Time  `json:"updated_at,omitempty"`
-	DeletedAt     *time.Time `json:"deleted_at,omitempty"`
-	UserID        uuid.UUID  `json:"user_id,omitempty"`
-	InstitutionID uuid.UUID  `json:"institution_id,omitempty"`
+	ID            uuid.UUID  `json:"id,omitzero"`
+	ExternalID    string     `json:"external_id,omitzero"`
+	Name          string     `json:"name,omitzero"`
+	Type          string     `json:"type,omitzero"`
+	CreatedAt     time.Time  `json:"created_at,omitzero"`
+	UpdatedAt     time.Time  `json:"updated_at,omitzero"`
+	DeletedAt     *time.Time `json:"deleted_at,omitzero"`
+	UserID        uuid.UUID  `json:"user_id,omitzero"`
+	InstitutionID uuid.UUID  `json:"institution_id,omitzero"`
 }
 
 type AccountBalance struct {
-	ID        uuid.UUID  `json:"id,omitempty"`
-	Amount    int64      `json:"amount,omitempty"`
-	CreatedAt time.Time  `json:"created_at,omitempty"`
-	UpdatedAt time.Time  `json:"updated_at,omitempty"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
-	AccountID uuid.UUID  `json:"account_id,omitempty"`
-	UserID    uuid.UUID  `json:"user_id,omitempty"`
+	ID        uuid.UUID  `json:"id,omitzero"`
+	Amount    int64      `json:"amount,omitzero"`
+	CreatedAt time.Time  `json:"created_at,omitzero"`
+	UpdatedAt time.Time  `json:"updated_at,omitzero"`
+	DeletedAt *time.Time `json:"deleted_at,omitzero"`
+	AccountID uuid.UUID  `json:"account_id,omitzero"`
+	UserID    uuid.UUID  `json:"user_id,omitzero"`
 }
 
 type Institution struct {
-	ID         uuid.UUID  `json:"id,omitempty"`
-	ExternalID string     `json:"external_id,omitempty"`
-	Name       string     `json:"name,omitempty"`
-	Logo       *string    `json:"logo,omitempty"`
-	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
-	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
+	ID         uuid.UUID  `json:"id,omitzero"`
+	ExternalID string     `json:"external_id,omitzero"`
+	Name       string     `json:"name,omitzero"`
+	Logo       *string    `json:"logo,omitzero"`
+	CreatedAt  time.Time  `json:"created_at,omitzero"`
+	UpdatedAt  time.Time  `json:"updated_at,omitzero"`
+	DeletedAt  *time.Time `json:"deleted_at,omitzero"`
 }
 
 type Budget struct {
-	ID        uuid.UUID  `json:"id,omitempty"`
-	Amount    int64      `json:"amount,omitempty"`
-	Date      time.Time  `json:"date,omitempty"`
-	CreatedAt time.Time  `json:"created_at,omitempty"`
-	UpdatedAt time.Time  `json:"updated_at,omitempty"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
-	UserID    uuid.UUID  `json:"user_id,omitempty"`
+	ID        uuid.UUID  `json:"id,omitzero"`
+	Amount    int64      `json:"amount,omitzero"`
+	Date      time.Time  `json:"date,omitzero"`
+	CreatedAt time.Time  `json:"created_at,omitzero"`
+	UpdatedAt time.Time  `json:"updated_at,omitzero"`
+	DeletedAt *time.Time `json:"deleted_at,omitzero"`
+	UserID    uuid.UUID  `json:"user_id,omitzero"`
 }
 
 type BudgetCategory struct {
-	ID         uuid.UUID  `json:"id,omitempty"`
-	Amount     int64      `json:"amount,omitempty"`
-	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
-	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
-	BudgetID   uuid.UUID  `json:"budget_id,omitempty"`
-	CategoryID uuid.UUID  `json:"category_id,omitempty"`
+	ID         uuid.UUID  `json:"id,omitzero"`
+	Amount     int64      `json:"amount,omitzero"`
+	CreatedAt  time.Time  `json:"created_at,omitzero"`
+	UpdatedAt  time.Time  `json:"updated_at,omitzero"`
+	DeletedAt  *time.Time `json:"deleted_at,omitzero"`
+	BudgetID   uuid.UUID  `json:"budget_id,omitzero"`
+	CategoryID uuid.UUID  `json:"category_id,omitzero"`
 }
 
 type Feedback struct {
-	ID        uuid.UUID  `json:"id,omitempty"`
-	Message   string     `json:"message,omitempty"`
-	CreatedAt time.Time  `json:"created_at,omitempty"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
-	UserID    *uuid.UUID `json:"user_id,omitempty"`
+	ID        uuid.UUID  `json:"id,omitzero"`
+	Message   string     `json:"message,omitzero"`
+	CreatedAt time.Time  `json:"created_at,omitzero"`
+	DeletedAt *time.Time `json:"deleted_at,omitzero"`
+	UserID    *uuid.UUID `json:"user_id,omitzero"`
 }
 
 type AIChat struct {
-	ID        uuid.UUID  `json:"id,omitempty"`
-	Title     *string    `json:"title,omitempty"`
-	CreatedAt time.Time  `json:"created_at,omitempty"`
-	UpdatedAt time.Time  `json:"updated_at,omitempty"`
-	DeletedAt *time.Time `json:"deleted_at,omitempty"`
-	UserID    uuid.UUID  `json:"user_id,omitempty"`
+	ID        uuid.UUID  `json:"id,omitzero"`
+	Title     *string    `json:"title,omitzero"`
+	CreatedAt time.Time  `json:"created_at,omitzero"`
+	UpdatedAt time.Time  `json:"updated_at,omitzero"`
+	DeletedAt *time.Time `json:"deleted_at,omitzero"`
+	UserID    uuid.UUID  `json:"user_id,omitzero"`
 }
 
 type AIChatMessage struct {
-	ID              uuid.UUID  `json:"id,omitempty"`
-	Message         string     `json:"message,omitempty"`
-	CreatedAt       time.Time  `json:"created_at,omitempty"`
-	UpdatedAt       time.Time  `json:"updated_at,omitempty"`
-	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
-	CreatedByUserID *uuid.UUID `json:"created_by_user_id,omitempty"`
-	AiChatID        uuid.UUID  `json:"ai_chat_id,omitempty"`
+	ID              uuid.UUID  `json:"id,omitzero"`
+	Message         string     `json:"message,omitzero"`
+	CreatedAt       time.Time  `json:"created_at,omitzero"`
+	UpdatedAt       time.Time  `json:"updated_at,omitzero"`
+	DeletedAt       *time.Time `json:"deleted_at,omitzero"`
+	CreatedByUserID *uuid.UUID `json:"created_by_user_id,omitzero"`
+	AiChatID        uuid.UUID  `json:"ai_chat_id,omitzero"`
 }

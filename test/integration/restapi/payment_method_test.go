@@ -33,11 +33,11 @@ func TestListPaymentMethodsRoute(t *testing.T) {
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedPaymentMethodIDs: []string{
-				"abbedc1f-0812-4ed1-9ec9-f51ca13e1069",
-				"2158b0b6-844f-44b6-b487-282d0c1b045c",
-				"66a40300-3fa2-415e-9480-ada220d07afb",
-				"262f50e1-a751-4184-9427-90a23f485482",
-				"1897980c-7f92-4eeb-8e6c-95690cea4ece",
+				"5d140153-c072-42ce-b19c-c5c9b528dba4",
+				"61c45664-e3ea-44c4-8d9f-892088db9a8a",
+				"b9098717-97ff-4051-a474-b0d703680176",
+				"fc7adfa0-259c-430e-99f5-bef5281add10",
+				"d3140f28-076f-4371-8c4b-b9e65e5367ef",
 			},
 		},
 		{
@@ -48,7 +48,7 @@ func TestListPaymentMethodsRoute(t *testing.T) {
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedPaymentMethodIDs: []string{
-				"abbedc1f-0812-4ed1-9ec9-f51ca13e1069",
+				"b9098717-97ff-4051-a474-b0d703680176",
 			},
 		},
 	}
@@ -83,10 +83,11 @@ func TestListPaymentMethodsRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			if len(test.expectedPaymentMethodIDs) == 0 {
-				assert.Empty(t, out.Items, rawBody)
+				assert.Empty(t, out.Items)
 				return
 			}
 

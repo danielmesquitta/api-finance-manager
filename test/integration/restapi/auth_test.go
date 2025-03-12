@@ -70,6 +70,7 @@ func TestSignInRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			assert.NotEmpty(t, out.AccessToken, rawBody)
@@ -124,7 +125,7 @@ func TestRefreshTokenRoute(t *testing.T) {
 			}
 
 			var out dto.SignInResponse
-			statusCode, _, err := app.MakeRequest(
+			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPost,
 				"/api/v1/auth/refresh",
 				WithBearerToken(refreshToken),
@@ -136,6 +137,7 @@ func TestRefreshTokenRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			if test.expectedCode != http.StatusOK {

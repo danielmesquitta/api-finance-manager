@@ -8,14 +8,11 @@ INSERT INTO users (
     avatar,
     subscription_expires_at,
     synchronized_at,
-    created_at,
-    updated_at,
-    deleted_at,
     auth_id,
     open_finance_id
   )
 VALUES (
-    'dd696788-412f-48e6-bdfb-f0db7c497bf6'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
     'MOCK',
     'John Doe',
     'johndoe@email.com',
@@ -23,10 +20,7 @@ VALUES (
     'PREMIUM',
     'https://avatar.iran.liara.run/public/15',
     NOW() + INTERVAL '1 month',
-    '2025-03-07 21:00:00-03',
-    '2025-03-09 14:11:19.322842-03',
-    '2025-03-09 14:11:20.418619-03',
-    NULL,
+    '2025-03-11 00:00:00.000 -0300',
     '6c2342aa-bdac-4efe-a31b-3a018072cff9',
     '5de68b44-d82b-482a-a3b6-b2189f201e6b'
   ),
@@ -39,10 +33,7 @@ VALUES (
     'FREE',
     'https://avatar.iran.liara.run/public/82',
     NULL,
-    '2025-03-07 21:00:00-03',
-    '2025-03-09 14:11:19.322842-03',
-    '2025-03-09 14:11:20.418619-03',
-    NULL,
+    '2025-03-11 00:00:00.000 -0300',
     '016aecbd-fae5-4ff0-9046-03b7eabf6a5c',
     '8d3ee953-7659-46a2-ab5f-2513ba960a05'
   )

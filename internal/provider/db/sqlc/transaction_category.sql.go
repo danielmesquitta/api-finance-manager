@@ -30,6 +30,27 @@ type CreateTransactionCategoriesParams struct {
 	Name       string `json:"name"`
 }
 
+const getDefaultTransactionCategory = `-- name: GetDefaultTransactionCategory :one
+SELECT id, external_id, name, created_at, updated_at, deleted_at
+FROM transaction_categories
+WHERE external_id = '99999999'
+  AND deleted_at IS NULL
+`
+
+func (q *Queries) GetDefaultTransactionCategory(ctx context.Context) (TransactionCategory, error) {
+	row := q.db.QueryRow(ctx, getDefaultTransactionCategory)
+	var i TransactionCategory
+	err := row.Scan(
+		&i.ID,
+		&i.ExternalID,
+		&i.Name,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
 const getTransactionCategory = `-- name: GetTransactionCategory :one
 SELECT id, external_id, name, created_at, updated_at, deleted_at
 FROM transaction_categories

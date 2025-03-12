@@ -35,28 +35,28 @@ func TestListTransactionCategoriesRoute(t *testing.T) {
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionCategoryIDs: []string{
-				"65583cfa-b72d-4fab-9de1-4ca9dfe11a4e",
-				"432130c4-cd6f-4856-a82c-54f227b0382b",
-				"029fc6cb-edcf-414c-9c81-9dd69c34e629",
-				"f1f7c2ee-f797-4014-ae7e-ab40bee5afdd",
-				"a910d4f6-2904-4b1e-a76d-aa04515eb966",
-				"b1dcc2c7-d889-4df8-b360-8c20904f7e08",
-				"c198bbd9-3f06-42cd-b2be-b212404d83fc",
-				"03bd0abc-7186-4eb3-9871-e4f624c535b8",
-				"9db43714-3025-494f-9578-4feb5a69681e",
-				"12deb35c-0ce5-4d23-87a4-2f68fd77f019",
-				"70c89492-9977-42b4-a28c-b1e261c59615",
-				"02701aac-b8db-4c7e-834c-6d4f4eab3399",
-				"42028a90-e209-4853-9bca-d949f3cec9e6",
-				"dba1995e-86c9-474f-a482-92afb6f71615",
-				"d62f49b0-7aa6-4346-a7e4-bb156b0a99d4",
-				"f8ad2a99-f062-4c46-8582-d298003b46c0",
-				"0c84d0a3-7336-4089-bc3d-756ce31c679a",
-				"1bd7db5b-5b8a-4ac1-82a1-c75e418a25c0",
-				"b06e0c42-4053-4fad-b289-be0cfc22502c",
-				"5de3003d-f3c5-4d80-b118-80191e59645d",
-				"c03e9602-ac21-4cc4-b2f4-ae0dbb4b8dfb",
-				"ee1cde91-ac0f-4b9a-b8ed-1726a83f3643",
+				"30996ce1-e273-4cf3-9eb6-df0e1df03bba",
+				"470850a0-781b-4892-8e96-5590d16c9fe1",
+				"56a3416d-e633-4c60-a3e8-f4649474c14b",
+				"a5a179a6-37be-43c6-931b-388d7f928f76",
+				"373b150b-94bd-44b2-abdd-2aab14e74fad",
+				"5cdb75ae-f27a-4ebf-9135-ec46273cdeea",
+				"2a226707-1f75-4276-9697-3e7aac3c7db6",
+				"896d5ff8-1534-4d4f-aa1f-53e385097f74",
+				"e21fb416-a9a3-4a16-9347-a28cc65076a0",
+				"e03c511c-56dc-41cc-a4b5-082e461c83ea",
+				"c7a297df-3d62-4f67-a994-ed86ac440053",
+				"ed80ba2a-1b70-40b1-b14c-ff63797dd58e",
+				"58b19781-d512-43bd-ac1e-d7b0050eedaa",
+				"7ce3e515-e83e-4a9a-8ea5-f1017600c71f",
+				"58693bd4-24d7-4fb7-9b26-a73849241933",
+				"f0b18149-1909-4534-9a3b-9a75f72304ee",
+				"059efe62-9a56-414b-bc8e-65caf03f12e4",
+				"d590d095-3588-4f16-82af-4d79651b1a86",
+				"e9b42238-9c12-4a79-b2c8-1e426373c008",
+				"fef6c0f2-281d-4b62-9031-317a778426c9",
+				"84b266ed-d64d-49f8-bb86-c6f9cc4cf45a",
+				"40086b51-ac58-47c7-9f14-684346af9012",
 			},
 		},
 		{
@@ -67,7 +67,7 @@ func TestListTransactionCategoriesRoute(t *testing.T) {
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionCategoryIDs: []string{
-				"432130c4-cd6f-4856-a82c-54f227b0382b",
+				"470850a0-781b-4892-8e96-5590d16c9fe1",
 			},
 		},
 	}
@@ -102,10 +102,11 @@ func TestListTransactionCategoriesRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			if len(test.expectedTransactionCategoryIDs) == 0 {
-				assert.Empty(t, out.Items, rawBody)
+				assert.Empty(t, out.Items)
 				return
 			}
 

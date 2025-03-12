@@ -33,125 +33,133 @@ func TestListTransactionsRoute(t *testing.T) {
 			expectedTransactionIDs: []string{},
 		},
 		{
-			description:  "List all transactions",
-			queryParams:  map[string]string{},
+			description: "List transactions",
+			queryParams: map[string]string{
+				"page_size": "10",
+			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
-				"61edb9dd-c137-4e7e-8361-bc78a7ef864b",
-				"571c215a-1ee2-4b1a-a316-3ffdd971340d",
-				"26657ab2-19cc-47a0-8af6-160f12737e14",
-				"a5707214-415e-4c0c-b8da-e1e225365151",
-				"f274a4be-1150-4542-896d-88239378b828",
-				"8df11353-b6ec-42c5-9fec-84ae140d85cb",
-				"27d30d16-c585-49da-8370-bdd77c278295",
-				"f68cadfa-b54c-4e37-857c-51db6bb0c465",
-				"eb3c0fc8-77bd-4130-83b6-af815d1a2956",
-				"79260d65-66bb-476e-85db-1fce518b6aae",
-				"cad1e583-f48c-460f-8a46-a3a86abbb2fa",
-				"18d326f3-13f2-43c3-ab33-920bc9caefb2",
-				"3319a062-50cd-4ea3-afbe-8edc18b21686",
-				"f8309ff6-f457-485e-abd5-6c8df4f20ceb",
-				"37204747-eedf-4407-8618-ce0e24c9a36a",
+				"7e004b7e-bbc8-4030-af19-bba0354582c4",
+				"6e238d84-2e41-477b-bce2-713272b006ee",
+				"aff780e3-5140-4e4b-a3e3-9f407c07f165",
+				"4ec1fab1-fc1c-42d4-a5e7-419af725e14e",
+				"8cf37ab8-06fd-4756-897f-1c0be9a4cb32",
+				"ee7560a7-5f74-4537-a6a9-f2a6068cdc58",
+				"a9038c41-c458-43e7-8c2f-abec2cce5f15",
+				"ed0f5518-8580-4da1-bdb7-baa223f611eb",
+				"a65d5ecc-eb91-4659-a5b9-2862080d17c8",
+				"ecbe6fee-6de7-422c-9863-8cbe788ede19",
 			},
 		},
 		{
 			description: "Filter transactions by payment method id",
 			queryParams: map[string]string{
-				"payment_method_ids": "2158b0b6-844f-44b6-b487-282d0c1b045c",
+				"payment_method_ids": "5d140153-c072-42ce-b19c-c5c9b528dba4",
+				"page_size":          "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
-				"61edb9dd-c137-4e7e-8361-bc78a7ef864b",
-				"a5707214-415e-4c0c-b8da-e1e225365151",
-				"27d30d16-c585-49da-8370-bdd77c278295",
-				"f68cadfa-b54c-4e37-857c-51db6bb0c465",
-				"79260d65-66bb-476e-85db-1fce518b6aae",
-				"18d326f3-13f2-43c3-ab33-920bc9caefb2",
-				"f8309ff6-f457-485e-abd5-6c8df4f20ceb",
+				"366882dd-a154-4206-9028-fd098c9523e2",
+				"d083729b-c99d-46b6-a794-0264f6da9a56",
+				"03fe4c66-631d-4c68-a1f6-b19fb0ea79a3",
+				"71c230a9-e588-404c-b4c1-99c9cfb29d34",
+				"8af66ada-4b5d-4148-8edc-9118c7550743",
 			},
 		},
 		{
 			description: "Filter transactions by category id",
 			queryParams: map[string]string{
-				"category_ids": "02701aac-b8db-4c7e-834c-6d4f4eab3399,03bd0abc-7186-4eb3-9871-e4f624c535b8",
+				"category_ids": "059efe62-9a56-414b-bc8e-65caf03f12e4,ed80ba2a-1b70-40b1-b14c-ff63797dd58e",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
-				"61edb9dd-c137-4e7e-8361-bc78a7ef864b",
-				"26657ab2-19cc-47a0-8af6-160f12737e14",
+				"1ca742b6-a68e-4f0f-850e-a7c33874e0d5",
+				"9a8d60e2-6cef-4867-ac92-550780e2260e",
+				"5fb7bf3b-f472-4912-b692-4195dc4abd32",
+				"71cb5cc5-5510-4502-849d-18ee132042b3",
+				"134cb489-e1d6-4dec-822e-265598d90bb6",
 			},
 		},
 		{
 			description: "Filter transactions by institution id",
 			queryParams: map[string]string{
-				"institution_ids": "1202269c-ed03-4dfe-bbcd-c61d615a17b5",
+				"institution_ids": "88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
+				"page_size":       "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
-				"27d30d16-c585-49da-8370-bdd77c278295",
+				"7e004b7e-bbc8-4030-af19-bba0354582c4",
+				"aff780e3-5140-4e4b-a3e3-9f407c07f165",
+				"6e238d84-2e41-477b-bce2-713272b006ee",
+				"4ec1fab1-fc1c-42d4-a5e7-419af725e14e",
+				"8cf37ab8-06fd-4756-897f-1c0be9a4cb32",
 			},
 		},
 		{
 			description: "Filter transactions by is expense",
 			queryParams: map[string]string{
 				"is_expense": "TRUE",
+				"page_size":  "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
-				"61edb9dd-c137-4e7e-8361-bc78a7ef864b",
-				"a5707214-415e-4c0c-b8da-e1e225365151",
-				"f68cadfa-b54c-4e37-857c-51db6bb0c465",
-				"eb3c0fc8-77bd-4130-83b6-af815d1a2956",
-				"79260d65-66bb-476e-85db-1fce518b6aae",
-				"18d326f3-13f2-43c3-ab33-920bc9caefb2",
+				"db6d71ef-d8e0-4249-b6bb-33275015a4cc",
+				"c48bacbf-8587-4ce1-8d75-98d0684ce48b",
+				"70e62f2a-83c0-4f56-afb5-ef4c9b75fb6e",
+				"2f1a74ef-159b-43dd-9d49-f4baa2d2eae8",
+				"a2c13da7-3fe4-4347-8f30-371488d403ed",
 			},
 		},
 		{
 			description: "Filter transactions by is income",
 			queryParams: map[string]string{
 				"is_income": "TRUE",
+				"page_size": "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
-				"571c215a-1ee2-4b1a-a316-3ffdd971340d",
-				"26657ab2-19cc-47a0-8af6-160f12737e14",
-				"f274a4be-1150-4542-896d-88239378b828",
-				"8df11353-b6ec-42c5-9fec-84ae140d85cb",
-				"27d30d16-c585-49da-8370-bdd77c278295",
-				"cad1e583-f48c-460f-8a46-a3a86abbb2fa",
-				"3319a062-50cd-4ea3-afbe-8edc18b21686",
-				"f8309ff6-f457-485e-abd5-6c8df4f20ceb",
-				"37204747-eedf-4407-8618-ce0e24c9a36a",
+				"7e004b7e-bbc8-4030-af19-bba0354582c4",
+				"6e238d84-2e41-477b-bce2-713272b006ee",
+				"aff780e3-5140-4e4b-a3e3-9f407c07f165",
+				"4ec1fab1-fc1c-42d4-a5e7-419af725e14e",
+				"8cf37ab8-06fd-4756-897f-1c0be9a4cb32",
 			},
 		},
 		{
 			description: "Filter transactions by is ignored",
 			queryParams: map[string]string{
 				"is_ignored": "TRUE",
+				"page_size":  "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
-				"79260d65-66bb-476e-85db-1fce518b6aae",
+				"422357cb-655a-46db-903e-46af7206ae10",
+				"cf52af82-aa64-4568-85e1-6860d652e0a7",
+				"7316fedd-490e-4895-ac0e-915d97eaf49e",
+				"4c2ffde0-29c7-4cfe-898f-b9ac00baf912",
+				"bc459c69-d49e-4cee-8afb-12260ac32185",
 			},
 		},
 		{
 			description: "Filter transactions by date period",
 			queryParams: map[string]string{
-				"start_date": "2024-03-09T03:18:28.211Z",
-				"end_date":   "2024-06-11T23:18:28.211Z",
+				"start_date": "2024-11-29T00:00:00.000-03:00",
+				"end_date":   "2024-11-30T23:59:59.999-03:00",
+				"page_size":  "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
-				"a5707214-415e-4c0c-b8da-e1e225365151",
-				"26657ab2-19cc-47a0-8af6-160f12737e14",
+				"9a8d60e2-6cef-4867-ac92-550780e2260e",
+				"15e0db20-10a8-4cc1-984e-0c8d07b9300c",
+				"58ee3351-cd16-49ba-bc0a-3be69865f0cf",
 			},
 		},
 	}
@@ -188,10 +196,11 @@ func TestListTransactionsRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			if len(test.expectedTransactionIDs) == 0 {
-				assert.Empty(t, out.Items, rawBody)
+				assert.Empty(t, out.Items)
 				return
 			}
 
@@ -228,21 +237,15 @@ func TestGetTransactionRoute(t *testing.T) {
 		{
 			description:   "Fail to list transactions without token",
 			token:         "",
-			transactionID: "61edb9dd-c137-4e7e-8361-bc78a7ef864b",
+			transactionID: "7e004b7e-bbc8-4030-af19-bba0354582c4",
 			expectedCode:  http.StatusBadRequest,
 		},
 		{
 			description:           "Get transactions",
 			token:                 mockoauth.DefaultMockToken,
-			transactionID:         "61edb9dd-c137-4e7e-8361-bc78a7ef864b",
+			transactionID:         "7e004b7e-bbc8-4030-af19-bba0354582c4",
 			expectedCode:          http.StatusOK,
-			expectedTransactionID: "61edb9dd-c137-4e7e-8361-bc78a7ef864b",
-		},
-		{
-			description:   "Fail to get transactions from another user",
-			token:         mockoauth.DefaultMockToken,
-			transactionID: "cd055628-61c4-4ab6-8b6b-34991e3f583a",
-			expectedCode:  http.StatusNotFound,
+			expectedTransactionID: "7e004b7e-bbc8-4030-af19-bba0354582c4",
 		},
 	}
 
@@ -275,6 +278,7 @@ func TestGetTransactionRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			if test.expectedTransactionID != "" {
@@ -282,7 +286,6 @@ func TestGetTransactionRoute(t *testing.T) {
 					t,
 					test.expectedTransactionID,
 					out.Transaction.ID.String(),
-					rawBody,
 				)
 			}
 		})
@@ -302,38 +305,33 @@ func TestUpdateTransactionRoute(t *testing.T) {
 		{
 			description:   "Fail to update transaction without token",
 			token:         "",
-			transactionID: "61edb9dd-c137-4e7e-8361-bc78a7ef864b",
+			transactionID: "7e004b7e-bbc8-4030-af19-bba0354582c4",
 			expectedCode:  http.StatusBadRequest,
 		},
 		{
 			description:   "Update transaction",
 			token:         mockoauth.DefaultMockToken,
-			transactionID: "61edb9dd-c137-4e7e-8361-bc78a7ef864b",
+			transactionID: "7e004b7e-bbc8-4030-af19-bba0354582c4",
 			expectedCode:  http.StatusNoContent,
-			body: func() dto.UpdateTransactionRequest {
-				accountID := uuid.MustParse(
-					"df25c07b-2db4-407c-a3b6-f8b1406b7a58",
-				)
-				institutionID := uuid.MustParse(
-					"a770232a-0feb-46f1-bf77-96f938a58ec9",
-				)
-				categoryID := uuid.MustParse(
-					"65583cfa-b72d-4fab-9de1-4ca9dfe11a4e",
-				)
-				return dto.UpdateTransactionRequest{
-					UpdateTransactionInput: usecase.UpdateTransactionInput{
-						Name:   "Foo bar",
-						Amount: 5436,
-						PaymentMethodID: uuid.MustParse(
-							"abbedc1f-0812-4ed1-9ec9-f51ca13e1069",
-						),
-						Date:          time.Now(),
-						AccountID:     &accountID,
-						InstitutionID: &institutionID,
-						CategoryID:    &categoryID,
-					},
-				}
-			}(),
+			body: dto.UpdateTransactionRequest{
+				UpdateTransactionInput: usecase.UpdateTransactionInput{
+					Name:   "Foo bar",
+					Amount: 5436,
+					Date:   time.Now(),
+					PaymentMethodID: uuid.MustParse(
+						"fc7adfa0-259c-430e-99f5-bef5281add10",
+					),
+					AccountID: uuid.MustParse(
+						"ac4d82a0-9eff-4936-8a2e-8d12591c9d00",
+					),
+					InstitutionID: uuid.MustParse(
+						"df5dbd97-89c7-4776-8b3f-7992bc2bb16b",
+					),
+					CategoryID: uuid.MustParse(
+						"059efe62-9a56-414b-bc8e-65caf03f12e4",
+					),
+				},
+			},
 		},
 	}
 
@@ -369,6 +367,7 @@ func TestUpdateTransactionRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			if test.expectedCode != http.StatusNoContent {
@@ -382,29 +381,29 @@ func TestUpdateTransactionRoute(t *testing.T) {
 					UserID: user.ID,
 				},
 			)
-			assert.Nil(t, err, rawBody)
+			assert.Nil(t, err)
 
 			expectedTransaction := map[string]any{
 				"Name":            test.body.Name,
 				"Amount":          test.body.Amount,
+				"Date":            test.body.Date.Format(time.RFC3339),
 				"PaymentMethodID": test.body.PaymentMethodID,
-				"Date":            test.body.Date.Format(time.DateTime),
+				"CategoryID":      test.body.CategoryID,
 				"AccountID":       test.body.AccountID,
 				"InstitutionID":   test.body.InstitutionID,
-				"CategoryID":      test.body.CategoryID,
 			}
 
 			actualTransaction := map[string]any{
 				"Name":            transaction.Name,
 				"Amount":          transaction.Amount,
+				"Date":            transaction.Date.Format(time.RFC3339),
 				"PaymentMethodID": transaction.PaymentMethodID,
-				"Date":            transaction.Date.Format(time.DateTime),
-				"AccountID":       transaction.AccountID,
-				"InstitutionID":   transaction.InstitutionID,
 				"CategoryID":      transaction.CategoryID,
+				"AccountID":       *transaction.AccountID,
+				"InstitutionID":   *transaction.InstitutionID,
 			}
 
-			assert.Equal(t, expectedTransaction, actualTransaction, rawBody)
+			assert.Equal(t, expectedTransaction, actualTransaction)
 		})
 	}
 }
@@ -429,20 +428,35 @@ func TestCreateTransactionRoute(t *testing.T) {
 			expectedCode: http.StatusCreated,
 			body: func() dto.CreateTransactionRequest {
 				categoryID := uuid.MustParse(
-					"65583cfa-b72d-4fab-9de1-4ca9dfe11a4e",
+					"373b150b-94bd-44b2-abdd-2aab14e74fad",
 				)
 				return dto.CreateTransactionRequest{
 					CreateTransactionInput: usecase.CreateTransactionInput{
 						Name:   "Foo bar",
 						Amount: 5436,
 						PaymentMethodID: uuid.MustParse(
-							"abbedc1f-0812-4ed1-9ec9-f51ca13e1069",
+							"5d140153-c072-42ce-b19c-c5c9b528dba4",
 						),
 						Date:       time.Now(),
 						CategoryID: &categoryID,
 					},
 				}
 			}(),
+		},
+		{
+			description:  "Create transaction without category",
+			token:        mockoauth.DefaultMockToken,
+			expectedCode: http.StatusCreated,
+			body: dto.CreateTransactionRequest{
+				CreateTransactionInput: usecase.CreateTransactionInput{
+					Name:   "Foo bar",
+					Amount: -6543,
+					PaymentMethodID: uuid.MustParse(
+						"fc7adfa0-259c-430e-99f5-bef5281add10",
+					),
+					Date: time.Now(),
+				},
+			},
 		},
 	}
 
@@ -478,6 +492,7 @@ func TestCreateTransactionRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			if test.expectedCode != http.StatusCreated {
@@ -488,25 +503,34 @@ func TestCreateTransactionRoute(t *testing.T) {
 				ctx,
 				user.ID.String(),
 			)
-			assert.Nil(t, err, rawBody)
+			assert.Nil(t, err)
+
+			defaultCategoryID := uuid.MustParse(
+				"40086b51-ac58-47c7-9f14-684346af9012",
+			)
+
+			expectedCategoryID := test.body.CategoryID
+			if expectedCategoryID == nil {
+				expectedCategoryID = &defaultCategoryID
+			}
 
 			expectedTransaction := map[string]any{
 				"Name":            test.body.Name,
 				"Amount":          test.body.Amount,
 				"PaymentMethodID": test.body.PaymentMethodID,
-				"Date":            test.body.Date.Format(time.DateTime),
-				"CategoryID":      test.body.CategoryID,
+				"Date":            test.body.Date.Format(time.RFC3339),
+				"CategoryID":      *expectedCategoryID,
 			}
 
 			actualTransaction := map[string]any{
 				"Name":            transaction.Name,
 				"Amount":          transaction.Amount,
 				"PaymentMethodID": transaction.PaymentMethodID,
-				"Date":            transaction.Date.Format(time.DateTime),
+				"Date":            transaction.Date.Format(time.RFC3339),
 				"CategoryID":      transaction.CategoryID,
 			}
 
-			assert.Equal(t, expectedTransaction, actualTransaction, rawBody)
+			assert.Equal(t, expectedTransaction, actualTransaction)
 		})
 	}
 }

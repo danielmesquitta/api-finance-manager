@@ -46,13 +46,13 @@ func TestHealthRoutes(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			assert.Equal(
 				t,
 				test.expectedBody,
 				&out,
-				rawBody,
 			)
 		})
 	}

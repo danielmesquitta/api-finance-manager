@@ -27,15 +27,15 @@ func NewUpdateTransaction(
 }
 
 type UpdateTransactionInput struct {
-	ID              uuid.UUID  `json:"id"                validate:"required"`
-	UserID          uuid.UUID  `json:"-"                 validate:"required"`
-	Name            string     `json:"name"`
-	Amount          int64      `json:"amount"`
-	PaymentMethodID uuid.UUID  `json:"payment_method_id"`
-	Date            time.Time  `json:"date"`
-	AccountID       *uuid.UUID `json:"account_id"`
-	InstitutionID   *uuid.UUID `json:"institution_id"`
-	CategoryID      *uuid.UUID `json:"category_id"`
+	ID              uuid.UUID `json:"id"                validate:"required"`
+	UserID          uuid.UUID `json:"-"                 validate:"required"`
+	Name            string    `json:"name"`
+	Amount          int64     `json:"amount"`
+	PaymentMethodID uuid.UUID `json:"payment_method_id"`
+	Date            time.Time `json:"date"`
+	AccountID       uuid.UUID `json:"account_id"`
+	InstitutionID   uuid.UUID `json:"institution_id"`
+	CategoryID      uuid.UUID `json:"category_id"`
 }
 
 func (u *UpdateTransaction) Execute(

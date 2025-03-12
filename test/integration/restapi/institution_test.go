@@ -33,12 +33,12 @@ func TestListInstitutionsRoute(t *testing.T) {
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
-				"c2368239-8286-41e5-a905-ac919a551699",
-				"a770232a-0feb-46f1-bf77-96f938a58ec9",
-				"ce7c4efd-c74a-4eb8-b8b3-7c02b704aa5e",
-				"fcab2309-178f-4701-960f-147c3904388b",
-				"1202269c-ed03-4dfe-bbcd-c61d615a17b5",
-				"97fe5c01-6799-4831-b897-ec892c7368f9",
+				"eb3a4329-ba36-4000-9123-748e2c1fdd60",
+				"9daf7ad9-2d35-4597-8788-788d7f7f6c98",
+				"88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
+				"66a1475d-94d6-4848-b4c1-61a91f8317f3",
+				"df5dbd97-89c7-4776-8b3f-7992bc2bb16b",
+				"e250139e-0c18-4368-9f7f-5b546740a6f8",
 			},
 		},
 		{
@@ -50,8 +50,8 @@ func TestListInstitutionsRoute(t *testing.T) {
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
-				"c2368239-8286-41e5-a905-ac919a551699",
-				"a770232a-0feb-46f1-bf77-96f938a58ec9",
+				"df5dbd97-89c7-4776-8b3f-7992bc2bb16b",
+				"9daf7ad9-2d35-4597-8788-788d7f7f6c98",
 			},
 		},
 		{
@@ -62,7 +62,7 @@ func TestListInstitutionsRoute(t *testing.T) {
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
-				"c2368239-8286-41e5-a905-ac919a551699",
+				"eb3a4329-ba36-4000-9123-748e2c1fdd60",
 			},
 		},
 	}
@@ -97,10 +97,11 @@ func TestListInstitutionsRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			if len(test.expectedInstitutionIDs) == 0 {
-				assert.Empty(t, out.Items, rawBody)
+				assert.Empty(t, out.Items)
 				return
 			}
 
@@ -147,8 +148,8 @@ func TestListUserInstitutionsRoute(t *testing.T) {
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
-				"ce7c4efd-c74a-4eb8-b8b3-7c02b704aa5e",
-				"1202269c-ed03-4dfe-bbcd-c61d615a17b5",
+				"88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
+				"df5dbd97-89c7-4776-8b3f-7992bc2bb16b",
 			},
 		},
 		{
@@ -160,7 +161,7 @@ func TestListUserInstitutionsRoute(t *testing.T) {
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
-				"1202269c-ed03-4dfe-bbcd-c61d615a17b5",
+				"88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
 			},
 		},
 		{
@@ -171,7 +172,7 @@ func TestListUserInstitutionsRoute(t *testing.T) {
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
-				"ce7c4efd-c74a-4eb8-b8b3-7c02b704aa5e",
+				"88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
 			},
 		},
 	}
@@ -206,10 +207,11 @@ func TestListUserInstitutionsRoute(t *testing.T) {
 				t,
 				test.expectedCode,
 				statusCode,
+				rawBody,
 			)
 
 			if len(test.expectedInstitutionIDs) == 0 {
-				assert.Empty(t, out.Items, rawBody)
+				assert.Empty(t, out.Items)
 				return
 			}
 

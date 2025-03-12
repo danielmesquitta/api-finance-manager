@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
@@ -37,12 +38,12 @@ func NewCreateTransaction(
 }
 
 type CreateTransactionInput struct {
+	UserID          uuid.UUID  `json:"-"                 validate:"required"`
 	Name            string     `json:"name"              validate:"required"`
-	Amount          int64      `json:"amount"            validate:"required,gt=0"`
+	Amount          int64      `json:"amount"            validate:"required"`
 	PaymentMethodID uuid.UUID  `json:"payment_method_id" validate:"required"`
 	Date            time.Time  `json:"date"              validate:"required"`
 	CategoryID      *uuid.UUID `json:"category_id"       validate:"omitempty"`
-	UserID          uuid.UUID  `json:"-"                 validate:"required"`
 }
 
 func (uc *CreateTransaction) Execute(
@@ -78,16 +79,22 @@ func (uc *CreateTransaction) Execute(
 	})
 
 	g.Go(func() error {
+		var (
+			category *entity.TransactionCategory
+			err      error
+		)
 		if in.CategoryID == nil {
-			return nil
+			category, err = uc.tcr.GetDefaultTransactionCategory(ctx)
+		} else {
+			category, err = uc.tcr.GetTransactionCategory(ctx, *in.CategoryID)
 		}
-		category, err := uc.tcr.GetTransactionCategory(ctx, *in.CategoryID)
 		if err != nil {
 			return errs.New(err)
 		}
 		if category == nil {
 			return errs.ErrCategoryNotFound
 		}
+		in.CategoryID = &category.ID
 		return nil
 	})
 
