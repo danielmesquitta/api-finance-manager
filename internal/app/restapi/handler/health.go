@@ -18,7 +18,9 @@ func NewHealthHandler() *HealthHandler {
 // @Produce json
 // @Success 200 {object} dto.HealthResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /v1/auth/sign-in [post]
+// @Router /health [post]
 func (h *HealthHandler) Health(c *fiber.Ctx) error {
+	panic("panic error")
+
 	return c.JSON(dto.HealthResponse{Status: "ok"})
 }

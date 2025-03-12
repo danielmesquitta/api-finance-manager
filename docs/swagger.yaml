@@ -864,6 +864,25 @@ info:
   title: API Finance Manager
   version: "1.0"
 paths:
+  /health:
+    post:
+      consumes:
+      - application/json
+      description: Health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.HealthResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      summary: Health check
+      tags:
+      - Health
   /v1/admin/accounts:
     post:
       consumes:
@@ -1198,21 +1217,38 @@ paths:
     post:
       consumes:
       - application/json
-      description: Health check
+      description: Authenticate user through Google or Apple token
+      parameters:
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SignInRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.HealthResponse'
+            $ref: '#/definitions/dto.SignInResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/dto.ErrorResponse'
-      summary: Health check
+      security:
+      - BearerAuth: []
+      summary: Sign in
       tags:
-      - Health
+      - Auth
   /v1/balances:
     get:
       consumes:

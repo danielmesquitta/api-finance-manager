@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
@@ -9,6 +10,10 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/gofiber/fiber/v2"
 )
+
+type requestIDContextKey string
+
+const RequestIDContextKey requestIDContextKey = "requestid"
 
 var mapAppErrToHTTPError = map[errs.Code]int{
 	errs.ErrCodeForbidden:    http.StatusForbidden,
@@ -67,7 +72,7 @@ func (m *Middleware) handleInternalServerError(
 		args = append(args, "query", queries)
 	}
 
-	requestId := c.Get(fiber.HeaderXRequestID)
+	requestId := c.Locals(RequestIDContextKey)
 	if requestId != "" {
 		args = append(args, "request_id", requestId)
 	}
@@ -89,7 +94,7 @@ func (m *Middleware) handleInternalServerError(
 
 	args = append(args, "stacktrace", appErr.StackTrace)
 
-	m.l.Error(
+	slog.Error(
 		appErr.Error(),
 		args...,
 	)

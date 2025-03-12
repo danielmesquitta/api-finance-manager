@@ -15,7 +15,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/helmet"
 	"github.com/gofiber/fiber/v2/middleware/idempotency"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
 
@@ -35,8 +34,10 @@ func newApp(
 	})
 
 	app.Use(cors.New())
-	app.Use(recover.New())
-	app.Use(requestid.New())
+	app.Use(m.Recover())
+	app.Use(requestid.New(requestid.Config{
+		ContextKey: middleware.RequestIDContextKey,
+	}))
 	app.Use(middlewareCache.New(
 		middlewareCache.Config{
 			Storage: fibercache.NewFiberCache(c),

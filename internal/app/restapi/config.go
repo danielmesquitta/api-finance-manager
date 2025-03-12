@@ -14,7 +14,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/rediscache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/log"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
@@ -35,7 +34,6 @@ func init() {
 var providers = []any{
 	jwtutil.NewJWT,
 	hash.NewHasher,
-	log.NewLogger,
 
 	googleoauth.NewGoogleOAuth,
 

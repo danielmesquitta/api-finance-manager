@@ -4,9 +4,9 @@ import (
 	"context"
 )
 
-type key byte
+type contextKey byte
 
-var Key key
+var ContextKey contextKey
 
 type TX interface {
 	// Do is not concurrent safe because all queries in a transaction must use the same connection.

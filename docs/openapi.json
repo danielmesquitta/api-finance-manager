@@ -1312,6 +1312,37 @@
     },
     "openapi": "3.0.3",
     "paths": {
+        "/health": {
+            "post": {
+                "description": "Health check",
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.HealthResponse"
+                                }
+                            }
+                        },
+                        "description": "OK"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "summary": "Health check",
+                "tags": [
+                    "Health"
+                ]
+            }
+        },
         "/v1/admin/accounts": {
             "post": {
                 "description": "Webhook to sync user accounts from open finance",
@@ -1900,17 +1931,49 @@
         },
         "/v1/auth/sign-in": {
             "post": {
-                "description": "Health check",
+                "description": "Authenticate user through Google or Apple token",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.SignInRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body",
+                    "required": true,
+                    "x-originalParamName": "request"
+                },
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/dto.HealthResponse"
+                                    "$ref": "#/components/schemas/dto.SignInResponse"
                                 }
                             }
                         },
                         "description": "OK"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
                     },
                     "500": {
                         "content": {
@@ -1923,9 +1986,14 @@
                         "description": "Internal Server Error"
                     }
                 },
-                "summary": "Health check",
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Sign in",
                 "tags": [
-                    "Health"
+                    "Auth"
                 ]
             }
         },

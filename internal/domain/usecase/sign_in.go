@@ -20,7 +20,6 @@ import (
 
 type SignIn struct {
 	v  *validator.Validator
-	l  *slog.Logger
 	h  *hash.Hasher
 	ur repo.UserRepo
 	j  *jwtutil.JWT
@@ -30,7 +29,6 @@ type SignIn struct {
 
 func NewSignIn(
 	v *validator.Validator,
-	l *slog.Logger,
 	h *hash.Hasher,
 	ur repo.UserRepo,
 	j *jwtutil.JWT,
@@ -39,7 +37,6 @@ func NewSignIn(
 ) *SignIn {
 	return &SignIn{
 		v:  v,
-		l:  l,
 		h:  h,
 		ur: ur,
 		j:  j,
@@ -88,7 +85,7 @@ func (uc *SignIn) signInWithGoogle(
 
 	oauthUser, err := uc.g.GetUser(ctx, token)
 	if err != nil {
-		uc.l.Error("failed to get user from google", "error", err)
+		slog.Error("failed to get user from google", "error", err)
 		return nil, errs.ErrUnauthorized
 	}
 
@@ -137,7 +134,7 @@ func (uc *SignIn) signInWithMock(
 ) (*SignInOutput, error) {
 	oauthUser, err := uc.m.GetUser(ctx, token)
 	if err != nil {
-		uc.l.Error("failed to get user from mock", "error", err)
+		slog.Error("failed to get user from mock", "error", err)
 		return nil, errs.ErrUnauthorized
 	}
 

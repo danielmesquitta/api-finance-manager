@@ -49,7 +49,7 @@ func NewDB(
 func (db *DB) UseTx(
 	ctx context.Context,
 ) *DB {
-	t, ok := ctx.Value(tx.Key).(pgx.Tx)
+	t, ok := ctx.Value(tx.ContextKey).(pgx.Tx)
 	if ok {
 		return &DB{
 			Queries: db.WithTx(t),

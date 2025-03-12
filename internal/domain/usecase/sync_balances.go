@@ -18,7 +18,6 @@ import (
 
 type SyncBalances struct {
 	e   *config.Env
-	l   *slog.Logger
 	o   openfinance.Client
 	c   cache.Cache
 	ar  repo.AccountRepo
@@ -27,7 +26,6 @@ type SyncBalances struct {
 
 func NewSyncBalances(
 	e *config.Env,
-	l *slog.Logger,
 	o openfinance.Client,
 	c cache.Cache,
 	ar repo.AccountRepo,
@@ -35,7 +33,6 @@ func NewSyncBalances(
 ) *SyncBalances {
 	return &SyncBalances{
 		e:   e,
-		l:   l,
 		o:   o,
 		c:   c,
 		ar:  ar,
@@ -51,7 +48,7 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 	}
 
 	if offset == -1 {
-		uc.l.Info("sync balances already completed")
+		slog.Info("sync balances already completed")
 		return nil
 	}
 
@@ -72,7 +69,7 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 			return errs.New(err)
 		}
 
-		uc.l.Info("sync balances completed")
+		slog.Info("sync balances completed")
 		return nil
 	}
 
@@ -90,7 +87,7 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 	for userID, userAccounts := range accountsByUserID {
 		openFinanceID := userAccounts[0].OpenFinanceID
 		if openFinanceID == nil {
-			uc.l.Info(
+			slog.Info(
 				"skipping user without open finance id",
 				"user_id", userID,
 			)
@@ -109,7 +106,7 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 				openFinanceAccounts,
 				accountsByExternalIDs,
 			); err != nil {
-				uc.l.Error(
+				slog.Error(
 					"error creating user balances",
 					"user_id", userID,
 					"error", err,
@@ -127,7 +124,7 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 		if err := uc.c.Set(ctx, cache.KeySyncBalancesOffset, -1, cacheExp); err != nil {
 			return errs.New(err)
 		}
-		uc.l.Info("sync balances completed")
+		slog.Info("sync balances completed")
 		return nil
 	}
 
@@ -149,7 +146,7 @@ func (uc *SyncBalances) createAccountBalances(
 	for _, openFinanceAccount := range openFinanceAccounts {
 		account, ok := accountsByExternalIDs[openFinanceAccount.ExternalID]
 		if !ok {
-			uc.l.Error(
+			slog.Error(
 				"account not found",
 				"external_id", openFinanceAccount.ExternalID,
 			)

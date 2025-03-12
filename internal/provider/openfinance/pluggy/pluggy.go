@@ -1,8 +1,6 @@
 package pluggy
 
 import (
-	"log/slog"
-
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
@@ -11,15 +9,12 @@ import (
 
 type Client struct {
 	c *resty.Client
-
 	e *config.Env
-	l *slog.Logger
 	j *jwtutil.JWT
 }
 
 func NewClient(
 	e *config.Env,
-	l *slog.Logger,
 	j *jwtutil.JWT,
 ) *Client {
 	client := resty.New().
@@ -28,7 +23,6 @@ func NewClient(
 	return &Client{
 		c: client,
 		e: e,
-		l: l,
 		j: j,
 	}
 }

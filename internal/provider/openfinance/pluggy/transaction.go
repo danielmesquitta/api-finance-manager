@@ -3,6 +3,7 @@ package pluggy
 import (
 	"context"
 	"encoding/json"
+	"log/slog"
 	"strconv"
 	"strings"
 	"sync"
@@ -197,7 +198,7 @@ func (c *Client) ListTransactions(
 	for _, t := range allTransactions.Results {
 		transaction, err := c.parseTransactionResultToEntity(t)
 		if err != nil {
-			c.l.Error(
+			slog.Error(
 				"error parsing transaction result to entity",
 				"transaction",
 				t,

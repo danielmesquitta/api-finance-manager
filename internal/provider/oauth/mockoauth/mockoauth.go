@@ -13,7 +13,8 @@ type MockOAuth struct {
 	e *config.Env
 }
 
-const DefaultMockToken = "mock_token"
+const DefaultMockToken = "default_mock_token"
+const FreeTierMockToken = "free_tier_mock_token"
 const UnregisteredUserMockToken = "unregistered_user_mock_token"
 
 var Users = map[string]*entity.User{
@@ -31,12 +32,24 @@ var Users = map[string]*entity.User{
 			VerifiedEmail:         true,
 		}
 	}(),
-	UnregisteredUserMockToken: func() *entity.User {
+	FreeTierMockToken: func() *entity.User {
 		avatar := "https://avatar.iran.liara.run/public/82"
 		return &entity.User{
 			AuthID:        "016aecbd-fae5-4ff0-9046-03b7eabf6a5c",
 			Name:          "Jane Doe",
 			Email:         "janedoe@email.com",
+			Avatar:        &avatar,
+			Provider:      string(entity.ProviderMock),
+			Tier:          string(entity.TierFree),
+			VerifiedEmail: true,
+		}
+	}(),
+	UnregisteredUserMockToken: func() *entity.User {
+		avatar := "https://avatar.iran.liara.run/public/13"
+		return &entity.User{
+			AuthID:        "2824923b-2d93-4473-8397-32680bb412b4",
+			Name:          "Joseph Doe",
+			Email:         "josephdoe@email.com",
 			Avatar:        &avatar,
 			Provider:      string(entity.ProviderMock),
 			Tier:          string(entity.TierFree),

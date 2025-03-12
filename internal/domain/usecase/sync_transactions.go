@@ -20,7 +20,6 @@ import (
 
 type SyncTransactions struct {
 	e   *config.Env
-	l   *slog.Logger
 	o   openfinance.Client
 	c   cache.Cache
 	tx  tx.TX
@@ -33,7 +32,6 @@ type SyncTransactions struct {
 
 func NewSyncTransactions(
 	e *config.Env,
-	l *slog.Logger,
 	o openfinance.Client,
 	c cache.Cache,
 	tx tx.TX,
@@ -45,7 +43,6 @@ func NewSyncTransactions(
 ) *SyncTransactions {
 	return &SyncTransactions{
 		e:   e,
-		l:   l,
 		o:   o,
 		c:   c,
 		tx:  tx,
@@ -80,7 +77,7 @@ func (uc *SyncTransactions) Execute(
 		}
 
 		if offset == -1 {
-			uc.l.Info("sync transactions already completed")
+			slog.Info("sync transactions already completed")
 			return nil
 		}
 
@@ -145,7 +142,7 @@ func (uc *SyncTransactions) Execute(
 			return errs.New(err)
 		}
 
-		uc.l.Info("sync transactions completed")
+		slog.Info("sync transactions completed")
 		return nil
 	}
 
@@ -184,7 +181,7 @@ func (uc *SyncTransactions) Execute(
 				lastSynchronizedAt,
 			)
 			if err != nil {
-				uc.l.Error(
+				slog.Error(
 					"error getting open finance transactions",
 					"user", userID,
 					"account", account,
@@ -228,7 +225,7 @@ func (uc *SyncTransactions) Execute(
 			paymentMethodsByExternalID,
 			openFinanceTransactionsByAccountID,
 		); err != nil {
-			uc.l.Error(
+			slog.Error(
 				"error syncing user transactions",
 				"user_id", userID,
 				"accounts", userAccounts,
@@ -251,7 +248,7 @@ func (uc *SyncTransactions) Execute(
 				return errs.New(err)
 			}
 
-			uc.l.Info("sync transactions completed")
+			slog.Info("sync transactions completed")
 			return nil
 		}
 

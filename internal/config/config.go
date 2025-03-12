@@ -15,6 +15,8 @@ func LoadConfig(v *validator.Validator) *Env {
 		log.Fatalf("failed to load environment variables: %v", err)
 	}
 
+	setDefaultLogger(e)
+
 	setServerTimeZone()
 
 	return e
