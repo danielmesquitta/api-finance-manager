@@ -41,7 +41,7 @@ type GetBudgetBudgetCategories struct {
 	entity.BudgetCategory
 	Spent     int64                      `json:"spent"`
 	Available int64                      `json:"available"`
-	Category  entity.TransactionCategory `json:"category,omitzero"`
+	Category  entity.TransactionCategory `json:"category"`
 }
 
 type GetBudgetOutput struct {
@@ -49,8 +49,8 @@ type GetBudgetOutput struct {
 	Spent                              int64                       `json:"spent"`
 	Available                          int64                       `json:"available"`
 	AvailablePercentageVariation       int64                       `json:"available_percentage_variation"`
-	AvailablePerDay                    int64                       `json:"available_per_day,omitzero"`
-	AvailablePerDayPercentageVariation int64                       `json:"available_per_day_percentage_variation,omitzero"`
+	AvailablePerDay                    int64                       `json:"available_per_day"`
+	AvailablePerDayPercentageVariation int64                       `json:"available_per_day_percentage_variation"`
 	ComparisonDates                    ComparisonDates             `json:"comparison_dates"`
 	BudgetCategories                   []GetBudgetBudgetCategories `json:"budget_categories"`
 }
@@ -80,10 +80,12 @@ func (uc *GetBudget) Execute(
 	}
 
 	g, gCtx := errgroup.WithContext(ctx)
-	var budgetCategories []entity.BudgetCategory
-	var categories []entity.TransactionCategory
-	var spentPreviousMonth int64
-	var spentByCategoryID map[uuid.UUID]int64
+	var (
+		budgetCategories   []entity.BudgetCategory
+		categories         []entity.TransactionCategory
+		spentPreviousMonth int64
+		spentByCategoryID  map[uuid.UUID]int64
+	)
 
 	g.Go(func() error {
 		budgetCategories, categories, err = uc.br.ListBudgetCategories(
@@ -102,9 +104,7 @@ func (uc *GetBudget) Execute(
 		opts := append(
 			baseTransactionOpts,
 			repo.WithTransactionDateAfter(cmpDates.StartDate),
-			repo.WithTransactionDateBefore(
-				cmpDates.EndDate,
-			),
+			repo.WithTransactionDateBefore(cmpDates.EndDate),
 		)
 		spentByCategoryID, err = uc.tr.SumTransactionsByCategory(
 			gCtx,
@@ -117,10 +117,8 @@ func (uc *GetBudget) Execute(
 	g.Go(func() error {
 		opts := append(
 			baseTransactionOpts,
-			repo.WithTransactionDateAfter(cmpDates.StartDate),
-			repo.WithTransactionDateBefore(
-				cmpDates.EndDate,
-			),
+			repo.WithTransactionDateAfter(cmpDates.ComparisonStartDate),
+			repo.WithTransactionDateBefore(cmpDates.ComparisonEndDate),
 		)
 		spentPreviousMonth, err = uc.tr.SumTransactions(
 			gCtx,
@@ -156,24 +154,23 @@ func (uc *GetBudget) Execute(
 	isCurrentMonth := cmpDates.StartDate.Month() == now.Month() &&
 		cmpDates.StartDate.Year() == now.Year()
 
-	var availablePerDay, availablePerDayPercentageVariation int64
-	if isCurrentMonth {
-		availablePerDay = uc.calculateAvailablePerDay(
-			available,
-			toMonthEnd(cmpDates.EndDate),
-			cmpDates.EndDate.Day(),
-		)
+	availablePerDay := uc.calculateAvailablePerDay(
+		available,
+		toMonthEnd(cmpDates.EndDate),
+		cmpDates.EndDate.Day(),
+		isCurrentMonth,
+	)
 
-		availablePreviousMonthPerDay := uc.calculateAvailablePerDay(
-			availablePreviousMonth,
-			toMonthEnd(cmpDates.ComparisonEndDate),
-			cmpDates.ComparisonEndDate.Day(),
-		)
+	availablePreviousMonthPerDay := uc.calculateAvailablePerDay(
+		availablePreviousMonth,
+		toMonthEnd(cmpDates.ComparisonEndDate),
+		cmpDates.ComparisonEndDate.Day(),
+		isCurrentMonth,
+	)
 
-		availablePerDayPercentageVariation = calculatePercentageVariation(
-			availablePerDay, availablePreviousMonthPerDay,
-		)
-	}
+	availablePerDayPercentageVariation := calculatePercentageVariation(
+		availablePerDay, availablePreviousMonthPerDay,
+	)
 
 	out := GetBudgetOutput{
 		Budget:                             *budget,
@@ -214,10 +211,17 @@ func (uc *GetBudget) calculateAvailablePerDay(
 	available int64,
 	monthEnd time.Time,
 	daysPassed int,
+	isCurrentMonth bool,
 ) int64 {
+	var availablePerDay float64
 	daysInMonth := monthEnd.Day()
-	daysLeft := daysInMonth - daysPassed + 1 // +1 to include today
-	availablePerDay := money.FromCents(available) / float64(daysLeft)
+
+	if isCurrentMonth {
+		daysLeft := daysInMonth - daysPassed + 1 // +1 to include today
+		availablePerDay = money.FromCents(available) / float64(daysLeft)
+	} else {
+		availablePerDay = money.FromCents(available) / float64(daysInMonth)
+	}
 
 	return money.ToCents(availablePerDay)
 }

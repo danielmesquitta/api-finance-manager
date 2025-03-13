@@ -382,6 +382,13 @@ func (uc *SyncTransactions) buildCreateTransactionsParams(
 
 		for _, ofTrans := range ofTransactions {
 			if ofTrans.ExternalID == nil {
+				slog.Error(
+					"sync-transactions: open finance transaction external id is nil",
+					"transaction",
+					ofTrans,
+					"user_id",
+					userID,
+				)
 				continue
 			}
 

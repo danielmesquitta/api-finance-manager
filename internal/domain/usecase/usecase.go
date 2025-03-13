@@ -270,10 +270,10 @@ func prepareTransactionOptions(
 }
 
 func calculatePercentageVariation(
-	a, b int64,
+	curr, prev int64,
 ) int64 {
-	if b == 0 {
+	if prev == 0 {
 		return 0
 	}
-	return money.FromPercentage(1 - (float64(a) / float64(b)))
+	return money.FromPercentage(1 - (float64(curr) / float64(prev)))
 }

@@ -77,7 +77,7 @@ FROM budgets
 WHERE user_id = $1
   AND date <= $2
   AND deleted_at IS NULL
-ORDER BY date ASC
+ORDER BY date DESC
 LIMIT 1
 `
 

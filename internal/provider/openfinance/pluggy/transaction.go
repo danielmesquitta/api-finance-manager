@@ -288,6 +288,7 @@ func (c *Client) setTransactionPaymentMethod(
 ) {
 	if r.CreditCardMetadata != nil {
 		t.PaymentMethodExternalID = string(PaymentMethodCreditCard)
+		t.Amount = t.Amount * -1
 		return
 	}
 
