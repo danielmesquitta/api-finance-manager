@@ -217,30 +217,6 @@ func (c *Client) ListTransactions(
 	return transactions, nil
 }
 
-func (c *Client) parseTransactionResultToEntity(
-	r Result,
-) (*openfinance.Transaction, error) {
-	transaction := openfinance.Transaction{
-		Transaction: entity.Transaction{
-			ExternalID: &r.ID,
-			Name:       r.Description,
-			Date:       r.Date,
-		},
-	}
-
-	if r.CategoryID != nil {
-		transaction.CategoryExternalID = *r.CategoryID
-	}
-
-	if err := c.setTransactionAmount(&transaction, r); err != nil {
-		return nil, errs.New(err)
-	}
-
-	c.setTransactionPaymentMethod(&transaction, r)
-
-	return &transaction, nil
-}
-
 func (c *Client) fetchTransactions(
 	ctx context.Context,
 	queryParams map[string]string,
@@ -263,6 +239,30 @@ func (c *Client) fetchTransactions(
 	}
 
 	return transRes, nil
+}
+
+func (c *Client) parseTransactionResultToEntity(
+	r Result,
+) (*openfinance.Transaction, error) {
+	transaction := openfinance.Transaction{
+		Transaction: entity.Transaction{
+			ExternalID: &r.ID,
+			Name:       r.Description,
+			Date:       r.Date,
+		},
+	}
+
+	if r.CategoryID != nil {
+		transaction.CategoryExternalID = *r.CategoryID
+	}
+
+	if err := c.setTransactionAmount(&transaction, r); err != nil {
+		return nil, errs.New(err)
+	}
+
+	c.setTransactionPaymentMethod(&transaction, r)
+
+	return &transaction, nil
 }
 
 func (c *Client) setTransactionAmount(

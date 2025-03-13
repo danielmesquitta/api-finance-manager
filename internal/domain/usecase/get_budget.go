@@ -49,8 +49,8 @@ type GetBudgetOutput struct {
 	Spent                              int64                       `json:"spent"`
 	Available                          int64                       `json:"available"`
 	AvailablePercentageVariation       int64                       `json:"available_percentage_variation"`
-	AvailablePerDay                    int64                       `json:"available_per_day"`
-	AvailablePerDayPercentageVariation int64                       `json:"available_per_day_percentage_variation"`
+	AvailablePerDay                    int64                       `json:"available_per_day,omitempty"`
+	AvailablePerDayPercentageVariation int64                       `json:"available_per_day_percentage_variation,omitempty"`
 	ComparisonDates                    ComparisonDates             `json:"comparison_dates"`
 	BudgetCategories                   []GetBudgetBudgetCategories `json:"budget_categories"`
 }
@@ -154,23 +154,24 @@ func (uc *GetBudget) Execute(
 	isCurrentMonth := cmpDates.StartDate.Month() == now.Month() &&
 		cmpDates.StartDate.Year() == now.Year()
 
-	availablePerDay := uc.calculateAvailablePerDay(
-		available,
-		toMonthEnd(cmpDates.EndDate),
-		cmpDates.EndDate.Day(),
-		isCurrentMonth,
-	)
+	var availablePerDay, availablePerDayPercentageVariation int64
+	if isCurrentMonth {
+		availablePerDay = uc.calculateAvailablePerDay(
+			available,
+			toMonthEnd(cmpDates.EndDate),
+			cmpDates.EndDate.Day(),
+		)
 
-	availablePreviousMonthPerDay := uc.calculateAvailablePerDay(
-		availablePreviousMonth,
-		toMonthEnd(cmpDates.ComparisonEndDate),
-		cmpDates.ComparisonEndDate.Day(),
-		isCurrentMonth,
-	)
+		availablePreviousMonthPerDay := uc.calculateAvailablePerDay(
+			availablePreviousMonth,
+			toMonthEnd(cmpDates.ComparisonEndDate),
+			cmpDates.ComparisonEndDate.Day(),
+		)
 
-	availablePerDayPercentageVariation := calculatePercentageVariation(
-		availablePerDay, availablePreviousMonthPerDay,
-	)
+		availablePerDayPercentageVariation = calculatePercentageVariation(
+			availablePerDay, availablePreviousMonthPerDay,
+		)
+	}
 
 	out := GetBudgetOutput{
 		Budget:                             *budget,
@@ -211,17 +212,10 @@ func (uc *GetBudget) calculateAvailablePerDay(
 	available int64,
 	monthEnd time.Time,
 	daysPassed int,
-	isCurrentMonth bool,
 ) int64 {
-	var availablePerDay float64
 	daysInMonth := monthEnd.Day()
-
-	if isCurrentMonth {
-		daysLeft := daysInMonth - daysPassed + 1 // +1 to include today
-		availablePerDay = money.FromCents(available) / float64(daysLeft)
-	} else {
-		availablePerDay = money.FromCents(available) / float64(daysInMonth)
-	}
+	daysLeft := daysInMonth - daysPassed + 1 // +1 to include today
+	availablePerDay := money.FromCents(available) / float64(daysLeft)
 
 	return money.ToCents(availablePerDay)
 }

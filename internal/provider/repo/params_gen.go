@@ -98,6 +98,7 @@ type CreateTransactionsParams struct {
 	AccountID       *uuid.UUID `json:"account_id"`
 	InstitutionID   *uuid.UUID `json:"institution_id"`
 	CategoryID      uuid.UUID  `json:"category_id"`
+	IsIgnored       bool       `json:"is_ignored"`
 }
 
 type GetTransactionParams struct {

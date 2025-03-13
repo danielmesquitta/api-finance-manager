@@ -56,7 +56,7 @@ func (c *Client) ListTransactionCategories(
 	return categories, nil
 }
 
-func (c *Client) GetParentCategoryExternalID(
+func (c *Client) GetCategoryParentExternalID(
 	externalCategoryID string,
 	categoriesByExternalID map[string]entity.TransactionCategory,
 ) string {

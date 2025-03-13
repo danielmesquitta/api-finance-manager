@@ -8,9 +8,10 @@ INSERT INTO transactions (
     user_id,
     account_id,
     institution_id,
-    category_id
+    category_id,
+    is_ignored
   )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
 -- name: CreateTransaction :exec
 INSERT INTO transactions (
     name,

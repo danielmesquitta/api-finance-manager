@@ -181,32 +181,17 @@ func (qb *QueryBuilder) SumTransactionsByCategory(
 
 	query = qb.buildTransactionsQuery(query, options, whereExps, nil)
 
-	sql, args, err := query.ToSQL()
-	if err != nil {
+	rows := []struct {
+		CategoryID uuid.UUID `json:"category_id"`
+		Sum        int64     `json:"sum"`
+	}{}
+	if err := qb.Scan(ctx, query, &rows); err != nil {
 		return nil, errs.New(err)
 	}
-
-	rows, err := qb.p.Query(ctx, sql, args...)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-	defer rows.Close()
 
 	out := map[uuid.UUID]int64{}
-	for rows.Next() {
-		row := struct {
-			CategoryID uuid.UUID
-			Sum        int64
-		}{}
-
-		if err := rows.Scan(&row.CategoryID, &row.Sum); err != nil {
-			return nil, err
-		}
-
+	for _, row := range rows {
 		out[row.CategoryID] = row.Sum
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
 	}
 
 	return out, nil

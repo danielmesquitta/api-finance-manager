@@ -139,7 +139,7 @@ func TestGetBudgetRoute(t *testing.T) {
 			)
 			assert.Nil(t, err)
 
-			slog.Debug("actualResponse", "actualResponse", actualResponse)
+			slog.Info("actualResponse", "actualResponse", actualResponse)
 
 			assert.Equal(
 				t,

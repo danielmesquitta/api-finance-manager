@@ -14,18 +14,6 @@ func (t tableAIChat) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
 }
 
-func (t tableAIChat) ColumnUserID() string {
-	return fmt.Sprintf("%s.user_id", t)
-}
-
-func (t tableAIChat) ColumnID() string {
-	return fmt.Sprintf("%s.id", t)
-}
-
-func (t tableAIChat) ColumnTitle() string {
-	return fmt.Sprintf("%s.title", t)
-}
-
 func (t tableAIChat) ColumnCreatedAt() string {
 	return fmt.Sprintf("%s.created_at", t)
 }
@@ -36,6 +24,18 @@ func (t tableAIChat) ColumnUpdatedAt() string {
 
 func (t tableAIChat) ColumnDeletedAt() string {
 	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t tableAIChat) ColumnUserID() string {
+	return fmt.Sprintf("%s.user_id", t)
+}
+
+func (t tableAIChat) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t tableAIChat) ColumnTitle() string {
+	return fmt.Sprintf("%s.title", t)
 }
 
 const AIChat = tableAIChat("ai_chats")
@@ -102,8 +102,20 @@ func (t tableAccount) ColumnCreatedAt() string {
 	return fmt.Sprintf("%s.created_at", t)
 }
 
+func (t tableAccount) ColumnUpdatedAt() string {
+	return fmt.Sprintf("%s.updated_at", t)
+}
+
 func (t tableAccount) ColumnDeletedAt() string {
 	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t tableAccount) ColumnUserID() string {
+	return fmt.Sprintf("%s.user_id", t)
+}
+
+func (t tableAccount) ColumnType() string {
+	return fmt.Sprintf("%s.type", t)
 }
 
 func (t tableAccount) ColumnInstitutionID() string {
@@ -112,18 +124,6 @@ func (t tableAccount) ColumnInstitutionID() string {
 
 func (t tableAccount) ColumnID() string {
 	return fmt.Sprintf("%s.id", t)
-}
-
-func (t tableAccount) ColumnType() string {
-	return fmt.Sprintf("%s.type", t)
-}
-
-func (t tableAccount) ColumnUpdatedAt() string {
-	return fmt.Sprintf("%s.updated_at", t)
-}
-
-func (t tableAccount) ColumnUserID() string {
-	return fmt.Sprintf("%s.user_id", t)
 }
 
 const Account = tableAccount("accounts")
@@ -136,6 +136,10 @@ func (t tableAccountBalance) Table() string {
 
 func (t tableAccountBalance) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
+}
+
+func (t tableAccountBalance) ColumnAmount() string {
+	return fmt.Sprintf("%s.amount", t)
 }
 
 func (t tableAccountBalance) ColumnCreatedAt() string {
@@ -160,10 +164,6 @@ func (t tableAccountBalance) ColumnUserID() string {
 
 func (t tableAccountBalance) ColumnID() string {
 	return fmt.Sprintf("%s.id", t)
-}
-
-func (t tableAccountBalance) ColumnAmount() string {
-	return fmt.Sprintf("%s.amount", t)
 }
 
 const AccountBalance = tableAccountBalance("account_balances")
@@ -218,6 +218,14 @@ func (t tableBudgetCategory) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
 }
 
+func (t tableBudgetCategory) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t tableBudgetCategory) ColumnAmount() string {
+	return fmt.Sprintf("%s.amount", t)
+}
+
 func (t tableBudgetCategory) ColumnCreatedAt() string {
 	return fmt.Sprintf("%s.created_at", t)
 }
@@ -238,14 +246,6 @@ func (t tableBudgetCategory) ColumnCategoryID() string {
 	return fmt.Sprintf("%s.category_id", t)
 }
 
-func (t tableBudgetCategory) ColumnID() string {
-	return fmt.Sprintf("%s.id", t)
-}
-
-func (t tableBudgetCategory) ColumnAmount() string {
-	return fmt.Sprintf("%s.amount", t)
-}
-
 const BudgetCategory = tableBudgetCategory("budget_categories")
 
 type tableFeedback string
@@ -256,6 +256,14 @@ func (t tableFeedback) Table() string {
 
 func (t tableFeedback) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
+}
+
+func (t tableFeedback) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t tableFeedback) ColumnMessage() string {
+	return fmt.Sprintf("%s.message", t)
 }
 
 func (t tableFeedback) ColumnCreatedAt() string {
@@ -270,14 +278,6 @@ func (t tableFeedback) ColumnUserID() string {
 	return fmt.Sprintf("%s.user_id", t)
 }
 
-func (t tableFeedback) ColumnID() string {
-	return fmt.Sprintf("%s.id", t)
-}
-
-func (t tableFeedback) ColumnMessage() string {
-	return fmt.Sprintf("%s.message", t)
-}
-
 const Feedback = tableFeedback("feedbacks")
 
 type tableInstitution string
@@ -288,6 +288,10 @@ func (t tableInstitution) Table() string {
 
 func (t tableInstitution) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
+}
+
+func (t tableInstitution) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
 }
 
 func (t tableInstitution) ColumnExternalID() string {
@@ -314,10 +318,6 @@ func (t tableInstitution) ColumnDeletedAt() string {
 	return fmt.Sprintf("%s.deleted_at", t)
 }
 
-func (t tableInstitution) ColumnID() string {
-	return fmt.Sprintf("%s.id", t)
-}
-
 const Institution = tableInstitution("institutions")
 
 type tableInvestment string
@@ -330,20 +330,20 @@ func (t tableInvestment) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
 }
 
+func (t tableInvestment) ColumnCategoryID() string {
+	return fmt.Sprintf("%s.category_id", t)
+}
+
 func (t tableInvestment) ColumnUserID() string {
 	return fmt.Sprintf("%s.user_id", t)
 }
 
-func (t tableInvestment) ColumnExternalID() string {
-	return fmt.Sprintf("%s.external_id", t)
+func (t tableInvestment) ColumnName() string {
+	return fmt.Sprintf("%s.name", t)
 }
 
 func (t tableInvestment) ColumnAmount() string {
 	return fmt.Sprintf("%s.amount", t)
-}
-
-func (t tableInvestment) ColumnRate() string {
-	return fmt.Sprintf("%s.rate", t)
 }
 
 func (t tableInvestment) ColumnRateType() string {
@@ -354,24 +354,24 @@ func (t tableInvestment) ColumnCreatedAt() string {
 	return fmt.Sprintf("%s.created_at", t)
 }
 
-func (t tableInvestment) ColumnID() string {
-	return fmt.Sprintf("%s.id", t)
-}
-
-func (t tableInvestment) ColumnName() string {
-	return fmt.Sprintf("%s.name", t)
-}
-
 func (t tableInvestment) ColumnUpdatedAt() string {
 	return fmt.Sprintf("%s.updated_at", t)
 }
 
-func (t tableInvestment) ColumnDeletedAt() string {
-	return fmt.Sprintf("%s.deleted_at", t)
+func (t tableInvestment) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
 }
 
-func (t tableInvestment) ColumnCategoryID() string {
-	return fmt.Sprintf("%s.category_id", t)
+func (t tableInvestment) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
+}
+
+func (t tableInvestment) ColumnRate() string {
+	return fmt.Sprintf("%s.rate", t)
+}
+
+func (t tableInvestment) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
 }
 
 const Investment = tableInvestment("investments")
@@ -384,6 +384,10 @@ func (t tableInvestmentCategory) Table() string {
 
 func (t tableInvestmentCategory) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
+}
+
+func (t tableInvestmentCategory) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
 }
 
 func (t tableInvestmentCategory) ColumnID() string {
@@ -406,10 +410,6 @@ func (t tableInvestmentCategory) ColumnUpdatedAt() string {
 	return fmt.Sprintf("%s.updated_at", t)
 }
 
-func (t tableInvestmentCategory) ColumnDeletedAt() string {
-	return fmt.Sprintf("%s.deleted_at", t)
-}
-
 const InvestmentCategory = tableInvestmentCategory("investment_categories")
 
 type tablePaymentMethod string
@@ -420,14 +420,6 @@ func (t tablePaymentMethod) Table() string {
 
 func (t tablePaymentMethod) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
-}
-
-func (t tablePaymentMethod) ColumnID() string {
-	return fmt.Sprintf("%s.id", t)
-}
-
-func (t tablePaymentMethod) ColumnExternalID() string {
-	return fmt.Sprintf("%s.external_id", t)
 }
 
 func (t tablePaymentMethod) ColumnName() string {
@@ -446,6 +438,14 @@ func (t tablePaymentMethod) ColumnDeletedAt() string {
 	return fmt.Sprintf("%s.deleted_at", t)
 }
 
+func (t tablePaymentMethod) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t tablePaymentMethod) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
+}
+
 const PaymentMethod = tablePaymentMethod("payment_methods")
 
 type tableTransaction string
@@ -458,24 +458,12 @@ func (t tableTransaction) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
 }
 
-func (t tableTransaction) ColumnInstitutionID() string {
-	return fmt.Sprintf("%s.institution_id", t)
-}
-
-func (t tableTransaction) ColumnID() string {
-	return fmt.Sprintf("%s.id", t)
-}
-
-func (t tableTransaction) ColumnExternalID() string {
-	return fmt.Sprintf("%s.external_id", t)
-}
-
-func (t tableTransaction) ColumnAmount() string {
-	return fmt.Sprintf("%s.amount", t)
-}
-
 func (t tableTransaction) ColumnIsIgnored() string {
 	return fmt.Sprintf("%s.is_ignored", t)
+}
+
+func (t tableTransaction) ColumnDate() string {
+	return fmt.Sprintf("%s.date", t)
 }
 
 func (t tableTransaction) ColumnCreatedAt() string {
@@ -486,32 +474,44 @@ func (t tableTransaction) ColumnUpdatedAt() string {
 	return fmt.Sprintf("%s.updated_at", t)
 }
 
-func (t tableTransaction) ColumnDeletedAt() string {
-	return fmt.Sprintf("%s.deleted_at", t)
-}
-
 func (t tableTransaction) ColumnPaymentMethodID() string {
 	return fmt.Sprintf("%s.payment_method_id", t)
-}
-
-func (t tableTransaction) ColumnName() string {
-	return fmt.Sprintf("%s.name", t)
-}
-
-func (t tableTransaction) ColumnDate() string {
-	return fmt.Sprintf("%s.date", t)
-}
-
-func (t tableTransaction) ColumnUserID() string {
-	return fmt.Sprintf("%s.user_id", t)
 }
 
 func (t tableTransaction) ColumnCategoryID() string {
 	return fmt.Sprintf("%s.category_id", t)
 }
 
+func (t tableTransaction) ColumnInstitutionID() string {
+	return fmt.Sprintf("%s.institution_id", t)
+}
+
+func (t tableTransaction) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t tableTransaction) ColumnName() string {
+	return fmt.Sprintf("%s.name", t)
+}
+
+func (t tableTransaction) ColumnAmount() string {
+	return fmt.Sprintf("%s.amount", t)
+}
+
+func (t tableTransaction) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t tableTransaction) ColumnUserID() string {
+	return fmt.Sprintf("%s.user_id", t)
+}
+
 func (t tableTransaction) ColumnAccountID() string {
 	return fmt.Sprintf("%s.account_id", t)
+}
+
+func (t tableTransaction) ColumnExternalID() string {
+	return fmt.Sprintf("%s.external_id", t)
 }
 
 const Transaction = tableTransaction("transactions")
@@ -524,10 +524,6 @@ func (t tableTransactionCategory) Table() string {
 
 func (t tableTransactionCategory) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
-}
-
-func (t tableTransactionCategory) ColumnID() string {
-	return fmt.Sprintf("%s.id", t)
 }
 
 func (t tableTransactionCategory) ColumnExternalID() string {
@@ -550,6 +546,10 @@ func (t tableTransactionCategory) ColumnDeletedAt() string {
 	return fmt.Sprintf("%s.deleted_at", t)
 }
 
+func (t tableTransactionCategory) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
 const TransactionCategory = tableTransactionCategory("transaction_categories")
 
 type tableUser string
@@ -562,16 +562,24 @@ func (t tableUser) ColumnAll() string {
 	return fmt.Sprintf("%s.*", t)
 }
 
-func (t tableUser) ColumnVerifiedEmail() string {
-	return fmt.Sprintf("%s.verified_email", t)
+func (t tableUser) ColumnSubscriptionExpiresAt() string {
+	return fmt.Sprintf("%s.subscription_expires_at", t)
+}
+
+func (t tableUser) ColumnCreatedAt() string {
+	return fmt.Sprintf("%s.created_at", t)
 }
 
 func (t tableUser) ColumnUpdatedAt() string {
 	return fmt.Sprintf("%s.updated_at", t)
 }
 
-func (t tableUser) ColumnDeletedAt() string {
-	return fmt.Sprintf("%s.deleted_at", t)
+func (t tableUser) ColumnID() string {
+	return fmt.Sprintf("%s.id", t)
+}
+
+func (t tableUser) ColumnAuthID() string {
+	return fmt.Sprintf("%s.auth_id", t)
 }
 
 func (t tableUser) ColumnProvider() string {
@@ -586,36 +594,28 @@ func (t tableUser) ColumnEmail() string {
 	return fmt.Sprintf("%s.email", t)
 }
 
+func (t tableUser) ColumnSynchronizedAt() string {
+	return fmt.Sprintf("%s.synchronized_at", t)
+}
+
+func (t tableUser) ColumnDeletedAt() string {
+	return fmt.Sprintf("%s.deleted_at", t)
+}
+
+func (t tableUser) ColumnOpenFinanceID() string {
+	return fmt.Sprintf("%s.open_finance_id", t)
+}
+
+func (t tableUser) ColumnVerifiedEmail() string {
+	return fmt.Sprintf("%s.verified_email", t)
+}
+
 func (t tableUser) ColumnTier() string {
 	return fmt.Sprintf("%s.tier", t)
 }
 
 func (t tableUser) ColumnAvatar() string {
 	return fmt.Sprintf("%s.avatar", t)
-}
-
-func (t tableUser) ColumnSubscriptionExpiresAt() string {
-	return fmt.Sprintf("%s.subscription_expires_at", t)
-}
-
-func (t tableUser) ColumnSynchronizedAt() string {
-	return fmt.Sprintf("%s.synchronized_at", t)
-}
-
-func (t tableUser) ColumnCreatedAt() string {
-	return fmt.Sprintf("%s.created_at", t)
-}
-
-func (t tableUser) ColumnID() string {
-	return fmt.Sprintf("%s.id", t)
-}
-
-func (t tableUser) ColumnAuthID() string {
-	return fmt.Sprintf("%s.auth_id", t)
-}
-
-func (t tableUser) ColumnOpenFinanceID() string {
-	return fmt.Sprintf("%s.open_finance_id", t)
 }
 
 const User = tableUser("users")

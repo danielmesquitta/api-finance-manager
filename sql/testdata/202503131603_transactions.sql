@@ -12,7 +12,7 @@ INSERT INTO transactions (
     institution_id
   )
 VALUES (
-    '58ee3351-cd16-49ba-bc0a-3be69865f0cf'::uuid,
+    'e1c73c22-7d52-43e2-80a8-63ce6da99e53'::uuid,
     '4ab8b636-acf9-4e24-a135-96fd459456d0',
     'Transferência enviada|VILMAR PELEGRINE PEREIRA',
     -3400,
@@ -25,7 +25,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '9a8d60e2-6cef-4867-ac92-550780e2260e'::uuid,
+    'fc8bdec5-d809-4009-bb8e-22b0a043cb0d'::uuid,
     'c147fa05-c97f-453d-aec5-85b5edea3461',
     'Transferência enviada|CEMIG DISTRIBUICAO S A',
     -23844,
@@ -38,11 +38,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '15e0db20-10a8-4cc1-984e-0c8d07b9300c'::uuid,
+    '68c59c47-1359-4f04-89bf-8f97f4b0b8f9'::uuid,
     'cec753ac-c346-41dc-89f1-0459efd326c1',
     'Resgate RDB',
     20000,
-    false,
+    true,
     '2024-11-29 06:02:58.708-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -51,7 +51,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '260ae959-8ae5-4cfe-b3da-b3c80c11bb36'::uuid,
+    '0ffdf480-1776-404c-9b88-8b9189f367da'::uuid,
     'b36c160f-d40b-42eb-91ae-9312f3a209b9',
     'Transferência enviada|ESTADO DE MINAS GERAIS',
     -10559,
@@ -64,11 +64,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '70e62f2a-83c0-4f56-afb5-ef4c9b75fb6e'::uuid,
+    '49508dc4-ab8f-46da-b6c5-8431a1dadae0'::uuid,
     '4e0687df-731b-4aeb-ba90-1c89223e7047',
     'Aplicação RDB',
     -60000,
-    false,
+    true,
     '2024-11-22 06:32:03.137-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -77,7 +77,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd0f6e2bb-05fe-4f04-a1f8-b5b8bf55da5d'::uuid,
+    'bb488e52-e911-40d4-9786-fe755013a9dd'::uuid,
     '644dbd7e-e749-4ddf-a31d-818daaad1044',
     'Transferência Recebida|CELICA FERNANDES',
     80000,
@@ -90,11 +90,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '3a89325f-4d6e-4ee2-9d54-a7e5bb1edc20'::uuid,
+    '92c69bfb-7671-4aa3-aa5a-e806a8d88519'::uuid,
     'e141f888-40d6-4846-8927-27daf315d906',
     'Resgate RDB',
     7606,
-    false,
+    true,
     '2024-11-18 15:24:52.289-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -103,7 +103,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '5fcf6827-a27f-4742-9354-da9f4398112f'::uuid,
+    'adc65b87-f9bf-49fb-9c9b-564aea6c101c'::uuid,
     '7977be03-7d6c-4982-9802-91841dfd2b30',
     'Transferência enviada|RECEITA FEDERAL',
     -125359,
@@ -116,7 +116,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'fd4602bd-c600-4741-bd58-2b9163b53f10'::uuid,
+    '3a6087f0-a406-4825-aaf0-d0b7383cbbc3'::uuid,
     '7e35689d-de31-479b-94c1-2966699b4b81',
     'Transferência enviada|RECEITA FEDERAL',
     -132922,
@@ -129,11 +129,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '657b2c73-c0f0-4829-a647-6c7cd2adc227'::uuid,
+    'efa10d6d-f799-41a9-8ddd-647cfd0de998'::uuid,
     'c6c9e1e4-b824-4e3f-b824-a48be00638e8',
     'Resgate RDB',
     250000,
-    false,
+    true,
     '2024-11-14 07:46:32.066-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -142,7 +142,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '8111eb54-2ca5-40a6-bf8f-a5f7cfa53450'::uuid,
+    '8cd20266-d80b-43ac-aa5b-a0a4ebb6b62b'::uuid,
     '236e751f-a084-49da-90e0-cf84a4b993c0',
     'Transferência enviada|Julia Fernandes Avelar',
     -80000,
@@ -155,11 +155,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'e4b1627e-cf85-4c8b-bfd7-8b6c1d59be98'::uuid,
+    '1ad4ce96-71db-418a-8ae9-076cb07a1e46'::uuid,
     '9441f420-3c8f-43e1-82d0-fffb632c6542',
     'Resgate RDB',
     80000,
-    false,
+    true,
     '2024-11-12 19:49:41.234-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -168,11 +168,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '2f1a74ef-159b-43dd-9d49-f4baa2d2eae8'::uuid,
+    '0bbd955a-062b-4b7c-82cb-3e86a8c8b714'::uuid,
     'b388aad2-59b2-4987-b6b6-38de90fd7b9e',
     'Aplicação RDB',
     -20000,
-    false,
+    true,
     '2024-11-12 10:07:13.589-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -181,11 +181,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '0b526acd-1664-4326-9871-a8c238e308db'::uuid,
+    '61eaa26e-61a0-442f-b9e2-9f357832d9e5'::uuid,
     'ec0794f4-750a-45b1-ae34-63301cf69639',
     'Resgate RDB',
     23911,
-    false,
+    true,
     '2024-11-12 08:26:41.97-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -194,11 +194,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '303b3fb3-4e7c-46f4-be1a-a332c175c99b'::uuid,
+    'd42f49d6-6652-4268-8970-f4293eb63c03'::uuid,
     '6f4e06d6-b640-4181-bc71-fdc8318facb8',
     'CONTA REMUNERADA - RESGATE APLICAÇÃO',
     893912,
-    false,
+    true,
     '2024-11-12 00:26:40.131-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -207,7 +207,7 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '2941de61-4a3d-43a7-9846-327e36689be2'::uuid,
+    '3e52de61-1d33-43b3-bbcf-c6bf45ada938'::uuid,
     'af488019-9988-4479-9749-dad0cb441317',
     'Transferência enviada|ESTADO DE MINAS GERAIS',
     -10559,
@@ -220,11 +220,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'af92da99-a10f-439f-b4d9-c6f3f6e48777'::uuid,
+    '584a3e30-e61c-4118-b02b-ed919340ce7b'::uuid,
     '1dbf1730-9c1e-41be-9b02-c40b10eaeb07',
     'Resgate RDB',
     10000,
-    false,
+    true,
     '2024-11-11 09:01:49.077-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -233,7 +233,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd1379ba8-d1da-4e3a-ac43-884cfa4c85e5'::uuid,
+    'ec793a7d-37ba-47e3-b12a-04499c08b762'::uuid,
     'a0f23460-b591-444c-b858-8b627476cb8e',
     'Transferência enviada|Daniel Santos de Mesquita',
     -7653,
@@ -246,11 +246,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'edbcf9ed-5c09-4cfd-87e8-7c993f675438'::uuid,
+    'c92002f2-d25d-43fb-b529-63e358b28ef5'::uuid,
     'ef5f3a7a-297a-4cb2-b0d9-5c2f8ca99d27',
     'Resgate RDB',
     10000,
-    false,
+    true,
     '2024-11-11 07:56:22.01-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -259,11 +259,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'c48bacbf-8587-4ce1-8d75-98d0684ce48b'::uuid,
+    'b3047f7e-5636-4862-bca5-1f9dbc40d70f'::uuid,
     'ce66d89b-77e2-4e1c-a559-2530b3ed417e',
     'Aplicação RDB',
     -900000,
-    false,
+    true,
     '2024-11-11 07:47:38.474-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -272,7 +272,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '7316fedd-490e-4895-ac0e-915d97eaf49e'::uuid,
+    '59a754cb-def9-4728-9d4e-565ec1774702'::uuid,
     'b19b998a-5b0f-4cd9-8a37-566dcf1ddfa8',
     'Transferência Recebida|Daniel Santos De Mesquita',
     893912,
@@ -285,7 +285,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '74763fe2-dede-448d-bdf1-f0b21dd09166'::uuid,
+    '89a7f3f5-f26c-4e75-8332-54f40445088d'::uuid,
     'dc9c6d6a-f80a-4aeb-aac2-229488db34b3',
     'ENVIO TRANSFERÊNCIA',
     -893912,
@@ -298,7 +298,7 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '8af66ada-4b5d-4148-8edc-9118c7550743'::uuid,
+    'd1a19260-aa4d-4b75-b639-301be5cae12d'::uuid,
     '25f34fbe-1a7c-42c2-9754-2fe2d217ea73',
     'PIX CASH OUT EXTERNO',
     -893912,
@@ -311,11 +311,11 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '80126f19-86a8-4999-af3e-35c1cfeb8c70'::uuid,
+    '828f80ea-1408-4179-b8cd-ef904be31f1b'::uuid,
     '7fa78d86-b19f-46ba-a115-332f58be4922',
     'TEF CASH IN',
     893912,
-    false,
+    true,
     '2024-11-11 04:38:19.519-03',
     '61c45664-e3ea-44c4-8d9f-892088db9a8a'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -324,11 +324,11 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '2d40313d-5014-4e68-8a57-6b7ebb19dae3'::uuid,
+    '8c1c81d7-7149-4180-9e62-3fc2465482fb'::uuid,
     '699f2953-1305-42cd-96f8-a627a40a5c33',
     'Resgate RDB',
     101,
-    false,
+    true,
     '2024-11-11 00:39:12.372-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -337,11 +337,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'db6d71ef-d8e0-4249-b6bb-33275015a4cc'::uuid,
+    'c0c71a23-41f5-4688-9441-544eaf2bdc76'::uuid,
     '66d5a3cf-e1e1-40fe-b7aa-6a6af86ce439',
     'Aplicação RDB',
     -100000,
-    false,
+    true,
     '2024-11-09 13:53:25.831-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -350,23 +350,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '4033c2d7-f023-4b64-9f23-56e828264609'::uuid,
-    'b5e45307-161c-4db3-aa75-340de5ceb80a',
-    'Estorno de compra',
-    -3326,
-    false,
-    '2024-11-08 09:00:00.001-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    '21c2a61e-24a2-4de7-bf5e-8e464f9668cf'::uuid,
+    'e6cb4beb-b431-42ab-b654-94748247ba93'::uuid,
     '0e4e92c4-de35-40ad-ad08-6fbe2fefab01',
     'Estorno de compra',
-    -3993,
+    3993,
     false,
     '2024-11-08 09:00:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -376,11 +363,24 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '19c855d4-9cfe-4eaa-8de3-3b0158beb77e'::uuid,
+    '4cd343af-9822-4018-9636-03b465176485'::uuid,
+    'b5e45307-161c-4db3-aa75-340de5ceb80a',
+    'Estorno de compra',
+    3326,
+    false,
+    '2024-11-08 09:00:00.001-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '24462ab1-0a6f-4944-87ab-8c4597a790a8'::uuid,
     'b1e99b24-9f32-4fa7-b6f7-51f9c5044b08',
     'Resgate RDB',
     100000,
-    false,
+    true,
     '2024-11-08 07:26:58.412-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -389,10 +389,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '0fc15eeb-94c7-43d0-abe0-064688329841'::uuid,
+    '361cd3eb-4dd3-4ca2-8be5-8c892a75ef63'::uuid,
     '0d484178-0e47-4ce4-a1f9-6337dc1980cf',
     'IOF de compra internacional',
-    129,
+    -129,
     false,
     '2024-11-08 02:07:02.108-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -402,23 +402,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '65a3e753-3276-4650-93ad-325975c3ebdc'::uuid,
-    '3fe26729-f4f7-4673-b62c-30363d546a4e',
-    'Mp *Insiderstore 6/10',
-    3836,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'b2b1fcda-58f8-44f3-b0f8-90360d356d01'::uuid,
+    'b235454d-0cff-4805-8675-14a70cb3c8eb'::uuid,
     '6c9282e6-69cf-4939-aaea-cf785aa7efd7',
     'Lauton *Lauton.Com.Br 6/6',
-    3993,
+    -3993,
     false,
     '2024-11-08 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -428,153 +415,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b88858ba-f189-4d7a-85e1-3c5a5ec147b2'::uuid,
-    '46a33069-3cd9-40bd-b444-115ca8d8adce',
-    'Oficial*Oficialfarma 4/7',
-    3426,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'a65d5ecc-eb91-4659-a5b9-2862080d17c8'::uuid,
-    'fcb8f3a3-b249-4373-b442-f4a828e02dca',
-    'Amazon Marketplace 4/10',
-    94506,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'ef720645-6580-4f85-8093-0f05b7de979d'::uuid,
-    'fd971877-b18d-43c6-be66-4294f8e39f10',
-    'Oficial*Oficialfarma 5/10',
-    4024,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'dfdf13c1-e1be-4bec-bc8a-d2c6e334186c'::uuid,
-    'bcb1ef00-047b-4427-9ef6-d34d5cda0472',
-    'Oficial*Oficialfarma 4/6',
-    3276,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'fb5d2b27-ef3c-4c00-b10c-bd9fb0b521ef'::uuid,
-    'b73c251f-49e1-457b-8463-4c4114bfa694',
-    'Lauton *Lauton.Com.Br 4/6',
-    3993,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '373b150b-94bd-44b2-abdd-2aab14e74fad'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    '3a5e553c-d9dc-4ee2-9d05-34545096bc04'::uuid,
-    'b42454a7-826e-45f1-b713-cdb2097a3540',
-    'Lauton *Lauton.Com.Br 2/6',
-    3993,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '373b150b-94bd-44b2-abdd-2aab14e74fad'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'f94cc4b5-39a1-4f0f-a7cc-6739eccf657d'::uuid,
-    '89314ee5-e1db-43a7-b71d-efeff6537098',
-    'Oficial*Oficialfarma 6/8',
-    3326,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    '67a97615-6a0d-4a74-899f-eac1583d7a4c'::uuid,
-    '411048cf-cd0e-49cb-808c-91c6d917314b',
-    'Oficial*Oficialfarma 2/7',
-    3048,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'ba4ef829-6d87-4b7c-a6f5-1ae30629de40'::uuid,
-    '6db4eec5-51ac-4ce5-b5dd-3605443dfb19',
-    'Zp *Soluti Gopag 4/10',
-    1880,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'ecbe6fee-6de7-422c-9863-8cbe788ede19'::uuid,
-    '9e200434-d3be-43ce-a179-037820b2c192',
-    'Amazon Marketplace 4/4',
-    5250,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'd4af7aeb-9e1f-4318-b7e0-873f6d87317c'::uuid,
-    '547bd791-b620-4666-a086-19e448959688',
-    'Hering Light Uberlandi 2/5',
-    10399,
-    false,
-    '2024-11-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    '5b453dc3-249f-4c5f-9389-82c4cc8be1a5'::uuid,
+    '85fe68f6-b8ca-4a12-848e-6aeb713759ae'::uuid,
     '15064a56-b451-4c10-8d90-406dbf2f4cdc',
     'Provanza Center 2/3',
-    10080,
+    -10080,
     false,
     '2024-11-08 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -584,7 +428,163 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '422357cb-655a-46db-903e-46af7206ae10'::uuid,
+    '3a6de2e9-afbf-4ba7-bbe5-48e0817b0c46'::uuid,
+    '547bd791-b620-4666-a086-19e448959688',
+    'Hering Light Uberlandi 2/5',
+    -10399,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    'aecb4079-923d-48d1-8d61-09af5c9f0b00'::uuid,
+    '9e200434-d3be-43ce-a179-037820b2c192',
+    'Amazon Marketplace 4/4',
+    -5250,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '8e8423aa-739f-418e-b513-0c5747a44233'::uuid,
+    '6db4eec5-51ac-4ce5-b5dd-3605443dfb19',
+    'Zp *Soluti Gopag 4/10',
+    -1880,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    'f7c6003e-784a-4402-a0c9-96426dcdd8b0'::uuid,
+    '411048cf-cd0e-49cb-808c-91c6d917314b',
+    'Oficial*Oficialfarma 2/7',
+    -3048,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '5603c88e-3354-4842-be05-5997d71626f1'::uuid,
+    '89314ee5-e1db-43a7-b71d-efeff6537098',
+    'Oficial*Oficialfarma 6/8',
+    -3326,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    'ab46369a-c4ee-4fdf-9a13-cde9ec012e26'::uuid,
+    'b42454a7-826e-45f1-b713-cdb2097a3540',
+    'Lauton *Lauton.Com.Br 2/6',
+    -3993,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    '373b150b-94bd-44b2-abdd-2aab14e74fad'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '470dfc3e-7769-476a-ac52-fde66afcda42'::uuid,
+    'b73c251f-49e1-457b-8463-4c4114bfa694',
+    'Lauton *Lauton.Com.Br 4/6',
+    -3993,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    '373b150b-94bd-44b2-abdd-2aab14e74fad'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    'dd15cc77-bbb4-4149-91f3-a25aa662b2c0'::uuid,
+    '3fe26729-f4f7-4673-b62c-30363d546a4e',
+    'Mp *Insiderstore 6/10',
+    -3836,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '24470d30-9332-4548-a163-3c8a9e57f0db'::uuid,
+    'bcb1ef00-047b-4427-9ef6-d34d5cda0472',
+    'Oficial*Oficialfarma 4/6',
+    -3276,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '49a79d1f-96dc-4512-9bb6-9e8c57e3a734'::uuid,
+    'fd971877-b18d-43c6-be66-4294f8e39f10',
+    'Oficial*Oficialfarma 5/10',
+    -4024,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '2d706106-bf58-48d4-9553-d203f06364c2'::uuid,
+    'fcb8f3a3-b249-4373-b442-f4a828e02dca',
+    'Amazon Marketplace 4/10',
+    -94506,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '011c8c61-1a71-4fdc-80dc-32583fe2f31a'::uuid,
+    '46a33069-3cd9-40bd-b444-115ca8d8adce',
+    'Oficial*Oficialfarma 4/7',
+    -3426,
+    false,
+    '2024-11-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    'dccd57b9-eb39-4c3c-8502-34ae6ca82b8d'::uuid,
     'e963954e-4ab7-4f8f-9890-20a1c7f2c663',
     'Transferência Recebida|Daniel Santos De Mesquita',
     11403,
@@ -597,7 +597,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '678994a2-c6b6-4fb1-94a0-554bbc8b632d'::uuid,
+    '7ea80edd-c7f3-4a5b-9b38-a2428ca20449'::uuid,
     'faaab570-8a45-4c48-9692-d264b3c0b4c2',
     'RECEBIMENTO TRANSFERÊNCIA',
     350000,
@@ -610,7 +610,7 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '0904f5fc-75db-4c98-a6ae-4f3b8412bc13'::uuid,
+    '6c900a85-f684-4fd0-a27d-a68773f711fa'::uuid,
     '02159326-e9fc-4772-a82d-13352df296d3',
     'PIX CASH OUT EXTERNO',
     -11403,
@@ -623,7 +623,7 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '935517ee-8b62-4df8-a1c4-1116d063a40d'::uuid,
+    '96463c37-4b69-4dd5-9ad3-136e86aae2bf'::uuid,
     '2394c315-24e1-4d7c-921b-e766051e4a03',
     'Transferência enviada|Daniel Santos de Mesquita',
     -361403,
@@ -636,11 +636,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'e2c36de8-a9fb-4c69-9d84-e92992f7bd31'::uuid,
+    'a5dc9825-685d-47e4-bcae-a01396221bb4'::uuid,
     'd4890b44-1426-4c1c-a241-f82de62aee0c',
     'Resgate RDB',
     361403,
-    false,
+    true,
     '2024-11-07 17:31:07.535-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -649,7 +649,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'f067b980-65a5-4042-b494-a2467acc5be0'::uuid,
+    '85323fcd-5d50-43a0-a4e9-8be20a14cfb9'::uuid,
     'f6520125-6a47-49a9-816b-722cfb7f8847',
     'Transferência enviada|Daniel Santos de Mesquita',
     -543900,
@@ -662,11 +662,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b24378cf-f1be-4efa-8316-1ec21fc04885'::uuid,
+    '4195ed9e-4d55-45d7-95a5-8e6cdc91817d'::uuid,
     '848b554a-f79e-4ce1-9f93-26ebdb62c3f4',
     'Resgate RDB',
     500000,
-    false,
+    true,
     '2024-11-07 16:37:21.655-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -675,7 +675,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'c9730de1-2c0c-4625-bbe2-376c780923d8'::uuid,
+    'e8fa0ed6-ac89-48ac-915f-079825aa3d4f'::uuid,
     'a77609e7-7449-475f-9bcb-769ccc0490de',
     'Pagamento de fatura',
     -626237,
@@ -688,11 +688,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '629a985c-506c-415a-a282-9f47c363800f'::uuid,
+    '06c07069-f517-4c18-8291-d71098635588'::uuid,
     '02c871ca-9e4b-4bd6-bbf1-6f28c7424f96',
     'Resgate RDB',
     670000,
-    false,
+    true,
     '2024-11-07 16:29:33.171-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -701,7 +701,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '590038ac-fa26-4cdc-9f2e-440c1d8099ea'::uuid,
+    'c3856a48-2e11-4e5c-840c-b38e26f3f907'::uuid,
     'd45fa78f-2668-4379-bd06-d98b0e037bac',
     'Resgate de Cashback',
     137,
@@ -714,11 +714,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '8d52b8ad-6b18-4d55-bf27-25b604e8ba64'::uuid,
+    'e3e90dd5-c0b9-4c79-b973-c7f4f9c93928'::uuid,
     '8eb08879-b0f4-41a9-a645-8f7c9d5f2b45',
     'TEF CASH OUT',
     -350000,
-    false,
+    true,
     '2024-11-07 14:33:35.833-03',
     '61c45664-e3ea-44c4-8d9f-892088db9a8a'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -727,7 +727,7 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    'd083729b-c99d-46b6-a794-0264f6da9a56'::uuid,
+    'aac3289e-e691-4216-a551-be52858a5a5c'::uuid,
     '05e4b858-a004-463e-b357-cb42b6e9d2cd',
     'PIX CASH IN EXTERNO',
     361403,
@@ -740,11 +740,11 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '712a71ad-f5b0-496d-b3e2-19d1aff8c544'::uuid,
+    'b3bdff42-1df8-4dbb-8066-2f4f32a04a00'::uuid,
     'ade0ff24-46f5-4b56-98ad-1460f066a52b',
     'TEF CASH OUT',
     -543900,
-    false,
+    true,
     '2024-11-07 13:46:08.164-03',
     '61c45664-e3ea-44c4-8d9f-892088db9a8a'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -753,7 +753,7 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '03fe4c66-631d-4c68-a1f6-b19fb0ea79a3'::uuid,
+    'cfe030c5-363c-4d56-b9a6-a270689d3f53'::uuid,
     '602c08b5-007f-4a34-a467-c125685e46eb',
     'PIX CASH IN EXTERNO',
     543900,
@@ -766,10 +766,10 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    'aff780e3-5140-4e4b-a3e3-9f407c07f165'::uuid,
+    '5a509fd8-a0bf-43d0-b142-60a803b34141'::uuid,
     '728732a1-7edf-4cfe-aaf2-37e9e5839f89',
     'A Medium Corporation',
-    2944,
+    -2944,
     false,
     '2024-11-07 10:27:49.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -779,10 +779,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd0868500-0a40-490e-b4e1-6ba2f8da33ac'::uuid,
+    '308cd95f-cdb7-4d57-8001-f2072943c70c'::uuid,
     'cd39332a-9872-4415-8b87-04e7dfa020dd',
     'Pagamento recebido',
-    -626237,
+    626237,
     false,
     '2024-11-07 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -792,10 +792,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b57e281a-62e7-4212-a133-a673eb505145'::uuid,
+    '3ba95219-f3e6-4b9d-ba46-a47d722c25a9'::uuid,
     '6ef2bb0f-9f16-44d3-8edb-af9aa89ebd60',
     'Ifood *Ifood',
-    1381,
+    -1381,
     false,
     '2024-11-06 17:24:08.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -805,7 +805,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '66af938f-10c2-49de-87c7-bef7b831d93b'::uuid,
+    '92110d49-0b02-47e3-ad5a-264014873630'::uuid,
     'fa51e113-34eb-4522-8512-82ca4f24fe1a',
     'RECEBIMENTO TRANSFERÊNCIA',
     2000000,
@@ -818,7 +818,7 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '4c2ffde0-29c7-4cfe-898f-b9ac00baf912'::uuid,
+    '155fdf1b-9199-44d9-8fb2-2f7ebbd06440'::uuid,
     '0ab720bf-f606-4d64-8666-3cb962a04936',
     'Transferência enviada|Daniel Santos de Mesquita',
     -2000000,
@@ -831,11 +831,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'c5c7b502-4e1c-46b1-93a5-cab663d4f807'::uuid,
+    'ca751afd-41de-49d2-bb5f-e82ae9bff4d8'::uuid,
     '2e7adc1c-baea-47b7-94d4-903c0a397d6e',
     'Resgate RDB',
     2000000,
-    false,
+    true,
     '2024-11-06 16:23:55.179-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -844,7 +844,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd6c5f884-cdc8-4e3c-84c2-a802c34e80a4'::uuid,
+    'ea072bf6-22bc-40b3-8ee6-ad51fb6bb774'::uuid,
     'c089851f-f4ab-4b87-8c29-177d41479afc',
     'RECEBIMENTO TRANSFERÊNCIA',
     1000000,
@@ -857,7 +857,7 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    'bc459c69-d49e-4cee-8afb-12260ac32185'::uuid,
+    '312cf698-f131-4f14-8fd9-b0ffda75bfa2'::uuid,
     '35ff2d19-29ec-4b2d-97e7-e78ef5309642',
     'Transferência enviada|Daniel Santos de Mesquita',
     -1000000,
@@ -870,11 +870,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '6706cb18-7d19-478d-a257-8368522afcb1'::uuid,
+    '05f5d198-5eb2-4987-8428-802efc4eed8d'::uuid,
     'ed00a62f-b22d-47fc-8627-6d17dee80139',
     'Resgate RDB',
     1000000,
-    false,
+    true,
     '2024-11-06 16:04:29.12-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -883,10 +883,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b5ffb35c-41cd-497c-bdc7-5098762600c3'::uuid,
+    '07ab93ee-5688-47cd-8491-e074796da399'::uuid,
     'd2aa0f97-5cfd-4d54-b845-475c194df37f',
     'Uber *Uber *Trip',
-    699,
+    -699,
     false,
     '2024-11-06 15:39:49.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -896,10 +896,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '1ca742b6-a68e-4f0f-850e-a7c33874e0d5'::uuid,
+    '332df5e6-2624-451b-b95f-437094731851'::uuid,
     '965187ef-35ac-4b69-abe0-04ac71505f46',
     'Reidoled Brasil',
-    5038,
+    -5038,
     false,
     '2024-11-06 15:39:33.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -909,10 +909,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd74e1cd4-a6c6-4cb1-adf6-8eb36d5fd1c2'::uuid,
+    'fc47536b-d913-4c29-9914-c136e81a80fe'::uuid,
     '0bb0c2cc-33df-4c85-893c-776caafa4a24',
     'Uber *Uber *Trip',
-    653,
+    -653,
     false,
     '2024-11-06 15:14:40.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -922,11 +922,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '6bbc563d-c669-428c-b2a3-e2a86ab9aa79'::uuid,
+    'fbec12df-1e10-4257-a046-796483c0faca'::uuid,
     '96b0de06-9b89-4daa-b025-16b461ff9de0',
     'TEF CASH OUT',
     -2000000,
-    false,
+    true,
     '2024-11-06 13:25:23.056-03',
     '61c45664-e3ea-44c4-8d9f-892088db9a8a'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -935,7 +935,7 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '71c230a9-e588-404c-b4c1-99c9cfb29d34'::uuid,
+    'c53caf93-0f45-4b84-8d93-0a141ae9a93f'::uuid,
     '648a9d3a-6400-4cce-99b5-9bedfb55e14d',
     'PIX CASH IN EXTERNO',
     2000000,
@@ -948,11 +948,11 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '1db4c0d0-288b-43db-91a1-2b424f9d4c0e'::uuid,
+    '098f222a-b47e-4f1b-8267-ff700a6f11b5'::uuid,
     '61c066ac-11a6-4ae4-a453-1d97a12b1f03',
     'TEF CASH OUT',
     -1000000,
-    false,
+    true,
     '2024-11-06 13:21:04.097-03',
     '61c45664-e3ea-44c4-8d9f-892088db9a8a'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -961,7 +961,7 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '366882dd-a154-4206-9028-fd098c9523e2'::uuid,
+    '04d434cf-a2b7-4c13-82db-8d3b93b0ca40'::uuid,
     'bfeaa38b-41e9-4172-82f5-0f7fc77b8e44',
     'PIX CASH IN EXTERNO',
     1000000,
@@ -974,10 +974,10 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '7e004b7e-bbc8-4030-af19-bba0354582c4'::uuid,
+    'cac59381-300c-4f63-be76-7a2f654cd480'::uuid,
     'c32cb7c0-7893-4ad7-890c-4df765d1c5f1',
     '0 Uberlandia',
-    15990,
+    -15990,
     false,
     '2024-11-06 09:23:57.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -987,10 +987,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '94cc0057-a9db-403f-9b58-6bfec7e1561a'::uuid,
+    '47d10ad4-3386-4dc4-a804-53616cf2ac4d'::uuid,
     '595ab997-4e94-4061-afd1-d5306558b3a2',
     'Ifd*Ifood Club',
-    495,
+    -495,
     false,
     '2024-11-06 09:00:51.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1000,11 +1000,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'a2c13da7-3fe4-4347-8f30-371488d403ed'::uuid,
+    'c0047189-4395-4270-88c4-a5a443bd6350'::uuid,
     'b31daa27-4d12-4515-8421-33359b188636',
     'Aplicação RDB',
     -8577,
-    false,
+    true,
     '2024-11-06 06:02:09.006-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1013,7 +1013,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '20277efc-3ea4-48ab-b2b4-6fbbc3adf4f3'::uuid,
+    'd1bcc456-7da7-4d13-b402-5fec2fac1f18'::uuid,
     '7043846f-840d-41a1-8fec-6c2eafc1fa2c',
     'Resgate de Cashback',
     668,
@@ -1026,10 +1026,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '0abaaa8b-f19d-4feb-9abb-8c9e72c68426'::uuid,
+    '247a5a53-74dd-4faf-903a-7e8fdb0b137b'::uuid,
     '75c31d90-5008-449b-9624-4c5e9910d79b',
     'Lauton *Lauton.Com.Br 1/6',
-    3995,
+    -3995,
     false,
     '2024-11-05 07:10:23.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1039,11 +1039,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '3492a7a1-360e-484c-a6a5-d2f44e4b3462'::uuid,
+    '4fcdc17d-333c-4eb0-99ad-e00429121a66'::uuid,
     'b0b505a9-8643-4d1e-8cb1-55c953521139',
     'Aplicação RDB',
     -30000,
-    false,
+    true,
     '2024-11-05 07:09:25.577-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1052,11 +1052,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '76310347-f593-4825-a8c9-139b7a7b0067'::uuid,
+    'e53af00d-f59a-4908-882d-4ee921a5d6bd'::uuid,
     'aea55ecc-b48b-4e70-a488-1e4ffb62fd74',
     'Resgate RDB',
     30000,
-    false,
+    true,
     '2024-11-05 07:09:04.832-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1065,10 +1065,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '9e5a6a0b-1c84-481e-b12c-e2e2da14b42a'::uuid,
+    'd87d0267-68ee-4fb7-80e4-7b2050d890db'::uuid,
     '57ec78c2-6671-4ef7-a319-b67a5985014c',
     'Ifd*Minas Goias Comerc',
-    7000,
+    -7000,
     false,
     '2024-11-04 19:09:54.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1078,11 +1078,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '7ab13b7c-8898-4329-a581-172c16d4ed8a'::uuid,
+    'dd00eb0d-b7f6-4d6d-b0bc-e1445fb0e566'::uuid,
     '90c80c4f-9c26-4848-aea5-764931a91563',
     'Aplicação RDB',
     -20000,
-    false,
+    true,
     '2024-11-04 19:07:52.417-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1091,10 +1091,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'c64618e5-ac4c-4dad-ab64-0e078ad2065b'::uuid,
+    '44256e67-fa11-4e45-8bbf-01f0f1ac2e16'::uuid,
     '90ce6317-6e11-4e7c-9f06-a7c87ce91a8e',
     'Uber *Uber *Trip',
-    541,
+    -541,
     false,
     '2024-11-04 15:15:20.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1104,10 +1104,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '097338f2-feec-42a3-8998-5766940cc39f'::uuid,
+    '618d8e14-cdc6-4ce1-863a-2faa2430a3d4'::uuid,
     '01521d60-7c85-4232-81e6-ea8e1cc2ed39',
     'Ifd*Cencosud Brasil Co',
-    27798,
+    -27798,
     false,
     '2024-11-04 10:57:04.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1117,7 +1117,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd8e39e5d-0c6f-4eca-8a4b-6230c14ebb6b'::uuid,
+    'efa50678-91a3-4f8b-9257-09db973f9946'::uuid,
     '3babe3ba-2068-4d76-8128-531b80cc59fc',
     'Transferência enviada|Tim S A',
     -5799,
@@ -1130,10 +1130,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '9ce2677b-fe1c-4182-a28d-c548a8976786'::uuid,
+    '3939caa7-d904-4b1a-acd4-4ca15dcabdd4'::uuid,
     '20a71dae-3044-4447-bfd6-b03757d85790',
     'Oficial*Oficialfarma 1/7',
-    3052,
+    -3052,
     false,
     '2024-11-04 10:35:14.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1143,7 +1143,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd997f659-c900-45cf-870e-109c10d960c6'::uuid,
+    '5a7d1ca1-0a6c-4169-a913-daeb5d89a509'::uuid,
     '299392d1-bb3f-49d1-a926-87713d4effb0',
     'Transferência enviada|Growth Supplements',
     -64754,
@@ -1156,7 +1156,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '24c995ef-dbd7-4bbb-85b9-9eb8c16c431d'::uuid,
+    '1499f3c6-6b01-4bf4-8a16-7634e82eb357'::uuid,
     'a14fd548-c104-43f2-8936-28b86370ea9c',
     'Transferência enviada|ALGAR TELECOM S/A',
     -11977,
@@ -1169,10 +1169,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '87ad05e8-623b-4b56-b855-5081155b9fcc'::uuid,
+    '87e28511-0ae5-40ff-aaee-60179dad50cd'::uuid,
     'c7306798-a43b-4c1f-a243-b3c411f898a3',
     'Universidades Estacio',
-    21678,
+    -21678,
     false,
     '2024-11-04 10:03:45.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1182,7 +1182,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '158a8b3c-c097-4dad-b505-3ab4029e14ae'::uuid,
+    'c1772b7e-a5b8-46c2-8f40-9f2c02635b1f'::uuid,
     'e45ab214-2bcd-4cd7-9b36-245cfa85e5f2',
     'Transferência enviada|Julia Fernandes Avelar',
     -50000,
@@ -1195,7 +1195,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '5fb7bf3b-f472-4912-b692-4195dc4abd32'::uuid,
+    '4dfefca2-fcf4-4e14-86ca-caaed8603f0f'::uuid,
     '4080ca25-a7ec-43b5-ab50-5862cb106bf6',
     'Transferência enviada|TAPAJOS EMPREENDIMENTOS IMOBILIARIOS LTDA',
     -90000,
@@ -1208,11 +1208,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'e0e6452f-1c21-41b2-a168-bbc9243fcc87'::uuid,
+    '831c8ef5-7e7b-44d1-817f-f12f9f60f90b'::uuid,
     'fde85a06-7b05-4cf7-8512-39aa6da58dd0',
     'Resgate RDB',
     200000,
-    false,
+    true,
     '2024-11-04 09:57:55.957-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1221,10 +1221,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '37602635-12ca-47d7-85d4-d0b59854b62e'::uuid,
+    '2e3f6c92-c29a-42ae-baea-d3ab80292d9d'::uuid,
     'c90b5f34-18e9-4a8e-a1c8-35d910e7f8ac',
     'Uber *Uber *Trip',
-    1392,
+    -1392,
     false,
     '2024-11-03 19:42:46.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1234,10 +1234,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '5159ecc8-c27e-49aa-a718-f0016581d705'::uuid,
+    '6c4edf17-e051-4330-ae0d-3904de45739d'::uuid,
     '276c1d30-936b-4774-ba4b-310ab816af0a',
     'Uber *Uber *Trip',
-    1902,
+    -1902,
     false,
     '2024-11-02 15:45:02.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1247,10 +1247,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '747f82db-e947-4624-9c6b-e09ef09f41e9'::uuid,
+    'c6907774-b306-4589-994c-dbe9b3b1e0e3'::uuid,
     '6cf48d1e-48d3-47d4-8b45-372f33b8ed05',
     'Uber Uber *Trip Help.U',
-    896,
+    -896,
     false,
     '2024-11-02 15:18:28.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1260,10 +1260,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '19bd519d-fc46-4c1f-877e-077bc38c8d96'::uuid,
+    '9be99585-4042-4ee7-97e7-b9b5ab34ef9b'::uuid,
     '503b1c7c-eddf-42f5-80f0-ee153a2afc5d',
     'Uber *Uber *Trip',
-    993,
+    -993,
     false,
     '2024-11-02 15:01:53.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1273,7 +1273,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '71cb5cc5-5510-4502-849d-18ee132042b3'::uuid,
+    '3d61f0b6-abd6-4642-ba72-a6eac603fdae'::uuid,
     '8af6edd2-8451-48fc-98f6-40c32b41538c',
     'Transferência enviada|TOKAI CENTER COMERCIAL LTDA',
     -57098,
@@ -1286,11 +1286,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '5e341d1b-4c43-4c88-a753-46d70aed667c'::uuid,
+    '55b66daf-480d-4825-a627-c69eb117790c'::uuid,
     '46cd5684-c712-4d85-a3a0-9e4678a00f9e',
     'Resgate RDB',
     100000,
-    false,
+    true,
     '2024-11-02 14:45:17.084-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1299,10 +1299,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'fd1c5ea8-eb97-4994-9743-5bec94b93cca'::uuid,
+    'a94ce2b5-74f9-4afe-b073-1d6297ff117c'::uuid,
     '03266f90-2d46-4fc0-9362-db3984b90595',
     'Uber *Uber *Trip',
-    634,
+    -634,
     false,
     '2024-11-02 14:22:41.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1312,10 +1312,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'be135084-c1c4-43ff-ae5c-19a734c75cdc'::uuid,
+    '37b7fa21-923a-4ac1-a02a-f25306fcfe06'::uuid,
     '33479a87-739e-4af7-8b72-46feabdb7b7f',
     'Uber *Uber *Trip',
-    892,
+    -892,
     false,
     '2024-11-02 11:07:51.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1325,10 +1325,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd6756471-8662-45c1-9669-9b2c476c6434'::uuid,
+    'd0c9388b-81d7-4987-b8b6-5b727d752fef'::uuid,
     '9c14e4a6-2fe6-4a09-8b26-44faae6fdcb3',
     'Uber* Trip',
-    688,
+    -688,
     false,
     '2024-11-02 10:51:21.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1338,10 +1338,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '6eade9cc-23d4-4333-b3cb-bc6f2d623284'::uuid,
+    '5bfaad7e-3a07-49bb-8097-304a9d4f3a55'::uuid,
     '51868d15-bed5-4485-bc6d-9627b6285236',
     'Uber *Uber *Trip',
-    722,
+    -722,
     false,
     '2024-11-01 20:24:30.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1351,10 +1351,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '10b40f3d-e6b5-4860-a1c7-7601962c80fc'::uuid,
+    'a3bd704d-ad0d-4a5a-aa87-a3239db7525e'::uuid,
     '44235978-fffe-4a9e-85e6-dc808f5ba8de',
     'Uber* Trip',
-    1394,
+    -1394,
     false,
     '2024-11-01 17:36:25.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1364,10 +1364,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '440aefaf-27e6-4a7d-bcf3-5f07c8b1a209'::uuid,
+    '65b9f9ed-56f6-441e-b2b1-c03e6bad50c7'::uuid,
     'f1ec3350-4a0b-448d-b45c-c621a4129ae2',
     'Uber *Uber *Trip',
-    420,
+    -420,
     false,
     '2024-11-01 17:30:55.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1377,11 +1377,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '2ef66bba-55a0-46a7-9224-bc0f63a8f805'::uuid,
+    'fbc37fb4-54f7-4552-b82f-ea9136f17401'::uuid,
     '568f354e-746c-4ae2-97c0-68276bfad0d1',
     'Aplicação RDB',
     -50000,
-    false,
+    true,
     '2024-11-01 16:27:14.388-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1390,11 +1390,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'f48bb01d-2b78-40da-bad1-c69e2374d1fc'::uuid,
+    'e75b8dd8-a908-43d3-91ec-9900b2113c1d'::uuid,
     '1e156f54-3f9a-4336-9ff8-8714a195b98e',
     'Resgate RDB',
     50000,
-    false,
+    true,
     '2024-11-01 16:26:57.066-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1403,10 +1403,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '76d8b5e4-c020-43f3-8877-76363e94ae66'::uuid,
+    '1a35915e-2468-4726-8b59-4aee2f5c8603'::uuid,
     '970350de-d0a3-4365-a62d-5acf7d23356b',
     'Supermercados Abc Loja',
-    21431,
+    -21431,
     false,
     '2024-11-01 13:43:53.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1416,11 +1416,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '7c513b0a-46e0-4d12-9132-a0f1d757ae7c'::uuid,
+    '2544399f-47e2-4acc-bc7b-2d79a2d1b9af'::uuid,
     'df5771df-5db9-46d7-a9e9-c66c9872442e',
     'Aplicação RDB',
     -2285000,
-    false,
+    true,
     '2024-10-31 19:10:03.214-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1429,7 +1429,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'e7ca504f-6457-4d60-be73-9dcab9b6dabb'::uuid,
+    '0a2160fa-34a1-4240-bb74-ae331552a8da'::uuid,
     '315a3b68-72c9-4f40-afce-dc1bf5b752f7',
     'Resgate de Cashback',
     1028,
@@ -1442,7 +1442,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'e38b9085-e76f-415e-b85c-ac1b27c00004'::uuid,
+    '7e9ee5e5-8e6d-42cf-ab52-a7a834dbc5cf'::uuid,
     'b20f6f4e-9547-4e89-9e52-6e1dc7fdf691',
     'Transferência Recebida',
     2284578,
@@ -1455,10 +1455,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b3a0cc7f-69ce-4aca-9a8a-ed24b6e35df8'::uuid,
+    '2836530b-a0ab-42c3-9fca-0317ae0b7c59'::uuid,
     '1b393f54-28d1-4fb5-a2b3-b8f454e4c68e',
     'Ifood *Ifood',
-    5179,
+    -5179,
     false,
     '2024-10-31 18:24:16.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1468,10 +1468,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b78d05e8-ccbe-4ef8-b3cf-7ac91070c332'::uuid,
+    'c9747d37-72a4-4735-ab56-27395767dbf6'::uuid,
     'e6265576-23fa-4105-8557-aaf480ba6110',
     'Cappta *Mais Por Menos',
-    17552,
+    -17552,
     false,
     '2024-10-31 16:14:20.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1481,10 +1481,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '6fedc347-c397-47f5-bc19-5c62e6be7c38'::uuid,
+    'ba043cad-197c-447f-8e7c-bb576718ef8b'::uuid,
     '2742444a-9616-40af-ad26-21049cdd4cc1',
     'Carneiro Leao',
-    14000,
+    -14000,
     false,
     '2024-10-31 15:57:27.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1494,10 +1494,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'f154fd84-7ce9-4b48-96c8-96994d357d60'::uuid,
+    '7cc9e538-bac6-4ba0-af3a-f53b19d96ae9'::uuid,
     '6399226c-7529-4000-89d5-725adc8cf812',
     'iFood',
-    7498,
+    -7498,
     false,
     '2024-10-29 18:02:43.754-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1507,11 +1507,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '232fbe6c-61d1-4428-8ba0-021e8ecb84a8'::uuid,
+    '53f0b9f8-6f00-4c4e-ad52-807bf2bf13e7'::uuid,
     '335280a0-b341-4d8a-94cf-f234409248b3',
     'Aplicação RDB',
     -25000,
-    false,
+    true,
     '2024-10-29 17:55:50.815-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1520,7 +1520,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'cf52af82-aa64-4568-85e1-6860d652e0a7'::uuid,
+    '1425810b-3536-4259-aa3e-b1833df06e5d'::uuid,
     'e7d1e9b8-9c07-4018-afbf-7f6d93462f9e',
     'Transferência Recebida|Daniel Santos De Mesquita',
     24967,
@@ -1533,7 +1533,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b3568be5-99eb-4ccc-b150-70df3be50822'::uuid,
+    '7e6745d0-a89f-4c77-99d6-dd5a35d429b7'::uuid,
     'cf65bd07-5d98-4941-8640-6e97cc3d6074',
     'PIX CASH OUT EXTERNO',
     -24967,
@@ -1546,10 +1546,10 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    '234e64f6-aeee-429c-94aa-99d1e3c09940'::uuid,
+    'afe88b4e-00ce-44d9-a301-e24a80fa9523'::uuid,
     '2fa49c7c-84ff-42c5-9d5d-b3964130c100',
     'Google Mobills Budget',
-    11990,
+    -11990,
     false,
     '2024-10-29 14:46:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1559,11 +1559,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd983fc8d-ac09-4109-9a5e-0595401e1fe1'::uuid,
+    '09f25d28-2244-48f7-95ac-46094472ca96'::uuid,
     '0838ba1d-85e5-40bd-8671-be962de537ca',
     'VALOR DE RENDIMENTO',
     1,
-    false,
+    true,
     '2024-10-29 02:09:14.01-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1572,10 +1572,10 @@ VALUES (
     'df5dbd97-89c7-4776-8b3f-7992bc2bb16b'::uuid
   ),
   (
-    'fb184fe7-a4b8-4c73-9c18-d99733ebda10'::uuid,
+    'dcbaccad-1c50-4f68-91d7-9645671fc66e'::uuid,
     '7d910f19-cb74-4242-8036-5e33fde0c8b1',
     'Uber',
-    1795,
+    -1795,
     false,
     '2024-10-27 18:51:15.535-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1585,10 +1585,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'fe6d84c6-6b64-4be3-b592-d96df6f14f28'::uuid,
+    '7cad86b1-5579-41b0-b927-0d6d6ccc7669'::uuid,
     '101c1967-535d-428f-8aae-c3a8afc09604',
     'Uber',
-    1601,
+    -1601,
     false,
     '2024-10-27 11:58:02.718-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1598,10 +1598,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '640da4c3-efa9-4dcb-8c91-745fffe3d218'::uuid,
+    '09c8e36e-be1f-47c3-a237-53a6ebcc9c61'::uuid,
     'e5ceb4d7-c8b0-44b3-9fdf-16f68a5ea910',
     'Uber Uber *One Help.Ub',
-    1989,
+    -1989,
     false,
     '2024-10-27 09:42:56.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1611,10 +1611,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '228f0bc3-e210-450d-9879-e32802a4f05c'::uuid,
+    'f9fd9d05-6697-4f1d-8200-f8eaebc34a93'::uuid,
     '018303bd-9c0b-42d3-927a-48d70d0d94ff',
     'Drogasil1199',
-    5999,
+    -5999,
     false,
     '2024-10-26 20:53:26.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1624,10 +1624,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '657aeea4-89c0-46c3-bc00-34b96b50dec5'::uuid,
+    '7ed055ed-fbff-492c-9767-11e07d60cc5c'::uuid,
     '33556a07-12fe-4978-89b9-80b2424624b4',
     'Uber',
-    1047,
+    -1047,
     false,
     '2024-10-26 14:12:52.008-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1637,10 +1637,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '0efc0b22-3d69-4e97-bbdf-ce4e2e232432'::uuid,
+    '351093fb-d63d-406f-a8e0-ddd8a37b9bcb'::uuid,
     'd4f40e5c-cd9f-4dfc-8b61-8720bd4664da',
     'Uber',
-    693,
+    -693,
     false,
     '2024-10-26 14:11:37.186-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1650,10 +1650,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'f55fe625-a337-4c20-a4a2-466a6f7d3fbf'::uuid,
+    'bd247fff-5962-4bc6-9bfd-5c672d7ee7b6'::uuid,
     'cb3bc17f-dbaf-4d16-9a36-dd329520e8c5',
     'Uber',
-    1347,
+    -1347,
     false,
     '2024-10-26 13:40:16.062-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1663,10 +1663,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '04c30b77-eece-41b3-8e44-40b10b706e0f'::uuid,
+    'bf75d1f8-54fc-492a-9308-1315899fe0f6'::uuid,
     '47db5d98-7295-40fb-8bdb-a7f627cc8828',
     'Provanza Center 1/3',
-    10080,
+    -10080,
     false,
     '2024-10-26 13:34:21.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1676,10 +1676,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '20cff9d8-e4af-4bfa-b1d6-65470d6b1610'::uuid,
+    '30064dc7-00ca-4165-9e1b-3b674f775b56'::uuid,
     'ab6fa929-00b8-4afa-a690-c4da8e928d2e',
     'Jin Jin Center Shoppin',
-    5948,
+    -5948,
     false,
     '2024-10-26 13:09:11.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1689,10 +1689,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '0eed1a29-8941-4280-a779-6ddef8c35575'::uuid,
+    '4a1c78d9-78a4-4327-9ea4-9abed0859b05'::uuid,
     '30c49bcb-55d6-4d99-9a73-0233f4e2373b',
     'Jin Jin Center Shoppin',
-    10975,
+    -10975,
     false,
     '2024-10-26 13:05:40.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1702,10 +1702,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '9e1b253b-c01d-4941-aba6-2b6916c37b55'::uuid,
+    '555af74c-8dfe-43e8-85c0-e90739af6506'::uuid,
     'c31d0c25-4586-4d21-b271-8148cbd835eb',
     'Coffee Shop',
-    1800,
+    -1800,
     false,
     '2024-10-26 12:19:59.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1715,10 +1715,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'c6e95bd1-6bab-4265-81d5-5c13e0fb29a0'::uuid,
+    '5ad0fa1f-a46c-4828-ac80-5b3e1a4796f0'::uuid,
     '51d410b4-53e1-4da8-8457-6d22f51f9bd3',
     'Hering Light Uberlandi 1/5',
-    10401,
+    -10401,
     false,
     '2024-10-26 12:16:19.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1728,10 +1728,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'bef95ac3-3ed3-4614-b5e2-d4c25a49fdaf'::uuid,
+    '1202dc92-6247-4385-85d4-bc5479889d89'::uuid,
     'f439de4f-9f15-44e9-a8f1-42919d461b97',
     'Uber',
-    1011,
+    -1011,
     false,
     '2024-10-26 11:41:31.625-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1741,10 +1741,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '099a0dd8-794b-493e-a112-9da4d02452e4'::uuid,
+    '342c02a8-afcf-47b4-8423-1c5d35055dba'::uuid,
     'e7eaa9c9-7d4e-48fe-b114-cec91b1b5f7a',
     'Uber',
-    723,
+    -723,
     false,
     '2024-10-26 11:38:58.369-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1754,7 +1754,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'fb027e30-854a-4e25-8d85-c29d463c9fa8'::uuid,
+    'a841708a-5272-43e0-a501-18145c77de13'::uuid,
     '46dc1a36-c478-4e0e-ace6-b90e17e06ddb',
     'Transferência enviada|Julia Fernandes Avelar',
     -88600,
@@ -1767,11 +1767,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'ddf639cb-b4c6-4968-aaaf-4461298fdf0f'::uuid,
+    '9e494442-044b-42e8-bea9-2314c79ddcfa'::uuid,
     '3a8ed21f-477e-4c1d-b8e4-0ce3b295789b',
     'Resgate RDB',
     88600,
-    false,
+    true,
     '2024-10-26 08:28:47.168-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1780,10 +1780,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'a5b03996-0c67-46a1-9c4d-599f6ec905ba'::uuid,
+    '889d3d24-a4c8-40d0-af1d-a3eedf19078a'::uuid,
     '6f2c6237-6a09-425c-8038-5bdbe020ad8b',
     'Linkedin',
-    8999,
+    -8999,
     false,
     '2024-10-26 06:37:18.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1793,10 +1793,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'cabfd9f0-be85-4412-88d2-a5a427635291'::uuid,
+    '797d292b-7316-4e03-bada-bd140668169f'::uuid,
     'ea325e4e-5723-4813-b6f6-2ee47112fe22',
     'Uber',
-    690,
+    -690,
     false,
     '2024-10-25 21:51:45.834-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1806,10 +1806,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '527c5f2a-da43-4a30-a1bf-7c8e72edc360'::uuid,
+    '9207f72c-632e-4600-806c-332c4c3b9edc'::uuid,
     'b3014a08-9656-4504-a6ad-ee4a953639c6',
     'Uber',
-    -723,
+    723,
     false,
     '2024-10-25 21:00:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1819,10 +1819,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'e20dfe3c-0abc-47f9-8fb6-1cf1ff87db12'::uuid,
+    'bdc50d8a-a980-4c5e-b7e2-537c11b837fb'::uuid,
     '19912024-f262-41fa-862f-3450df979e20',
     'Uber',
-    598,
+    -598,
     false,
     '2024-10-25 18:53:32.926-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1832,10 +1832,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '16198f43-56fd-4963-bfe2-6b3061f484eb'::uuid,
+    'a27d12d5-fd3b-476d-a257-02d1ab3c73e2'::uuid,
     '3946e627-ac05-4284-8a48-ffa88d089ec4',
     'Cappta *Mais Por Menos',
-    8827,
+    -8827,
     false,
     '2024-10-25 16:17:24.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1845,10 +1845,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'ad21575c-4be3-4296-bc99-28167228fa62'::uuid,
+    'fbeccfb2-c703-4c31-adbe-680e2ac4a733'::uuid,
     'af8373b8-6350-4678-9ebf-1f4f3861d65e',
     'Uber',
-    1367,
+    -1367,
     false,
     '2024-10-25 14:59:30.764-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1858,10 +1858,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '11e9b868-88e4-4b48-8524-9c702aecfefe'::uuid,
+    '777b1098-889c-4e71-8119-418cbabf2f0f'::uuid,
     '0c11ea01-ad66-46e8-aff0-ec62722f2bc2',
     'iFood',
-    6179,
+    -6179,
     false,
     '2024-10-24 17:10:25.05-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1871,10 +1871,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '717e04a4-bcf2-4b50-9d51-3189e0e99912'::uuid,
+    '3473ce64-e582-4c9a-9fe8-b1090de76d6d'::uuid,
     'ce332659-090d-4dad-85c8-14c78998003e',
     'Ifd*Carrefour Comercio',
-    26458,
+    -26458,
     false,
     '2024-10-23 15:59:47.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1884,10 +1884,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '40ea0780-ff88-40dc-9cf9-f7c709d059dd'::uuid,
+    '2638c28d-7057-4626-a219-47ec804d2b29'::uuid,
     '617c84c9-5806-44bc-a31f-0ac5a3cbb123',
     'Uber',
-    790,
+    -790,
     false,
     '2024-10-23 15:22:37.785-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1897,10 +1897,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'bd8a826c-aaae-4220-a41f-abe42991dcc7'::uuid,
+    '26c19c88-b283-42c4-8c41-19e4f8e36dbe'::uuid,
     'cdb01ec3-a972-4d94-a45c-4908558caa36',
     'Uber',
-    581,
+    -581,
     false,
     '2024-10-23 15:00:33.206-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1910,10 +1910,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'e1375ea5-2102-490e-ade2-5aa673f98861'::uuid,
+    '3c876e00-91f2-4f67-99e2-f4f4ef2c5b64'::uuid,
     'cf12e48d-a190-441a-9bc2-3a8b2f10427e',
     'Ebn *Canva04313',
-    3490,
+    -3490,
     false,
     '2024-10-23 14:31:36.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1923,7 +1923,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'e00aa7a5-bb46-46af-8094-826bb22621d0'::uuid,
+    'e7300db2-8691-4844-94b7-32d1a35896ad'::uuid,
     'a94f9dc8-6a5d-41e5-bd9d-d043044c8deb',
     'Resgate de Cashback',
     202,
@@ -1936,10 +1936,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'ce7bbc10-97fd-43ab-9b77-fad5aa4456ea'::uuid,
+    '8f28ee49-de16-432e-a00e-2933e2efbe89'::uuid,
     '4ee1b7f7-d3a8-49b3-a492-628fd17125fe',
     'Ifood *Ifood',
-    5179,
+    -5179,
     false,
     '2024-10-22 19:11:03.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1949,10 +1949,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '21f41df2-ed73-4db6-a2e1-6273c0ca120e'::uuid,
+    '42afd5c6-2009-4558-b917-0754da588c2b'::uuid,
     '45631fd0-a706-4273-93cc-c476573d91d0',
     'Cappta *Mais Por Menos',
-    9032,
+    -9032,
     false,
     '2024-10-22 14:42:53.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -1962,7 +1962,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '555ba8aa-2b45-4762-bf68-eea3b00a8044'::uuid,
+    '3282f5fa-e8ec-43ed-b83e-49068c2084e0'::uuid,
     '59c52b66-1405-47ea-8e4e-da39a3deaec4',
     'Transferência enviada|Julia Fernandes Avelar',
     -23000,
@@ -1975,11 +1975,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '8673b55e-c6cd-4969-b0dc-138bab23e979'::uuid,
+    '637a3500-eeef-436c-beeb-1fc6c18ec2dc'::uuid,
     'c11de56f-f485-498a-9262-1768bb7007fe',
     'Resgate RDB',
     23000,
-    false,
+    true,
     '2024-10-21 10:38:35.084-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -1988,10 +1988,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '59add0ff-95d7-41f6-8846-529c05c8379e'::uuid,
+    'e643ef3e-ed41-4227-a349-281e47715080'::uuid,
     'd1c8bf5e-a8d3-4d8a-9f5f-d5ccdae96a95',
     'Uber',
-    1520,
+    -1520,
     false,
     '2024-10-20 18:57:08.764-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2001,10 +2001,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '2d1fb301-08a4-4597-bd54-2b72ac92d12a'::uuid,
+    '93ab61d5-1841-4f42-b779-e8599f2a2f55'::uuid,
     '826de910-5af5-4c64-b210-d1a80c95ac58',
     'Uber',
-    2305,
+    -2305,
     false,
     '2024-10-20 12:58:38.21-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2014,10 +2014,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b0c5790f-9bd9-4017-8568-e78917dd7c99'::uuid,
+    '3044f76e-0d7c-4dab-bb30-647e54818aa4'::uuid,
     '230cf0c9-c811-40b1-b9b5-8f36ea6a8a1e',
     'Uber',
-    2304,
+    -2304,
     false,
     '2024-10-20 12:56:18.578-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2027,10 +2027,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'bdc3b97f-ce5e-4081-8b94-1f31b13a20a3'::uuid,
+    '31b11fc1-9cc1-451e-b785-2483d91210e1'::uuid,
     '9eb69f00-4fe4-483b-b8b1-eeb010ef7717',
     'Uber',
-    -2304,
+    2304,
     false,
     '2024-10-19 21:00:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2040,10 +2040,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'aadafc91-d316-46a4-aefe-f3070a25ed1e'::uuid,
+    '605c4d6c-9302-4f02-9d5c-e63172fa1a55'::uuid,
     '724d7017-bc6d-4ac5-bd8a-dd2d365b71e1',
     'iFood',
-    13579,
+    -13579,
     false,
     '2024-10-19 20:52:01.112-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2053,7 +2053,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '86becfe9-0f9f-446d-b7d9-c5e2637abb8d'::uuid,
+    '8a851d76-1a16-46cd-bfd5-bf1d36815c52'::uuid,
     '99f1675a-bdbb-4b3a-bfe8-e452ed75f553',
     'Transferência enviada|Growth Supplements',
     -23462,
@@ -2066,11 +2066,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '54ad6b20-e22d-4b05-94e6-849a403356e0'::uuid,
+    '0596d636-24ee-4ba6-bea3-2fea58d6a7d9'::uuid,
     '31d154c4-9809-4fa7-a00c-f2327d8caaa2',
     'Resgate RDB',
     20000,
-    false,
+    true,
     '2024-10-19 15:19:55.915-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -2079,10 +2079,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'f63566b3-89b2-493f-96d1-a6414ae64a96'::uuid,
+    'affaad9c-bff0-4a62-9197-f6ac4f8f4475'::uuid,
     '789412ec-a380-4e87-b842-677c4579a627',
     'Uber',
-    1593,
+    -1593,
     false,
     '2024-10-19 12:19:10.833-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2092,10 +2092,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '84554bba-2686-443b-8c86-f5346b55178d'::uuid,
+    '689db949-934f-4926-a2de-50baee58c774'::uuid,
     'c5fbfb50-5a16-4dc0-b93a-0adaa931221a',
     'Uber',
-    1885,
+    -1885,
     false,
     '2024-10-19 11:05:20.867-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2105,10 +2105,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '80b74f86-5ff8-4816-a102-02122b0c0720'::uuid,
+    '3584fb85-26ea-4a50-808b-6aad95af64ff'::uuid,
     '817db7ad-281c-493f-89c0-452079cfac2e',
     'Uber',
-    919,
+    -919,
     false,
     '2024-10-18 21:56:33.695-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2118,10 +2118,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '97742f1d-b97a-41ee-8d94-93af351be9fe'::uuid,
+    '052be696-17f0-4de0-995a-efca752df400'::uuid,
     '3f26fe15-f906-4eac-a3a8-63a139bf791a',
     'Uber',
-    924,
+    -924,
     false,
     '2024-10-18 18:54:07.171-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2131,10 +2131,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'c7095f22-bd70-4391-82cc-3b41a6137aac'::uuid,
+    'a64bfe54-2edc-4238-9aa6-5e6b16b72e07'::uuid,
     '2bdb29d5-75c9-4bca-bb22-bcbe2916f637',
     'Moacir Rodrigues Galv',
-    3158,
+    -3158,
     false,
     '2024-10-18 11:43:38.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2144,10 +2144,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b6003b93-1d65-456f-a504-09ca9e661af8'::uuid,
+    '96d80147-fa5a-4e1d-ad87-00d367d7d7a2'::uuid,
     'c8a93039-c2e3-41ba-bc62-fa4b44913d9b',
     'Cappta *Mais Por Menos',
-    1038,
+    -1038,
     false,
     '2024-10-18 11:38:53.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2157,10 +2157,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'bcd86076-5acf-4d40-bb9c-750c55f77a30'::uuid,
+    '33757c9b-4c44-40f3-9ad0-496ac1926e8c'::uuid,
     '7869b167-cacb-44f6-a669-471343540097',
     'Filtro Minas',
-    10000,
+    -10000,
     false,
     '2024-10-17 09:03:06.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2170,10 +2170,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'bb6eebc6-3d53-49db-ad48-a1c0f2051046'::uuid,
+    '3d9486d8-367d-4646-97ff-1cb69767a36c'::uuid,
     'b8615d00-c4ba-46dd-93a0-449e23412c83',
     'IOF de compra internacional',
-    517,
+    -517,
     false,
     '2024-10-17 01:32:56.078-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2183,10 +2183,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '0b707d26-b7b6-46d9-8ca8-3f0a30292eec'::uuid,
+    '7123d074-c626-452d-acf6-d538254b67f6'::uuid,
     '625e8368-32c8-4713-9a0e-64707a1e1e1b',
     'Openai *Chatgpt Subscr',
-    11804,
+    -11804,
     false,
     '2024-10-16 16:40:40.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2196,10 +2196,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '8d7c5130-a10c-49e5-9bfb-bf3f6b067a8e'::uuid,
+    '2c93db84-178b-4761-a87b-a18d6e6a17dc'::uuid,
     '4fb479ce-13f0-4026-ae86-fb06e8aa0740',
     'iFood',
-    20103,
+    -20103,
     false,
     '2024-10-16 15:23:08.901-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2209,10 +2209,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '009646fa-14bd-4200-aa85-df1fde9dfaae'::uuid,
+    'c5e44cb5-564a-4f85-827b-038b7a916e49'::uuid,
     '5cc78ac2-d859-467a-b151-911f5cbf1c1f',
     'iFood',
-    -1745,
+    1745,
     false,
     '2024-10-15 21:00:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2222,10 +2222,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd58779c9-d01c-4964-9383-5bb45d02fb54'::uuid,
+    '4302aaa0-1413-4134-8b84-10f3c66e0f1a'::uuid,
     '08f28861-32f1-48f7-ac23-a09c35526924',
     'iFood',
-    6980,
+    -6980,
     false,
     '2024-10-15 17:18:40.701-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2235,7 +2235,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b5b2b9e5-21e8-46c2-b3e0-3b1480c155aa'::uuid,
+    '2878a893-12ac-4a05-b510-4f2ba0e029fa'::uuid,
     '75643a8f-1e38-447e-82a2-ece68abbc7a4',
     'Resgate de Cashback',
     700,
@@ -2248,7 +2248,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '754999af-3439-457f-968f-2b2e7cf691b0'::uuid,
+    'e6e120e0-0997-4466-a26b-b59a109c614a'::uuid,
     '7daca8eb-5d4e-415e-93aa-971eee50543d',
     'Transferência enviada|RECEITA FEDERAL',
     -15532,
@@ -2261,7 +2261,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '5ad8e208-3427-419a-b7b1-cd7bec80e2a9'::uuid,
+    '91310f50-7172-42d0-8514-a6c2f196b828'::uuid,
     'c7d83462-1bd1-4af7-88be-5e58818d8aca',
     'Transferência enviada|RECEITA FEDERAL',
     -44637,
@@ -2274,11 +2274,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd206aa3d-d8f7-4250-afff-88b4e53e66e4'::uuid,
+    'c35baf8b-6a5a-4818-bc4a-cca5f5850d20'::uuid,
     '1df9cb89-c724-47ed-ae6b-88a3b1e3856a',
     'Resgate RDB',
     60000,
-    false,
+    true,
     '2024-10-15 03:11:02.58-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -2287,10 +2287,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '6cd449cd-902e-486f-9459-8d0e94ac28ed'::uuid,
+    'c8b17557-019e-4c30-9c93-fc4b5d3d6668'::uuid,
     '229ff98a-459c-4c69-ae2b-8cee82775c5a',
     'Contabilizei Tecnologi',
-    18700,
+    -18700,
     false,
     '2024-10-15 01:21:36.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2300,10 +2300,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '8669ffbf-55e3-4c91-8a42-7dcc3c5b5f9c'::uuid,
+    '49e5d177-9bf4-4e1b-b0a7-42ac76b64e8a'::uuid,
     '8ccf0b4b-e53d-4a48-a47a-46f38430fac3',
     'Uber',
-    2722,
+    -2722,
     false,
     '2024-10-14 18:09:22.398-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2313,10 +2313,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'c912784b-9556-476c-afe3-f03e46d0518f'::uuid,
+    'dfa3ab12-9725-4f72-bbfb-c76da1205da3'::uuid,
     '48391948-226f-427b-822a-e7b06cc2c417',
     'Ifd*Bom Alimento',
-    6679,
+    -6679,
     false,
     '2024-10-14 17:12:48.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2326,10 +2326,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '8cf37ab8-06fd-4756-897f-1c0be9a4cb32'::uuid,
+    'c7e63e56-b4e6-4423-af2c-bf5a1c529519'::uuid,
     'fcd86ee2-b9bb-45d8-9f48-978c359f3ee9',
     'Amazon',
-    2720,
+    -2720,
     false,
     '2024-10-14 08:25:24.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2339,10 +2339,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'ee7560a7-5f74-4537-a6a9-f2a6068cdc58'::uuid,
+    '59de5384-83fa-4624-bb63-b0187d2b094f'::uuid,
     'cf0951c6-883a-4861-bcb6-c13ff70557e1',
     'Amazon',
-    5480,
+    -5480,
     false,
     '2024-10-14 08:25:20.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2352,10 +2352,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '3ebe6f40-240b-4147-9502-fc2c276a0353'::uuid,
+    'dc98d9fa-2fae-4846-aab5-6e4e0f40d04a'::uuid,
     '9290fa3f-bacf-478c-a8e1-d7643d4a185d',
     'Uber',
-    1366,
+    -1366,
     false,
     '2024-10-13 14:02:36.923-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2365,10 +2365,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '221c0e05-3315-478b-af89-5150ef75583c'::uuid,
+    'b0067ccd-f5ca-46b9-8e88-5535b0fe4a4f'::uuid,
     '05d58852-2460-4422-80a2-d852ce620459',
     'Uber',
-    2354,
+    -2354,
     false,
     '2024-10-12 15:17:12.252-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2378,10 +2378,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'e54bebcd-1c4e-4dfc-98c8-c8e906097a9f'::uuid,
+    '903e2086-15c7-48e2-af0f-2c52012522e3'::uuid,
     'eeadced4-cb97-47c7-abc5-8ae3f33bff0b',
     'Uber',
-    1882,
+    -1882,
     false,
     '2024-10-12 15:15:17.965-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2391,10 +2391,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '50a52b7a-79fa-49b1-b5de-bf27f7f97018'::uuid,
+    '6ed63fb3-212f-41c2-a9a5-45faf68b271c'::uuid,
     '58ddfac3-d98a-4c14-982e-3b9ba8dd3a87',
     'Ranorpereiralopes',
-    12819,
+    -12819,
     false,
     '2024-10-12 14:32:45.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2404,10 +2404,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'fd618970-3add-4b91-abb2-dc7944300c2a'::uuid,
+    '80231cda-a795-409c-8862-63ca22b3e1dc'::uuid,
     'f4ed0321-3b59-479e-8c90-bfd9e6d9d852',
     'Uber',
-    893,
+    -893,
     false,
     '2024-10-12 14:27:59.475-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2417,10 +2417,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '9ebc70a2-ece7-48af-bd03-134de936396e'::uuid,
+    '864d1af9-3979-48ad-ac36-46bc0f2b0c1a'::uuid,
     'bbbd9c5c-2989-41cc-9c7d-1537ff9a8a63',
     'Uber',
-    1019,
+    -1019,
     false,
     '2024-10-12 13:42:55.014-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2430,10 +2430,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '019277e8-af51-4456-b234-ccad8c1730c4'::uuid,
+    '5f19220d-ea90-418b-ab46-2cee1928991d'::uuid,
     'e9a53e85-51bd-4484-8020-f8ed69917696',
     'Uber',
-    580,
+    -580,
     false,
     '2024-10-11 21:49:53.946-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2443,10 +2443,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b8bf41cb-fcfd-4474-a488-22ed7c8d54d3'::uuid,
+    '5c37cec9-5f2b-4139-b7dd-cac269d16e11'::uuid,
     '178855f9-a704-4f39-9e76-9273c1d77331',
     'Uber',
-    -1992,
+    1992,
     false,
     '2024-10-11 21:00:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2456,10 +2456,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '7c05c097-7e70-4a55-be8a-7874dea0e073'::uuid,
+    'f4a4c0e2-2725-4c68-a9b0-7aaff6bd1c0a'::uuid,
     'a1bd934b-6d00-412e-b643-f9ae6af58c36',
     'iFood',
-    9380,
+    -9380,
     false,
     '2024-10-11 19:41:37.396-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2469,10 +2469,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '81100c57-c5cd-465e-9aee-9c5d57e2a9a0'::uuid,
+    'eab62764-513e-4679-80be-385d0c4100d4'::uuid,
     'a410cc1a-69d7-4602-b4d6-0ea544b4031f',
     'Uber',
-    955,
+    -955,
     false,
     '2024-10-11 18:50:39.515-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2482,10 +2482,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'e52b5c29-f699-47b4-9c91-eefabfbb7a03'::uuid,
+    '9c791a53-a630-4a75-9bb0-b11dfe970ed1'::uuid,
     '3f9f126f-557f-40bf-a114-48d14c28836c',
     'Uber',
-    2157,
+    -2157,
     false,
     '2024-10-11 16:25:08.08-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2495,10 +2495,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'ce6a1efe-fe77-4464-934b-c5a92552ddcc'::uuid,
+    '1763c5e7-1e96-4354-94e6-af41db40f2f4'::uuid,
     '42324853-8dc6-4111-9b7f-41d7c12af9eb',
     'Uber',
-    1278,
+    -1278,
     false,
     '2024-10-11 16:23:44.845-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2508,7 +2508,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '80288093-c52a-418c-857c-30464d99f4ca'::uuid,
+    '7247b004-5ea0-440d-bc09-47c61ee084eb'::uuid,
     'f68a4ce9-ec3f-42f4-ba2a-f3a8d81bcd12',
     'Transferência enviada|Lucas Sicari Gold',
     -30000,
@@ -2521,11 +2521,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '480273ab-48e5-4801-9631-9d9dda8b704e'::uuid,
+    '31a057d8-108f-43b6-aa60-5c6b8f18aeaa'::uuid,
     'f543e326-026f-4ff6-a524-54dd76e55614',
     'Resgate RDB',
     30000,
-    false,
+    true,
     '2024-10-11 06:29:00.65-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -2534,10 +2534,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '7e8f8d45-65b5-4ad4-aa22-4c834397e6a2'::uuid,
+    'beb61086-f26d-4acd-b1c4-7f77bab3cb91'::uuid,
     'cb40141e-f966-49be-aa64-a81d4fc97905',
     'Uber',
-    -1278,
+    1278,
     false,
     '2024-10-10 21:00:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2547,7 +2547,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'ed1d3090-da94-4cda-8df3-d0c2934e65f6'::uuid,
+    '793b904e-8b8e-4446-adf9-58569a6c46a5'::uuid,
     'fd1b084b-62c9-48c5-b7aa-6cf37812a406',
     'Transferência enviada|Tim S A',
     -5799,
@@ -2560,7 +2560,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '6326bc69-3f77-4557-9095-0e76f9f6edb1'::uuid,
+    '7f00a7c6-2f07-4e19-9be6-ab6be20e2bdd'::uuid,
     'a062b429-912e-453c-aeae-95f23197f3fa',
     'Transferência enviada|Daniel Santos de Mesquita',
     -23643,
@@ -2573,10 +2573,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '21326140-839b-421b-9872-11d5ce36ae91'::uuid,
+    'd2c2d917-076d-4413-b7c8-dc4ce1c6a9d7'::uuid,
     '80db0696-9251-47c5-9347-5873509bf64b',
     'iFood',
-    27993,
+    -27993,
     false,
     '2024-10-09 19:00:02.653-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2586,7 +2586,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '2b5b1714-f1e9-4a61-a6d7-fab8a65bd473'::uuid,
+    '3a686ad4-4d5e-4a3f-ad5b-32f313384217'::uuid,
     '579e5f9c-e969-4b1e-a7ce-45ef18f0eb43',
     'Transferência Recebida|JANE HELENA DOS SANTOS',
     10000,
@@ -2599,11 +2599,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '91a75ae5-b5fc-4c0e-9044-1a6158691d02'::uuid,
+    '5fd6bc5d-3491-4057-a12c-6082105dc9e5'::uuid,
     '3237c915-4bd2-43e1-ac72-d39420450a16',
     'Aplicação RDB',
     -200000,
-    false,
+    true,
     '2024-10-09 02:35:09.862-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -2612,11 +2612,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '48c14e46-b52a-42b8-8324-c954c22b5a94'::uuid,
+    '01568418-d699-426d-be5c-8efd69648241'::uuid,
     '1bb81796-c1b0-434e-85cf-4449fad13c18',
     'Resgate RDB',
     200000,
-    false,
+    true,
     '2024-10-08 12:22:49.409-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -2625,10 +2625,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '877efd6d-3cfd-40e3-9b88-91e660e0c751'::uuid,
+    '6ccdb709-1a55-4558-bbba-9324ca3b4e25'::uuid,
     'fc90f744-7e52-42c6-a684-2bfde5ea7b13',
     'Google One',
-    799,
+    -799,
     false,
     '2024-10-08 09:17:03.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2638,62 +2638,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '10aa2bdc-6b5d-4d69-bbc6-3d805e1755af'::uuid,
-    'bb15e030-0f6a-4ec4-ae0c-93d56ba6d614',
-    'Zp *Soluti Gopag 3/10',
-    1880,
-    false,
-    '2024-10-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    '7ab70345-9891-4481-a158-3cb45f61150e'::uuid,
-    '9a5f67fc-729a-4a1b-8c24-f50b8d061cd0',
-    'Pb*Insiderstore 3/3',
-    13552,
-    false,
-    '2024-10-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '373b150b-94bd-44b2-abdd-2aab14e74fad'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    '4f882c83-dfea-44b4-8e07-a6f718b5ad6d'::uuid,
-    'f9a8f925-b227-4cd2-9a0d-5005966fdecc',
-    'Oficial*Oficialfarma 5/8',
-    3326,
-    false,
-    '2024-10-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    '252ab3f9-b34c-4b92-bdfc-5fca5954d948'::uuid,
-    '3f02f8a6-233e-4a0c-8205-5de00ac6ac45',
-    'Oficial*Oficialfarma 3/6',
-    3276,
-    false,
-    '2024-10-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    '1e029ff0-15a6-4716-8d09-3a8767542592'::uuid,
+    '29d312aa-1b5a-4145-841a-e06bef69ea59'::uuid,
     'eb79c12d-c05c-464b-9e08-da8e4d4101c5',
     'Lauton *Lauton.Com.Br 3/6',
-    3993,
+    -3993,
     false,
     '2024-10-08 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2703,23 +2651,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'bf522f4d-9c1c-4a9e-a6ef-70b96a481121'::uuid,
-    'c92a7639-f6c5-4e2c-b832-8b09cac84291',
-    'Mp *Insiderstore 5/10',
-    3836,
-    false,
-    '2024-10-08 00:00:00-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'd0e6575b-431e-4694-a068-2adfc2ff90c1'::uuid,
+    '0896fe8e-37b0-489a-87d6-2f73ca487990'::uuid,
     '826c584e-30f4-4063-8eb2-554654ac82d5',
     'Oficial*Oficialfarma 6/6',
-    3107,
+    -3107,
     false,
     '2024-10-08 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2729,10 +2664,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'a9038c41-c458-43e7-8c2f-abec2cce5f15'::uuid,
-    'c9c3ab52-e0df-42d8-89ae-2b0dc74bf2c5',
-    'Amazon Marketplace 3/10',
-    94506,
+    'e9af104e-d43c-4d24-a7ab-617cf8efaede'::uuid,
+    '66f46b49-18ba-4d52-b233-a6d42920d1ad',
+    'Amazon Marketplace 3/4',
+    -5250,
     false,
     '2024-10-08 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2742,23 +2677,23 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b924ec8c-0253-40c0-bf61-93d31df5b8aa'::uuid,
-    '13ff7169-cda6-449e-9a4b-b91c30dc0ed2',
-    'Oficial*Oficialfarma 3/7',
-    3426,
+    'd7679c34-a3dd-4e4d-b004-8ba6421776d2'::uuid,
+    'bb15e030-0f6a-4ec4-ae0c-93d56ba6d614',
+    'Zp *Soluti Gopag 3/10',
+    -1880,
     false,
     '2024-10-08 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
+    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
     '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '795041a3-8c1f-487e-bc79-6ae8b1bc6973'::uuid,
-    '74fbe954-a2af-4ddc-8389-e1ee6d8a8ae9',
-    'Lauton *Lauton.Com.Br 5/6',
-    3993,
+    '90564362-48be-49da-9b7a-51ad846a89c3'::uuid,
+    '9a5f67fc-729a-4a1b-8c24-f50b8d061cd0',
+    'Pb*Insiderstore 3/3',
+    -13552,
     false,
     '2024-10-08 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2768,10 +2703,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'edd6477b-d723-4276-ae35-6063b6b6e2be'::uuid,
-    '22b03c32-88c0-4d03-83ff-8fbf687159df',
-    'Oficial*Oficialfarma 4/10',
-    4024,
+    'a49ddaeb-aa23-4586-8b9e-05803e951298'::uuid,
+    'f9a8f925-b227-4cd2-9a0d-5005966fdecc',
+    'Oficial*Oficialfarma 5/8',
+    -3326,
     false,
     '2024-10-08 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2781,10 +2716,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'ed0f5518-8580-4da1-bdb7-baa223f611eb'::uuid,
-    '66f46b49-18ba-4d52-b233-a6d42920d1ad',
-    'Amazon Marketplace 3/4',
-    5250,
+    '511592ea-1bc6-4b88-afa9-5a9b0174913a'::uuid,
+    'c9c3ab52-e0df-42d8-89ae-2b0dc74bf2c5',
+    'Amazon Marketplace 3/10',
+    -94506,
     false,
     '2024-10-08 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2794,10 +2729,75 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '2e7db532-e4df-4fa8-a717-94bbee8adbde'::uuid,
+    'ca7626db-271c-4796-8742-7c4a7d8fbbd9'::uuid,
+    '22b03c32-88c0-4d03-83ff-8fbf687159df',
+    'Oficial*Oficialfarma 4/10',
+    -4024,
+    false,
+    '2024-10-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '22ead888-af74-4acd-bfd5-d9fd5dbf8a91'::uuid,
+    'c92a7639-f6c5-4e2c-b832-8b09cac84291',
+    'Mp *Insiderstore 5/10',
+    -3836,
+    false,
+    '2024-10-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    '896d5ff8-1534-4d4f-aa1f-53e385097f74'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '91017cfd-e6be-4149-9ade-3584a4f2c0a5'::uuid,
+    '3f02f8a6-233e-4a0c-8205-5de00ac6ac45',
+    'Oficial*Oficialfarma 3/6',
+    -3276,
+    false,
+    '2024-10-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    'dc8b6993-1bd6-4313-968f-5d1f8d936624'::uuid,
+    '74fbe954-a2af-4ddc-8389-e1ee6d8a8ae9',
+    'Lauton *Lauton.Com.Br 5/6',
+    -3993,
+    false,
+    '2024-10-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    '373b150b-94bd-44b2-abdd-2aab14e74fad'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '443ea1a3-7ea5-4658-b5c2-687906e03377'::uuid,
+    '13ff7169-cda6-449e-9a4b-b91c30dc0ed2',
+    'Oficial*Oficialfarma 3/7',
+    -3426,
+    false,
+    '2024-10-08 00:00:00-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    'd590d095-3588-4f16-82af-4d79651b1a86'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    '1f41c0cf-c9e0-4d12-af0f-5fc06e6d38e7'::uuid,
     '61a175b2-eccc-4193-9f3c-ec7a209e7574',
     'IOF de "A Medium Corporation"',
-    124,
+    -124,
     false,
     '2024-10-07 23:17:26.368-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2807,10 +2807,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'f1392955-940a-4b5d-b8bb-f3eaf8d07e02'::uuid,
+    '02486ffd-1a5a-452d-96b5-84dc9da9adfa'::uuid,
     '7f8180e6-0512-4262-b932-287bd050790a',
     'Universidades Estacio',
-    5064,
+    -5064,
     false,
     '2024-10-07 16:45:38.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2820,7 +2820,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '9eb14958-0141-4f16-b85b-a1867bcddbde'::uuid,
+    'baeee039-2334-4eae-9d34-5fafda8842ec'::uuid,
     'c71d7b79-22f1-4c63-a181-9b2e354d4d46',
     'Transferência enviada|Growth Supplements',
     -22809,
@@ -2833,7 +2833,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '2e6db33c-a740-4f45-b218-2b0548e3b82b'::uuid,
+    '5d354052-ad5c-49e5-90ac-7b01a51a3d0a'::uuid,
     'e1bf997c-333a-44ba-9bc7-8a38be96d229',
     'Transferência enviada|ALGAR TELECOM S/A',
     -11977,
@@ -2846,7 +2846,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '134cb489-e1d6-4dec-822e-265598d90bb6'::uuid,
+    '8274fdc6-5a6e-40d0-9baf-10e44b1eebd1'::uuid,
     '104aba59-65a6-4e67-9aa6-6676b5bad6ed',
     'Transferência enviada|Tapajos Empreendimentos Imobiliarios Ltda',
     -90000,
@@ -2859,7 +2859,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'c88ae30e-6c61-4f27-a104-bad71aab362c'::uuid,
+    'a9d01f3a-abc6-463f-898c-a62d98670542'::uuid,
     'b4a7b967-08be-4528-acd4-4650a0856495',
     'Pagamento de fatura',
     -565033,
@@ -2872,11 +2872,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '599008af-f20b-49fd-80ff-2f04f864535c'::uuid,
+    '1a20871d-cf01-42e8-986b-244d087a9460'::uuid,
     '1af226c4-fd6c-4b8f-86e1-f1530321c407',
     'Resgate RDB',
     700000,
-    false,
+    true,
     '2024-10-07 13:35:35.233-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -2885,10 +2885,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '6e238d84-2e41-477b-bce2-713272b006ee'::uuid,
+    'e827eec2-1fc4-4976-a3ae-86294a0fc338'::uuid,
     '87e8d97d-217e-45e9-bd65-449f9fdeaea2',
     'A Medium Corporation',
-    2841,
+    -2841,
     false,
     '2024-10-07 12:08:34.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2898,10 +2898,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'b511a449-5da2-4ade-9f34-669b4101ce2b'::uuid,
+    '29e1f0c7-24dc-4f16-bf8b-15bdf9f0261b'::uuid,
     '514c889f-5b7b-4bdc-afaf-507a3f2d4bff',
     'Pagamento recebido',
-    -565033,
+    565033,
     false,
     '2024-10-07 00:00:00-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2911,10 +2911,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '82829110-8444-4eaf-a4d0-f7081d698981'::uuid,
+    '7eb0b2e7-c074-431b-bbaa-ba0b46df1f10'::uuid,
     'b182d08f-cc68-4604-a664-5b1ca743bf49',
     'Uber',
-    2195,
+    -2195,
     false,
     '2024-10-06 15:23:59.161-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2924,10 +2924,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '83613286-1724-4cd2-8965-86dbc540a3a1'::uuid,
+    '12959ca4-0fa0-4f6e-8ac4-dc410c50a36f'::uuid,
     '52d15f55-ac3a-4eee-83af-0da705940d54',
     'iFood',
-    7570,
+    -7570,
     false,
     '2024-10-06 14:31:38.025-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2937,10 +2937,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '6c2f1029-f1c2-4a8f-ad06-91fb6ab54414'::uuid,
+    'c1779fb6-81bf-4654-be62-576bf1efe23c'::uuid,
     '9a9238ef-28b9-4a31-8d61-78ca89bc309d',
     'Ifd*Ifood Club',
-    495,
+    -495,
     false,
     '2024-10-06 14:31:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2950,10 +2950,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '3b1e26be-c82f-4550-97bd-0a38ba3b686f'::uuid,
+    '9f59eeed-1031-460c-9dfa-ecb09ed6b96c'::uuid,
     '5fd11f42-0d84-42b6-95b6-0d2b840f7d58',
     'Uber',
-    277,
+    -277,
     false,
     '2024-10-06 14:17:14.185-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2963,10 +2963,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '60fd4a19-5570-4d5d-ae58-a4bcf51bad78'::uuid,
+    'f99752ca-b78c-46ea-9f60-614d0748d246'::uuid,
     'cda95a9e-2170-4f5c-a4d4-cf02df10d95b',
     'Uber',
-    917,
+    -917,
     false,
     '2024-10-06 14:15:47.208-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2976,10 +2976,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '4ec1fab1-fc1c-42d4-a5e7-419af725e14e'::uuid,
+    '2b5fe271-4da7-4332-9226-170073e07d2e'::uuid,
     'c1dc6d9f-0ef3-4b73-9132-eae8beec918b',
     'Acg',
-    3390,
+    -3390,
     false,
     '2024-10-06 12:53:27.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -2989,10 +2989,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '27f60a50-27ee-4737-82ff-188029af1e86'::uuid,
+    '7eaddeae-d2ad-40c9-8cc9-f090792b0849'::uuid,
     'cd6eda00-c7f4-4722-b581-0c24fdeea103',
     'Uber',
-    -128,
+    128,
     false,
     '2024-10-05 21:00:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3002,10 +3002,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '692ec416-638f-4ee4-b063-3795ff26ace3'::uuid,
+    '24bcb548-3872-4534-9f74-c43c316d306e'::uuid,
     '4ec2ba65-66da-4b44-ac3b-c08b028a9aaa',
     'Drogaria Medicalfarma',
-    3500,
+    -3500,
     false,
     '2024-10-05 11:52:34.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3015,10 +3015,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '5bd6e6a8-ad41-42c9-b5ea-588cbd6eedc8'::uuid,
+    '1aff63a4-6eaa-48f3-b380-ae675da8dac4'::uuid,
     '75b5e2fe-34c6-4944-8eb6-b42facb44c05',
     'Supermercad Tejotao',
-    62669,
+    -62669,
     false,
     '2024-10-05 11:50:24.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3028,10 +3028,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '2351f543-2e16-4d7f-b54c-8f94e0d8a845'::uuid,
+    '33f86bd0-cbb9-40e9-bdb9-c7a5d0ab0e5f'::uuid,
     'b1196a3d-1f71-4467-9a3f-4e2ceb83c48b',
     'Estrela Encomendas',
-    3390,
+    -3390,
     false,
     '2024-10-05 09:17:25.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3041,10 +3041,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '3a441d4c-f8c4-4d89-a5aa-2cb0d9f0fd81'::uuid,
+    'e7a371da-9ae7-4018-b0b3-be4c2d5cfbf9'::uuid,
     'a219e043-e52c-4165-981f-2993cfedb63c',
     'Uber',
-    424,
+    -424,
     false,
     '2024-10-05 09:08:16.749-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3054,10 +3054,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'ab5c9bea-5818-41ff-a734-faaa1c07d38a'::uuid,
+    '1cde136b-db57-4d80-b18f-aa6d2ae68820'::uuid,
     '99525522-a937-4344-8a2c-95f8f07114bf',
     'Uber',
-    1053,
+    -1053,
     false,
     '2024-10-04 22:04:19.337-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3067,10 +3067,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '554a6ee7-f359-4070-b7f8-fae630b8af8f'::uuid,
+    'b381bf0d-3950-4824-a60d-846de7cca687'::uuid,
     '12885d57-4962-49ec-a99d-397ec86a7cce',
     'Uber',
-    1562,
+    -1562,
     false,
     '2024-10-04 18:56:31.468-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3080,10 +3080,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'daa07fdf-75e4-4238-8625-b6bddacaeb0f'::uuid,
+    '6c85f15d-c2ca-4e98-83f5-96068353d506'::uuid,
     '21c3831b-584a-4f16-97f0-73371b182ead',
     'Uber',
-    2162,
+    -2162,
     false,
     '2024-10-04 18:22:04.686-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3093,10 +3093,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '6a2322d8-4c04-4c1e-8bcc-9ce2a8ffaeef'::uuid,
+    '2744a079-241f-4bf6-adbb-6e1f96f6356a'::uuid,
     'e4fac87a-b36a-4c72-a7dc-bd433052e076',
     'Uber',
-    1716,
+    -1716,
     false,
     '2024-10-04 18:20:40.971-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3106,7 +3106,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'cec9f728-61f1-453b-ad18-d215c3bc204c'::uuid,
+    '00705885-8114-4654-b61d-a180d2552e1c'::uuid,
     '774c7845-054b-47c6-95fc-ca7291f5bea4',
     'Transferência enviada|Lucas Sicari Gold',
     -1000,
@@ -3119,23 +3119,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '6b20ad3a-1110-43cb-88a7-c06e1fd74a85'::uuid,
-    'f125052d-e0e1-40f6-99dd-7d48a886721c',
-    'Uber',
-    -1716,
-    false,
-    '2024-10-03 21:00:00.001-03',
-    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
-    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
-    'e9b42238-9c12-4a79-b2c8-1e426373c008'::uuid,
-    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
-    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
-  ),
-  (
-    'f703d00e-72b9-45a8-abd8-64bb0b3974b9'::uuid,
+    '89753991-d3f1-4a7e-824e-51b1dcf6304a'::uuid,
     '5decdcee-f683-4d5f-9505-3bada2e3f969',
     'Uber',
-    -164,
+    164,
     false,
     '2024-10-03 21:00:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3145,10 +3132,23 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '5e0398b6-8724-4a1e-b72d-652d081608f3'::uuid,
+    '9d69281c-7a33-41b8-96c2-109f937cceef'::uuid,
+    'f125052d-e0e1-40f6-99dd-7d48a886721c',
+    'Uber',
+    1716,
+    false,
+    '2024-10-03 21:00:00.001-03',
+    'b9098717-97ff-4051-a474-b0d703680176'::uuid,
+    'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
+    'e9b42238-9c12-4a79-b2c8-1e426373c008'::uuid,
+    '8567ca77-ac20-4526-b3d9-dbf380a1c00d'::uuid,
+    '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
+  ),
+  (
+    'a87fa722-55d4-44a0-91c2-7e424fbd1f3a'::uuid,
     'd98bd782-9978-4d06-bf58-6d276db1cba8',
     'Uber',
-    -1053,
+    1053,
     false,
     '2024-10-03 21:00:00.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3158,10 +3158,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'edca3543-4234-4104-b5fa-d4c44ee388fc'::uuid,
+    '4ab151bc-07b4-43e7-ac58-89ecdfd8dcf1'::uuid,
     'b00a0fdf-ac05-4d24-8a85-b1588a2dc3eb',
     'Padaria Brunella',
-    3574,
+    -3574,
     false,
     '2024-10-03 16:30:15.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3171,10 +3171,10 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'da80777a-be49-4763-b99c-b537df79ba7b'::uuid,
+    '81e022e7-a4bf-4c11-9c31-abe8c8deaa42'::uuid,
     'e6502a00-03f0-4d92-a852-9ca1b1c00acc',
     'Cappta *Mais Por Menos',
-    7817,
+    -7817,
     false,
     '2024-10-03 15:25:46.001-03',
     'b9098717-97ff-4051-a474-b0d703680176'::uuid,
@@ -3184,11 +3184,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '4227b012-54d6-419a-add7-92445f17c277'::uuid,
+    '611a044b-b214-4f76-9cca-ca4e3b7c364b'::uuid,
     '2882c708-ea65-4c1b-bf80-011a2c8f93a5',
     'Aplicação RDB',
     -1420000,
-    false,
+    true,
     '2024-10-02 13:51:55.498-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,
@@ -3197,7 +3197,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '1a7d877b-cdf8-4980-b921-5d3ddc2b9c71'::uuid,
+    'c45d4330-4d8c-4174-9de7-70352a0f3e4e'::uuid,
     'd34f19e3-0180-41a3-a305-1252c6e428c3',
     'Transferência Recebida',
     1435140,
@@ -3210,7 +3210,7 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    '502630ba-d436-464f-adc3-957ab56c43f4'::uuid,
+    'e21cdd6f-714a-4de0-bf1c-c5789707bdde'::uuid,
     '897f1e80-e0d4-4e09-a750-af4fe5032008',
     'Transferência enviada|Julia Fernandes Avelar',
     -60000,
@@ -3223,11 +3223,11 @@ VALUES (
     '88f812ab-9bc9-4830-afc6-7ac0ba67b1ec'::uuid
   ),
   (
-    'd6ab46b6-1b47-4f37-bc86-26817bfd4acc'::uuid,
+    '01d30876-6140-40fc-96f8-c2d2a5de1e72'::uuid,
     '2fe940ac-5d82-49bc-8318-80b7de3a2e8f',
     'Resgate RDB',
     60000,
-    false,
+    true,
     '2024-10-01 11:20:20.949-03',
     'fc7adfa0-259c-430e-99f5-bef5281add10'::uuid,
     'fdfdc888-da64-4988-8ad3-f739862c4ceb'::uuid,

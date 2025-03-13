@@ -79,6 +79,8 @@ func (qb *QueryBuilder) Scan(
 		return errs.New(err)
 	}
 
+	// log.Printf("Query: %s", sql)
+
 	val := reflect.ValueOf(dest)
 	if val.Kind() != reflect.Ptr {
 		return errs.New("dest must be a pointer")

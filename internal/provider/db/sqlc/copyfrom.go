@@ -243,6 +243,7 @@ func (r iteratorForCreateTransactions) Values() ([]interface{}, error) {
 		r.rows[0].AccountID,
 		r.rows[0].InstitutionID,
 		r.rows[0].CategoryID,
+		r.rows[0].IsIgnored,
 	}, nil
 }
 
@@ -251,5 +252,5 @@ func (r iteratorForCreateTransactions) Err() error {
 }
 
 func (q *Queries) CreateTransactions(ctx context.Context, arg []CreateTransactionsParams) (int64, error) {
-	return q.db.CopyFrom(ctx, []string{"transactions"}, []string{"external_id", "name", "amount", "payment_method_id", "date", "user_id", "account_id", "institution_id", "category_id"}, &iteratorForCreateTransactions{rows: arg})
+	return q.db.CopyFrom(ctx, []string{"transactions"}, []string{"external_id", "name", "amount", "payment_method_id", "date", "user_id", "account_id", "institution_id", "category_id", "is_ignored"}, &iteratorForCreateTransactions{rows: arg})
 }

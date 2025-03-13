@@ -396,15 +396,26 @@ func (uc *SyncTransactions) buildCreateTransactionsParams(
 				continue
 			}
 
-			categoryID := uc.getCategoryID(
+			categoryParentExternalID := uc.o.GetCategoryParentExternalID(
 				ofTrans.CategoryExternalID,
 				categoriesByExternalID,
 			)
-			if categoryID == nil {
-				continue
+
+			category, ok := categoriesByExternalID[categoryParentExternalID]
+			if !ok {
+				slog.Error(
+					"sync-transactions: category not found",
+					"category_external_id",
+					ofTrans.CategoryExternalID,
+					"parent_category_external_id",
+					categoryParentExternalID,
+				)
+				return nil
 			}
 
 			pm := paymentMethodsByExternalID[ofTrans.PaymentMethodExternalID]
+
+			isIgnored := uc.getTransactionIsIgnored(categoryParentExternalID)
 
 			params = append(params, repo.CreateTransactionsParams{
 				ExternalID:      ofTrans.ExternalID,
@@ -415,7 +426,8 @@ func (uc *SyncTransactions) buildCreateTransactionsParams(
 				UserID:          userID,
 				AccountID:       &account.ID,
 				InstitutionID:   &account.InstitutionID,
-				CategoryID:      *categoryID,
+				CategoryID:      category.ID,
+				IsIgnored:       isIgnored,
 			})
 		}
 	}
@@ -490,26 +502,15 @@ func (uc *SyncTransactions) updateUserSynchronizedAt(
 	return nil
 }
 
-func (uc *SyncTransactions) getCategoryID(
-	categoryExternalID string,
-	categoriesByExternalID map[string]entity.TransactionCategory,
-) *uuid.UUID {
-	parentCategoryExternalID := uc.o.GetParentCategoryExternalID(
-		categoryExternalID,
-		categoriesByExternalID,
-	)
-
-	category, ok := categoriesByExternalID[parentCategoryExternalID]
-	if !ok {
-		slog.Error(
-			"sync-transactions: category not found",
-			"category_external_id",
-			categoryExternalID,
-			"parent_category_external_id",
-			parentCategoryExternalID,
-		)
-		return nil
+func (uc *SyncTransactions) getTransactionIsIgnored(
+	categoryParentExternalID string,
+) bool {
+	ignoredExternalIDs := map[string]struct{}{
+		"04000000": {}, // Transferência mesma titularidade
+		"03000000": {}, // Investimentos
 	}
 
-	return &category.ID
+	_, ok := ignoredExternalIDs[categoryParentExternalID]
+
+	return ok
 }
