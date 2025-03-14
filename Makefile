@@ -1,5 +1,3 @@
-.PHONY: default install update run clear generate build lint create_migration migrate reset_db docs test seed
-
 include .env
 schema=./sql/schema.prisma
 
@@ -23,43 +21,92 @@ define reset_db_sequence
 	$(MAKE) unzip_migrations
 endef
 
+.PHONY: default
 default: run
 
+.PHONY: install
 install:
 	@go mod download && ./bin/install.sh
+
+.PHONY: update
 update:
 	@go mod tidy && go get -u ./...
+
+.PHONY: run
 run:
 	@air -c .air.toml
+
+.PHONY: clear
 clear:
 	@find ./tmp -mindepth 1 ! -name '.gitkeep' -delete
+
+.PHONY: generate
 generate:
 	@go generate ./...
+
+.PHONY: docs
 docs:
 	@swag init -g ./cmd/restapi/main.go -o ./docs -q && swag2op init -g cmd/restapi/main.go -q --openapiOutputDir ./tmp && mv ./tmp/swagger.json ./docs/openapi.json && mv ./tmp/swagger.yaml ./docs/openapi.yaml
+
+.PHONY: build
 build:
 	@GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o ./tmp/restapi ./cmd/restapi
+
+.PHONY: lint
 lint:
 	@golangci-lint run && nilaway ./...
+
+.PHONY: lint-fix
 lint-fix:
 	@golangci-lint run --fix && golines **/*.go -w -m 80 && go run cmd/lintfix/main.go
+
+.PHONY: zip_migrations
 zip_migrations:
 	@prisma-go-tools zip --schema=$(schema) || true
+
+.PHONY: unzip_migrations
 unzip_migrations:
 	@prisma-go-tools unzip --schema=$(schema)
+
+.PHONY: create_migration
 create_migration:
 	@$(create_migration_sequence)
+
+.PHONY: migrate
 migrate:
 	@$(migrate_sequence)
+
+.PHONY: reset_db
 reset_db:
 	@$(reset_db_sequence)
+
+.PHONY: studio
 studio:
 	@npx prisma studio --schema=$(schema)
-test:
+
+.PHONY: unit-test
+unit-test:
+	@ENVIRONMENT=test go test -cover -coverprofile=tmp/coverage.out ./internal/domain/usecase/... -timeout 5s
+
+.PHONY: integration-test
+integration-test:
 	@ENVIRONMENT=test go test ./test/integration/... -timeout 30s
+
+.PHONY: test
+test: unit-test integration-test
+	@true
+
+.PHONY: coverage
+coverage:
+	@go tool cover -html=tmp/coverage.out
+
+.PHONY: triggers
 triggers:
 	@prisma-go-tools triggers --schema=$(schema)
+
+.PHONY: seed
 seed:
 	@go run cmd/seed/main.go
+
 %::
 	@true

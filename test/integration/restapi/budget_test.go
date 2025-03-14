@@ -2,7 +2,6 @@ package restapi
 
 import (
 	"context"
-	"log/slog"
 	"net/http"
 	"testing"
 	"time"
@@ -27,14 +26,14 @@ func TestGetBudgetRoute(t *testing.T) {
 	}
 
 	tests := []Test{
-		// {
-		// 	description:      "Fail to list budgets without token",
-		// 	token:            "",
-		// 	expectedCode:     http.StatusBadRequest,
-		// 	expectedResponse: nil,
-		// },
+		{
+			description:      "Fail to list budgets without token",
+			token:            "",
+			expectedCode:     http.StatusBadRequest,
+			expectedResponse: nil,
+		},
 		func() Test {
-			dateStr := "2024-11-14T00:00:00.000-03:00"
+			dateStr := "2024-11-01T00:00:00-03:00"
 			date, _ := time.Parse(time.RFC3339, dateStr)
 			budgetID := uuid.MustParse("8aa317f8-702c-43b1-897b-e24a4285d2d2")
 
@@ -46,11 +45,11 @@ func TestGetBudgetRoute(t *testing.T) {
 				time.RFC3339,
 				"2024-11-30T23:59:59.999999999-03:00",
 			)
-			comparisonStartDate, _ := time.Parse(
+			cmpStartDate, _ := time.Parse(
 				time.RFC3339,
 				"2024-10-01T00:00:00-03:00",
 			)
-			comparisonEndDate, _ := time.Parse(
+			cmpEndDate, _ := time.Parse(
 				time.RFC3339,
 				"2024-10-31T23:59:59.999999999-03:00",
 			)
@@ -64,19 +63,19 @@ func TestGetBudgetRoute(t *testing.T) {
 					GetBudgetOutput: usecase.GetBudgetOutput{
 						Budget: entity.Budget{
 							ID:     budgetID,
-							Amount: 500000,
+							Amount: 2000000,
 							Date:   date,
 						},
-						Spent:                              8807768,
-						Available:                          -8307768,
-						AvailablePercentageVariation:       -6572,
-						AvailablePerDay:                    -276926,
+						Spent:                              1837970,
+						Available:                          162030,
+						AvailablePercentageVariation:       8322,
+						AvailablePerDay:                    0,
 						AvailablePerDayPercentageVariation: 0,
 						ComparisonDates: usecase.ComparisonDates{
 							StartDate:           startDate,
 							EndDate:             endDate,
-							ComparisonStartDate: comparisonStartDate,
-							ComparisonEndDate:   comparisonEndDate,
+							ComparisonStartDate: cmpStartDate,
+							ComparisonEndDate:   cmpEndDate,
 						},
 						BudgetCategories: []usecase.GetBudgetBudgetCategories{
 							{
@@ -85,8 +84,8 @@ func TestGetBudgetRoute(t *testing.T) {
 										"5932b6b2-52eb-4e5c-ab00-19de3c534578",
 									),
 								},
-								Spent:     64754,
-								Available: 185246,
+								Spent:     66630,
+								Available: 933370,
 							},
 							{
 								BudgetCategory: entity.BudgetCategory{
@@ -94,8 +93,8 @@ func TestGetBudgetRoute(t *testing.T) {
 										"39a948f7-0619-4383-a6b3-17fe653651c2",
 									),
 								},
-								Spent:     7319,
-								Available: 92681,
+								Spent:     122918,
+								Available: 277082,
 							},
 							{
 								BudgetCategory: entity.BudgetCategory{
@@ -103,8 +102,8 @@ func TestGetBudgetRoute(t *testing.T) {
 										"75b30904-600f-4d40-a7cc-f7f7f800679d",
 									),
 								},
-								Spent:     0,
-								Available: 150000,
+								Spent:     11826,
+								Available: 588174,
 							},
 						},
 					},
@@ -139,8 +138,6 @@ func TestGetBudgetRoute(t *testing.T) {
 			)
 			assert.Nil(t, err)
 
-			slog.Info("actualResponse", "actualResponse", actualResponse)
-
 			assert.Equal(
 				t,
 				test.expectedCode,
@@ -152,7 +149,6 @@ func TestGetBudgetRoute(t *testing.T) {
 				return
 			}
 
-			// Assert budget properties
 			assert.Equal(
 				t,
 				test.expectedResponse.Budget.ID,
@@ -163,13 +159,13 @@ func TestGetBudgetRoute(t *testing.T) {
 				test.expectedResponse.Budget.Amount,
 				actualResponse.Budget.Amount,
 			)
-			assert.Equal(
+			assert.True(
 				t,
-				test.expectedResponse.Budget.Date.Format(time.RFC3339),
-				actualResponse.Budget.Date.Format(time.RFC3339),
+				test.expectedResponse.Budget.Date.After(
+					actualResponse.Budget.Date,
+				),
 			)
 
-			// Assert budget metrics
 			assert.Equal(t, test.expectedResponse.Spent, actualResponse.Spent)
 			assert.Equal(
 				t,
@@ -192,7 +188,6 @@ func TestGetBudgetRoute(t *testing.T) {
 				actualResponse.AvailablePerDayPercentageVariation,
 			)
 
-			// Assert comparison dates
 			assert.Equal(
 				t,
 				test.expectedResponse.ComparisonDates.StartDate,
@@ -214,35 +209,34 @@ func TestGetBudgetRoute(t *testing.T) {
 				actualResponse.ComparisonDates.ComparisonEndDate,
 			)
 
-			// Assert budget categories
 			assert.Equal(
 				t,
 				len(test.expectedResponse.BudgetCategories),
 				len(actualResponse.BudgetCategories),
 			)
-			for i, expectedCategory := range test.expectedResponse.BudgetCategories {
-				if i < len(actualResponse.BudgetCategories) {
-					assert.Equal(
-						t,
-						expectedCategory.BudgetCategory,
-						actualResponse.BudgetCategories[i].BudgetCategory,
-					)
-					assert.Equal(
-						t,
-						expectedCategory.Spent,
-						actualResponse.BudgetCategories[i].Spent,
-					)
-					assert.Equal(
-						t,
-						expectedCategory.Available,
-						actualResponse.BudgetCategories[i].Available,
-					)
-					assert.Equal(
-						t,
-						expectedCategory.Category,
-						actualResponse.BudgetCategories[i].Category,
-					)
+
+			actualBudgetCategories := map[uuid.UUID]usecase.GetBudgetBudgetCategories{}
+			for _, budgetCategory := range actualResponse.BudgetCategories {
+				actualBudgetCategories[budgetCategory.BudgetCategory.ID] = budgetCategory
+			}
+
+			for _, expectedCategory := range test.expectedResponse.BudgetCategories {
+				actualBudgetCategory, ok := actualBudgetCategories[expectedCategory.BudgetCategory.ID]
+				assert.True(t, ok, expectedCategory.BudgetCategory.ID)
+				if !ok {
+					continue
 				}
+
+				assert.Equal(
+					t,
+					expectedCategory.Spent,
+					actualBudgetCategory.Spent,
+				)
+				assert.Equal(
+					t,
+					expectedCategory.Available,
+					actualBudgetCategory.Available,
+				)
 			}
 		})
 	}

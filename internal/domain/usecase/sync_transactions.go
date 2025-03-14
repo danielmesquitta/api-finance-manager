@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -415,7 +416,10 @@ func (uc *SyncTransactions) buildCreateTransactionsParams(
 
 			pm := paymentMethodsByExternalID[ofTrans.PaymentMethodExternalID]
 
-			isIgnored := uc.getTransactionIsIgnored(categoryParentExternalID)
+			isIgnored := uc.shouldIgnoreTransaction(
+				ofTrans.Name,
+				categoryParentExternalID,
+			)
 
 			params = append(params, repo.CreateTransactionsParams{
 				ExternalID:      ofTrans.ExternalID,
@@ -502,7 +506,8 @@ func (uc *SyncTransactions) updateUserSynchronizedAt(
 	return nil
 }
 
-func (uc *SyncTransactions) getTransactionIsIgnored(
+func (uc *SyncTransactions) shouldIgnoreTransaction(
+	transactionName string,
 	categoryParentExternalID string,
 ) bool {
 	ignoredExternalIDs := map[string]struct{}{
@@ -510,7 +515,19 @@ func (uc *SyncTransactions) getTransactionIsIgnored(
 		"03000000": {}, // Investimentos
 	}
 
-	_, ok := ignoredExternalIDs[categoryParentExternalID]
+	if _, ok := ignoredExternalIDs[categoryParentExternalID]; ok {
+		return true
+	}
 
-	return ok
+	ignoredTransactionNames := []string{
+		"pagamento de fatura",
+	}
+
+	for _, name := range ignoredTransactionNames {
+		if strings.Contains(strings.ToLower(transactionName), name) {
+			return true
+		}
+	}
+
+	return false
 }

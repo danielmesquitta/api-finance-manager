@@ -181,7 +181,7 @@ func calculateComparisonDates(startDate, endDate time.Time) *ComparisonDates {
 		comparisonEndDate := endDate.AddDate(0, -1, 0)
 		if comparisonEndDate.Month() == endDate.Month() {
 			days := comparisonEndDate.Day()
-			comparisonStartDate = comparisonStartDate.AddDate(0, 0, -days)
+			comparisonEndDate = comparisonEndDate.AddDate(0, 0, -days)
 		}
 
 		if isFullMonthComparison {
@@ -194,8 +194,8 @@ func calculateComparisonDates(startDate, endDate time.Time) *ComparisonDates {
 	} else {
 		duration := endDate.Sub(startDate)
 		durationDays := int(duration.Hours() / 24)
-		out.ComparisonEndDate = startDate.AddDate(0, 0, -1)
-		out.ComparisonStartDate = out.ComparisonEndDate.AddDate(0, 0, -durationDays)
+		out.ComparisonEndDate = startDate.Add(-time.Nanosecond)
+		out.ComparisonStartDate = getStartOfDay(startDate.AddDate(0, 0, -durationDays))
 	}
 
 	return out

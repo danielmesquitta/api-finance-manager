@@ -252,9 +252,7 @@ func (c *Client) parseTransactionResultToEntity(
 		},
 	}
 
-	if r.CategoryID != nil {
-		transaction.CategoryExternalID = *r.CategoryID
-	}
+	c.setTransactionCategory(&transaction, r)
 
 	if err := c.setTransactionAmount(&transaction, r); err != nil {
 		return nil, errs.New(err)
@@ -263,6 +261,33 @@ func (c *Client) parseTransactionResultToEntity(
 	c.setTransactionPaymentMethod(&transaction, r)
 
 	return &transaction, nil
+}
+
+func (c *Client) setTransactionCategory(
+	t *openfinance.Transaction,
+	r Result,
+) {
+	if r.CategoryID != nil {
+		t.CategoryExternalID = *r.CategoryID
+	}
+
+	if r.PaymentData == nil ||
+		r.PaymentData.Payer == nil ||
+		r.PaymentData.Payer.DocumentNumber == nil ||
+		r.PaymentData.Receiver == nil ||
+		r.PaymentData.Receiver.DocumentNumber == nil {
+		return
+	}
+
+	categorySameOwnershipTransfer := "04000000"
+	payerDocument := r.PaymentData.Payer.DocumentNumber.Value
+	receiverDocument := r.PaymentData.Receiver.DocumentNumber.Value
+
+	if payerDocument != "" && receiverDocument != "" &&
+		payerDocument == receiverDocument {
+		t.CategoryExternalID = categorySameOwnershipTransfer
+		return
+	}
 }
 
 func (c *Client) setTransactionAmount(

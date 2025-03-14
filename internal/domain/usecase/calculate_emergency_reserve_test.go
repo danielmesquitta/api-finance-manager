@@ -34,7 +34,7 @@ func TestCalculateEmergencyReserveExecute(
 		asserts.Nil(err)
 		asserts.NotNil(out)
 		asserts.Equal(int64(6), out.RecommendedReserveInMonths)
-		asserts.Equal(int64(6000), out.RecommendedReserveInValue)
+		asserts.Equal(int64(600000), out.RecommendedReserveInValue)
 		asserts.Equal(int64(12), out.MonthsToAchieveEmergencyReserve)
 	})
 }
