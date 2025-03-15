@@ -581,8 +581,6 @@ definitions:
     type: object
   dto.UserProfileResponse:
     properties:
-      auth_id:
-        type: string
       avatar:
         type: string
       created_at:
@@ -595,10 +593,6 @@ definitions:
         type: string
       name:
         type: string
-      open_finance_id:
-        type: string
-      provider:
-        type: string
       subscription_expires_at:
         type: string
       synchronized_at:
@@ -607,8 +601,6 @@ definitions:
         type: string
       updated_at:
         type: string
-      verified_email:
-        type: boolean
     type: object
   entity.AIChat:
     properties:
@@ -760,8 +752,6 @@ definitions:
     type: object
   entity.User:
     properties:
-      auth_id:
-        type: string
       avatar:
         type: string
       created_at:
@@ -774,10 +764,6 @@ definitions:
         type: string
       name:
         type: string
-      open_finance_id:
-        type: string
-      provider:
-        type: string
       subscription_expires_at:
         type: string
       synchronized_at:
@@ -786,8 +772,6 @@ definitions:
         type: string
       updated_at:
         type: string
-      verified_email:
-        type: boolean
     type: object
   usecase.CashFlow:
     properties:

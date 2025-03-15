@@ -2919,9 +2919,6 @@ const docTemplate = `{
         "dto.UserProfileResponse": {
             "type": "object",
             "properties": {
-                "auth_id": {
-                    "type": "string"
-                },
                 "avatar": {
                     "type": "string"
                 },
@@ -2940,12 +2937,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "open_finance_id": {
-                    "type": "string"
-                },
-                "provider": {
-                    "type": "string"
-                },
                 "subscription_expires_at": {
                     "type": "string"
                 },
@@ -2957,9 +2948,6 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
-                },
-                "verified_email": {
-                    "type": "boolean"
                 }
             }
         },
@@ -3185,9 +3173,6 @@ const docTemplate = `{
         "entity.User": {
             "type": "object",
             "properties": {
-                "auth_id": {
-                    "type": "string"
-                },
                 "avatar": {
                     "type": "string"
                 },
@@ -3206,12 +3191,6 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "open_finance_id": {
-                    "type": "string"
-                },
-                "provider": {
-                    "type": "string"
-                },
                 "subscription_expires_at": {
                     "type": "string"
                 },
@@ -3223,9 +3202,6 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
-                },
-                "verified_email": {
-                    "type": "boolean"
                 }
             }
         },

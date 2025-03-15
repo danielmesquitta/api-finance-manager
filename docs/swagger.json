@@ -2912,9 +2912,6 @@
         "dto.UserProfileResponse": {
             "type": "object",
             "properties": {
-                "auth_id": {
-                    "type": "string"
-                },
                 "avatar": {
                     "type": "string"
                 },
@@ -2933,12 +2930,6 @@
                 "name": {
                     "type": "string"
                 },
-                "open_finance_id": {
-                    "type": "string"
-                },
-                "provider": {
-                    "type": "string"
-                },
                 "subscription_expires_at": {
                     "type": "string"
                 },
@@ -2950,9 +2941,6 @@
                 },
                 "updated_at": {
                     "type": "string"
-                },
-                "verified_email": {
-                    "type": "boolean"
                 }
             }
         },
@@ -3178,9 +3166,6 @@
         "entity.User": {
             "type": "object",
             "properties": {
-                "auth_id": {
-                    "type": "string"
-                },
                 "avatar": {
                     "type": "string"
                 },
@@ -3199,12 +3184,6 @@
                 "name": {
                     "type": "string"
                 },
-                "open_finance_id": {
-                    "type": "string"
-                },
-                "provider": {
-                    "type": "string"
-                },
                 "subscription_expires_at": {
                     "type": "string"
                 },
@@ -3216,9 +3195,6 @@
                 },
                 "updated_at": {
                     "type": "string"
-                },
-                "verified_email": {
-                    "type": "boolean"
                 }
             }
         },

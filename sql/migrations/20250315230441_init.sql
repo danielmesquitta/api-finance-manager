@@ -12,7 +12,6 @@ CREATE TABLE "account_balances" (
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
     "account_id" UUID NOT NULL,
-    "user_id" UUID NOT NULL,
 
     CONSTRAINT "account_balances_pkey" PRIMARY KEY ("id")
 );
@@ -194,28 +193,10 @@ CREATE TABLE "users" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "accounts_external_id_key" ON "accounts"("external_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "institutions_external_id_key" ON "institutions"("external_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "payment_methods_external_id_key" ON "payment_methods"("external_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "transaction_categories_external_id_key" ON "transaction_categories"("external_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "user_auth_providers_external_id_key" ON "user_auth_providers"("external_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- AddForeignKey
 ALTER TABLE "account_balances" ADD CONSTRAINT "account_balances_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "accounts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "account_balances" ADD CONSTRAINT "account_balances_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_institution_id_fkey" FOREIGN KEY ("user_institution_id") REFERENCES "user_institutions"("id") ON DELETE CASCADE ON UPDATE CASCADE;

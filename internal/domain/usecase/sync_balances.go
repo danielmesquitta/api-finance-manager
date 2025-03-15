@@ -161,7 +161,6 @@ func (uc *SyncBalances) syncUserBalance(
 
 				if err := uc.createAccountBalances(
 					gCtx,
-					userID,
 					openFinanceAccounts,
 					accountsByExternalIDs,
 				); err != nil {
@@ -192,7 +191,6 @@ func (uc *SyncBalances) syncUserBalance(
 
 func (uc *SyncBalances) createAccountBalances(
 	ctx context.Context,
-	userID uuid.UUID,
 	openFinanceAccounts []openfinance.Account,
 	accountsByExternalIDs map[string]entity.FullAccount,
 ) error {
@@ -207,7 +205,6 @@ func (uc *SyncBalances) createAccountBalances(
 			continue
 		}
 		params = append(params, repo.CreateAccountBalancesParams{
-			UserID:    userID,
 			AccountID: account.ID,
 			Amount:    openFinanceAccount.Balance,
 		})

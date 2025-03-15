@@ -30,7 +30,6 @@ func (r *iteratorForCreateAccountBalances) Next() bool {
 func (r iteratorForCreateAccountBalances) Values() ([]interface{}, error) {
 	return []interface{}{
 		r.rows[0].Amount,
-		r.rows[0].UserID,
 		r.rows[0].AccountID,
 	}, nil
 }
@@ -40,7 +39,7 @@ func (r iteratorForCreateAccountBalances) Err() error {
 }
 
 func (q *Queries) CreateAccountBalances(ctx context.Context, arg []CreateAccountBalancesParams) (int64, error) {
-	return q.db.CopyFrom(ctx, []string{"account_balances"}, []string{"amount", "user_id", "account_id"}, &iteratorForCreateAccountBalances{rows: arg})
+	return q.db.CopyFrom(ctx, []string{"account_balances"}, []string{"amount", "account_id"}, &iteratorForCreateAccountBalances{rows: arg})
 }
 
 // iteratorForCreateAccounts implements pgx.CopyFromSource.

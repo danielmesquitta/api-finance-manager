@@ -1,6 +1,6 @@
 -- name: CreateAccountBalances :copyfrom
-INSERT INTO account_balances (amount, user_id, account_id)
-VALUES ($1, $2, $3);
+INSERT INTO account_balances (amount, account_id)
+VALUES ($1, $2);
 -- name: GetUserBalanceOnDate :one
 SELECT COALESCE(SUM(ab.amount), 0)::bigint AS total_balance
 FROM accounts a

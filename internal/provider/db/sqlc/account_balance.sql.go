@@ -14,7 +14,6 @@ import (
 
 type CreateAccountBalancesParams struct {
 	Amount    int64     `json:"amount"`
-	UserID    uuid.UUID `json:"user_id"`
 	AccountID uuid.UUID `json:"account_id"`
 }
 

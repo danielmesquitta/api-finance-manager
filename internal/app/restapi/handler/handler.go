@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -67,8 +66,6 @@ func parseDateParam(
 	if err != nil {
 		return time.Time{}, errs.ErrInvalidDate
 	}
-
-	log.Println("Date: ", date)
 
 	return date, nil
 }

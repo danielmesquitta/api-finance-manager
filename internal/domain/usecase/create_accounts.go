@@ -194,7 +194,6 @@ func (uc *CreateAccounts) Execute(
 		for _, account := range openFinanceAccounts {
 			accountID := accountIDByExternalID[account.ExternalID]
 			accountBalance := repo.CreateAccountBalancesParams{
-				UserID:    userID,
 				AccountID: accountID,
 				Amount:    account.Balance,
 			}
