@@ -33,7 +33,7 @@ func NewPaymentMethodHandler(
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/payment-methods [get]
 func (h PaymentMethodHandler) List(c *fiber.Ctx) error {
-	search := c.Query(queryParamSearch)
+	search := c.Query(QueryParamSearch)
 	paginationIn := parsePaginationParams(c)
 
 	in := usecase.ListPaymentMethodsInput{

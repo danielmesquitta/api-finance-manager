@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
@@ -35,7 +36,7 @@ func TestListTransactions(t *testing.T) {
 		{
 			description: "List transactions",
 			queryParams: map[string]string{
-				"page_size": "10",
+				handler.QueryParamPageSize: "10",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -55,8 +56,8 @@ func TestListTransactions(t *testing.T) {
 		{
 			description: "Filter transactions by payment method id",
 			queryParams: map[string]string{
-				"payment_method_ids": "5d140153-c072-42ce-b19c-c5c9b528dba4",
-				"page_size":          "5",
+				handler.QueryParamPaymentMethodIDs: "5d140153-c072-42ce-b19c-c5c9b528dba4",
+				handler.QueryParamPageSize:         "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -71,7 +72,7 @@ func TestListTransactions(t *testing.T) {
 		{
 			description: "Filter transactions by category id",
 			queryParams: map[string]string{
-				"category_ids": "059efe62-9a56-414b-bc8e-65caf03f12e4,ed80ba2a-1b70-40b1-b14c-ff63797dd58e",
+				handler.QueryParamCategoryIDs: "059efe62-9a56-414b-bc8e-65caf03f12e4,ed80ba2a-1b70-40b1-b14c-ff63797dd58e",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -86,8 +87,8 @@ func TestListTransactions(t *testing.T) {
 		{
 			description: "Filter transactions by institution id",
 			queryParams: map[string]string{
-				"institution_ids": "88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
-				"page_size":       "5",
+				handler.QueryParamInstitutionIDs: "88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
+				handler.QueryParamPageSize:       "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -102,8 +103,8 @@ func TestListTransactions(t *testing.T) {
 		{
 			description: "Filter transactions by is expense",
 			queryParams: map[string]string{
-				"is_expense": "TRUE",
-				"page_size":  "5",
+				handler.QueryParamIsExpense: "TRUE",
+				handler.QueryParamPageSize:  "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -118,8 +119,8 @@ func TestListTransactions(t *testing.T) {
 		{
 			description: "Filter transactions by is income",
 			queryParams: map[string]string{
-				"is_income": "TRUE",
-				"page_size": "5",
+				handler.QueryParamIsIncome: "TRUE",
+				handler.QueryParamPageSize: "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -134,8 +135,8 @@ func TestListTransactions(t *testing.T) {
 		{
 			description: "Filter transactions by is ignored",
 			queryParams: map[string]string{
-				"is_ignored": "TRUE",
-				"page_size":  "5",
+				handler.QueryParamIsIgnored: "TRUE",
+				handler.QueryParamPageSize:  "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -150,9 +151,9 @@ func TestListTransactions(t *testing.T) {
 		{
 			description: "Filter transactions by date period",
 			queryParams: map[string]string{
-				"start_date": "2024-11-29T00:00:00.000-03:00",
-				"end_date":   "2024-11-30T23:59:59.999-03:00",
-				"page_size":  "5",
+				handler.QueryParamStartDate: "2024-11-29T00:00:00.000-03:00",
+				handler.QueryParamEndDate:   "2024-11-30T23:59:59.999-03:00",
+				handler.QueryParamPageSize:  "5",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,

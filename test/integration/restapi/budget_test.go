@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
@@ -53,9 +54,11 @@ func TestGetBudget(t *testing.T) {
 			)
 
 			return Test{
-				description:  "Get budget",
-				token:        mockoauth.DefaultMockToken,
-				queryParams:  map[string]string{"date": dateStr},
+				description: "Get budget",
+				token:       mockoauth.DefaultMockToken,
+				queryParams: map[string]string{
+					handler.QueryParamDate: dateStr,
+				},
 				expectedCode: http.StatusOK,
 				expectedResponse: &dto.GetBudgetResponse{
 					GetBudgetOutput: usecase.GetBudgetOutput{

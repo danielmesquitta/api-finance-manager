@@ -132,7 +132,7 @@ func (h *AIChatHandler) Update(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/ai-chats [get]
 func (h AIChatHandler) List(c *fiber.Ctx) error {
-	search := c.Query(queryParamSearch)
+	search := c.Query(QueryParamSearch)
 	paginationIn := parsePaginationParams(c)
 
 	claims := GetUserClaims(c)

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/stretchr/testify/assert"
 )
@@ -44,8 +45,8 @@ func TestListInstitutions(t *testing.T) {
 		{
 			description: "Paginate institutions",
 			queryParams: map[string]string{
-				"page":      "2",
-				"page_size": "2",
+				handler.QueryParamPage:     "2",
+				handler.QueryParamPageSize: "2",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -57,7 +58,7 @@ func TestListInstitutions(t *testing.T) {
 		{
 			description: "Search institutions",
 			queryParams: map[string]string{
-				"search": "Int",
+				handler.QueryParamSearch: "Int",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -155,8 +156,8 @@ func TestListUserInstitutions(t *testing.T) {
 		{
 			description: "Paginate institutions",
 			queryParams: map[string]string{
-				"page":      "1",
-				"page_size": "1",
+				handler.QueryParamPage:     "1",
+				handler.QueryParamPageSize: "1",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -167,7 +168,7 @@ func TestListUserInstitutions(t *testing.T) {
 		{
 			description: "Search institutions",
 			queryParams: map[string]string{
-				"search": "nub",
+				handler.QueryParamSearch: "nub",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,

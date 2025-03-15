@@ -56,7 +56,7 @@ func (h InstitutionHandler) Sync(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/institutions [get]
 func (h InstitutionHandler) List(c *fiber.Ctx) error {
-	search := c.Query(queryParamSearch)
+	search := c.Query(QueryParamSearch)
 	paginationIn := parsePaginationParams(c)
 
 	in := usecase.ListInstitutionsInput{
@@ -89,7 +89,7 @@ func (h InstitutionHandler) List(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/users/institutions [get]
 func (h InstitutionHandler) ListUserInstitutions(c *fiber.Ctx) error {
-	search := c.Query(queryParamSearch)
+	search := c.Query(QueryParamSearch)
 	paginationIn := parsePaginationParams(c)
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)

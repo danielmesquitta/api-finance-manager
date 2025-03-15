@@ -107,7 +107,7 @@ func (h TransactionHandler) Get(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/admin/transactions/sync [post]
 func (h *TransactionHandler) Sync(c *fiber.Ctx) error {
-	userIDs, err := parseUUIDsParam(c, queryParamUserIDs)
+	userIDs, err := parseUUIDsParam(c, QueryParamUserIDs)
 	if err != nil {
 		return errs.New(err)
 	}

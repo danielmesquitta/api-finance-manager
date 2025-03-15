@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/stretchr/testify/assert"
 )
@@ -43,7 +44,7 @@ func TestListPaymentMethods(t *testing.T) {
 		{
 			description: "Search payment methods",
 			queryParams: map[string]string{
-				"search": "Cartao",
+				handler.QueryParamSearch: "Cartao",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,

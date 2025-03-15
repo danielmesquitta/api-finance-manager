@@ -84,7 +84,7 @@ func (h BudgetHandler) Get(c *fiber.Ctx) error {
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	date, err := parseDateParam(c, queryParamDate)
+	date, err := parseDateParam(c, QueryParamDate)
 	if err != nil {
 		return errs.New(err)
 	}
@@ -121,7 +121,7 @@ func (h BudgetHandler) GetTransactionCategory(c *fiber.Ctx) error {
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
 
-	date := c.Query(queryParamDate)
+	date := c.Query(QueryParamDate)
 	categoryID := uuid.MustParse(c.Params(pathParamCategoryID))
 
 	ctx := c.UserContext()
@@ -160,7 +160,7 @@ func (h *BudgetHandler) ListCategoryTransactions(c *fiber.Ctx) error {
 
 	paginationIn := parsePaginationParams(c)
 
-	date, err := parseDateParam(c, queryParamDate)
+	date, err := parseDateParam(c, QueryParamDate)
 	if err != nil {
 		return errs.New(err)
 	}

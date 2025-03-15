@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/stretchr/testify/assert"
 )
@@ -30,7 +31,7 @@ func TestListTransactionCategories(t *testing.T) {
 		{
 			description: "List all transaction categories",
 			queryParams: map[string]string{
-				"page_size": "100",
+				handler.QueryParamPageSize: "100",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,
@@ -62,7 +63,7 @@ func TestListTransactionCategories(t *testing.T) {
 		{
 			description: "Search transaction categories",
 			queryParams: map[string]string{
-				"search": "Emprestimos",
+				handler.QueryParamSearch: "Emprestimos",
 			},
 			token:        mockoauth.DefaultMockToken,
 			expectedCode: http.StatusOK,

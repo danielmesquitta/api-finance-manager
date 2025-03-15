@@ -19,19 +19,19 @@ import (
 type QueryParam = string
 
 const (
-	queryParamSearch           QueryParam = "search"
-	queryParamPage             QueryParam = "page"
-	queryParamPageSize         QueryParam = "page_size"
-	queryParamDate             QueryParam = "date"
-	queryParamStartDate        QueryParam = "start_date"
-	queryParamEndDate          QueryParam = "end_date"
-	queryParamInstitutionIDs   QueryParam = "institution_ids"
-	queryParamCategoryIDs      QueryParam = "category_ids"
-	queryParamUserIDs          QueryParam = "user_ids"
-	queryParamIsExpense        QueryParam = "is_expense"
-	queryParamIsIncome         QueryParam = "is_income"
-	queryParamIsIgnored        QueryParam = "is_ignored"
-	queryParamPaymentMethodIDs QueryParam = "payment_method_ids"
+	QueryParamSearch           QueryParam = "search"
+	QueryParamPage             QueryParam = "page"
+	QueryParamPageSize         QueryParam = "page_size"
+	QueryParamDate             QueryParam = "date"
+	QueryParamStartDate        QueryParam = "start_date"
+	QueryParamEndDate          QueryParam = "end_date"
+	QueryParamInstitutionIDs   QueryParam = "institution_ids"
+	QueryParamCategoryIDs      QueryParam = "category_ids"
+	QueryParamUserIDs          QueryParam = "user_ids"
+	QueryParamIsExpense        QueryParam = "is_expense"
+	QueryParamIsIncome         QueryParam = "is_income"
+	QueryParamIsIgnored        QueryParam = "is_ignored"
+	QueryParamPaymentMethodIDs QueryParam = "payment_method_ids"
 )
 
 type PathParam = string
@@ -45,8 +45,8 @@ const (
 func parsePaginationParams(
 	c *fiber.Ctx,
 ) usecase.PaginationInput {
-	page := c.QueryInt(queryParamPage, 1)
-	pageSize := c.QueryInt(queryParamPageSize, 20)
+	page := c.QueryInt(QueryParamPage, 1)
+	pageSize := c.QueryInt(QueryParamPageSize, 20)
 
 	return usecase.PaginationInput{
 		Page:     uint(page),
@@ -162,44 +162,44 @@ func GetUserClaims(
 func prepareTransactionOptions(
 	c *fiber.Ctx,
 ) (*repo.TransactionOptions, error) {
-	search := c.Query(queryParamSearch)
+	search := c.Query(QueryParamSearch)
 
-	paymentMethodIDs, err := parseUUIDsParam(c, queryParamPaymentMethodIDs)
+	paymentMethodIDs, err := parseUUIDsParam(c, QueryParamPaymentMethodIDs)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	institutionIDs, err := parseUUIDsParam(c, queryParamInstitutionIDs)
+	institutionIDs, err := parseUUIDsParam(c, QueryParamInstitutionIDs)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	categoryIDs, err := parseUUIDsParam(c, queryParamCategoryIDs)
+	categoryIDs, err := parseUUIDsParam(c, QueryParamCategoryIDs)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	isExpense, err := parseBoolParam(c, queryParamIsExpense)
+	isExpense, err := parseBoolParam(c, QueryParamIsExpense)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	isIncome, err := parseBoolParam(c, queryParamIsIncome)
+	isIncome, err := parseBoolParam(c, QueryParamIsIncome)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	isIgnored, err := parseNillableBoolParam(c, queryParamIsIgnored)
+	isIgnored, err := parseNillableBoolParam(c, QueryParamIsIgnored)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	startDate, err := parseDateParam(c, queryParamStartDate)
+	startDate, err := parseDateParam(c, QueryParamStartDate)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	endDate, err := parseDateParam(c, queryParamEndDate)
+	endDate, err := parseDateParam(c, QueryParamEndDate)
 	if err != nil {
 		return nil, errs.New(err)
 	}
