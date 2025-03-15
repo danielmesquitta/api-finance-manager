@@ -6,6 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
@@ -59,7 +60,7 @@ func (u *UpsertBudget) Execute(
 		return errs.ErrInvalidDate
 	}
 
-	monthStart := toMonthStart(date)
+	monthStart := dateutil.ToMonthStart(date)
 
 	categoryIDs := []uuid.UUID{}
 	for _, c := range in.Categories {
@@ -67,8 +68,10 @@ func (u *UpsertBudget) Execute(
 	}
 
 	g, gCtx := errgroup.WithContext(ctx)
-	var budget *entity.Budget
-	var categoriesCount int64
+	var (
+		budget          *entity.Budget
+		categoriesCount int64
+	)
 
 	g.Go(func() error {
 		budget, err = u.br.GetBudget(gCtx, repo.GetBudgetParams{
@@ -101,7 +104,7 @@ func (u *UpsertBudget) Execute(
 	}
 
 	err = u.tx.Do(ctx, func(ctx context.Context) error {
-		if budgetDoesNotExists := budget == nil; budgetDoesNotExists {
+		if budget == nil || !budget.Date.Equal(monthStart) {
 			budget, err = u.br.CreateBudget(ctx, repo.CreateBudgetParams{
 				Date:   monthStart,
 				Amount: in.Amount,
@@ -118,10 +121,10 @@ func (u *UpsertBudget) Execute(
 			}); err != nil {
 				return errs.New(err)
 			}
-		}
 
-		if err := u.br.DeleteBudgetCategories(ctx, in.UserID); err != nil {
-			return errs.New(err)
+			if err := u.br.DeleteBudgetCategories(ctx, budget.ID); err != nil {
+				return errs.New(err)
+			}
 		}
 
 		var categories []repo.CreateBudgetCategoriesParams

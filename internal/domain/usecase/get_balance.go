@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
@@ -35,16 +36,16 @@ type GetBalanceInput struct {
 }
 
 type GetBalanceOutput struct {
-	ComparisonDates            ComparisonDates `json:"comparison_dates"`
-	CurrentBalance             int64           `json:"current_balance"`
-	PreviousBalance            int64           `json:"previous_balance"`
-	BalancePercentageVariation int64           `json:"balance_percentage_variation"`
-	CurrentIncome              int64           `json:"current_income"`
-	PreviousIncome             int64           `json:"previous_income"`
-	IncomePercentageVariation  int64           `json:"income_percentage_variation"`
-	CurrentExpense             int64           `json:"current_expense"`
-	PreviousExpense            int64           `json:"previous_expense"`
-	ExpensePercentageVariation int64           `json:"expense_percentage_variation"`
+	ComparisonDates            dateutil.ComparisonDates `json:"comparison_dates"`
+	CurrentBalance             int64                    `json:"current_balance"`
+	PreviousBalance            int64                    `json:"previous_balance"`
+	BalancePercentageVariation int64                    `json:"balance_percentage_variation"`
+	CurrentIncome              int64                    `json:"current_income"`
+	PreviousIncome             int64                    `json:"previous_income"`
+	IncomePercentageVariation  int64                    `json:"income_percentage_variation"`
+	CurrentExpense             int64                    `json:"current_expense"`
+	PreviousExpense            int64                    `json:"previous_expense"`
+	ExpensePercentageVariation int64                    `json:"expense_percentage_variation"`
 }
 
 func (uc *GetBalance) Execute(
@@ -55,7 +56,7 @@ func (uc *GetBalance) Execute(
 		return nil, errs.New(err)
 	}
 
-	cmpDates := calculateComparisonDates(in.StartDate, in.EndDate)
+	cmpDates := dateutil.CalculateComparisonDates(in.StartDate, in.EndDate)
 
 	g, gCtx := errgroup.WithContext(ctx)
 	var currentBalance, previousBalance, currentIncome,

@@ -6,6 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
@@ -51,7 +52,7 @@ type GetBudgetOutput struct {
 	AvailablePercentageVariation       int64                       `json:"available_percentage_variation"`
 	AvailablePerDay                    int64                       `json:"available_per_day,omitempty"`
 	AvailablePerDayPercentageVariation int64                       `json:"available_per_day_percentage_variation,omitempty"`
-	ComparisonDates                    ComparisonDates             `json:"comparison_dates"`
+	ComparisonDates                    dateutil.ComparisonDates    `json:"comparison_dates"`
 	BudgetCategories                   []GetBudgetBudgetCategories `json:"budget_categories"`
 }
 
@@ -63,9 +64,9 @@ func (uc *GetBudget) Execute(
 		return nil, errs.New(err)
 	}
 
-	cmpDates := calculateComparisonDates(
-		toMonthStart(in.Date),
-		toMonthEnd(in.Date),
+	cmpDates := dateutil.CalculateComparisonDates(
+		dateutil.ToMonthStart(in.Date),
+		dateutil.ToMonthEnd(in.Date),
 	)
 
 	budget, err := uc.br.GetBudget(ctx, repo.GetBudgetParams{
@@ -158,13 +159,13 @@ func (uc *GetBudget) Execute(
 	if isCurrentMonth {
 		availablePerDay = uc.calculateAvailablePerDay(
 			available,
-			toMonthEnd(cmpDates.EndDate),
+			dateutil.ToMonthEnd(cmpDates.EndDate),
 			cmpDates.EndDate.Day(),
 		)
 
 		availablePreviousMonthPerDay := uc.calculateAvailablePerDay(
 			availablePreviousMonth,
-			toMonthEnd(cmpDates.ComparisonEndDate),
+			dateutil.ToMonthEnd(cmpDates.ComparisonEndDate),
 			cmpDates.ComparisonEndDate.Day(),
 		)
 

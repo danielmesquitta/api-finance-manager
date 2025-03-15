@@ -7,25 +7,23 @@ WHERE user_id = $1
 ORDER BY date DESC
 LIMIT 1;
 -- name: GetBudgetCategory :one
-SELECT sqlc.embed(budget_categories),
-  sqlc.embed(transaction_categories)
-FROM budget_categories
-  JOIN transaction_categories ON budget_categories.category_id = transaction_categories.id
-  AND transaction_categories.deleted_at IS NULL
-  JOIN budgets ON budget_categories.budget_id = budgets.id
-  AND budgets.deleted_at IS NULL
-WHERE budgets.user_id = $1
-  AND budgets.date <= $2
-  AND budget_categories.deleted_at IS NULL
+SELECT sqlc.embed(bc),
+  sqlc.embed(tc)
+FROM budget_categories bc
+  JOIN transaction_categories tc ON bc.category_id = tc.id
+  JOIN budgets b ON bc.budget_id = b.id
+WHERE b.user_id = $1
+  AND b.date <= $2
+  AND bc.deleted_at IS NULL
 LIMIT 1;
 -- name: ListBudgetCategories :many
-SELECT sqlc.embed(budget_categories),
-  sqlc.embed(transaction_categories)
-FROM budget_categories
-  JOIN transaction_categories ON budget_categories.category_id = transaction_categories.id
+SELECT sqlc.embed(bc),
+  sqlc.embed(tc)
+FROM budget_categories bc
+  JOIN transaction_categories tc ON bc.category_id = tc.id
 WHERE budget_id = $1
-  AND budget_categories.deleted_at IS NULL
-ORDER BY transaction_categories.name ASC;
+  AND bc.deleted_at IS NULL
+ORDER BY tc.name ASC;
 -- name: CreateBudget :one
 INSERT INTO budgets (amount, date, user_id)
 VALUES ($1, $2, $3)
@@ -42,9 +40,7 @@ VALUES ($1, $2, $3);
 -- name: DeleteBudgetCategories :exec
 UPDATE budget_categories
 SET deleted_at = NOW()
-FROM budgets
-WHERE budget_categories.budget_id = budgets.id
-  AND budgets.user_id = $1
+WHERE budget_categories.budget_id = $1
   AND budget_categories.deleted_at IS NULL;
 -- name: DeleteBudgets :exec
 UPDATE budgets

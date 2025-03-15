@@ -1,4 +1,4 @@
-package usecase
+package dateutil
 
 import (
 	"reflect"
@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func Test_calculateComparisonDates(t *testing.T) {
+func TestCalculateComparisonDates(t *testing.T) {
 	type args struct {
 		startDate time.Time
 		endDate   time.Time
@@ -18,20 +18,10 @@ func Test_calculateComparisonDates(t *testing.T) {
 	}
 	tests := []Test{
 		func() Test {
-			startDate, _ := time.Parse(
-				time.RFC3339,
-				"2024-11-01T00:00:00-03:00",
-			)
-			endDate, _ := time.Parse(
-				time.RFC3339,
-				"2024-11-30T23:59:59.999999999-03:00",
-			)
-			cmpStartDate, _ := time.Parse(
-				time.RFC3339,
-				"2024-10-01T00:00:00-03:00",
-			)
-			cmpEndDate, _ := time.Parse(
-				time.RFC3339,
+			startDate := MustParseISOString("2024-11-01T00:00:00-03:00")
+			endDate := MustParseISOString("2024-11-30T23:59:59.999999999-03:00")
+			cmpStartDate := MustParseISOString("2024-10-01T00:00:00-03:00")
+			cmpEndDate := MustParseISOString(
 				"2024-10-31T23:59:59.999999999-03:00",
 			)
 
@@ -50,20 +40,10 @@ func Test_calculateComparisonDates(t *testing.T) {
 			}
 		}(),
 		func() Test {
-			startDate, _ := time.Parse(
-				time.RFC3339,
-				"2024-11-01T00:00:00-03:00",
-			)
-			endDate, _ := time.Parse(
-				time.RFC3339,
-				"2024-11-15T23:59:59.999999999-03:00",
-			)
-			cmpStartDate, _ := time.Parse(
-				time.RFC3339,
-				"2024-10-01T00:00:00-03:00",
-			)
-			cmpEndDate, _ := time.Parse(
-				time.RFC3339,
+			startDate := MustParseISOString("2024-11-01T00:00:00-03:00")
+			endDate := MustParseISOString("2024-11-15T23:59:59.999999999-03:00")
+			cmpStartDate := MustParseISOString("2024-10-01T00:00:00-03:00")
+			cmpEndDate := MustParseISOString(
 				"2024-10-15T23:59:59.999999999-03:00",
 			)
 
@@ -82,20 +62,10 @@ func Test_calculateComparisonDates(t *testing.T) {
 			}
 		}(),
 		func() Test {
-			startDate, _ := time.Parse(
-				time.RFC3339,
-				"2024-10-31T00:00:00-03:00",
-			)
-			endDate, _ := time.Parse(
-				time.RFC3339,
-				"2024-11-11T23:59:59.999999999-03:00",
-			)
-			cmpStartDate, _ := time.Parse(
-				time.RFC3339,
-				"2024-10-20T00:00:00-03:00",
-			)
-			cmpEndDate, _ := time.Parse(
-				time.RFC3339,
+			startDate := MustParseISOString("2024-10-31T00:00:00-03:00")
+			endDate := MustParseISOString("2024-11-11T23:59:59.999999999-03:00")
+			cmpStartDate := MustParseISOString("2024-10-20T00:00:00-03:00")
+			cmpEndDate := MustParseISOString(
 				"2024-10-30T23:59:59.999999999-03:00",
 			)
 
@@ -116,7 +86,7 @@ func Test_calculateComparisonDates(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := calculateComparisonDates(tt.args.startDate, tt.args.endDate); !reflect.DeepEqual(
+			if got := CalculateComparisonDates(tt.args.startDate, tt.args.endDate); !reflect.DeepEqual(
 				got,
 				tt.want,
 			) {

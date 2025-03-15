@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateFeedbackRoute(t *testing.T) {
+func TestCreateFeedback(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {

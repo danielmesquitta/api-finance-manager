@@ -47,19 +47,19 @@ func NewBudgetHandler(
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets [post]
 func (h BudgetHandler) Upsert(c *fiber.Ctx) error {
-	var body dto.UpsertBudgetRequest
-	if err := c.BodyParser(&body); err != nil {
+	var in dto.UpsertBudgetRequest
+	if err := c.BodyParser(&in); err != nil {
 		return errs.New(err)
 	}
 
 	claims := GetUserClaims(c)
 	userID := uuid.MustParse(claims.Issuer)
-	body.UserID = userID
+	in.UserID = userID
 
 	ctx := c.UserContext()
 	if err := h.ub.Execute(
 		ctx,
-		body.UpsertBudgetInput,
+		in.UpsertBudgetInput,
 	); err != nil {
 		return errs.New(err)
 	}

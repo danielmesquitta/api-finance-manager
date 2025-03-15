@@ -18,7 +18,7 @@ type BudgetRepo interface {
 	) error
 	DeleteBudgetCategories(
 		ctx context.Context,
-		userID uuid.UUID,
+		budgetID uuid.UUID,
 	) error
 	DeleteBudgets(ctx context.Context, userID uuid.UUID) error
 	GetBudget(

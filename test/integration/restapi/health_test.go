@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHealthRoutes(t *testing.T) {
+func TestHealth(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {

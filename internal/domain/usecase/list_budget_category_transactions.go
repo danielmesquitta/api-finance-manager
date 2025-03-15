@@ -6,6 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
@@ -48,8 +49,8 @@ func (uc *ListBudgetCategoryTransactions) Execute(
 		PaginationInput: in.PaginationInput,
 		UserID:          in.UserID,
 		TransactionOptions: repo.TransactionOptions{
-			StartDate:   toMonthStart(in.Date),
-			EndDate:     toMonthEnd(in.Date),
+			StartDate:   dateutil.ToMonthStart(in.Date),
+			EndDate:     dateutil.ToMonthEnd(in.Date),
 			CategoryIDs: categoryIDs,
 			IsExpense:   true,
 			IsIgnored:   &isIgnored,

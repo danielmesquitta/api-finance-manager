@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSignInRoute(t *testing.T) {
+func TestSignIn(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -85,7 +85,7 @@ func TestSignInRoute(t *testing.T) {
 	}
 }
 
-func TestRefreshTokenRoute(t *testing.T) {
+func TestRefreshToken(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {

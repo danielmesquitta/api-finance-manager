@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListInstitutionsRoute(t *testing.T) {
+func TestListInstitutions(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -125,7 +125,7 @@ func TestListInstitutionsRoute(t *testing.T) {
 	}
 }
 
-func TestListUserInstitutionsRoute(t *testing.T) {
+func TestListUserInstitutions(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {

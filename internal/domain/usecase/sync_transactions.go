@@ -12,6 +12,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
@@ -445,7 +446,7 @@ func (uc *SyncTransactions) calculateLastSynchronizedAt(
 	if userSynchronizedAt == nil {
 		return time.Time{}
 	}
-	return getStartOfDay(*userSynchronizedAt)
+	return dateutil.ToDayStart(*userSynchronizedAt)
 }
 
 func (uc *SyncTransactions) listOpenFinanceTransactions(
@@ -490,7 +491,7 @@ func (uc *SyncTransactions) updateUserSynchronizedAt(
 	userID uuid.UUID,
 ) error {
 	yesterday := time.Now().AddDate(0, 0, -1)
-	startOfYesterday := getStartOfDay(yesterday)
+	startOfYesterday := dateutil.ToDayStart(yesterday)
 
 	err := uc.ur.UpdateUserSynchronizedAt(
 		ctx,

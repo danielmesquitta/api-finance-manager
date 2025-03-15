@@ -4,17 +4,19 @@ import (
 	"context"
 	"net/http"
 	"testing"
-	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/google/uuid"
+	"github.com/jinzhu/copier"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetBudgetRoute(t *testing.T) {
+func TestGetBudget(t *testing.T) {
 	t.Parallel()
 
 	type Test struct {
@@ -34,23 +36,19 @@ func TestGetBudgetRoute(t *testing.T) {
 		},
 		func() Test {
 			dateStr := "2024-11-01T00:00:00-03:00"
-			date, _ := time.Parse(time.RFC3339, dateStr)
+			date := dateutil.MustParseISOString(dateStr)
 			budgetID := uuid.MustParse("8aa317f8-702c-43b1-897b-e24a4285d2d2")
 
-			startDate, _ := time.Parse(
-				time.RFC3339,
+			startDate := dateutil.MustParseISOString(
 				"2024-11-01T00:00:00-03:00",
 			)
-			endDate, _ := time.Parse(
-				time.RFC3339,
+			endDate := dateutil.MustParseISOString(
 				"2024-11-30T23:59:59.999999999-03:00",
 			)
-			cmpStartDate, _ := time.Parse(
-				time.RFC3339,
+			cmpStartDate := dateutil.MustParseISOString(
 				"2024-10-01T00:00:00-03:00",
 			)
-			cmpEndDate, _ := time.Parse(
-				time.RFC3339,
+			cmpEndDate := dateutil.MustParseISOString(
 				"2024-10-31T23:59:59.999999999-03:00",
 			)
 
@@ -63,15 +61,15 @@ func TestGetBudgetRoute(t *testing.T) {
 					GetBudgetOutput: usecase.GetBudgetOutput{
 						Budget: entity.Budget{
 							ID:     budgetID,
-							Amount: 2000000,
+							Amount: 20_000_00,
 							Date:   date,
 						},
-						Spent:                              1837970,
-						Available:                          162030,
-						AvailablePercentageVariation:       8322,
+						Spent:                              18_379_70,
+						Available:                          1_620_30,
+						AvailablePercentageVariation:       83_22,
 						AvailablePerDay:                    0,
 						AvailablePerDayPercentageVariation: 0,
-						ComparisonDates: usecase.ComparisonDates{
+						ComparisonDates: dateutil.ComparisonDates{
 							StartDate:           startDate,
 							EndDate:             endDate,
 							ComparisonStartDate: cmpStartDate,
@@ -84,8 +82,8 @@ func TestGetBudgetRoute(t *testing.T) {
 										"5932b6b2-52eb-4e5c-ab00-19de3c534578",
 									),
 								},
-								Spent:     66630,
-								Available: 933370,
+								Spent:     666_30,
+								Available: 9_333_70,
 							},
 							{
 								BudgetCategory: entity.BudgetCategory{
@@ -93,8 +91,8 @@ func TestGetBudgetRoute(t *testing.T) {
 										"39a948f7-0619-4383-a6b3-17fe653651c2",
 									),
 								},
-								Spent:     122918,
-								Available: 277082,
+								Spent:     1_229_18,
+								Available: 2_770_82,
 							},
 							{
 								BudgetCategory: entity.BudgetCategory{
@@ -102,8 +100,8 @@ func TestGetBudgetRoute(t *testing.T) {
 										"75b30904-600f-4d40-a7cc-f7f7f800679d",
 									),
 								},
-								Spent:     11826,
-								Available: 588174,
+								Spent:     118_26,
+								Available: 5_881_74,
 							},
 						},
 					},
@@ -238,6 +236,169 @@ func TestGetBudgetRoute(t *testing.T) {
 					actualBudgetCategory.Available,
 				)
 			}
+		})
+	}
+}
+
+func TestUpsertBudget(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		description  string
+		token        string
+		body         dto.UpsertBudgetRequest
+		expectedCode int
+	}{
+		{
+			description:  "Fail to update budget without token",
+			token:        "",
+			expectedCode: http.StatusBadRequest,
+		},
+		{
+			description:  "Create budget",
+			token:        mockoauth.DefaultMockToken,
+			expectedCode: http.StatusNoContent,
+			body: dto.UpsertBudgetRequest{
+				UpsertBudgetInput: usecase.UpsertBudgetInput{
+					Amount: 15_000_00,
+					Date:   "2025-03-14T00:00:00-03:00",
+					Categories: []usecase.UpsertBudgetCategoryInput{
+						{
+							Amount: 5_000_00,
+							CategoryID: uuid.MustParse(
+								"059efe62-9a56-414b-bc8e-65caf03f12e4",
+							),
+						},
+						{
+							Amount: 1_000_00,
+							CategoryID: uuid.MustParse(
+								"84b266ed-d64d-49f8-bb86-c6f9cc4cf45a",
+							),
+						},
+						{
+							Amount: 9_000_00,
+							CategoryID: uuid.MustParse(
+								"ed80ba2a-1b70-40b1-b14c-ff63797dd58e",
+							),
+						},
+					},
+				},
+			},
+		},
+		{
+			description:  "Update budget",
+			token:        mockoauth.DefaultMockToken,
+			expectedCode: http.StatusNoContent,
+			body: dto.UpsertBudgetRequest{
+				UpsertBudgetInput: usecase.UpsertBudgetInput{
+					Amount: 15_000_00,
+					Date:   "2024-10-15T00:00:00.000-03:00",
+					Categories: []usecase.UpsertBudgetCategoryInput{
+						{
+							Amount: 5_000_00,
+							CategoryID: uuid.MustParse(
+								"059efe62-9a56-414b-bc8e-65caf03f12e4",
+							),
+						},
+						{
+							Amount: 1_000_00,
+							CategoryID: uuid.MustParse(
+								"84b266ed-d64d-49f8-bb86-c6f9cc4cf45a",
+							),
+						},
+						{
+							Amount: 9_000_00,
+							CategoryID: uuid.MustParse(
+								"ed80ba2a-1b70-40b1-b14c-ff63797dd58e",
+							),
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.description, func(t *testing.T) {
+			t.Parallel()
+			ctx := context.Background()
+
+			app, cleanUp := NewTestApp(t)
+			defer func() {
+				err := cleanUp(context.Background())
+				assert.Nil(t, err)
+			}()
+
+			var (
+				accessToken string
+				user        *entity.User
+			)
+			if test.token != "" {
+				signInRes := app.SignIn(test.token)
+				accessToken, user = signInRes.AccessToken, &signInRes.User
+			}
+
+			statusCode, rawBody, err := app.MakeRequest(
+				http.MethodPost,
+				"/api/v1/budgets",
+				WithBearerToken(accessToken),
+				WithBody(test.body),
+			)
+			assert.Nil(t, err)
+
+			assert.Equal(
+				t,
+				test.expectedCode,
+				statusCode,
+				rawBody,
+			)
+
+			if test.expectedCode != http.StatusNoContent {
+				return
+			}
+
+			parsedDate := dateutil.MustParseISOString(test.body.Date)
+
+			actualBudget, err := app.db.GetBudget(
+				ctx,
+				sqlc.GetBudgetParams{
+					UserID: user.ID,
+					Date:   parsedDate,
+				},
+			)
+			assert.Nil(t, err)
+			assert.Equal(t, test.body.Amount, actualBudget.Amount)
+			assert.Equal(
+				t,
+				dateutil.ToMonthStart(parsedDate),
+				actualBudget.Date,
+			)
+
+			actualBudgetCategories, err := app.db.ListBudgetCategories(
+				ctx,
+				actualBudget.ID,
+			)
+			assert.Nil(t, err)
+
+			actualBudgetCategoriesMap := map[uuid.UUID]entity.BudgetCategory{}
+			for _, abc := range actualBudgetCategories {
+				bc := entity.BudgetCategory{}
+				if err := copier.Copy(&bc, abc.BudgetCategory); err != nil {
+					t.Fatal(err)
+				}
+				actualBudgetCategoriesMap[abc.TransactionCategory.ID] = bc
+			}
+
+			for _, expectedCategory := range test.body.Categories {
+				actualCategory, ok := actualBudgetCategoriesMap[expectedCategory.CategoryID]
+				assert.True(t, ok, expectedCategory.CategoryID)
+				if !ok {
+					continue
+				}
+
+				assert.Equal(t, expectedCategory.Amount, actualCategory.Amount)
+			}
+
 		})
 	}
 }

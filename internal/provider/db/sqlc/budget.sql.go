@@ -48,14 +48,12 @@ type CreateBudgetCategoriesParams struct {
 const deleteBudgetCategories = `-- name: DeleteBudgetCategories :exec
 UPDATE budget_categories
 SET deleted_at = NOW()
-FROM budgets
-WHERE budget_categories.budget_id = budgets.id
-  AND budgets.user_id = $1
+WHERE budget_categories.budget_id = $1
   AND budget_categories.deleted_at IS NULL
 `
 
-func (q *Queries) DeleteBudgetCategories(ctx context.Context, userID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteBudgetCategories, userID)
+func (q *Queries) DeleteBudgetCategories(ctx context.Context, budgetID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteBudgetCategories, budgetID)
 	return err
 }
 
@@ -102,16 +100,14 @@ func (q *Queries) GetBudget(ctx context.Context, arg GetBudgetParams) (Budget, e
 }
 
 const getBudgetCategory = `-- name: GetBudgetCategory :one
-SELECT budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.deleted_at, budget_categories.budget_id, budget_categories.category_id,
-  transaction_categories.id, transaction_categories.external_id, transaction_categories.name, transaction_categories.created_at, transaction_categories.updated_at, transaction_categories.deleted_at
-FROM budget_categories
-  JOIN transaction_categories ON budget_categories.category_id = transaction_categories.id
-  AND transaction_categories.deleted_at IS NULL
-  JOIN budgets ON budget_categories.budget_id = budgets.id
-  AND budgets.deleted_at IS NULL
-WHERE budgets.user_id = $1
-  AND budgets.date <= $2
-  AND budget_categories.deleted_at IS NULL
+SELECT bc.id, bc.amount, bc.created_at, bc.updated_at, bc.deleted_at, bc.budget_id, bc.category_id,
+  tc.id, tc.external_id, tc.name, tc.created_at, tc.updated_at, tc.deleted_at
+FROM budget_categories bc
+  JOIN transaction_categories tc ON bc.category_id = tc.id
+  JOIN budgets b ON bc.budget_id = b.id
+WHERE b.user_id = $1
+  AND b.date <= $2
+  AND bc.deleted_at IS NULL
 LIMIT 1
 `
 
@@ -147,13 +143,13 @@ func (q *Queries) GetBudgetCategory(ctx context.Context, arg GetBudgetCategoryPa
 }
 
 const listBudgetCategories = `-- name: ListBudgetCategories :many
-SELECT budget_categories.id, budget_categories.amount, budget_categories.created_at, budget_categories.updated_at, budget_categories.deleted_at, budget_categories.budget_id, budget_categories.category_id,
-  transaction_categories.id, transaction_categories.external_id, transaction_categories.name, transaction_categories.created_at, transaction_categories.updated_at, transaction_categories.deleted_at
-FROM budget_categories
-  JOIN transaction_categories ON budget_categories.category_id = transaction_categories.id
+SELECT bc.id, bc.amount, bc.created_at, bc.updated_at, bc.deleted_at, bc.budget_id, bc.category_id,
+  tc.id, tc.external_id, tc.name, tc.created_at, tc.updated_at, tc.deleted_at
+FROM budget_categories bc
+  JOIN transaction_categories tc ON bc.category_id = tc.id
 WHERE budget_id = $1
-  AND budget_categories.deleted_at IS NULL
-ORDER BY transaction_categories.name ASC
+  AND bc.deleted_at IS NULL
+ORDER BY tc.name ASC
 `
 
 type ListBudgetCategoriesRow struct {

@@ -10,5 +10,5 @@ var Env embed.FS
 //go:embed docs/openapi.yaml docs/openapi.json
 var StaticFiles embed.FS
 
-//go:embed testdata
+//go:embed test/data
 var TestData embed.FS

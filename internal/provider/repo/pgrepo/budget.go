@@ -49,10 +49,10 @@ func (r *BudgetRepo) CreateBudget(
 
 func (r *BudgetRepo) DeleteBudgetCategories(
 	ctx context.Context,
-	userID uuid.UUID,
+	budgetID uuid.UUID,
 ) error {
 	tx := r.db.UseTx(ctx)
-	return tx.DeleteBudgetCategories(ctx, userID)
+	return tx.DeleteBudgetCategories(ctx, budgetID)
 }
 
 func (r *BudgetRepo) DeleteBudgets(

@@ -86,7 +86,7 @@ studio:
 
 .PHONY: unit-test
 unit-test:
-	@ENVIRONMENT=test go test -cover -coverprofile=tmp/coverage.out ./internal/domain/usecase/... -timeout 5s
+	@ENVIRONMENT=test go test -cover -coverprofile=tmp/coverage.out ./internal/domain/usecase/... ./internal/pkg/... -timeout 5s
 
 .PHONY: integration-test
 integration-test:

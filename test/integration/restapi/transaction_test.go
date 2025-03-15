@@ -15,7 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestListTransactionsRoute(t *testing.T) {
+func TestListTransactions(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -224,7 +224,7 @@ func TestListTransactionsRoute(t *testing.T) {
 	}
 }
 
-func TestGetTransactionRoute(t *testing.T) {
+func TestGetTransaction(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -292,7 +292,7 @@ func TestGetTransactionRoute(t *testing.T) {
 	}
 }
 
-func TestUpdateTransactionRoute(t *testing.T) {
+func TestUpdateTransaction(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -408,7 +408,7 @@ func TestUpdateTransactionRoute(t *testing.T) {
 	}
 }
 
-func TestCreateTransactionRoute(t *testing.T) {
+func TestCreateTransaction(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {

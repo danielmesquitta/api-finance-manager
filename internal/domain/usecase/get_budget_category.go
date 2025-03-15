@@ -6,6 +6,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
@@ -58,8 +59,8 @@ func (uc *GetBudgetCategory) Execute(
 		return nil, errs.ErrInvalidDate
 	}
 
-	monthStart := toMonthStart(date)
-	monthEnd := toMonthEnd(date)
+	monthStart := dateutil.ToMonthStart(date)
+	monthEnd := dateutil.ToMonthEnd(date)
 
 	budgetCategory, category, err := uc.br.GetBudgetCategory(
 		ctx,
