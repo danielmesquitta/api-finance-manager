@@ -85,6 +85,15 @@ var providers = []any{
 	wire.Bind(new(repo.AIChatMessageRepo), new(*pgrepo.AIChatMessageRepo)),
 	pgrepo.NewAIChatMessageRepo,
 
+	wire.Bind(new(repo.UserInstitutionRepo), new(*pgrepo.UserInstitutionRepo)),
+	pgrepo.NewUserInstitutionRepo,
+
+	wire.Bind(
+		new(repo.UserAuthProviderRepo),
+		new(*pgrepo.UserAuthProviderRepo),
+	),
+	pgrepo.NewUserAuthProviderRepo,
+
 	usecase.NewSignIn,
 	usecase.NewRefreshToken,
 	usecase.NewCalculateCompoundInterest,

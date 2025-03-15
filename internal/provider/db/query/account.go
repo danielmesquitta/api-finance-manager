@@ -2,7 +2,6 @@ package query
 
 import (
 	"context"
-	"slices"
 	"strings"
 	"time"
 
@@ -55,12 +54,15 @@ func (qb *QueryBuilder) ListFullAccounts(
 		From(schema.Account.Table()).
 		Select(
 			schema.Account.ColumnAll(),
-			goqu.I(schema.User.ColumnSynchronizedAt()).As("synchronized_at"),
-			goqu.I(schema.User.ColumnOpenFinanceID()).As("open_finance_id"),
+			goqu.I(schema.UserInstitution.ColumnUserID()),
+			goqu.I(schema.UserInstitution.ColumnInstitutionID()),
+			goqu.I(schema.UserInstitution.ColumnExternalID()).
+				As("user_institution_external_id"),
+			goqu.I(schema.User.ColumnSynchronizedAt()),
 		).
 		Where(goqu.I(schema.Account.ColumnDeletedAt()).IsNull())
 
-	joins := qb.buildAccountJoins(options, schema.User.Table())
+	joins := qb.buildAccountJoins(options, true)
 
 	whereExps, orderedExps := qb.buildAccountExpressions(options)
 
@@ -102,46 +104,42 @@ func (qb *QueryBuilder) CountAccounts(
 	return count, nil
 }
 
-func (qb *QueryBuilder) accountShouldJoinUser(
-	options repo.AccountOptions,
-	defaultTablesToJoin ...string,
-) bool {
-	if slices.Contains(defaultTablesToJoin, schema.User.Table()) {
-		return true
-	}
-
-	if options.IsSubscriptionActive != nil || len(options.UserTiers) > 0 {
-		return true
-	}
-
-	return false
-}
-
 type BuildAccountJoinsOptions struct {
 	ShouldJoinUser bool
 }
 
 func (qb *QueryBuilder) buildAccountJoins(
 	options repo.AccountOptions,
-	defaultTablesToJoin ...string,
-) (joins []Join) {
-	shouldJoinUser := qb.accountShouldJoinUser(
-		options,
-		defaultTablesToJoin...)
-
-	if shouldJoinUser {
-		join := Join{
-			Table: goqu.I(schema.User.Table()),
-			Condition: goqu.
-				On(
-					goqu.I(schema.Account.ColumnUserID()).
-						Eq(goqu.I(schema.User.ColumnID())),
-				),
-		}
-		joins = append(joins, join)
+	shouldJoinAll ...bool,
+) []Join {
+	userInstitutionJoin := Join{
+		Table: goqu.I(schema.UserInstitution.Table()),
+		Condition: goqu.
+			On(
+				goqu.I(schema.Account.ColumnUserInstitutionID()).
+					Eq(goqu.I(schema.UserInstitution.ColumnID())),
+			),
 	}
 
-	return joins
+	userJoin := Join{
+		Table: goqu.I(schema.User.Table()),
+		Condition: goqu.
+			On(
+				goqu.I(schema.UserInstitution.ColumnUserID()).
+					Eq(goqu.I(schema.User.ColumnID())),
+			),
+	}
+
+	if len(shouldJoinAll) > 0 && shouldJoinAll[0] {
+		return []Join{userInstitutionJoin, userJoin}
+	}
+
+	if len(options.UserIDs) > 0 || len(options.UserTiers) > 0 ||
+		options.IsSubscriptionActive != nil {
+		return []Join{userJoin}
+	}
+
+	return []Join{}
 }
 
 func (qb *QueryBuilder) buildAccountExpressions(
@@ -158,7 +156,7 @@ func (qb *QueryBuilder) buildAccountExpressions(
 	}
 
 	if len(options.UserIDs) > 0 {
-		exp := goqu.I(schema.Account.ColumnUserID()).In(options.UserIDs)
+		exp := goqu.I(schema.User.ColumnID()).In(options.UserIDs)
 		whereExps = append(whereExps, exp)
 	}
 
@@ -173,6 +171,11 @@ func (qb *QueryBuilder) buildAccountExpressions(
 		whereExps = append(whereExps, exp)
 	}
 
+	if len(options.Types) > 0 {
+		exp := goqu.I(schema.Account.ColumnType()).In(options.Types)
+		whereExps = append(whereExps, exp)
+	}
+
 	if options.IsSubscriptionActive != nil {
 		var exp goqu.Expression
 		ident := goqu.I(schema.User.ColumnSubscriptionExpiresAt())
@@ -181,11 +184,6 @@ func (qb *QueryBuilder) buildAccountExpressions(
 		} else {
 			exp = ident.Lt(time.Now())
 		}
-		whereExps = append(whereExps, exp)
-	}
-
-	if shouldJoinUser := qb.accountShouldJoinUser(options); shouldJoinUser {
-		exp := goqu.I(schema.User.ColumnDeletedAt()).IsNull()
 		whereExps = append(whereExps, exp)
 	}
 

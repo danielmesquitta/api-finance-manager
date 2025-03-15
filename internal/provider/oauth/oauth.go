@@ -7,5 +7,8 @@ import (
 )
 
 type Provider interface {
-	GetUser(ctx context.Context, token string) (*entity.User, error)
+	GetUser(
+		ctx context.Context,
+		token string,
+	) (*entity.User, *entity.UserAuthProvider, error)
 }

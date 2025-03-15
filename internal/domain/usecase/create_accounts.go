@@ -3,8 +3,6 @@ package usecase
 import (
 	"context"
 	"log/slog"
-	"maps"
-	"slices"
 	"strconv"
 
 	"github.com/google/uuid"
@@ -23,29 +21,29 @@ type CreateAccounts struct {
 	v   *validator.Validator
 	o   openfinance.Client
 	tx  tx.TX
-	ur  repo.UserRepo
 	ar  repo.AccountRepo
 	abr repo.AccountBalanceRepo
 	ir  repo.InstitutionRepo
+	uir repo.UserInstitutionRepo
 }
 
 func NewCreateAccounts(
 	v *validator.Validator,
 	o openfinance.Client,
 	tx tx.TX,
-	ur repo.UserRepo,
 	ar repo.AccountRepo,
 	abr repo.AccountBalanceRepo,
 	ir repo.InstitutionRepo,
+	uir repo.UserInstitutionRepo,
 ) *CreateAccounts {
 	return &CreateAccounts{
 		v:   v,
 		o:   o,
 		tx:  tx,
-		ur:  ur,
 		ar:  ar,
 		abr: abr,
 		ir:  ir,
+		uir: uir,
 	}
 }
 
@@ -79,23 +77,26 @@ func (uc *CreateAccounts) Execute(
 	userID := uuid.MustParse(in.ClientUserID)
 
 	var (
-		user                *entity.User
 		institution         *entity.Institution
+		userInstitution     *entity.UserInstitution
 		openFinanceAccounts []openfinance.Account
 	)
 	g, gCtx := errgroup.WithContext(ctx)
 
 	g.Go(func() error {
 		var err error
-		user, err = uc.ur.GetUserByID(gCtx, userID)
+		institution, err = uc.ir.GetInstitutionByExternalID(
+			gCtx,
+			strconv.Itoa(in.Institution.ID),
+		)
 		return err
 	})
 
 	g.Go(func() error {
 		var err error
-		institution, err = uc.ir.GetInstitutionByExternalID(
+		userInstitution, err = uc.uir.GetUserInstitutionByExternalID(
 			gCtx,
-			strconv.Itoa(in.Institution.ID),
+			in.ItemID,
 		)
 		return err
 	})
@@ -110,10 +111,6 @@ func (uc *CreateAccounts) Execute(
 		return errs.New(err)
 	}
 
-	if user == nil {
-		return errs.ErrUserNotFound
-	}
-
 	if institution == nil {
 		return errs.ErrInstitutionNotFound
 	}
@@ -122,53 +119,68 @@ func (uc *CreateAccounts) Execute(
 		return errs.ErrOpenFinanceAccountsNotFound
 	}
 
-	createAccountsParamsByExternalID := map[string][]repo.CreateAccountsParams{}
+	accountExternalIDs := []string{}
+	accountsByExternalID := map[string]openfinance.Account{}
 	for _, account := range openFinanceAccounts {
-		param := repo.CreateAccountsParams{}
-		if err := copier.Copy(&param, account); err != nil {
+		accountsByExternalID[account.ExternalID] = account
+		accountExternalIDs = append(accountExternalIDs, account.ExternalID)
+	}
+
+	if userInstitution != nil {
+		registeredAccounts, err := uc.ar.ListAccounts(
+			ctx,
+			repo.WithAccountExternalIDs(accountExternalIDs),
+		)
+		if err != nil {
 			return errs.New(err)
 		}
 
-		param.ID = uuid.New()
-		param.UserID = user.ID
-		param.InstitutionID = institution.ID
-		createAccountsParamsByExternalID[account.ExternalID] = append(
-			createAccountsParamsByExternalID[account.ExternalID],
-			param,
-		)
-	}
+		if len(registeredAccounts) == len(accountExternalIDs) {
+			return nil
+		}
 
-	accountExternalIDs := slices.Collect(
-		maps.Keys(createAccountsParamsByExternalID),
-	)
-
-	registeredAccounts, err := uc.ar.ListAccounts(
-		ctx,
-		repo.WithAccountExternalIDs(accountExternalIDs),
-	)
-	if err != nil {
-		return errs.New(err)
-	}
-
-	if len(registeredAccounts) == len(accountExternalIDs) {
-		return nil
-	}
-
-	if len(registeredAccounts) > 0 {
-		for _, registeredAccount := range registeredAccounts {
-			delete(
-				createAccountsParamsByExternalID,
-				registeredAccount.ExternalID,
-			)
+		if len(registeredAccounts) > 0 {
+			for _, registeredAccount := range registeredAccounts {
+				delete(
+					accountsByExternalID,
+					registeredAccount.ExternalID,
+				)
+			}
 		}
 	}
 
-	createAccountsParams := []repo.CreateAccountsParams{}
-	for _, params := range createAccountsParamsByExternalID {
-		createAccountsParams = append(createAccountsParams, params...)
-	}
+	err := uc.tx.Do(ctx, func(ctx context.Context) error {
+		if userInstitution == nil {
+			userInstitutionParams := repo.CreateUserInstitutionParams{
+				UserID:        userID,
+				InstitutionID: institution.ID,
+				ExternalID:    in.ItemID,
+			}
 
-	err = uc.tx.Do(ctx, func(ctx context.Context) error {
+			var err error
+			userInstitution, err = uc.uir.CreateUserInstitution(
+				ctx,
+				userInstitutionParams,
+			)
+			if err != nil {
+				return errs.New(err)
+			}
+		}
+
+		createAccountsParams := []repo.CreateAccountsParams{}
+		for _, account := range accountsByExternalID {
+			params := repo.CreateAccountsParams{}
+			if err := copier.Copy(&params, account); err != nil {
+				return errs.New(err)
+			}
+			params.ID = uuid.New()
+			params.UserInstitutionID = userInstitution.ID
+			createAccountsParams = append(
+				createAccountsParams,
+				params,
+			)
+		}
+
 		if err := uc.ar.CreateAccounts(ctx, createAccountsParams); err != nil {
 			return errs.New(err)
 		}
@@ -182,7 +194,7 @@ func (uc *CreateAccounts) Execute(
 		for _, account := range openFinanceAccounts {
 			accountID := accountIDByExternalID[account.ExternalID]
 			accountBalance := repo.CreateAccountBalancesParams{
-				UserID:    user.ID,
+				UserID:    userID,
 				AccountID: accountID,
 				Amount:    account.Balance,
 			}
@@ -193,16 +205,6 @@ func (uc *CreateAccounts) Execute(
 		}
 
 		if err := uc.abr.CreateAccountBalances(ctx, createAccountBalancesParams); err != nil {
-			return errs.New(err)
-		}
-
-		updateUserParams := repo.UpdateUserParams{}
-		if err := copier.Copy(&updateUserParams, user); err != nil {
-			return errs.New(err)
-		}
-		updateUserParams.OpenFinanceID = &in.ItemID
-
-		if _, err := uc.ur.UpdateUser(ctx, updateUserParams); err != nil {
 			return errs.New(err)
 		}
 

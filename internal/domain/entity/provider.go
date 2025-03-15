@@ -1,6 +1,6 @@
 package entity
 
-type Provider string
+type Provider = string
 
 const (
 	ProviderGoogle  Provider = "GOOGLE"

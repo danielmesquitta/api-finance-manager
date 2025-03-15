@@ -82,6 +82,12 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 		orderedExps = append(orderedExps, distanceExp.Asc())
 	}
 
+	if len(options.IDs) > 0 {
+		exp := goqu.I(schema.TransactionCategory.ColumnID()).
+			In(options.IDs)
+		whereExps = append(whereExps, exp)
+	}
+
 	orderedExps = append(
 		orderedExps,
 		goqu.I(schema.TransactionCategory.ColumnName()).Asc(),

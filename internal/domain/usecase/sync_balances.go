@@ -11,6 +11,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
@@ -18,6 +19,7 @@ import (
 
 type SyncBalances struct {
 	e   *config.Env
+	tx  tx.TX
 	o   openfinance.Client
 	c   cache.Cache
 	ar  repo.AccountRepo
@@ -26,6 +28,7 @@ type SyncBalances struct {
 
 func NewSyncBalances(
 	e *config.Env,
+	tx tx.TX,
 	o openfinance.Client,
 	c cache.Cache,
 	ar repo.AccountRepo,
@@ -33,6 +36,7 @@ func NewSyncBalances(
 ) *SyncBalances {
 	return &SyncBalances{
 		e:   e,
+		tx:  tx,
 		o:   o,
 		c:   c,
 		ar:  ar,
@@ -76,41 +80,28 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 	accountsByUserID := make(map[uuid.UUID][]entity.FullAccount)
 	accountsByExternalIDs := make(map[string]entity.FullAccount)
 	for _, account := range accounts {
-		accountsByUserID[account.UserID] = append(
-			accountsByUserID[account.UserID],
+		if account.UserID == nil {
+			slog.Error(
+				"sync-balances: account without user id",
+				"account", account,
+			)
+			continue
+		}
+
+		accountsByUserID[*account.UserID] = append(
+			accountsByUserID[*account.UserID],
 			account,
 		)
 		accountsByExternalIDs[account.ExternalID] = account
 	}
 
-	g, gCtx := errgroup.WithContext(ctx)
+	g := errgroup.Group{}
 	for userID, userAccounts := range accountsByUserID {
-		openFinanceID := userAccounts[0].OpenFinanceID
-		if openFinanceID == nil {
-			slog.Info(
-				"sync-balances: skipping user without open finance id",
-				"user_id", userID,
-			)
-			continue
-		}
-
 		g.Go(func() error {
-			openFinanceAccounts, err := uc.o.ListAccounts(ctx, *openFinanceID)
-			if err != nil {
-				return errs.New(err)
-			}
-
-			if err := uc.createAccountBalances(
-				gCtx,
-				userID,
-				openFinanceAccounts,
-				accountsByExternalIDs,
+			if err := uc.syncUserBalance(
+				ctx, userID, userAccounts, accountsByExternalIDs,
 			); err != nil {
-				slog.Error(
-					"sync-balances: error creating user balances",
-					"user_id", userID,
-					"error", err,
-				)
+				return errs.New(err)
 			}
 			return nil
 		})
@@ -130,6 +121,69 @@ func (uc *SyncBalances) Execute(ctx context.Context) error {
 
 	offset += uc.e.SyncBalancesMaxAccounts
 	if err := uc.c.Set(ctx, cache.KeySyncBalancesOffset, offset, cacheExp); err != nil {
+		return errs.New(err)
+	}
+
+	return nil
+}
+
+func (uc *SyncBalances) syncUserBalance(
+	ctx context.Context,
+	userID uuid.UUID,
+	userAccounts []entity.FullAccount,
+	accountsByExternalIDs map[string]entity.FullAccount,
+) error {
+	userInstitutionExternalIDs := map[string]struct{}{}
+	for _, account := range userAccounts {
+		if account.UserInstitutionExternalID == nil {
+			slog.Error(
+				"sync-balances: account without user institution external id",
+				"account",
+				account,
+			)
+			continue
+		}
+
+		userInstitutionExternalIDs[*account.UserInstitutionExternalID] = struct{}{}
+	}
+
+	err := uc.tx.Do(ctx, func(ctx context.Context) error {
+		g, gCtx := errgroup.WithContext(ctx)
+		for userInstitutionExternalID := range userInstitutionExternalIDs {
+			g.Go(func() error {
+				openFinanceAccounts, err := uc.o.ListAccounts(
+					gCtx,
+					userInstitutionExternalID,
+				)
+				if err != nil {
+					return errs.New(err)
+				}
+
+				if err := uc.createAccountBalances(
+					gCtx,
+					userID,
+					openFinanceAccounts,
+					accountsByExternalIDs,
+				); err != nil {
+					slog.Error(
+						"sync-balances: error creating account balances",
+						"user_id", userID,
+						"error", err,
+					)
+					return errs.New(err)
+				}
+
+				return nil
+			})
+		}
+
+		if err := g.Wait(); err != nil {
+			return errs.New(err)
+		}
+
+		return nil
+	})
+	if err != nil {
 		return errs.New(err)
 	}
 

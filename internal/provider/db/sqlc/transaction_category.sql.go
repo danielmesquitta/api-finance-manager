@@ -11,20 +11,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const countTransactionCategoriesByIDs = `-- name: CountTransactionCategoriesByIDs :one
-SELECT COUNT(*)
-FROM transaction_categories
-WHERE id = ANY($1::uuid [])
-  AND deleted_at IS NULL
-`
-
-func (q *Queries) CountTransactionCategoriesByIDs(ctx context.Context, ids []uuid.UUID) (int64, error) {
-	row := q.db.QueryRow(ctx, countTransactionCategoriesByIDs, ids)
-	var count int64
-	err := row.Scan(&count)
-	return count, err
-}
-
 type CreateTransactionCategoriesParams struct {
 	ExternalID string `json:"external_id"`
 	Name       string `json:"name"`
@@ -70,71 +56,4 @@ func (q *Queries) GetTransactionCategory(ctx context.Context, id uuid.UUID) (Tra
 		&i.DeletedAt,
 	)
 	return i, err
-}
-
-const listTransactionCategories = `-- name: ListTransactionCategories :many
-SELECT id, external_id, name, created_at, updated_at, deleted_at
-FROM transaction_categories
-WHERE deleted_at IS NULL
-`
-
-func (q *Queries) ListTransactionCategories(ctx context.Context) ([]TransactionCategory, error) {
-	rows, err := q.db.Query(ctx, listTransactionCategories)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []TransactionCategory
-	for rows.Next() {
-		var i TransactionCategory
-		if err := rows.Scan(
-			&i.ID,
-			&i.ExternalID,
-			&i.Name,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.DeletedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listTransactionCategoriesByExternalIDs = `-- name: ListTransactionCategoriesByExternalIDs :many
-SELECT id, external_id, name, created_at, updated_at, deleted_at
-FROM transaction_categories
-WHERE external_id = ANY($1::text [])
-  AND deleted_at IS NULL
-`
-
-func (q *Queries) ListTransactionCategoriesByExternalIDs(ctx context.Context, ids []string) ([]TransactionCategory, error) {
-	rows, err := q.db.Query(ctx, listTransactionCategoriesByExternalIDs, ids)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []TransactionCategory
-	for rows.Next() {
-		var i TransactionCategory
-		if err := rows.Scan(
-			&i.ID,
-			&i.ExternalID,
-			&i.Name,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.DeletedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
 }

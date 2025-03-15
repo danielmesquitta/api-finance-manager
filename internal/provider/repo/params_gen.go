@@ -11,12 +11,11 @@ import (
 )
 
 type CreateAccountsParams struct {
-	ID            uuid.UUID `json:"id"`
-	ExternalID    string    `json:"external_id"`
-	Name          string    `json:"name"`
-	Type          string    `json:"type"`
-	UserID        uuid.UUID `json:"user_id"`
-	InstitutionID uuid.UUID `json:"institution_id"`
+	ID                uuid.UUID `json:"id"`
+	ExternalID        string    `json:"external_id"`
+	Name              string    `json:"name"`
+	Type              string    `json:"type"`
+	UserInstitutionID uuid.UUID `json:"user_institution_id"`
 }
 
 type CreateAccountBalancesParams struct {
@@ -41,24 +40,24 @@ type CreateBudgetParams struct {
 	UserID uuid.UUID `json:"user_id"`
 }
 
-type CreateBudgetCategoriesParams struct {
-	Amount     int64     `json:"amount"`
-	BudgetID   uuid.UUID `json:"budget_id"`
-	CategoryID uuid.UUID `json:"category_id"`
-}
-
 type GetBudgetParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Date   time.Time `json:"date"`
-}
-
-type GetBudgetCategoryParams struct {
 	UserID uuid.UUID `json:"user_id"`
 	Date   time.Time `json:"date"`
 }
 
 type UpdateBudgetParams struct {
 	Amount int64     `json:"amount"`
+	UserID uuid.UUID `json:"user_id"`
+	Date   time.Time `json:"date"`
+}
+
+type CreateBudgetCategoriesParams struct {
+	Amount     int64     `json:"amount"`
+	BudgetID   uuid.UUID `json:"budget_id"`
+	CategoryID uuid.UUID `json:"category_id"`
+}
+
+type GetBudgetCategoryParams struct {
 	UserID uuid.UUID `json:"user_id"`
 	Date   time.Time `json:"date"`
 }
@@ -124,12 +123,8 @@ type CreateTransactionCategoriesParams struct {
 }
 
 type CreateUserParams struct {
-	AuthID                string     `json:"auth_id"`
-	OpenFinanceID         *string    `json:"open_finance_id"`
-	Provider              string     `json:"provider"`
 	Name                  string     `json:"name"`
 	Email                 string     `json:"email"`
-	VerifiedEmail         bool       `json:"verified_email"`
 	Tier                  string     `json:"tier"`
 	Avatar                *string    `json:"avatar"`
 	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
@@ -143,12 +138,8 @@ type DeleteUserParams struct {
 
 type UpdateUserParams struct {
 	ID                    uuid.UUID  `json:"id"`
-	AuthID                string     `json:"auth_id"`
-	OpenFinanceID         *string    `json:"open_finance_id"`
-	Provider              string     `json:"provider"`
 	Name                  string     `json:"name"`
 	Email                 string     `json:"email"`
-	VerifiedEmail         bool       `json:"verified_email"`
 	Tier                  string     `json:"tier"`
 	Avatar                *string    `json:"avatar"`
 	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
@@ -158,4 +149,27 @@ type UpdateUserParams struct {
 type UpdateUserSynchronizedAtParams struct {
 	ID             uuid.UUID  `json:"id"`
 	SynchronizedAt *time.Time `json:"synchronized_at"`
+}
+
+type CreateUserAuthProviderParams struct {
+	ExternalID    string    `json:"external_id"`
+	Provider      string    `json:"provider"`
+	VerifiedEmail bool      `json:"verified_email"`
+	UserID        uuid.UUID `json:"user_id"`
+}
+
+type GetUserAuthProviderParams struct {
+	UserID   uuid.UUID `json:"user_id"`
+	Provider string    `json:"provider"`
+}
+
+type UpdateUserAuthProviderParams struct {
+	ID            uuid.UUID `json:"id"`
+	VerifiedEmail bool      `json:"verified_email"`
+}
+
+type CreateUserInstitutionParams struct {
+	ExternalID    string    `json:"external_id"`
+	UserID        uuid.UUID `json:"user_id"`
+	InstitutionID uuid.UUID `json:"institution_id"`
 }

@@ -11,15 +11,14 @@ import (
 )
 
 type Account struct {
-	ID            uuid.UUID  `json:"id"`
-	ExternalID    string     `json:"external_id"`
-	Name          string     `json:"name"`
-	Type          string     `json:"type"`
-	CreatedAt     time.Time  `json:"created_at"`
-	UpdatedAt     time.Time  `json:"updated_at"`
-	DeletedAt     *time.Time `json:"deleted_at"`
-	UserID        uuid.UUID  `json:"user_id"`
-	InstitutionID uuid.UUID  `json:"institution_id"`
+	ID                uuid.UUID  `json:"id"`
+	ExternalID        string     `json:"external_id"`
+	Name              string     `json:"name"`
+	Type              string     `json:"type"`
+	CreatedAt         time.Time  `json:"created_at"`
+	UpdatedAt         time.Time  `json:"updated_at"`
+	DeletedAt         *time.Time `json:"deleted_at"`
+	UserInstitutionID uuid.UUID  `json:"user_institution_id"`
 }
 
 type AccountBalance struct {
@@ -89,29 +88,6 @@ type Institution struct {
 	DeletedAt  *time.Time `json:"deleted_at"`
 }
 
-type Investment struct {
-	ID         uuid.UUID  `json:"id"`
-	ExternalID string     `json:"external_id"`
-	Name       string     `json:"name"`
-	Amount     int64      `json:"amount"`
-	Rate       int64      `json:"rate"`
-	RateType   string     `json:"rateType"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	DeletedAt  *time.Time `json:"deleted_at"`
-	CategoryID uuid.UUID  `json:"category_id"`
-	UserID     uuid.UUID  `json:"user_id"`
-}
-
-type InvestmentCategory struct {
-	ID         uuid.UUID  `json:"id"`
-	ExternalID string     `json:"external_id"`
-	Name       string     `json:"name"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	DeletedAt  *time.Time `json:"deleted_at"`
-}
-
 type PaymentMethod struct {
 	ID         uuid.UUID  `json:"id"`
 	ExternalID string     `json:"external_id"`
@@ -149,12 +125,8 @@ type TransactionCategory struct {
 
 type User struct {
 	ID                    uuid.UUID  `json:"id"`
-	AuthID                string     `json:"auth_id"`
-	OpenFinanceID         *string    `json:"open_finance_id"`
-	Provider              string     `json:"provider"`
 	Name                  string     `json:"name"`
 	Email                 string     `json:"email"`
-	VerifiedEmail         bool       `json:"verified_email"`
 	Tier                  string     `json:"tier"`
 	Avatar                *string    `json:"avatar"`
 	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
@@ -162,4 +134,25 @@ type User struct {
 	CreatedAt             time.Time  `json:"created_at"`
 	UpdatedAt             time.Time  `json:"updated_at"`
 	DeletedAt             *time.Time `json:"deleted_at"`
+}
+
+type UserAuthProvider struct {
+	ID            uuid.UUID  `json:"id"`
+	ExternalID    string     `json:"external_id"`
+	Provider      string     `json:"provider"`
+	VerifiedEmail bool       `json:"verified_email"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+	DeletedAt     *time.Time `json:"deleted_at"`
+	UserID        uuid.UUID  `json:"user_id"`
+}
+
+type UserInstitution struct {
+	ID            uuid.UUID  `json:"id"`
+	ExternalID    string     `json:"external_id"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+	DeletedAt     *time.Time `json:"deleted_at"`
+	UserID        uuid.UUID  `json:"user_id"`
+	InstitutionID uuid.UUID  `json:"institution_id"`
 }

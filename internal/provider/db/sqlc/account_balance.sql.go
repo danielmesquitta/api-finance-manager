@@ -19,17 +19,19 @@ type CreateAccountBalancesParams struct {
 }
 
 const getUserBalanceOnDate = `-- name: GetUserBalanceOnDate :one
-WITH balances_on_date AS (
-  SELECT DISTINCT ON (account_id) account_id,
-    amount
-  FROM account_balances
-  WHERE user_id = $1
-    AND created_at > $2::timestamptz
-  ORDER BY account_id,
-    created_at ASC
-)
-SELECT COALESCE(SUM(amount), 0)::bigint AS total_balance
-FROM balances_on_date
+SELECT COALESCE(SUM(ab.amount), 0)::bigint AS total_balance
+FROM accounts a
+  JOIN LATERAL (
+    SELECT ab.amount
+    FROM account_balances ab
+    WHERE ab.account_id = a.id
+      AND ab.created_at <= $2::timestamptz
+    ORDER BY ab.created_at DESC
+    LIMIT 1
+  ) ab ON TRUE
+  JOIN user_institutions ui ON a.user_institution_id = ui.id
+WHERE a.type = 'BANK'
+  AND ui.user_id = $1
 `
 
 type GetUserBalanceOnDateParams struct {

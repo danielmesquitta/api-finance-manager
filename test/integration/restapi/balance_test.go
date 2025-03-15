@@ -32,14 +32,11 @@ func TestGetBalance(t *testing.T) {
 		// 	expectedResponse: nil,
 		// },
 		func() Test {
-			dateStr := "2024-11-01T00:00:00-03:00"
+			startDateStr := "2024-11-01T00:00:00-03:00"
+			endDateStr := "2024-11-30T23:59:59.999999999-03:00"
 
-			startDate := dateutil.MustParseISOString(
-				"2024-11-01T00:00:00-03:00",
-			)
-			endDate := dateutil.MustParseISOString(
-				"2024-11-30T23:59:59.999999999-03:00",
-			)
+			startDate := dateutil.MustParseISOString(startDateStr)
+			endDate := dateutil.MustParseISOString(endDateStr)
 			cmpStartDate := dateutil.MustParseISOString(
 				"2024-10-01T00:00:00-03:00",
 			)
@@ -48,10 +45,11 @@ func TestGetBalance(t *testing.T) {
 			)
 
 			return Test{
-				description: "Get budget",
+				description: "Get balance",
 				token:       mockoauth.DefaultMockToken,
 				queryParams: map[string]string{
-					handler.QueryParamDate: dateStr,
+					handler.QueryParamStartDate: startDateStr,
+					handler.QueryParamEndDate:   endDateStr,
 				},
 				expectedCode: http.StatusOK,
 				expectedResponse: &dto.GetBalanceResponse{
@@ -96,7 +94,7 @@ func TestGetBalance(t *testing.T) {
 			var actualResponse dto.GetBalanceResponse
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodGet,
-				"/api/v1/budgets",
+				"/api/v1/balances",
 				WithBearerToken(accessToken),
 				WithQueryParams(test.queryParams),
 				WithResponse(&actualResponse),

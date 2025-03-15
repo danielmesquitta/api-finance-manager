@@ -67,8 +67,7 @@ func (r iteratorForCreateAccounts) Values() ([]interface{}, error) {
 		r.rows[0].ExternalID,
 		r.rows[0].Name,
 		r.rows[0].Type,
-		r.rows[0].UserID,
-		r.rows[0].InstitutionID,
+		r.rows[0].UserInstitutionID,
 	}, nil
 }
 
@@ -77,7 +76,7 @@ func (r iteratorForCreateAccounts) Err() error {
 }
 
 func (q *Queries) CreateAccounts(ctx context.Context, arg []CreateAccountsParams) (int64, error) {
-	return q.db.CopyFrom(ctx, []string{"accounts"}, []string{"id", "external_id", "name", "type", "user_id", "institution_id"}, &iteratorForCreateAccounts{rows: arg})
+	return q.db.CopyFrom(ctx, []string{"accounts"}, []string{"id", "external_id", "name", "type", "user_institution_id"}, &iteratorForCreateAccounts{rows: arg})
 }
 
 // iteratorForCreateBudgetCategories implements pgx.CopyFromSource.

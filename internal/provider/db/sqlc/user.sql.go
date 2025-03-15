@@ -14,27 +14,19 @@ import (
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
-    auth_id,
-    open_finance_id,
-    provider,
     name,
     email,
-    verified_email,
     tier,
     avatar,
     subscription_expires_at
   )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-RETURNING id, auth_id, open_finance_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 `
 
 type CreateUserParams struct {
-	AuthID                string     `json:"auth_id"`
-	OpenFinanceID         *string    `json:"open_finance_id"`
-	Provider              string     `json:"provider"`
 	Name                  string     `json:"name"`
 	Email                 string     `json:"email"`
-	VerifiedEmail         bool       `json:"verified_email"`
 	Tier                  string     `json:"tier"`
 	Avatar                *string    `json:"avatar"`
 	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
@@ -42,12 +34,8 @@ type CreateUserParams struct {
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, createUser,
-		arg.AuthID,
-		arg.OpenFinanceID,
-		arg.Provider,
 		arg.Name,
 		arg.Email,
-		arg.VerifiedEmail,
 		arg.Tier,
 		arg.Avatar,
 		arg.SubscriptionExpiresAt,
@@ -55,12 +43,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.AuthID,
-		&i.OpenFinanceID,
-		&i.Provider,
 		&i.Name,
 		&i.Email,
-		&i.VerifiedEmail,
 		&i.Tier,
 		&i.Avatar,
 		&i.SubscriptionExpiresAt,
@@ -102,7 +86,7 @@ func (q *Queries) DestroyUser(ctx context.Context, id uuid.UUID) error {
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, auth_id, open_finance_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 FROM users
 WHERE email = $1
 `
@@ -112,12 +96,8 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.AuthID,
-		&i.OpenFinanceID,
-		&i.Provider,
 		&i.Name,
 		&i.Email,
-		&i.VerifiedEmail,
 		&i.Tier,
 		&i.Avatar,
 		&i.SubscriptionExpiresAt,
@@ -130,7 +110,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, auth_id, open_finance_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 FROM users
 WHERE id = $1
 `
@@ -140,12 +120,8 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.AuthID,
-		&i.OpenFinanceID,
-		&i.Provider,
 		&i.Name,
 		&i.Email,
-		&i.VerifiedEmail,
 		&i.Tier,
 		&i.Avatar,
 		&i.SubscriptionExpiresAt,
@@ -157,71 +133,22 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
-const listUsers = `-- name: ListUsers :many
-SELECT id, auth_id, open_finance_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
-FROM users
-WHERE deleted_at IS NULL
-`
-
-func (q *Queries) ListUsers(ctx context.Context) ([]User, error) {
-	rows, err := q.db.Query(ctx, listUsers)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []User
-	for rows.Next() {
-		var i User
-		if err := rows.Scan(
-			&i.ID,
-			&i.AuthID,
-			&i.OpenFinanceID,
-			&i.Provider,
-			&i.Name,
-			&i.Email,
-			&i.VerifiedEmail,
-			&i.Tier,
-			&i.Avatar,
-			&i.SubscriptionExpiresAt,
-			&i.SynchronizedAt,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.DeletedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET auth_id = $2,
-  open_finance_id = $3,
-  provider = $4,
-  name = $5,
-  email = $6,
-  verified_email = $7,
-  tier = $8,
-  avatar = $9,
-  subscription_expires_at = $10,
-  synchronized_at = $11
+SET name = $2,
+  email = $3,
+  tier = $4,
+  avatar = $5,
+  subscription_expires_at = $6,
+  synchronized_at = $7
 WHERE id = $1
-RETURNING id, auth_id, open_finance_id, provider, name, email, verified_email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+RETURNING id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 `
 
 type UpdateUserParams struct {
 	ID                    uuid.UUID  `json:"id"`
-	AuthID                string     `json:"auth_id"`
-	OpenFinanceID         *string    `json:"open_finance_id"`
-	Provider              string     `json:"provider"`
 	Name                  string     `json:"name"`
 	Email                 string     `json:"email"`
-	VerifiedEmail         bool       `json:"verified_email"`
 	Tier                  string     `json:"tier"`
 	Avatar                *string    `json:"avatar"`
 	SubscriptionExpiresAt *time.Time `json:"subscription_expires_at"`
@@ -231,12 +158,8 @@ type UpdateUserParams struct {
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRow(ctx, updateUser,
 		arg.ID,
-		arg.AuthID,
-		arg.OpenFinanceID,
-		arg.Provider,
 		arg.Name,
 		arg.Email,
-		arg.VerifiedEmail,
 		arg.Tier,
 		arg.Avatar,
 		arg.SubscriptionExpiresAt,
@@ -245,12 +168,8 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.AuthID,
-		&i.OpenFinanceID,
-		&i.Provider,
 		&i.Name,
 		&i.Email,
-		&i.VerifiedEmail,
 		&i.Tier,
 		&i.Avatar,
 		&i.SubscriptionExpiresAt,

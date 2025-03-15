@@ -10,7 +10,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
-	"github.com/google/uuid"
 )
 
 func (qb *QueryBuilder) ListInstitutions(
@@ -84,11 +83,11 @@ func (qb *QueryBuilder) buildInstitutionJoins(
 	query *goqu.SelectDataset,
 	options repo.InstitutionOptions,
 ) *goqu.SelectDataset {
-	if options.UserID != uuid.Nil {
+	if len(options.UserIDs) > 0 {
 		query = query.Join(
-			goqu.I(schema.Account.Table()),
+			goqu.I(schema.UserInstitution.Table()),
 			goqu.On(
-				goqu.I(schema.Account.ColumnInstitutionID()).
+				goqu.I(schema.UserInstitution.ColumnInstitutionID()).
 					Eq(goqu.I(schema.Institution.ColumnID())),
 			),
 		)
@@ -109,11 +108,11 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 		orderedExps = append(orderedExps, distanceExp.Asc())
 	}
 
-	if options.UserID != uuid.Nil {
+	if len(options.UserIDs) > 0 {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.Account.ColumnUserID()).
-				Eq(options.UserID),
+			goqu.I(schema.UserInstitution.ColumnUserID()).
+				In(options.UserIDs),
 		)
 	}
 

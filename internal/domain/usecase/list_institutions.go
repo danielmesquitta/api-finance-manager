@@ -8,7 +8,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
-	"github.com/google/uuid"
 )
 
 type ListInstitutions struct {
@@ -39,8 +38,8 @@ func (uc *ListInstitutions) Execute(
 	var count int64
 
 	options := []repo.InstitutionOption{}
-	if in.UserID != uuid.Nil {
-		options = append(options, repo.WithInstitutionUser(in.UserID))
+	if len(in.UserIDs) > 0 {
+		options = append(options, repo.WithInstitutionUser(in.UserIDs))
 	}
 
 	if in.Search != "" {

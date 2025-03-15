@@ -9,39 +9,155 @@ generator client {
   previewFeatures = ["postgresqlExtensions"]
 }
 
-model User {
-  id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  auth_id                 String
-  open_finance_id         String?
-  provider                String
-  name                    String
-  email                   String    @unique
-  verified_email          Boolean   @default(false)
-  tier                    String
-  avatar                  String?
-  subscription_expires_at DateTime? @db.Timestamptz()
-  synchronized_at         DateTime? @db.Timestamptz()
-  created_at              DateTime  @default(now()) @db.Timestamptz()
-  updated_at              DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at              DateTime? @db.Timestamptz()
+model AccountBalance {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  amount     BigInt
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
 
-  budgets Budget[]
+  account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  account_id String  @db.Uuid
+
+  @@map("account_balances")
+}
+
+model Account {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String
+  name        String
+  type        String
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
+
+  user_institution    UserInstitution @relation(fields: [user_institution_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_institution_id String          @db.Uuid
 
   transactions Transaction[]
 
-  investments Investment[]
+  balances AccountBalance[]
 
-  accounts Account[]
+  @@map("accounts")
+}
 
-  account_balances AccountBalance[]
+model AIChatMessage {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  message    String
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
 
-  feedbacks Feedback[]
+  created_by_user    User?   @relation(fields: [created_by_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  created_by_user_id String? @db.Uuid
 
-  ai_chats AIChat[]
+  ai_chat    AIChat @relation(fields: [ai_chat_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ai_chat_id String @db.Uuid
+
+  @@map("ai_chat_messages")
+}
+
+model AIChat {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title      String?
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
+
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id String @db.Uuid
 
   ai_chat_messages AIChatMessage[]
 
-  @@map("users")
+  @@map("ai_chats")
+}
+
+model BudgetCategory {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  amount     BigInt
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
+
+  budget    Budget @relation(fields: [budget_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  budget_id String @db.Uuid
+
+  category    TransactionCategory @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category_id String              @db.Uuid
+
+  @@map("budget_categories")
+}
+
+model Budget {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  amount     BigInt
+  date       DateTime  @db.Timestamptz()
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
+
+  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user_id String @db.Uuid
+
+  budget_categories BudgetCategory[]
+
+  @@map("budgets")
+}
+
+model Feedback {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  message    String
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
+
+  user    User?   @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  user_id String? @db.Uuid
+
+  @@map("feedbacks")
+}
+
+model Institution {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String
+  name        String
+  logo        String?
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
+
+  transactions Transaction[]
+
+  user_institutions UserInstitution[]
+
+  @@map("institutions")
+}
+
+model PaymentMethod {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String
+  name        String
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
+
+  transactions Transaction[]
+
+  @@map("payment_methods")
+}
+
+model TransactionCategory {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String
+  name        String
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
+
+  transactions Transaction[]
+
+  budget_categories BudgetCategory[]
+
+  @@map("transaction_categories")
 }
 
 model Transaction {
@@ -73,72 +189,24 @@ model Transaction {
   @@map("transactions")
 }
 
-model PaymentMethod {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String    @unique
-  name        String
-  created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at  DateTime? @db.Timestamptz()
-
-  transactions Transaction[]
-
-  @@map("payment_methods")
-}
-
-model Investment {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String    @unique
-  name        String
-  amount      BigInt
-  rate        BigInt
-  rateType    String
-  created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at  DateTime? @db.Timestamptz()
-
-  category    InvestmentCategory @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  category_id String             @db.Uuid
+model UserAuthProvider {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id    String
+  provider       String
+  verified_email Boolean   @default(false)
+  created_at     DateTime  @default(now()) @db.Timestamptz()
+  updated_at     DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at     DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
 
-  @@map("investments")
+  @@map("user_auth_providers")
 }
 
-model InvestmentCategory {
+model UserInstitution {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String    @unique
-  name        String
-  created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at  DateTime? @db.Timestamptz()
-
-  investments Investment[]
-
-  @@map("investment_categories")
-}
-
-model TransactionCategory {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String    @unique
-  name        String
-  created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at  DateTime? @db.Timestamptz()
-
-  transactions Transaction[]
-
-  budget_categories BudgetCategory[]
-
-  @@map("transaction_categories")
-}
-
-model Account {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String    @unique
-  name        String
-  type        String
+  external_id String
   created_at  DateTime  @default(now()) @db.Timestamptz()
   updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at  DateTime? @db.Timestamptz()
@@ -149,116 +217,36 @@ model Account {
   institution    Institution @relation(fields: [institution_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   institution_id String      @db.Uuid
 
-  transactions Transaction[]
-
-  balances AccountBalance[]
-
-  @@map("accounts")
-}
-
-model AccountBalance {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  amount     BigInt
-  created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at DateTime? @db.Timestamptz()
-
-  account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  account_id String  @db.Uuid
-
-  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user_id String @db.Uuid
-
-  @@map("account_balances")
-}
-
-model Institution {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String    @unique
-  name        String
-  logo        String?
-  created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at  DateTime? @db.Timestamptz()
-
   accounts Account[]
 
+  @@map("user_institutions")
+}
+
+model User {
+  id                      String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                    String
+  email                   String    @unique
+  tier                    String
+  avatar                  String?
+  subscription_expires_at DateTime? @db.Timestamptz()
+  synchronized_at         DateTime? @db.Timestamptz()
+  created_at              DateTime  @default(now()) @db.Timestamptz()
+  updated_at              DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at              DateTime? @db.Timestamptz()
+
+  auth_providers UserAuthProvider[]
+
+  budgets Budget[]
+
   transactions Transaction[]
 
-  @@map("institutions")
-}
+  institutions UserInstitution[]
 
-model Budget {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  amount     BigInt
-  date       DateTime  @db.Timestamptz()
-  created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at DateTime? @db.Timestamptz()
+  feedbacks Feedback[]
 
-  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user_id String @db.Uuid
-
-  budget_categories BudgetCategory[]
-
-  @@map("budgets")
-}
-
-model BudgetCategory {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  amount     BigInt
-  created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at DateTime? @db.Timestamptz()
-
-  budget    Budget @relation(fields: [budget_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  budget_id String @db.Uuid
-
-  category    TransactionCategory @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  category_id String              @db.Uuid
-
-  @@map("budget_categories")
-}
-
-model Feedback {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  message    String
-  created_at DateTime  @default(now()) @db.Timestamptz()
-  deleted_at DateTime? @db.Timestamptz()
-
-  user    User?   @relation(fields: [user_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
-  user_id String? @db.Uuid
-
-  @@map("feedbacks")
-}
-
-model AIChat {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title      String?
-  created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at DateTime? @db.Timestamptz()
-
-  user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  user_id String @db.Uuid
+  ai_chats AIChat[]
 
   ai_chat_messages AIChatMessage[]
 
-  @@map("ai_chats")
-}
-
-model AIChatMessage {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  message    String
-  created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at DateTime? @db.Timestamptz()
-
-  created_by_user    User?   @relation(fields: [created_by_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  created_by_user_id String? @db.Uuid
-
-  ai_chat    AIChat @relation(fields: [ai_chat_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  ai_chat_id String @db.Uuid
-
-  @@map("ai_chat_messages")
+  @@map("users")
 }

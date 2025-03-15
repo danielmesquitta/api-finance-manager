@@ -1,17 +1,3 @@
--- name: ListTransactionCategories :many
-SELECT *
-FROM transaction_categories
-WHERE deleted_at IS NULL;
--- name: CountTransactionCategoriesByIDs :one
-SELECT COUNT(*)
-FROM transaction_categories
-WHERE id = ANY(sqlc.arg(ids)::uuid [])
-  AND deleted_at IS NULL;
--- name: ListTransactionCategoriesByExternalIDs :many
-SELECT *
-FROM transaction_categories
-WHERE external_id = ANY(sqlc.arg(ids)::text [])
-  AND deleted_at IS NULL;
 -- name: CreateTransactionCategories :copyfrom
 INSERT INTO transaction_categories (external_id, name)
 VALUES ($1, $2);

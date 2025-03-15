@@ -6,9 +6,8 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/gofiber/fiber/v2"
 )
-
-const authorizationHeaderKey = "authorization"
 
 type UserInfo struct {
 	ID            string `json:"id"`
@@ -23,25 +22,25 @@ type UserInfo struct {
 func (g *GoogleOAuth) GetUser(
 	ctx context.Context,
 	token string,
-) (*entity.User, error) {
+) (*entity.User, *entity.UserAuthProvider, error) {
 	res, err := g.c.R().
 		SetContext(ctx).
-		SetHeader(authorizationHeaderKey, "Bearer "+token).
+		SetHeader(fiber.HeaderAuthorization, "Bearer "+token).
 		SetQueryParam("alt", "json").
 		Get("/oauth2/v1/userinfo")
 
 	if err != nil {
-		return nil, errs.New(err)
+		return nil, nil, errs.New(err)
 	}
 
 	body := res.Body()
 	if res.IsError() {
-		return nil, errs.New(body)
+		return nil, nil, errs.New(body)
 	}
 
 	userInfo := UserInfo{}
 	if err := json.Unmarshal(body, &userInfo); err != nil {
-		return nil, errs.New(err)
+		return nil, nil, errs.New(err)
 	}
 
 	var avatar *string
@@ -50,13 +49,16 @@ func (g *GoogleOAuth) GetUser(
 	}
 
 	user := entity.User{
-		AuthID:        userInfo.ID,
-		Name:          userInfo.Name,
-		Email:         userInfo.Email,
-		VerifiedEmail: userInfo.VerifiedEmail,
-		Avatar:        avatar,
-		Provider:      string(entity.ProviderGoogle),
+		Name:   userInfo.Name,
+		Email:  userInfo.Email,
+		Avatar: avatar,
 	}
 
-	return &user, nil
+	authProvider := entity.UserAuthProvider{
+		ExternalID:    userInfo.ID,
+		VerifiedEmail: userInfo.VerifiedEmail,
+		Provider:      entity.ProviderGoogle,
+	}
+
+	return &user, &authProvider, nil
 }

@@ -16,11 +16,11 @@ func TestSignIn(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		description        string
-		body               *dto.SignInRequest
-		token              string
-		expectedCode       int
-		expectedUserAuthID string
+		description   string
+		body          *dto.SignInRequest
+		token         string
+		expectedCode  int
+		expectedEmail string
 	}{
 		{
 			description: "Sign in with registered user",
@@ -29,9 +29,9 @@ func TestSignIn(t *testing.T) {
 					Provider: entity.ProviderMock,
 				},
 			},
-			token:              mockoauth.DefaultMockToken,
-			expectedCode:       http.StatusOK,
-			expectedUserAuthID: mockoauth.Users[mockoauth.DefaultMockToken].AuthID,
+			token:         mockoauth.DefaultMockToken,
+			expectedCode:  http.StatusOK,
+			expectedEmail: mockoauth.Users[mockoauth.DefaultMockToken].User.Email,
 		},
 		{
 			description: "Sign in with unregistered user",
@@ -40,9 +40,9 @@ func TestSignIn(t *testing.T) {
 					Provider: entity.ProviderMock,
 				},
 			},
-			token:              mockoauth.UnregisteredUserMockToken,
-			expectedCode:       http.StatusOK,
-			expectedUserAuthID: mockoauth.Users[mockoauth.UnregisteredUserMockToken].AuthID,
+			token:         mockoauth.UnregisteredUserMockToken,
+			expectedCode:  http.StatusOK,
+			expectedEmail: mockoauth.Users[mockoauth.UnregisteredUserMockToken].User.Email,
 		},
 	}
 
@@ -56,13 +56,13 @@ func TestSignIn(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			var out dto.SignInResponse
+			var actual dto.SignInResponse
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPost,
 				"/api/v1/auth/sign-in",
 				WithBody(test.body),
 				WithToken(test.token),
-				WithResponse(&out),
+				WithResponse(&actual),
 			)
 			assert.Nil(t, err)
 
@@ -73,13 +73,12 @@ func TestSignIn(t *testing.T) {
 				rawBody,
 			)
 
-			assert.NotEmpty(t, out.AccessToken, rawBody)
-			assert.NotEmpty(t, out.RefreshToken, rawBody)
+			assert.NotEmpty(t, actual.AccessToken)
+			assert.NotEmpty(t, actual.RefreshToken)
 			assert.Equal(
 				t,
-				test.expectedUserAuthID,
-				out.User.AuthID,
-				rawBody,
+				test.expectedEmail,
+				actual.User.Email,
 			)
 		})
 	}
@@ -89,22 +88,22 @@ func TestRefreshToken(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		description        string
-		token              string
-		expectedCode       int
-		expectedUserAuthID string
+		description   string
+		token         string
+		expectedCode  int
+		expectedEmail string
 	}{
 		{
-			description:        "Refresh token",
-			token:              mockoauth.DefaultMockToken,
-			expectedCode:       http.StatusOK,
-			expectedUserAuthID: mockoauth.Users[mockoauth.DefaultMockToken].AuthID,
+			description:   "Refresh token",
+			token:         mockoauth.DefaultMockToken,
+			expectedCode:  http.StatusOK,
+			expectedEmail: mockoauth.Users[mockoauth.DefaultMockToken].User.Email,
 		},
 		{
-			description:        "Fail to refresh token without access token",
-			token:              "",
-			expectedCode:       http.StatusBadRequest,
-			expectedUserAuthID: "",
+			description:   "Fail to refresh token without access token",
+			token:         "",
+			expectedCode:  http.StatusBadRequest,
+			expectedEmail: "",
 		},
 	}
 
@@ -124,12 +123,12 @@ func TestRefreshToken(t *testing.T) {
 				refreshToken = signInRes.RefreshToken
 			}
 
-			var out dto.SignInResponse
+			var actual dto.SignInResponse
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPost,
 				"/api/v1/auth/refresh",
 				WithBearerToken(refreshToken),
-				WithResponse(&out),
+				WithResponse(&actual),
 			)
 			assert.Nil(t, err)
 
@@ -144,12 +143,12 @@ func TestRefreshToken(t *testing.T) {
 				return
 			}
 
-			assert.NotEmpty(t, out.AccessToken)
-			assert.NotEmpty(t, out.RefreshToken)
+			assert.NotEmpty(t, actual.AccessToken)
+			assert.NotEmpty(t, actual.RefreshToken)
 			assert.Equal(
 				t,
-				test.expectedUserAuthID,
-				out.User.AuthID,
+				test.expectedEmail,
+				actual.User.Email,
 			)
 		})
 	}

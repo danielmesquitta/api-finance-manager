@@ -68,7 +68,7 @@ func main() {
 		panic(string(res.Body()))
 	}
 
-	jsonData, err := root.TestData.ReadFile("testdata/pluggy/items.json")
+	jsonData, err := root.TestData.ReadFile("test/data/pluggy/items.json")
 	if err != nil {
 		panic(err)
 	}

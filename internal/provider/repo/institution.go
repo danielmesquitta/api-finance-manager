@@ -8,10 +8,10 @@ import (
 )
 
 type InstitutionOptions struct {
-	Limit  uint      `json:"-"`
-	Offset uint      `json:"-"`
-	Search string    `json:"search"`
-	UserID uuid.UUID `json:"-"`
+	Limit   uint        `json:"-"`
+	Offset  uint        `json:"-"`
+	Search  string      `json:"search"`
+	UserIDs []uuid.UUID `json:"-"`
 }
 
 type InstitutionOption func(*InstitutionOptions)
@@ -32,9 +32,9 @@ func WithInstitutionSearch(search string) InstitutionOption {
 	}
 }
 
-func WithInstitutionUser(userID uuid.UUID) InstitutionOption {
+func WithInstitutionUser(userIDs []uuid.UUID) InstitutionOption {
 	return func(o *InstitutionOptions) {
-		o.UserID = userID
+		o.UserIDs = userIDs
 	}
 }
 

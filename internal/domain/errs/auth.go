@@ -9,4 +9,8 @@ var (
 		"Usuário não autorizado",
 		ErrCodeUnauthorized,
 	)
+	ErrInvalidProvider = New(
+		"Provedor de autenticação inválido",
+		ErrCodeValidation,
+	)
 )

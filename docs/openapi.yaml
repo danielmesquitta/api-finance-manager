@@ -1,5 +1,16 @@
 components:
     schemas:
+        dateutil.ComparisonDates:
+            properties:
+                comparison_end_date:
+                    type: string
+                comparison_start_date:
+                    type: string
+                end_date:
+                    type: string
+                start_date:
+                    type: string
+            type: object
         dto.CashVsInstallmentsRequest:
             properties:
                 cash_discount:
@@ -191,7 +202,7 @@ components:
                 balance_percentage_variation:
                     type: integer
                 comparison_dates:
-                    $ref: '#/components/schemas/usecase.ComparisonDates'
+                    $ref: '#/components/schemas/dateutil.ComparisonDates'
                 current_balance:
                     type: integer
                 current_expense:
@@ -247,7 +258,7 @@ components:
                         $ref: '#/components/schemas/usecase.GetBudgetBudgetCategories'
                     type: array
                 comparison_dates:
-                    $ref: '#/components/schemas/usecase.ComparisonDates'
+                    $ref: '#/components/schemas/dateutil.ComparisonDates'
                 created_at:
                     type: string
                 date:
@@ -784,17 +795,6 @@ components:
                     type: integer
                 credit_card:
                     type: integer
-            type: object
-        usecase.ComparisonDates:
-            properties:
-                comparison_end_date:
-                    type: string
-                comparison_start_date:
-                    type: string
-                end_date:
-                    type: string
-                start_date:
-                    type: string
             type: object
         usecase.CompoundInterestResult:
             properties:

@@ -8,13 +8,14 @@ import (
 )
 
 type AccountOptions struct {
-	Limit                uint          `json:"limit"`
-	Offset               uint          `json:"offset"`
-	Search               string        `json:"search"`
-	UserIDs              []uuid.UUID   `json:"user_id"`
-	ExternalIDs          []string      `json:"external_ids"`
-	UserTiers            []entity.Tier `json:"user_tiers"`
-	IsSubscriptionActive *bool         `json:"is_subscription_active"`
+	Limit                uint                 `json:"limit"`
+	Offset               uint                 `json:"offset"`
+	Search               string               `json:"search"`
+	UserIDs              []uuid.UUID          `json:"user_id"`
+	ExternalIDs          []string             `json:"external_ids"`
+	UserTiers            []entity.Tier        `json:"user_tiers"`
+	Types                []entity.AccountType `json:"types"`
+	IsSubscriptionActive *bool                `json:"is_subscription_active"`
 }
 
 type AccountOption func(*AccountOptions)
@@ -64,6 +65,14 @@ func WithAccountSubscriptionActive(
 ) AccountOption {
 	return func(o *AccountOptions) {
 		o.IsSubscriptionActive = &isSubscriptionActive
+	}
+}
+
+func WithAccountTypes(
+	types []entity.AccountType,
+) AccountOption {
+	return func(o *AccountOptions) {
+		o.Types = types
 	}
 }
 

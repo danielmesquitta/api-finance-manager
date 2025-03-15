@@ -128,22 +128,6 @@ func (r *UserRepo) UpdateUserSynchronizedAt(
 	return nil
 }
 
-func (r *UserRepo) ListUsers(
-	ctx context.Context,
-) ([]entity.User, error) {
-	users, err := r.db.ListUsers(ctx)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	results := []entity.User{}
-	if err := copier.Copy(&results, users); err != nil {
-		return nil, errs.New(err)
-	}
-
-	return results, nil
-}
-
 func (r *UserRepo) DeleteUser(
 	ctx context.Context,
 	params repo.DeleteUserParams,

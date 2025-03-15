@@ -50,13 +50,6 @@ func (r *TransactionCategoryRepo) CountTransactionCategories(
 	return r.qb.CountTransactionCategories(ctx, opts...)
 }
 
-func (r *TransactionCategoryRepo) CountTransactionCategoriesByIDs(
-	ctx context.Context,
-	ids []uuid.UUID,
-) (int64, error) {
-	return r.db.CountTransactionCategoriesByIDs(ctx, ids)
-}
-
 func (r *TransactionCategoryRepo) CreateTransactionCategories(
 	ctx context.Context,
 	params []repo.CreateTransactionCategoriesParams,
@@ -73,26 +66,6 @@ func (r *TransactionCategoryRepo) CreateTransactionCategories(
 	}
 
 	return nil
-}
-
-func (r *TransactionCategoryRepo) ListTransactionCategoriesByExternalIDs(
-	ctx context.Context,
-	externalIDs []string,
-) ([]entity.TransactionCategory, error) {
-	categories, err := r.db.ListTransactionCategoriesByExternalIDs(
-		ctx,
-		externalIDs,
-	)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	results := []entity.TransactionCategory{}
-	if err := copier.Copy(&results, categories); err != nil {
-		return nil, errs.New(err)
-	}
-
-	return results, nil
 }
 
 func (r *TransactionCategoryRepo) GetTransactionCategory(

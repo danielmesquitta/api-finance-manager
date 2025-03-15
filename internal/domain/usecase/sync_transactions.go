@@ -150,10 +150,17 @@ func (uc *SyncTransactions) Execute(
 
 	accountsByUserID := make(map[uuid.UUID][]entity.FullAccount)
 	accountsByID := make(map[uuid.UUID]entity.FullAccount)
-
 	for _, account := range accounts {
-		accountsByUserID[account.UserID] = append(
-			accountsByUserID[account.UserID],
+		if account.UserID == nil {
+			slog.Error(
+				"sync-transactions: account user id is nil",
+				"account", account,
+			)
+			continue
+		}
+
+		accountsByUserID[*account.UserID] = append(
+			accountsByUserID[*account.UserID],
 			account,
 		)
 		accountsByID[account.ID] = account
@@ -430,7 +437,7 @@ func (uc *SyncTransactions) buildCreateTransactionsParams(
 				Date:            ofTrans.Date,
 				UserID:          userID,
 				AccountID:       &account.ID,
-				InstitutionID:   &account.InstitutionID,
+				InstitutionID:   account.InstitutionID,
 				CategoryID:      category.ID,
 				IsIgnored:       isIgnored,
 			})

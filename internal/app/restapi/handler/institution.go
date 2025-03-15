@@ -97,8 +97,8 @@ func (h InstitutionHandler) ListUserInstitutions(c *fiber.Ctx) error {
 	in := usecase.ListInstitutionsInput{
 		PaginationInput: paginationIn,
 		InstitutionOptions: repo.InstitutionOptions{
-			UserID: userID,
-			Search: search,
+			UserIDs: []uuid.UUID{userID},
+			Search:  search,
 		},
 	}
 

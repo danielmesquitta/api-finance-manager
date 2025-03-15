@@ -8,9 +8,10 @@ import (
 )
 
 type TransactionCategoryOptions struct {
-	Limit  uint   `json:"-"`
-	Offset uint   `json:"-"`
-	Search string `json:"search"`
+	Limit  uint        `json:"-"`
+	Offset uint        `json:"-"`
+	Search string      `json:"search"`
+	IDs    []uuid.UUID `json:"category_ids"`
 }
 
 type TransactionCategoryOption func(*TransactionCategoryOptions)
@@ -31,6 +32,14 @@ func WithTransactionCategorySearch(search string) TransactionCategoryOption {
 	}
 }
 
+func WithTransactionCategoryIDs(
+	ids []uuid.UUID,
+) TransactionCategoryOption {
+	return func(o *TransactionCategoryOptions) {
+		o.IDs = ids
+	}
+}
+
 type TransactionCategoryRepo interface {
 	ListTransactionCategories(
 		ctx context.Context,
@@ -40,18 +49,10 @@ type TransactionCategoryRepo interface {
 		ctx context.Context,
 		opts ...TransactionCategoryOption,
 	) (int64, error)
-	CountTransactionCategoriesByIDs(
-		ctx context.Context,
-		ids []uuid.UUID,
-	) (int64, error)
 	CreateTransactionCategories(
 		ctx context.Context,
 		params []CreateTransactionCategoriesParams,
 	) error
-	ListTransactionCategoriesByExternalIDs(
-		ctx context.Context,
-		externalIDs []string,
-	) ([]entity.TransactionCategory, error)
 	GetTransactionCategory(
 		ctx context.Context,
 		id uuid.UUID,

@@ -2046,6 +2046,23 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dateutil.ComparisonDates": {
+            "type": "object",
+            "properties": {
+                "comparison_end_date": {
+                    "type": "string"
+                },
+                "comparison_start_date": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CashVsInstallmentsRequest": {
             "type": "object",
             "required": [
@@ -2330,7 +2347,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "comparison_dates": {
-                    "$ref": "#/definitions/usecase.ComparisonDates"
+                    "$ref": "#/definitions/dateutil.ComparisonDates"
                 },
                 "current_balance": {
                     "type": "integer"
@@ -2415,7 +2432,7 @@ const docTemplate = `{
                     }
                 },
                 "comparison_dates": {
-                    "$ref": "#/definitions/usecase.ComparisonDates"
+                    "$ref": "#/definitions/dateutil.ComparisonDates"
                 },
                 "created_at": {
                     "type": "string"
@@ -3220,23 +3237,6 @@ const docTemplate = `{
                 },
                 "credit_card": {
                     "type": "integer"
-                }
-            }
-        },
-        "usecase.ComparisonDates": {
-            "type": "object",
-            "properties": {
-                "comparison_end_date": {
-                    "type": "string"
-                },
-                "comparison_start_date": {
-                    "type": "string"
-                },
-                "end_date": {
-                    "type": "string"
-                },
-                "start_date": {
-                    "type": "string"
                 }
             }
         },

@@ -10,7 +10,9 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/hash"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
@@ -19,29 +21,35 @@ import (
 )
 
 type SignIn struct {
-	v  *validator.Validator
-	h  *hash.Hasher
-	ur repo.UserRepo
-	j  *jwtutil.JWT
-	g  *googleoauth.GoogleOAuth
-	m  *mockoauth.MockOAuth
+	v    *validator.Validator
+	tx   tx.TX
+	h    *hash.Hasher
+	ur   repo.UserRepo
+	uapr repo.UserAuthProviderRepo
+	j    *jwtutil.JWT
+	g    *googleoauth.GoogleOAuth
+	m    *mockoauth.MockOAuth
 }
 
 func NewSignIn(
 	v *validator.Validator,
+	tx tx.TX,
 	h *hash.Hasher,
 	ur repo.UserRepo,
+	uapr repo.UserAuthProviderRepo,
 	j *jwtutil.JWT,
 	g *googleoauth.GoogleOAuth,
 	m *mockoauth.MockOAuth,
 ) *SignIn {
 	return &SignIn{
-		v:  v,
-		h:  h,
-		ur: ur,
-		j:  j,
-		g:  g,
-		m:  m,
+		v:    v,
+		tx:   tx,
+		h:    h,
+		ur:   ur,
+		uapr: uapr,
+		j:    j,
+		g:    g,
+		m:    m,
 	}
 }
 
@@ -65,45 +73,47 @@ func (uc *SignIn) Execute(
 		return nil, errs.New(err)
 	}
 
-	switch in.Provider {
-	case entity.ProviderGoogle:
-		return uc.signInWithGoogle(ctx, in.Token)
-	case entity.ProviderRefresh:
+	if in.Provider == entity.ProviderRefresh {
 		return uc.refreshToken(ctx, in.UserID)
-	case entity.ProviderMock:
-		return uc.signInWithMock(ctx, in.Token)
-	default:
-		return nil, errs.New("Provedor não implementado")
 	}
-}
 
-func (uc *SignIn) signInWithGoogle(
-	ctx context.Context,
-	token string,
-) (*SignInOutput, error) {
-	token = strings.TrimPrefix(token, "Bearer ")
+	providerMap := map[entity.Provider]oauth.Provider{
+		entity.ProviderGoogle: uc.g,
+		entity.ProviderMock:   uc.m,
+	}
 
-	oauthUser, err := uc.g.GetUser(ctx, token)
+	oauthProvider, ok := providerMap[in.Provider]
+	if !ok {
+		return nil, errs.ErrInvalidProvider
+	}
+
+	token := strings.TrimPrefix(in.Token, "Bearer ")
+
+	authUser, authProvider, err := oauthProvider.GetUser(ctx, token)
 	if err != nil {
-		slog.Error("sign-in: failed to get user from google", "error", err)
+		slog.Error(
+			"sign-in: failed to get user from auth provider",
+			"provider", in.Provider,
+			"error", err,
+		)
 		return nil, errs.ErrUnauthorized
 	}
 
-	registeredUser, err := uc.ur.GetUserByEmail(ctx, oauthUser.Email)
+	registeredUser, err := uc.ur.GetUserByEmail(ctx, authUser.Email)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
 	if registeredUser != nil {
-		updatedUser, err := uc.updateUser(ctx, registeredUser, oauthUser)
-		if err != nil {
-			return nil, errs.New(err)
-		}
-
-		return uc.signIn(ctx, updatedUser)
+		return uc.updateUserAndSignIn(
+			ctx,
+			registeredUser,
+			authUser,
+			authProvider,
+		)
 	}
 
-	hashedEmail, err := uc.h.Hash(oauthUser.Email)
+	hashedEmail, err := uc.h.Hash(authUser.Email)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -113,68 +123,7 @@ func (uc *SignIn) signInWithGoogle(
 		return nil, errs.New(err)
 	}
 
-	if deletedUser != nil {
-		err := uc.ur.DestroyUser(ctx, deletedUser.ID)
-		if err != nil {
-			return nil, errs.New(err)
-		}
-	}
-
-	user, err := uc.createUser(ctx, oauthUser)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	return uc.signIn(ctx, user)
-}
-
-func (uc *SignIn) signInWithMock(
-	ctx context.Context,
-	token string,
-) (*SignInOutput, error) {
-	oauthUser, err := uc.m.GetUser(ctx, token)
-	if err != nil {
-		slog.Error("sign-in: failed to get user from mock", "error", err)
-		return nil, errs.ErrUnauthorized
-	}
-
-	registeredUser, err := uc.ur.GetUserByEmail(ctx, oauthUser.Email)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	if registeredUser != nil {
-		updatedUser, err := uc.updateUser(ctx, registeredUser, oauthUser)
-		if err != nil {
-			return nil, errs.New(err)
-		}
-
-		return uc.signIn(ctx, updatedUser)
-	}
-
-	hashedEmail, err := uc.h.Hash(oauthUser.Email)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	deletedUser, err := uc.ur.GetUserByEmail(ctx, hashedEmail)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	if deletedUser != nil {
-		err := uc.ur.DestroyUser(ctx, deletedUser.ID)
-		if err != nil {
-			return nil, errs.New(err)
-		}
-	}
-
-	user, err := uc.createUser(ctx, oauthUser)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	return uc.signIn(ctx, user)
+	return uc.createUserAndSignIn(ctx, deletedUser, authUser, authProvider)
 }
 
 func (uc *SignIn) refreshToken(
@@ -196,12 +145,6 @@ func (uc *SignIn) signIn(
 	ctx context.Context,
 	user *entity.User,
 ) (*SignInOutput, error) {
-	select {
-	case <-ctx.Done():
-		return nil, errs.New(ctx.Err())
-	default:
-	}
-
 	in7Days := time.Now().Add(time.Hour * 24 * 7)
 	tokenClaims := jwtutil.UserClaims{
 		Issuer:    user.ID.String(),
@@ -234,16 +177,103 @@ func (uc *SignIn) signIn(
 	}, nil
 }
 
+func (uc *SignIn) createUserAndSignIn(
+	ctx context.Context,
+	deletedUser *entity.User,
+	authUser *entity.User,
+	authProvider *entity.UserAuthProvider,
+) (*SignInOutput, error) {
+	var out *SignInOutput
+	err := uc.tx.Do(ctx, func(ctx context.Context) error {
+		if deletedUser != nil {
+			err := uc.ur.DestroyUser(ctx, deletedUser.ID)
+			if err != nil {
+				return errs.New(err)
+			}
+		}
+
+		user, err := uc.createUser(ctx, authUser)
+		if err != nil {
+			return errs.New(err)
+		}
+
+		if err := uc.createUserAuthProvider(ctx, user.ID, authProvider); err != nil {
+			return errs.New(err)
+		}
+
+		out, err = uc.signIn(ctx, user)
+		if err != nil {
+			return errs.New(err)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	return out, nil
+}
+
+func (uc *SignIn) updateUserAndSignIn(
+	ctx context.Context,
+	registeredUser *entity.User,
+	authUser *entity.User,
+	authProvider *entity.UserAuthProvider,
+) (*SignInOutput, error) {
+	registeredAuthProvider, err := uc.uapr.GetUserAuthProvider(
+		ctx,
+		repo.GetUserAuthProviderParams{
+			UserID:   registeredUser.ID,
+			Provider: authProvider.Provider,
+		},
+	)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	var out *SignInOutput
+	err = uc.tx.Do(ctx, func(ctx context.Context) error {
+		updatedUser, err := uc.updateUser(ctx, registeredUser, authUser)
+		if err != nil {
+			return errs.New(err)
+		}
+
+		if registeredAuthProvider == nil {
+			if err := uc.createUserAuthProvider(ctx, registeredUser.ID, authProvider); err != nil {
+				return errs.New(err)
+			}
+		} else {
+			if err := uc.updateUserAuthProvider(ctx, registeredAuthProvider, authProvider); err != nil {
+				return errs.New(err)
+			}
+		}
+
+		out, err = uc.signIn(ctx, updatedUser)
+		if err != nil {
+			return errs.New(err)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	return out, nil
+}
+
 func (uc *SignIn) createUser(
 	ctx context.Context,
-	oauthUser *entity.User,
+	authUser *entity.User,
 ) (*entity.User, error) {
 	params := repo.CreateUserParams{
 		Tier: string(entity.TierFree),
 	}
 	if err := copier.CopyWithOption(
 		&params,
-		oauthUser,
+		authUser,
 		copier.Option{IgnoreEmpty: true},
 	); err != nil {
 		return nil, errs.New(err)
@@ -260,7 +290,7 @@ func (uc *SignIn) createUser(
 func (uc *SignIn) updateUser(
 	ctx context.Context,
 	user *entity.User,
-	oauthUser *entity.User,
+	authUser *entity.User,
 ) (*entity.User, error) {
 	params := repo.UpdateUserParams{}
 	if err := copier.Copy(&params, user); err != nil {
@@ -269,7 +299,7 @@ func (uc *SignIn) updateUser(
 
 	if err := copier.CopyWithOption(
 		&params,
-		oauthUser,
+		authUser,
 		copier.Option{IgnoreEmpty: true},
 	); err != nil {
 		return nil, errs.New(err)
@@ -291,4 +321,40 @@ func (uc *SignIn) updateUser(
 	}
 
 	return updatedUser, nil
+}
+
+func (uc *SignIn) createUserAuthProvider(
+	ctx context.Context,
+	userID uuid.UUID,
+	authProvider *entity.UserAuthProvider,
+) error {
+	params := repo.CreateUserAuthProviderParams{}
+	if err := copier.Copy(&params, authProvider); err != nil {
+		return errs.New(err)
+	}
+	params.UserID = userID
+
+	if err := uc.uapr.CreateUserAuthProvider(ctx, params); err != nil {
+		return errs.New(err)
+	}
+
+	return nil
+}
+
+func (uc *SignIn) updateUserAuthProvider(
+	ctx context.Context,
+	registeredAuthProvider *entity.UserAuthProvider,
+	authProvider *entity.UserAuthProvider,
+) error {
+	params := repo.UpdateUserAuthProviderParams{}
+	if err := copier.Copy(&params, authProvider); err != nil {
+		return errs.New(err)
+	}
+	params.ID = registeredAuthProvider.ID
+
+	if err := uc.uapr.UpdateUserAuthProvider(ctx, params); err != nil {
+		return errs.New(err)
+	}
+
+	return nil
 }
