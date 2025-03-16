@@ -67,4 +67,12 @@ type AIChatRepo interface {
 		ctx context.Context,
 		params UpdateAIChatParams,
 	) error
+	ListAIChatMessagesAndAnswers(
+		ctx context.Context,
+		params ListAIChatMessagesAndAnswersParams,
+	) ([]entity.AIChatMessageAndAnswer, error)
+	CountAIChatMessagesAndAnswers(
+		ctx context.Context,
+		aiChatID uuid.UUID,
+	) (int64, error)
 }

@@ -79,14 +79,20 @@ var providers = []any{
 	wire.Bind(new(repo.FeedbackRepo), new(*pgrepo.FeedbackRepo)),
 	pgrepo.NewFeedbackRepo,
 
+	wire.Bind(new(repo.UserInstitutionRepo), new(*pgrepo.UserInstitutionRepo)),
+	pgrepo.NewUserInstitutionRepo,
+
 	wire.Bind(new(repo.AIChatRepo), new(*pgrepo.AIChatRepo)),
 	pgrepo.NewAIChatRepo,
 
-	wire.Bind(new(repo.AIChatMessageRepo), new(*pgrepo.AIChatMessageRepo)),
-	pgrepo.NewAIChatMessageRepo,
+	// wire.Bind(new(repo.AIChatMessageRepo), new(*pgrepo.AIChatMessageRepo)),
+	// pgrepo.NewAIChatMessageRepo,
 
-	wire.Bind(new(repo.UserInstitutionRepo), new(*pgrepo.UserInstitutionRepo)),
-	pgrepo.NewUserInstitutionRepo,
+	// wire.Bind(
+	// 	new(repo.AIChatAnswerRepo),
+	// 	new(*pgrepo.AIChatAnswerRepo),
+	// ),
+	// pgrepo.NewAIChatAnswerRepo,
 
 	wire.Bind(
 		new(repo.UserAuthProviderRepo),
@@ -124,7 +130,6 @@ var providers = []any{
 	usecase.NewCreateFeedback,
 	usecase.NewListPaymentMethods,
 	usecase.NewListAIChats,
-	usecase.NewListAIChatMessages,
 	usecase.NewCreateAIChat,
 	usecase.NewDeleteAIChat,
 	usecase.NewUpdateAIChat,
@@ -142,7 +147,6 @@ var providers = []any{
 	handler.NewFeedbackHandler,
 	handler.NewPaymentMethodHandler,
 	handler.NewAIChatHandler,
-	handler.NewAIChatMessageHandler,
 	handler.NewHealthHandler,
 
 	middleware.NewMiddleware,

@@ -39,7 +39,7 @@ func (uc *ListInstitutions) Execute(
 
 	options := []repo.InstitutionOption{}
 	if len(in.UserIDs) > 0 {
-		options = append(options, repo.WithInstitutionUser(in.UserIDs))
+		options = append(options, repo.WithInstitutionUsers(in.UserIDs))
 	}
 
 	if in.Search != "" {

@@ -13,7 +13,6 @@ model AccountBalance {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   amount     BigInt
   created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at DateTime? @db.Timestamptz()
 
   account    Account @relation(fields: [account_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -28,7 +27,6 @@ model Account {
   name        String
   type        String
   created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at  DateTime? @db.Timestamptz()
 
   user_institution    UserInstitution @relation(fields: [user_institution_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -45,16 +43,28 @@ model AIChatMessage {
   id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   message    String
   created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at DateTime? @db.Timestamptz()
-
-  created_by_user    User?   @relation(fields: [created_by_user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  created_by_user_id String? @db.Uuid
 
   ai_chat    AIChat @relation(fields: [ai_chat_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ai_chat_id String @db.Uuid
 
+  ai_chat_answer AIChatAnswer?
+
   @@map("ai_chat_messages")
+}
+
+model AIChatAnswer {
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  message    String
+  rating     String?
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
+
+  ai_chat_message    AIChatMessage @relation(fields: [ai_chat_message_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ai_chat_message_id String        @unique @db.Uuid
+
+  @@map("ai_chat_answers")
 }
 
 model AIChat {
@@ -122,7 +132,6 @@ model Institution {
   name        String
   logo        String?
   created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at  DateTime? @db.Timestamptz()
 
   transactions Transaction[]
@@ -137,7 +146,6 @@ model PaymentMethod {
   external_id String
   name        String
   created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at  DateTime? @db.Timestamptz()
 
   transactions Transaction[]
@@ -208,7 +216,6 @@ model UserInstitution {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   external_id String
   created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
   deleted_at  DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -245,8 +252,6 @@ model User {
   feedbacks Feedback[]
 
   ai_chats AIChat[]
-
-  ai_chat_messages AIChatMessage[]
 
   @@map("users")
 }

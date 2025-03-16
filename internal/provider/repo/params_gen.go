@@ -28,9 +28,30 @@ type GetUserBalanceOnDateParams struct {
 	Date   time.Time `json:"date"`
 }
 
+type ListAIChatMessagesAndAnswersParams struct {
+	AiChatID uuid.UUID `json:"ai_chat_id"`
+	Limit    int32     `json:"limit"`
+	Offset   int32     `json:"offset"`
+}
+
 type UpdateAIChatParams struct {
 	ID    uuid.UUID `json:"id"`
 	Title *string   `json:"title"`
+}
+
+type CreateAIChatAnswerParams struct {
+	Message         string    `json:"message"`
+	AiChatMessageID uuid.UUID `json:"ai_chat_message_id"`
+}
+
+type UpdateAIChatAnswerParams struct {
+	ID     uuid.UUID `json:"id"`
+	Rating *string   `json:"rating"`
+}
+
+type CreateAIChatMessageParams struct {
+	Message  string    `json:"message"`
+	AiChatID uuid.UUID `json:"ai_chat_id"`
 }
 
 type CreateBudgetParams struct {

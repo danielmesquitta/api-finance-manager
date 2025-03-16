@@ -7,37 +7,10 @@ import (
 	"github.com/google/uuid"
 )
 
-type AIChatMessageOptions struct {
-	Limit    uint      `json:"-"`
-	Offset   uint      `json:"-"`
-	AIChatID uuid.UUID `json:"ai_chat_id"`
-}
-
-type AIChatMessageOption func(*AIChatMessageOptions)
-
-func WithAIChatMessagePagination(
-	limit uint,
-	offset uint,
-) AIChatMessageOption {
-	return func(o *AIChatMessageOptions) {
-		o.Limit = limit
-		o.Offset = offset
-	}
-}
-
-func WithAIChatMessageAIChat(aiChatID uuid.UUID) AIChatMessageOption {
-	return func(o *AIChatMessageOptions) {
-		o.AIChatID = aiChatID
-	}
-}
-
 type AIChatMessageRepo interface {
-	ListAIChatMessages(
+	CreateAIChatMessage(
 		ctx context.Context,
-		opts ...AIChatMessageOption,
-	) ([]entity.AIChatMessage, error)
-	CountAIChatMessages(
-		ctx context.Context,
-		opts ...AIChatMessageOption,
-	) (int64, error)
+		params CreateAIChatMessageParams,
+	) (*entity.AIChatMessage, error)
+	DeleteAIChatMessages(ctx context.Context, aiChatID uuid.UUID) error
 }

@@ -104,10 +104,6 @@ func (qb *QueryBuilder) CountAccounts(
 	return count, nil
 }
 
-type BuildAccountJoinsOptions struct {
-	ShouldJoinUser bool
-}
-
 func (qb *QueryBuilder) buildAccountJoins(
 	options repo.AccountOptions,
 	shouldJoinAll ...bool,

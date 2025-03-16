@@ -13,10 +13,11 @@ import (
 )
 
 type AIChatHandler struct {
-	cac *usecase.CreateAIChat
-	dac *usecase.DeleteAIChat
-	uac *usecase.UpdateAIChat
-	lac *usecase.ListAIChats
+	cac   *usecase.CreateAIChat
+	dac   *usecase.DeleteAIChat
+	uac   *usecase.UpdateAIChat
+	lac   *usecase.ListAIChats
+	lacmr *usecase.ListAIChatMessagesAndAnswers
 }
 
 func NewAIChatHandler(
@@ -148,6 +149,36 @@ func (h AIChatHandler) List(c *fiber.Ctx) error {
 
 	ctx := c.UserContext()
 	res, err := h.lac.Execute(ctx, in)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return c.JSON(res)
+}
+
+// @Summary List ai chats messages
+// @Description List ai chats messages
+// @Tags AI Chat
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param page query int false "Page"
+// @Param page_size query int false "Page size"
+// @Success 200 {object} dto.ListAIChatMessagesAndAnswersResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/ai-chats/{ai_chat_id}/messages [get]
+func (h AIChatHandler) ListMessages(c *fiber.Ctx) error {
+	paginationIn := parsePaginationParams(c)
+	aiChatID := uuid.MustParse(c.Params(pathParamAIChatID))
+
+	in := usecase.ListAIChatMessagesAndAnswersInput{
+		PaginationInput: paginationIn,
+		AIChatID:        aiChatID,
+	}
+
+	ctx := c.UserContext()
+	res, err := h.lacmr.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}

@@ -8,7 +8,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
@@ -17,16 +16,13 @@ import (
 
 type AIChatRepo struct {
 	db *db.DB
-	qb *query.QueryBuilder
 }
 
 func NewAIChatRepo(
 	db *db.DB,
-	qb *query.QueryBuilder,
 ) *AIChatRepo {
 	return &AIChatRepo{
 		db: db,
-		qb: qb,
 	}
 }
 
@@ -52,7 +48,7 @@ func (r *AIChatRepo) ListAIChats(
 	ctx context.Context,
 	opts ...repo.AIChatOption,
 ) ([]entity.AIChat, error) {
-	aiChats, err := r.qb.ListAIChats(ctx, opts...)
+	aiChats, err := r.db.ListAIChats(ctx, opts...)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -64,7 +60,7 @@ func (r *AIChatRepo) CountAIChats(
 	ctx context.Context,
 	opts ...repo.AIChatOption,
 ) (int64, error) {
-	return r.qb.CountAIChats(ctx, opts...)
+	return r.db.CountAIChats(ctx, opts...)
 }
 
 func (r *AIChatRepo) GetLatestAIChatByUserID(
@@ -122,6 +118,42 @@ func (r *AIChatRepo) UpdateAIChat(
 	}
 
 	return nil
+}
+
+func (r *AIChatRepo) ListAIChatMessagesAndAnswers(
+	ctx context.Context,
+	params repo.ListAIChatMessagesAndAnswersParams,
+) ([]entity.AIChatMessageAndAnswer, error) {
+	dbParams := sqlc.ListAIChatMessagesAndAnswersParams{}
+	if err := copier.Copy(&dbParams, params); err != nil {
+		return nil, errs.New(err)
+	}
+
+	messages, err := r.db.ListAIChatMessagesAndAnswers(ctx, dbParams)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, errs.New(err)
+	}
+
+	result := []entity.AIChatMessageAndAnswer{}
+	if err := copier.Copy(&result, messages); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return result, nil
+}
+
+func (a *AIChatRepo) CountAIChatMessagesAndAnswers(
+	ctx context.Context,
+	aiChatID uuid.UUID,
+) (int64, error) {
+	count, err := a.db.CountAIChatMessagesAndAnswers(ctx, aiChatID)
+	if err != nil {
+		return 0, errs.New(err)
+	}
+	return int64(count), nil
 }
 
 var _ repo.AIChatRepo = (*AIChatRepo)(nil)

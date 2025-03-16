@@ -8,7 +8,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
@@ -18,16 +17,13 @@ import (
 
 type TransactionCategoryRepo struct {
 	db *db.DB
-	qb *query.QueryBuilder
 }
 
 func NewCategoryRepo(
 	db *db.DB,
-	qb *query.QueryBuilder,
 ) *TransactionCategoryRepo {
 	return &TransactionCategoryRepo{
 		db: db,
-		qb: qb,
 	}
 }
 
@@ -35,7 +31,7 @@ func (r *TransactionCategoryRepo) ListTransactionCategories(
 	ctx context.Context,
 	opts ...repo.TransactionCategoryOption,
 ) ([]entity.TransactionCategory, error) {
-	categories, err := r.qb.ListTransactionCategories(ctx, opts...)
+	categories, err := r.db.ListTransactionCategories(ctx, opts...)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -47,7 +43,7 @@ func (r *TransactionCategoryRepo) CountTransactionCategories(
 	ctx context.Context,
 	opts ...repo.TransactionCategoryOption,
 ) (int64, error) {
-	return r.qb.CountTransactionCategories(ctx, opts...)
+	return r.db.CountTransactionCategories(ctx, opts...)
 }
 
 func (r *TransactionCategoryRepo) CreateTransactionCategories(

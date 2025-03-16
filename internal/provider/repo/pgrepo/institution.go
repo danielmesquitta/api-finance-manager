@@ -8,7 +8,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/jinzhu/copier"
@@ -16,16 +15,13 @@ import (
 
 type InstitutionRepo struct {
 	db *db.DB
-	qb *query.QueryBuilder
 }
 
 func NewInstitutionRepo(
 	db *db.DB,
-	qb *query.QueryBuilder,
 ) *InstitutionRepo {
 	return &InstitutionRepo{
 		db: db,
-		qb: qb,
 	}
 }
 
@@ -33,7 +29,7 @@ func (r *InstitutionRepo) ListInstitutions(
 	ctx context.Context,
 	opts ...repo.InstitutionOption,
 ) ([]entity.Institution, error) {
-	institutions, err := r.qb.ListInstitutions(ctx, opts...)
+	institutions, err := r.db.ListInstitutions(ctx, opts...)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -50,7 +46,7 @@ func (r *InstitutionRepo) CountInstitutions(
 	ctx context.Context,
 	opts ...repo.InstitutionOption,
 ) (int64, error) {
-	return r.qb.CountInstitutions(ctx, opts...)
+	return r.db.CountInstitutions(ctx, opts...)
 }
 
 func (r *InstitutionRepo) CreateInstitutions(

@@ -9,6 +9,10 @@ type ListAIChatsResponse struct {
 	entity.PaginatedList[entity.AIChat]
 }
 
+type ListAIChatMessagesAndAnswersResponse struct {
+	entity.PaginatedList[entity.AIChatMessageAndAnswer]
+}
+
 type CreateAIChatResponse struct {
 	entity.AIChat
 }

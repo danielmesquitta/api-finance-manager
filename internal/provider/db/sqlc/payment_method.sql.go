@@ -17,7 +17,7 @@ type CreatePaymentMethodsParams struct {
 }
 
 const getPaymentMethod = `-- name: GetPaymentMethod :one
-SELECT id, external_id, name, created_at, updated_at, deleted_at
+SELECT id, external_id, name, created_at, deleted_at
 FROM payment_methods
 WHERE id = $1
   AND deleted_at IS NULL
@@ -31,7 +31,6 @@ func (q *Queries) GetPaymentMethod(ctx context.Context, id uuid.UUID) (PaymentMe
 		&i.ExternalID,
 		&i.Name,
 		&i.CreatedAt,
-		&i.UpdatedAt,
 		&i.DeletedAt,
 	)
 	return i, err

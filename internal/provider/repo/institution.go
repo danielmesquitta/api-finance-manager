@@ -32,7 +32,7 @@ func WithInstitutionSearch(search string) InstitutionOption {
 	}
 }
 
-func WithInstitutionUser(userIDs []uuid.UUID) InstitutionOption {
+func WithInstitutionUsers(userIDs []uuid.UUID) InstitutionOption {
 	return func(o *InstitutionOptions) {
 		o.UserIDs = userIDs
 	}

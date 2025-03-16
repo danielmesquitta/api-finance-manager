@@ -80,6 +80,23 @@ func (qb *QueryBuilder) Scan(
 		return errs.New(err)
 	}
 
+	return qb.scan(ctx, sql, dest, args...)
+}
+
+func (qb *QueryBuilder) ScanRaw(
+	ctx context.Context,
+	sql string,
+	dest any,
+) error {
+	return qb.scan(ctx, sql, dest)
+}
+
+func (qb *QueryBuilder) scan(
+	ctx context.Context,
+	sql string,
+	dest any,
+	args ...any,
+) error {
 	if qb.e.Environment == config.EnvironmentTest {
 		log.Printf("Query: %s", sql)
 	}

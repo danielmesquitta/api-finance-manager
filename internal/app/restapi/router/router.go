@@ -10,23 +10,22 @@ import (
 )
 
 type Router struct {
-	e    *config.Env
-	m    *middleware.Middleware
-	hh   *handler.HealthHandler
-	dh   *handler.DocHandler
-	ah   *handler.AuthHandler
-	ch   *handler.CalculatorHandler
-	ih   *handler.InstitutionHandler
-	cth  *handler.CategoryHandler
-	bh   *handler.BudgetHandler
-	uh   *handler.UserHandler
-	ach  *handler.AccountHandler
-	th   *handler.TransactionHandler
-	bah  *handler.BalanceHandler
-	fh   *handler.FeedbackHandler
-	pmh  *handler.PaymentMethodHandler
-	aih  *handler.AIChatHandler
-	acmh *handler.AIChatMessageHandler
+	e   *config.Env
+	m   *middleware.Middleware
+	hh  *handler.HealthHandler
+	dh  *handler.DocHandler
+	ah  *handler.AuthHandler
+	ch  *handler.CalculatorHandler
+	ih  *handler.InstitutionHandler
+	cth *handler.CategoryHandler
+	bh  *handler.BudgetHandler
+	uh  *handler.UserHandler
+	ach *handler.AccountHandler
+	th  *handler.TransactionHandler
+	bah *handler.BalanceHandler
+	fh  *handler.FeedbackHandler
+	pmh *handler.PaymentMethodHandler
+	aih *handler.AIChatHandler
 }
 
 func NewRouter(
@@ -46,26 +45,24 @@ func NewRouter(
 	fh *handler.FeedbackHandler,
 	pmh *handler.PaymentMethodHandler,
 	aih *handler.AIChatHandler,
-	acmh *handler.AIChatMessageHandler,
 ) *Router {
 	return &Router{
-		e:    e,
-		m:    m,
-		hh:   hh,
-		dh:   dh,
-		ah:   ah,
-		ch:   ch,
-		ih:   ih,
-		cth:  cth,
-		bh:   bh,
-		uh:   uh,
-		ach:  ach,
-		th:   th,
-		bah:  bah,
-		fh:   fh,
-		pmh:  pmh,
-		aih:  aih,
-		acmh: acmh,
+		e:   e,
+		m:   m,
+		hh:  hh,
+		dh:  dh,
+		ah:  ah,
+		ch:  ch,
+		ih:  ih,
+		cth: cth,
+		bh:  bh,
+		uh:  uh,
+		ach: ach,
+		th:  th,
+		bah: bah,
+		fh:  fh,
+		pmh: pmh,
+		aih: aih,
 	}
 }
 
@@ -135,6 +132,5 @@ func (r *Router) Register(
 	usersApiV1.Delete("/ai-chats/:ai_chat_id", r.aih.Delete)
 	usersApiV1.Put("/ai-chats/:ai_chat_id", r.aih.Update)
 	usersApiV1.Get("/ai-chats", r.aih.List)
-
-	usersApiV1.Get("/ai-chats/:ai_chat_id/messages", r.acmh.List)
+	usersApiV1.Get("/ai-chats/:ai_chat_id/messages", r.aih.ListMessages)
 }

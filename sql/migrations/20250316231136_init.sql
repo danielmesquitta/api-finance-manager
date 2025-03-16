@@ -9,7 +9,6 @@ CREATE TABLE "account_balances" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "amount" BIGINT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
     "account_id" UUID NOT NULL,
 
@@ -23,7 +22,6 @@ CREATE TABLE "accounts" (
     "name" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
     "user_institution_id" UUID NOT NULL,
 
@@ -35,12 +33,23 @@ CREATE TABLE "ai_chat_messages" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "message" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
-    "created_by_user_id" UUID,
     "ai_chat_id" UUID NOT NULL,
 
     CONSTRAINT "ai_chat_messages_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ai_chat_answers" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "message" TEXT NOT NULL,
+    "rating" TEXT,
+    "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "deleted_at" TIMESTAMPTZ,
+    "ai_chat_message_id" UUID NOT NULL,
+
+    CONSTRAINT "ai_chat_answers_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -99,7 +108,6 @@ CREATE TABLE "institutions" (
     "name" TEXT NOT NULL,
     "logo" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
 
     CONSTRAINT "institutions_pkey" PRIMARY KEY ("id")
@@ -111,7 +119,6 @@ CREATE TABLE "payment_methods" (
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
 
     CONSTRAINT "payment_methods_pkey" PRIMARY KEY ("id")
@@ -168,7 +175,6 @@ CREATE TABLE "user_institutions" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
     "user_id" UUID NOT NULL,
     "institution_id" UUID NOT NULL,
@@ -193,6 +199,9 @@ CREATE TABLE "users" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "ai_chat_answers_ai_chat_message_id_key" ON "ai_chat_answers"("ai_chat_message_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- AddForeignKey
@@ -202,10 +211,10 @@ ALTER TABLE "account_balances" ADD CONSTRAINT "account_balances_account_id_fkey"
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_institution_id_fkey" FOREIGN KEY ("user_institution_id") REFERENCES "user_institutions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ai_chat_messages" ADD CONSTRAINT "ai_chat_messages_created_by_user_id_fkey" FOREIGN KEY ("created_by_user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ai_chat_messages" ADD CONSTRAINT "ai_chat_messages_ai_chat_id_fkey" FOREIGN KEY ("ai_chat_id") REFERENCES "ai_chats"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ai_chat_messages" ADD CONSTRAINT "ai_chat_messages_ai_chat_id_fkey" FOREIGN KEY ("ai_chat_id") REFERENCES "ai_chats"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ai_chat_answers" ADD CONSTRAINT "ai_chat_answers_ai_chat_message_id_fkey" FOREIGN KEY ("ai_chat_message_id") REFERENCES "ai_chat_messages"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ai_chats" ADD CONSTRAINT "ai_chats_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

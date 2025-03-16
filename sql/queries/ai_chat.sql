@@ -28,3 +28,43 @@ WHERE id = $1;
 SELECT *
 FROM ai_chats
 WHERE id = $1;
+-- name: ListAIChatMessagesAndAnswers :many
+WITH combined_messages AS (
+  SELECT m.id,
+    m.message,
+    NULL as rating,
+    'USER' as author,
+    m.created_at
+  FROM ai_chat_messages m
+  WHERE m.ai_chat_id = $1
+    AND m.deleted_at IS NULL
+  UNION ALL
+  SELECT r.id,
+    r.message,
+    r.rating,
+    'AI' as author,
+    r.created_at
+  FROM ai_chat_answers r
+    JOIN ai_chat_messages m ON m.id = r.ai_chat_message_id
+  WHERE m.ai_chat_id = $1
+    AND m.deleted_at IS NULL
+    AND r.deleted_at IS NULL
+)
+SELECT *
+FROM combined_messages
+ORDER BY created_at DESC
+LIMIT $2 OFFSET $3;
+-- name: CountAIChatMessagesAndAnswers :one
+SELECT (
+    SELECT COUNT(*)
+    FROM ai_chat_messages m
+    WHERE m.ai_chat_id = $1
+      AND m.deleted_at IS NULL
+  ) + (
+    SELECT COUNT(*)
+    FROM ai_chat_answers r
+      JOIN ai_chat_messages m ON m.id = r.ai_chat_message_id
+    WHERE m.ai_chat_id = $1
+      AND m.deleted_at IS NULL
+      AND r.deleted_at IS NULL
+  ) AS total_count;

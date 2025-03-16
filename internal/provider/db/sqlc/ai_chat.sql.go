@@ -12,6 +12,29 @@ import (
 	"github.com/google/uuid"
 )
 
+const countAIChatMessagesAndAnswers = `-- name: CountAIChatMessagesAndAnswers :one
+SELECT (
+    SELECT COUNT(*)
+    FROM ai_chat_messages m
+    WHERE m.ai_chat_id = $1
+      AND m.deleted_at IS NULL
+  ) + (
+    SELECT COUNT(*)
+    FROM ai_chat_answers r
+      JOIN ai_chat_messages m ON m.id = r.ai_chat_message_id
+    WHERE m.ai_chat_id = $1
+      AND m.deleted_at IS NULL
+      AND r.deleted_at IS NULL
+  ) AS total_count
+`
+
+func (q *Queries) CountAIChatMessagesAndAnswers(ctx context.Context, aiChatID uuid.UUID) (int32, error) {
+	row := q.db.QueryRow(ctx, countAIChatMessagesAndAnswers, aiChatID)
+	var total_count int32
+	err := row.Scan(&total_count)
+	return total_count, err
+}
+
 const createAIChat = `-- name: CreateAIChat :one
 INSERT INTO ai_chats (user_id)
 VALUES ($1)
@@ -102,6 +125,74 @@ func (q *Queries) GetLatestAIChatByUserID(ctx context.Context, userID uuid.UUID)
 		&i.HasMessages,
 	)
 	return i, err
+}
+
+const listAIChatMessagesAndAnswers = `-- name: ListAIChatMessagesAndAnswers :many
+WITH combined_messages AS (
+  SELECT m.id,
+    m.message,
+    NULL as rating,
+    'USER' as author,
+    m.created_at
+  FROM ai_chat_messages m
+  WHERE m.ai_chat_id = $1
+    AND m.deleted_at IS NULL
+  UNION ALL
+  SELECT r.id,
+    r.message,
+    r.rating,
+    'AI' as author,
+    r.created_at
+  FROM ai_chat_answers r
+    JOIN ai_chat_messages m ON m.id = r.ai_chat_message_id
+  WHERE m.ai_chat_id = $1
+    AND m.deleted_at IS NULL
+    AND r.deleted_at IS NULL
+)
+SELECT id, message, rating, author, created_at
+FROM combined_messages
+ORDER BY created_at DESC
+LIMIT $2 OFFSET $3
+`
+
+type ListAIChatMessagesAndAnswersParams struct {
+	AiChatID uuid.UUID `json:"ai_chat_id"`
+	Limit    int32     `json:"limit"`
+	Offset   int32     `json:"offset"`
+}
+
+type ListAIChatMessagesAndAnswersRow struct {
+	ID        uuid.UUID   `json:"id"`
+	Message   string      `json:"message"`
+	Rating    interface{} `json:"rating"`
+	Author    string      `json:"author"`
+	CreatedAt time.Time   `json:"created_at"`
+}
+
+func (q *Queries) ListAIChatMessagesAndAnswers(ctx context.Context, arg ListAIChatMessagesAndAnswersParams) ([]ListAIChatMessagesAndAnswersRow, error) {
+	rows, err := q.db.Query(ctx, listAIChatMessagesAndAnswers, arg.AiChatID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListAIChatMessagesAndAnswersRow
+	for rows.Next() {
+		var i ListAIChatMessagesAndAnswersRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Message,
+			&i.Rating,
+			&i.Author,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updateAIChat = `-- name: UpdateAIChat :exec

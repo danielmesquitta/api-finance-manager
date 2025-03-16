@@ -11,7 +11,6 @@ type AccountBalance struct {
 	ID        uuid.UUID  `json:"id,omitempty"`
 	Amount    int64      `json:"amount,omitempty"`
 	CreatedAt time.Time  `json:"created_at,omitempty"`
-	UpdatedAt time.Time  `json:"updated_at,omitempty"`
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
 	AccountID uuid.UUID  `json:"account_id,omitempty"`
 }
@@ -22,19 +21,26 @@ type Account struct {
 	Name              string     `json:"name,omitempty"`
 	Type              string     `json:"type,omitempty"`
 	CreatedAt         time.Time  `json:"created_at,omitempty"`
-	UpdatedAt         time.Time  `json:"updated_at,omitempty"`
 	DeletedAt         *time.Time `json:"deleted_at,omitempty"`
 	UserInstitutionID uuid.UUID  `json:"user_institution_id,omitempty"`
 }
 
 type AIChatMessage struct {
+	ID        uuid.UUID  `json:"id,omitempty"`
+	Message   string     `json:"message,omitempty"`
+	CreatedAt time.Time  `json:"created_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at,omitempty"`
+	AiChatID  uuid.UUID  `json:"ai_chat_id,omitempty"`
+}
+
+type AIChatAnswer struct {
 	ID              uuid.UUID  `json:"id,omitempty"`
 	Message         string     `json:"message,omitempty"`
+	Rating          *string    `json:"rating,omitempty"`
 	CreatedAt       time.Time  `json:"created_at,omitempty"`
 	UpdatedAt       time.Time  `json:"updated_at,omitempty"`
 	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
-	CreatedByUserID *uuid.UUID `json:"created_by_user_id,omitempty"`
-	AiChatID        uuid.UUID  `json:"ai_chat_id,omitempty"`
+	AiChatMessageID uuid.UUID  `json:"ai_chat_message_id,omitempty"`
 }
 
 type AIChat struct {
@@ -80,7 +86,6 @@ type Institution struct {
 	Name       string     `json:"name,omitempty"`
 	Logo       *string    `json:"logo,omitempty"`
 	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
 	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
 }
 
@@ -89,7 +94,6 @@ type PaymentMethod struct {
 	ExternalID string     `json:"external_id,omitempty"`
 	Name       string     `json:"name,omitempty"`
 	CreatedAt  time.Time  `json:"created_at,omitempty"`
-	UpdatedAt  time.Time  `json:"updated_at,omitempty"`
 	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
 }
 
@@ -134,7 +138,6 @@ type UserInstitution struct {
 	ID            uuid.UUID  `json:"id,omitempty"`
 	ExternalID    string     `json:"external_id,omitempty"`
 	CreatedAt     time.Time  `json:"created_at,omitempty"`
-	UpdatedAt     time.Time  `json:"updated_at,omitempty"`
 	DeletedAt     *time.Time `json:"deleted_at,omitempty"`
 	UserID        uuid.UUID  `json:"user_id,omitempty"`
 	InstitutionID uuid.UUID  `json:"institution_id,omitempty"`

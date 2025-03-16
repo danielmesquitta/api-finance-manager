@@ -8,7 +8,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
@@ -17,16 +16,13 @@ import (
 
 type TransactionRepo struct {
 	db *db.DB
-	qb *query.QueryBuilder
 }
 
 func NewTransactionRepo(
 	db *db.DB,
-	qb *query.QueryBuilder,
 ) *TransactionRepo {
 	return &TransactionRepo{
 		db: db,
-		qb: qb,
 	}
 }
 
@@ -35,7 +31,7 @@ func (r *TransactionRepo) ListTransactions(
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
 ) ([]entity.Transaction, error) {
-	transactions, err := r.qb.ListTransactions(ctx, userID, opts...)
+	transactions, err := r.db.ListTransactions(ctx, userID, opts...)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -47,7 +43,7 @@ func (r *TransactionRepo) ListFullTransactions(
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
 ) ([]entity.FullTransaction, error) {
-	transactions, err := r.qb.
+	transactions, err := r.db.
 		ListFullTransactions(ctx, userID, opts...)
 	if err != nil {
 		return nil, errs.New(err)
@@ -60,7 +56,7 @@ func (r *TransactionRepo) CountTransactions(
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
 ) (int64, error) {
-	return r.qb.CountTransactions(ctx, userID, opts...)
+	return r.db.CountTransactions(ctx, userID, opts...)
 }
 
 func (r *TransactionRepo) SumTransactions(
@@ -68,7 +64,7 @@ func (r *TransactionRepo) SumTransactions(
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
 ) (int64, error) {
-	return r.qb.SumTransactions(ctx, userID, opts...)
+	return r.db.SumTransactions(ctx, userID, opts...)
 }
 
 func (r *TransactionRepo) SumTransactionsByCategory(
@@ -76,7 +72,7 @@ func (r *TransactionRepo) SumTransactionsByCategory(
 	userID uuid.UUID,
 	opts ...repo.TransactionOption,
 ) (map[uuid.UUID]int64, error) {
-	return r.qb.SumTransactionsByCategory(ctx, userID, opts...)
+	return r.db.SumTransactionsByCategory(ctx, userID, opts...)
 }
 
 func (r *TransactionRepo) CreateTransactions(

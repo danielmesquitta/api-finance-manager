@@ -14,7 +14,7 @@ import (
 const createUserInstitution = `-- name: CreateUserInstitution :one
 INSERT INTO user_institutions (external_id, user_id, institution_id)
 VALUES ($1, $2, $3)
-RETURNING id, external_id, created_at, updated_at, deleted_at, user_id, institution_id
+RETURNING id, external_id, created_at, deleted_at, user_id, institution_id
 `
 
 type CreateUserInstitutionParams struct {
@@ -30,7 +30,6 @@ func (q *Queries) CreateUserInstitution(ctx context.Context, arg CreateUserInsti
 		&i.ID,
 		&i.ExternalID,
 		&i.CreatedAt,
-		&i.UpdatedAt,
 		&i.DeletedAt,
 		&i.UserID,
 		&i.InstitutionID,
@@ -39,7 +38,7 @@ func (q *Queries) CreateUserInstitution(ctx context.Context, arg CreateUserInsti
 }
 
 const getUserInstitutionByExternalID = `-- name: GetUserInstitutionByExternalID :one
-SELECT id, external_id, created_at, updated_at, deleted_at, user_id, institution_id
+SELECT id, external_id, created_at, deleted_at, user_id, institution_id
 FROM user_institutions
 WHERE external_id = $1
   AND deleted_at IS NULL
@@ -52,7 +51,6 @@ func (q *Queries) GetUserInstitutionByExternalID(ctx context.Context, externalID
 		&i.ID,
 		&i.ExternalID,
 		&i.CreatedAt,
-		&i.UpdatedAt,
 		&i.DeletedAt,
 		&i.UserID,
 		&i.InstitutionID,

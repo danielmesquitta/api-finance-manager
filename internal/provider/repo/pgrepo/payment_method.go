@@ -8,7 +8,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
@@ -18,16 +17,13 @@ import (
 
 type PaymentMethodRepo struct {
 	db *db.DB
-	qb *query.QueryBuilder
 }
 
 func NewPaymentMethodRepo(
 	db *db.DB,
-	qb *query.QueryBuilder,
 ) *PaymentMethodRepo {
 	return &PaymentMethodRepo{
 		db: db,
-		qb: qb,
 	}
 }
 
@@ -35,7 +31,7 @@ func (r *PaymentMethodRepo) ListPaymentMethods(
 	ctx context.Context,
 	opts ...repo.PaymentMethodOption,
 ) ([]entity.PaymentMethod, error) {
-	paymentMethods, err := r.qb.ListPaymentMethods(ctx, opts...)
+	paymentMethods, err := r.db.ListPaymentMethods(ctx, opts...)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -47,7 +43,7 @@ func (r *PaymentMethodRepo) CountPaymentMethods(
 	ctx context.Context,
 	opts ...repo.PaymentMethodOption,
 ) (int64, error) {
-	return r.qb.CountPaymentMethods(ctx, opts...)
+	return r.db.CountPaymentMethods(ctx, opts...)
 }
 
 func (r *PaymentMethodRepo) CreatePaymentMethods(
