@@ -35,6 +35,17 @@ func ToMonthlyInterestRate(annualInterestRate float64) float64 {
 	return math.Pow(1+annualInterestRate, 1.0/12) - 1
 }
 
+// ToAnnualInterestRate converts a monthly interest rate to an annual interest rate.
 func ToAnnualInterestRate(monthlyInterestRate float64) float64 {
 	return math.Pow(1+monthlyInterestRate, 12) - 1
+}
+
+// CalculatePercentageVariation calculates the percentage variation between two values.
+func CalculatePercentageVariation(
+	curr, prev int64,
+) int64 {
+	if prev == 0 {
+		return 0
+	}
+	return FromPercentage((float64(curr) / float64(prev)) - 1)
 }

@@ -60,6 +60,10 @@ func (u *UpdateTransaction) Execute(
 	}
 
 	params := repo.UpdateTransactionParams{}
+	if err := copier.Copy(&params, transaction); err != nil {
+		return errs.New(err)
+	}
+
 	if err := copier.CopyWithOption(&params, in, copier.Option{IgnoreEmpty: true}); err != nil {
 		return errs.New(err)
 	}

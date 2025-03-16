@@ -5,6 +5,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
@@ -170,17 +171,17 @@ func (uc *GetBalance) Execute(
 		return nil, errs.New(err)
 	}
 
-	balancePercentageVariation := calculatePercentageVariation(
+	balancePercentageVariation := money.CalculatePercentageVariation(
 		currentBalance,
 		previousBalance,
 	)
 
-	incomePercentageVariation := calculatePercentageVariation(
+	incomePercentageVariation := money.CalculatePercentageVariation(
 		currentIncome,
 		previousIncome,
 	)
 
-	expensePercentageVariation := calculatePercentageVariation(
+	expensePercentageVariation := money.CalculatePercentageVariation(
 		currentExpense,
 		previousExpense,
 	)

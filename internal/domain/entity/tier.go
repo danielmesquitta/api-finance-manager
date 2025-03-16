@@ -1,6 +1,6 @@
 package entity
 
-type Tier string
+type Tier = string
 
 const (
 	TierFree    Tier = "FREE"

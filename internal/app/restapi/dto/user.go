@@ -5,7 +5,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 )
 
-type UserProfileResponse struct {
+type GetUserProfileResponse struct {
 	entity.User
 }
 

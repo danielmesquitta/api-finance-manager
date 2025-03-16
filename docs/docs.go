@@ -1927,7 +1927,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.UserProfileResponse"
+                            "$ref": "#/definitions/dto.GetUserProfileResponse"
                         }
                     },
                     "401": {
@@ -2916,7 +2916,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.UserProfileResponse": {
+        "dto.GetUserProfileResponse": {
             "type": "object",
             "properties": {
                 "avatar": {

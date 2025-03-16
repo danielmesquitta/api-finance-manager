@@ -33,24 +33,24 @@ definitions:
         type: integer
       interest_type:
         allOf:
-        - $ref: '#/definitions/entity.InterestType'
+          - $ref: "#/definitions/entity.InterestType"
         enum:
-        - MONTHLY
-        - ANNUAL
+          - MONTHLY
+          - ANNUAL
       purchase_value:
         minimum: 0
         type: integer
     required:
-    - installments
-    - interest
-    - interest_type
-    - purchase_value
+      - installments
+      - interest
+      - interest_type
+      - purchase_value
     type: object
   dto.CashVsInstallmentsResponse:
     properties:
       cash_flow_by_month:
         additionalProperties:
-          $ref: '#/definitions/usecase.CashFlow'
+          $ref: "#/definitions/usecase.CashFlow"
         type: object
       savings_with_cash:
         type: integer
@@ -67,25 +67,25 @@ definitions:
         type: integer
       interest_type:
         allOf:
-        - $ref: '#/definitions/entity.InterestType'
+          - $ref: "#/definitions/entity.InterestType"
         enum:
-        - MONTHLY
-        - ANNUAL
+          - MONTHLY
+          - ANNUAL
       monthly_deposit:
         type: integer
       period_in_months:
         minimum: 1
         type: integer
     required:
-    - interest
-    - interest_type
-    - period_in_months
+      - interest
+      - interest_type
+      - period_in_months
     type: object
   dto.CompoundInterestResponse:
     properties:
       by_month:
         additionalProperties:
-          $ref: '#/definitions/usecase.CompoundInterestResult'
+          $ref: "#/definitions/usecase.CompoundInterestResult"
         type: object
       total_amount:
         type: integer
@@ -114,23 +114,23 @@ definitions:
       clientUserId:
         type: string
       connector:
-        $ref: '#/definitions/usecase.CreateAccountsInstitution'
+        $ref: "#/definitions/usecase.CreateAccountsInstitution"
       executionStatus:
         type: string
       id:
         type: string
     required:
-    - clientUserId
-    - connector
-    - executionStatus
-    - id
+      - clientUserId
+      - connector
+      - executionStatus
+      - id
     type: object
   dto.CreateFeedbackRequest:
     properties:
       message:
         type: string
     required:
-    - message
+      - message
     type: object
   dto.CreateTransactionRequest:
     properties:
@@ -145,20 +145,20 @@ definitions:
       payment_method_id:
         type: string
     required:
-    - amount
-    - date
-    - name
-    - payment_method_id
+      - amount
+      - date
+      - name
+      - payment_method_id
     type: object
   dto.EmergencyReserveRequest:
     properties:
       job_type:
         allOf:
-        - $ref: '#/definitions/entity.JobType'
+          - $ref: "#/definitions/entity.JobType"
         enum:
-        - ENTREPRENEUR
-        - EMPLOYEE
-        - CIVIL_SERVANT
+          - ENTREPRENEUR
+          - EMPLOYEE
+          - CIVIL_SERVANT
       monthly_expenses:
         minimum: 0
         type: integer
@@ -170,7 +170,7 @@ definitions:
         minimum: 0
         type: integer
     required:
-    - job_type
+      - job_type
     type: object
   dto.EmergencyReserveResponse:
     properties:
@@ -192,7 +192,7 @@ definitions:
     properties:
       errors:
         items:
-          $ref: '#/definitions/dto.ErrorItem'
+          $ref: "#/definitions/dto.ErrorItem"
         type: array
       message:
         type: string
@@ -202,7 +202,7 @@ definitions:
       balance_percentage_variation:
         type: integer
       comparison_dates:
-        $ref: '#/definitions/dateutil.ComparisonDates'
+        $ref: "#/definitions/dateutil.ComparisonDates"
       current_balance:
         type: integer
       current_expense:
@@ -255,10 +255,10 @@ definitions:
         type: integer
       budget_categories:
         items:
-          $ref: '#/definitions/usecase.GetBudgetBudgetCategories'
+          $ref: "#/definitions/usecase.GetBudgetBudgetCategories"
         type: array
       comparison_dates:
-        $ref: '#/definitions/dateutil.ComparisonDates'
+        $ref: "#/definitions/dateutil.ComparisonDates"
       created_at:
         type: string
       date:
@@ -322,7 +322,7 @@ definitions:
     properties:
       items:
         items:
-          $ref: '#/definitions/entity.AIChatMessage'
+          $ref: "#/definitions/entity.AIChatMessage"
         type: array
       page:
         type: integer
@@ -337,7 +337,7 @@ definitions:
     properties:
       items:
         items:
-          $ref: '#/definitions/entity.AIChat'
+          $ref: "#/definitions/entity.AIChat"
         type: array
       page:
         type: integer
@@ -352,7 +352,7 @@ definitions:
     properties:
       items:
         items:
-          $ref: '#/definitions/entity.Institution'
+          $ref: "#/definitions/entity.Institution"
         type: array
       page:
         type: integer
@@ -367,7 +367,7 @@ definitions:
     properties:
       items:
         items:
-          $ref: '#/definitions/entity.PaymentMethod'
+          $ref: "#/definitions/entity.PaymentMethod"
         type: array
       page:
         type: integer
@@ -382,7 +382,7 @@ definitions:
     properties:
       items:
         items:
-          $ref: '#/definitions/entity.TransactionCategory'
+          $ref: "#/definitions/entity.TransactionCategory"
         type: array
       page:
         type: integer
@@ -397,7 +397,7 @@ definitions:
     properties:
       items:
         items:
-          $ref: '#/definitions/entity.FullTransaction'
+          $ref: "#/definitions/entity.FullTransaction"
         type: array
       page:
         type: integer
@@ -431,10 +431,10 @@ definitions:
         type: integer
       interest_type:
         allOf:
-        - $ref: '#/definitions/entity.InterestType'
+          - $ref: "#/definitions/entity.InterestType"
         enum:
-        - MONTHLY
-        - ANNUAL
+          - MONTHLY
+          - ANNUAL
       life_expectancy:
         minimum: 1
         type: integer
@@ -445,15 +445,15 @@ definitions:
         minimum: 1
         type: integer
     required:
-    - age
-    - goal_income
-    - goal_patrimony
-    - income_investment_percentage
-    - interest
-    - interest_type
-    - life_expectancy
-    - monthly_income
-    - retirement_age
+      - age
+      - goal_income
+      - goal_patrimony
+      - income_investment_percentage
+      - interest
+      - interest_type
+      - life_expectancy
+      - monthly_income
+      - retirement_age
     type: object
   dto.RetirementResponse:
     properties:
@@ -476,14 +476,14 @@ definitions:
     properties:
       provider:
         allOf:
-        - $ref: '#/definitions/entity.Provider'
+          - $ref: "#/definitions/entity.Provider"
         enum:
-        - GOOGLE
-        - APPLE
-        - REFRESH
-        - MOCK
+          - GOOGLE
+          - APPLE
+          - REFRESH
+          - MOCK
     required:
-    - provider
+      - provider
     type: object
   dto.SignInResponse:
     properties:
@@ -492,7 +492,7 @@ definitions:
       refresh_token:
         type: string
       user:
-        $ref: '#/definitions/entity.User'
+        $ref: "#/definitions/entity.User"
     type: object
   dto.SimpleInterestRequest:
     properties:
@@ -505,23 +505,23 @@ definitions:
         type: integer
       interest_type:
         allOf:
-        - $ref: '#/definitions/entity.InterestType'
+          - $ref: "#/definitions/entity.InterestType"
         enum:
-        - MONTHLY
-        - ANNUAL
+          - MONTHLY
+          - ANNUAL
       period_in_months:
         minimum: 1
         type: integer
     required:
-    - interest
-    - interest_type
-    - period_in_months
+      - interest
+      - interest_type
+      - period_in_months
     type: object
   dto.SimpleInterestResponse:
     properties:
       by_month:
         additionalProperties:
-          $ref: '#/definitions/usecase.SimpleInterestResult'
+          $ref: "#/definitions/usecase.SimpleInterestResult"
         type: object
       total_amount:
         type: integer
@@ -535,7 +535,7 @@ definitions:
       title:
         type: string
     required:
-    - title
+      - title
     type: object
   dto.UpdateProfileRequest:
     properties:
@@ -563,7 +563,7 @@ definitions:
       payment_method_id:
         type: string
     required:
-    - id
+      - id
     type: object
   dto.UpsertBudgetRequest:
     properties:
@@ -571,15 +571,15 @@ definitions:
         type: integer
       categories:
         items:
-          $ref: '#/definitions/usecase.UpsertBudgetCategoryInput'
+          $ref: "#/definitions/usecase.UpsertBudgetCategoryInput"
         type: array
       date:
         type: string
     required:
-    - amount
-    - date
+      - amount
+      - date
     type: object
-  dto.UserProfileResponse:
+  dto.GetUserProfileResponse:
     properties:
       avatar:
         type: string
@@ -692,22 +692,22 @@ definitions:
     type: object
   entity.InterestType:
     enum:
-    - MONTHLY
-    - ANNUAL
+      - MONTHLY
+      - ANNUAL
     type: string
     x-enum-varnames:
-    - InterestTypeMonthly
-    - InterestTypeAnnual
+      - InterestTypeMonthly
+      - InterestTypeAnnual
   entity.JobType:
     enum:
-    - ENTREPRENEUR
-    - EMPLOYEE
-    - CIVIL_SERVANT
+      - ENTREPRENEUR
+      - EMPLOYEE
+      - CIVIL_SERVANT
     type: string
     x-enum-varnames:
-    - JobTypeEntrepreneur
-    - JobTypeEmployee
-    - JobTypeCivilServant
+      - JobTypeEntrepreneur
+      - JobTypeEmployee
+      - JobTypeCivilServant
   entity.PaymentMethod:
     properties:
       created_at:
@@ -725,16 +725,16 @@ definitions:
     type: object
   entity.Provider:
     enum:
-    - GOOGLE
-    - APPLE
-    - REFRESH
-    - MOCK
+      - GOOGLE
+      - APPLE
+      - REFRESH
+      - MOCK
     type: string
     x-enum-varnames:
-    - ProviderGoogle
-    - ProviderApple
-    - ProviderRefresh
-    - ProviderMock
+      - ProviderGoogle
+      - ProviderApple
+      - ProviderRefresh
+      - ProviderMock
   entity.TransactionCategory:
     properties:
       created_at:
@@ -796,7 +796,7 @@ definitions:
       id:
         type: integer
     required:
-    - id
+      - id
     type: object
   usecase.GetBudgetBudgetCategories:
     properties:
@@ -807,7 +807,7 @@ definitions:
       budget_id:
         type: string
       category:
-        $ref: '#/definitions/entity.TransactionCategory'
+        $ref: "#/definitions/entity.TransactionCategory"
       category_id:
         type: string
       created_at:
@@ -837,8 +837,8 @@ definitions:
       category_id:
         type: string
     required:
-    - amount
-    - category_id
+      - amount
+      - category_id
     type: object
 info:
   contact:
@@ -851,1300 +851,1301 @@ paths:
   /health:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Health check
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.HealthResponse'
+            $ref: "#/definitions/dto.HealthResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       summary: Health check
       tags:
-      - Health
+        - Health
   /v1/admin/accounts:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Webhook to sync user accounts from open finance
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateAccountsRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.CreateAccountsRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BasicAuth: []
+        - BasicAuth: []
       summary: Sync accounts from open finance
       tags:
-      - Account
+        - Account
   /v1/admin/balances/sync:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Sync account balances from open finance
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BasicAuth: []
+        - BasicAuth: []
       summary: Sync account balances from open finance
       tags:
-      - Balance
+        - Balance
   /v1/admin/institutions/sync:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Sync institutions from open finance
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BasicAuth: []
+        - BasicAuth: []
       summary: Sync institutions from open finance
       tags:
-      - Institution
+        - Institution
   /v1/admin/transactions/categories/sync:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Sync categories from open finance
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BasicAuth: []
+        - BasicAuth: []
       summary: Sync categories from open finance
       tags:
-      - Category
+        - Category
   /v1/admin/transactions/sync:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Webhook to sync transactions from open finance
       parameters:
-      - collectionFormat: csv
-        description: User IDs
-        in: query
-        items:
-          type: string
-        name: user_ids
-        type: array
+        - collectionFormat: csv
+          description: User IDs
+          in: query
+          items:
+            type: string
+          name: user_ids
+          type: array
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BasicAuth: []
+        - BasicAuth: []
       summary: Sync transactions from open finance
       tags:
-      - Transaction
+        - Transaction
   /v1/ai-chats:
     get:
       consumes:
-      - application/json
+        - application/json
       description: List ai chats
       parameters:
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Page size
-        in: query
-        name: page_size
-        type: integer
+        - description: Search
+          in: query
+          name: search
+          type: string
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Page size
+          in: query
+          name: page_size
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ListAIChatsResponse'
+            $ref: "#/definitions/dto.ListAIChatsResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: List ai chats
       tags:
-      - AI Chat
+        - AI Chat
     post:
       consumes:
-      - application/json
+        - application/json
       description: Create ai chat
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/dto.CreateAIChatResponse'
+            $ref: "#/definitions/dto.CreateAIChatResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Create ai chat
       tags:
-      - AI Chat
+        - AI Chat
   /v1/ai-chats/{ai_chat_id}:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Delete ai chat
       parameters:
-      - description: AI Chat ID
-        format: uuid
-        in: path
-        name: ai_chat_id
-        required: true
-        type: string
+        - description: AI Chat ID
+          format: uuid
+          in: path
+          name: ai_chat_id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete ai chat
       tags:
-      - AI Chat
+        - AI Chat
     put:
       consumes:
-      - application/json
+        - application/json
       description: Update ai chat
       parameters:
-      - description: AI Chat ID
-        format: uuid
-        in: path
-        name: ai_chat_id
-        required: true
-        type: string
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.UpdateAIChatRequest'
+        - description: AI Chat ID
+          format: uuid
+          in: path
+          name: ai_chat_id
+          required: true
+          type: string
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.UpdateAIChatRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Update ai chat
       tags:
-      - AI Chat
+        - AI Chat
   /v1/ai-chats/{ai_chat_id}/messages:
     get:
       consumes:
-      - application/json
+        - application/json
       description: List ai chat messages
       parameters:
-      - description: AI Chat ID
-        format: uuid
-        in: path
-        name: ai_chat_id
-        required: true
-        type: string
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Page size
-        in: query
-        name: page_size
-        type: integer
+        - description: AI Chat ID
+          format: uuid
+          in: path
+          name: ai_chat_id
+          required: true
+          type: string
+        - description: Search
+          in: query
+          name: search
+          type: string
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Page size
+          in: query
+          name: page_size
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ListAIChatMessagesResponse'
+            $ref: "#/definitions/dto.ListAIChatMessagesResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: List ai chat messages
       tags:
-      - AI Chat
+        - AI Chat
   /v1/auth/refresh:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Use refresh token to generate new access token
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SignInResponse'
+            $ref: "#/definitions/dto.SignInResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Refresh token
       tags:
-      - Auth
+        - Auth
   /v1/auth/sign-in:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Authenticate user through Google or Apple token
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.SignInRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.SignInRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SignInResponse'
+            $ref: "#/definitions/dto.SignInResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Sign in
       tags:
-      - Auth
+        - Auth
   /v1/balances:
     get:
       consumes:
-      - application/json
-      description: Gets user total balance and transactions monthly balance with previous
+        - application/json
+      description:
+        Gets user total balance and transactions monthly balance with previous
         month comparison
       parameters:
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Start date
-        format: date
-        in: query
-        name: start_date
-        type: string
-      - description: End date
-        format: date
-        in: query
-        name: end_date
-        type: string
-      - collectionFormat: csv
-        description: Institution IDs
-        in: query
-        items:
+        - description: Search
+          in: query
+          name: search
           type: string
-        name: institution_ids
-        type: array
-      - collectionFormat: csv
-        description: Category IDs
-        in: query
-        items:
+        - description: Start date
+          format: date
+          in: query
+          name: start_date
           type: string
-        name: category_ids
-        type: array
-      - collectionFormat: csv
-        description: Payment method IDs
-        in: query
-        items:
+        - description: End date
+          format: date
+          in: query
+          name: end_date
           type: string
-        name: payment_method_ids
-        type: array
-      - description: Filter only expenses
-        in: query
-        name: is_expense
-        type: boolean
-      - description: Filter only incomes
-        in: query
-        name: is_income
-        type: boolean
-      - description: Filter ignored or not ignored transactions
-        in: query
-        name: is_ignored
-        type: boolean
+        - collectionFormat: csv
+          description: Institution IDs
+          in: query
+          items:
+            type: string
+          name: institution_ids
+          type: array
+        - collectionFormat: csv
+          description: Category IDs
+          in: query
+          items:
+            type: string
+          name: category_ids
+          type: array
+        - collectionFormat: csv
+          description: Payment method IDs
+          in: query
+          items:
+            type: string
+          name: payment_method_ids
+          type: array
+        - description: Filter only expenses
+          in: query
+          name: is_expense
+          type: boolean
+        - description: Filter only incomes
+          in: query
+          name: is_income
+          type: boolean
+        - description: Filter ignored or not ignored transactions
+          in: query
+          name: is_ignored
+          type: boolean
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.GetBalanceResponse'
+            $ref: "#/definitions/dto.GetBalanceResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get balance
       tags:
-      - Balance
+        - Balance
   /v1/budgets:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Delete budget
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete budget
       tags:
-      - Budget
+        - Budget
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get budget
       parameters:
-      - description: Date
-        format: date
-        in: query
-        name: date
-        required: true
-        type: string
+        - description: Date
+          format: date
+          in: query
+          name: date
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.GetBudgetResponse'
+            $ref: "#/definitions/dto.GetBudgetResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get budget
       tags:
-      - Budget
+        - Budget
     post:
       consumes:
-      - application/json
+        - application/json
       description: Create or update budget
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.UpsertBudgetRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.UpsertBudgetRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Create or update budget
       tags:
-      - Budget
+        - Budget
   /v1/budgets/categories/{category_id}:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get budget category
       parameters:
-      - description: Category ID
-        format: uuid
-        in: path
-        name: category_id
-        required: true
-        type: string
-      - description: Date
-        format: date
-        in: query
-        name: date
-        required: true
-        type: string
+        - description: Category ID
+          format: uuid
+          in: path
+          name: category_id
+          required: true
+          type: string
+        - description: Date
+          format: date
+          in: query
+          name: date
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.GetBudgetCategoryResponse'
+            $ref: "#/definitions/dto.GetBudgetCategoryResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get budget category
       tags:
-      - Budget
+        - Budget
   /v1/budgets/categories/{category_id}/transactions:
     get:
       consumes:
-      - application/json
+        - application/json
       description: List budget category transactions
       parameters:
-      - description: Category ID
-        format: uuid
-        in: path
-        name: category_id
-        required: true
-        type: string
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Page size
-        in: query
-        name: page_size
-        type: integer
-      - description: Date
-        format: date
-        in: query
-        name: date
-        required: true
-        type: string
+        - description: Category ID
+          format: uuid
+          in: path
+          name: category_id
+          required: true
+          type: string
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Page size
+          in: query
+          name: page_size
+          type: integer
+        - description: Date
+          format: date
+          in: query
+          name: date
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ListTransactionsResponse'
+            $ref: "#/definitions/dto.ListTransactionsResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: List budget category transactions
       tags:
-      - Budget
+        - Budget
   /v1/calculator/cash-vs-installments:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Calculate cash vs installments
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CashVsInstallmentsRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.CashVsInstallmentsRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.CashVsInstallmentsResponse'
+            $ref: "#/definitions/dto.CashVsInstallmentsResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Calculate cash vs installments
       tags:
-      - Calculator
+        - Calculator
   /v1/calculator/compound-interest:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Calculate compound interest
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CompoundInterestRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.CompoundInterestRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.CompoundInterestResponse'
+            $ref: "#/definitions/dto.CompoundInterestResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Calculate compound interest
       tags:
-      - Calculator
+        - Calculator
   /v1/calculator/emergency-reserve:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Calculate emergency reserve
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.EmergencyReserveRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.EmergencyReserveRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.EmergencyReserveResponse'
+            $ref: "#/definitions/dto.EmergencyReserveResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Calculate emergency reserve
       tags:
-      - Calculator
+        - Calculator
   /v1/calculator/retirement:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Calculate investments needed for retirement
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.RetirementRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.RetirementRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.RetirementResponse'
+            $ref: "#/definitions/dto.RetirementResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Calculate retirement
       tags:
-      - Calculator
+        - Calculator
   /v1/calculator/simple-interest:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Calculate simple interest
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.SimpleInterestRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.SimpleInterestRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.SimpleInterestResponse'
+            $ref: "#/definitions/dto.SimpleInterestResponse"
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Calculate simple interest
       tags:
-      - Calculator
+        - Calculator
   /v1/feedbacks:
     post:
       consumes:
-      - application/json
+        - application/json
       description: Create feedback
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateFeedbackRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.CreateFeedbackRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Create feedback
       tags:
-      - Feedback
+        - Feedback
   /v1/institutions:
     get:
       consumes:
-      - application/json
+        - application/json
       description: List all institutions
       parameters:
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Page size
-        in: query
-        name: page_size
-        type: integer
+        - description: Search
+          in: query
+          name: search
+          type: string
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Page size
+          in: query
+          name: page_size
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ListInstitutionsResponse'
+            $ref: "#/definitions/dto.ListInstitutionsResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: List institutions
       tags:
-      - Institution
+        - Institution
   /v1/payment-methods:
     get:
       consumes:
-      - application/json
+        - application/json
       description: List payment methods
       parameters:
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Page size
-        in: query
-        name: page_size
-        type: integer
+        - description: Search
+          in: query
+          name: search
+          type: string
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Page size
+          in: query
+          name: page_size
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ListPaymentMethodsResponse'
+            $ref: "#/definitions/dto.ListPaymentMethodsResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: List payment methods
       tags:
-      - Payment Method
+        - Payment Method
   /v1/transactions:
     get:
       consumes:
-      - application/json
+        - application/json
       description: List transactions
       parameters:
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Page size
-        in: query
-        name: page_size
-        type: integer
-      - description: Start date
-        format: date
-        in: query
-        name: start_date
-        type: string
-      - description: End date
-        format: date
-        in: query
-        name: end_date
-        type: string
-      - collectionFormat: csv
-        description: Institution IDs
-        in: query
-        items:
+        - description: Search
+          in: query
+          name: search
           type: string
-        name: institution_ids
-        type: array
-      - collectionFormat: csv
-        description: Category IDs
-        in: query
-        items:
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Page size
+          in: query
+          name: page_size
+          type: integer
+        - description: Start date
+          format: date
+          in: query
+          name: start_date
           type: string
-        name: category_ids
-        type: array
-      - collectionFormat: csv
-        description: Payment method IDs
-        in: query
-        items:
+        - description: End date
+          format: date
+          in: query
+          name: end_date
           type: string
-        name: payment_method_ids
-        type: array
-      - description: Filter only expenses
-        in: query
-        name: is_expense
-        type: boolean
-      - description: Filter only incomes
-        in: query
-        name: is_income
-        type: boolean
-      - description: Filter ignored or not ignored transactions
-        in: query
-        name: is_ignored
-        type: boolean
+        - collectionFormat: csv
+          description: Institution IDs
+          in: query
+          items:
+            type: string
+          name: institution_ids
+          type: array
+        - collectionFormat: csv
+          description: Category IDs
+          in: query
+          items:
+            type: string
+          name: category_ids
+          type: array
+        - collectionFormat: csv
+          description: Payment method IDs
+          in: query
+          items:
+            type: string
+          name: payment_method_ids
+          type: array
+        - description: Filter only expenses
+          in: query
+          name: is_expense
+          type: boolean
+        - description: Filter only incomes
+          in: query
+          name: is_income
+          type: boolean
+        - description: Filter ignored or not ignored transactions
+          in: query
+          name: is_ignored
+          type: boolean
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ListTransactionsResponse'
+            $ref: "#/definitions/dto.ListTransactionsResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: List transactions
       tags:
-      - Transaction
+        - Transaction
     post:
       consumes:
-      - application/json
+        - application/json
       description: Create transactions
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateTransactionRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.CreateTransactionRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "201":
           description: Created
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Create transactions
       tags:
-      - Transaction
+        - Transaction
   /v1/transactions/{transaction_id}:
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get transaction
       parameters:
-      - description: Transaction ID
-        format: uuid
-        in: path
-        name: transaction_id
-        required: true
-        type: string
+        - description: Transaction ID
+          format: uuid
+          in: path
+          name: transaction_id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.GetTransactionResponse'
+            $ref: "#/definitions/dto.GetTransactionResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get transaction
       tags:
-      - Transaction
+        - Transaction
     put:
       consumes:
-      - application/json
+        - application/json
       description: Update transaction
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.UpdateTransactionRequest'
-      - description: Transaction ID
-        format: uuid
-        in: path
-        name: transaction_id
-        required: true
-        type: string
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.UpdateTransactionRequest"
+        - description: Transaction ID
+          format: uuid
+          in: path
+          name: transaction_id
+          required: true
+          type: string
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Update transaction
       tags:
-      - Transaction
+        - Transaction
   /v1/transactions/categories:
     get:
       consumes:
-      - application/json
+        - application/json
       description: List categories
       parameters:
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Page size
-        in: query
-        name: page_size
-        type: integer
+        - description: Search
+          in: query
+          name: search
+          type: string
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Page size
+          in: query
+          name: page_size
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ListTransactionCategoriesResponse'
+            $ref: "#/definitions/dto.ListTransactionCategoriesResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: List categories
       tags:
-      - Category
+        - Category
   /v1/users/institutions:
     get:
       consumes:
-      - application/json
+        - application/json
       description: List user institutions
       parameters:
-      - description: Search
-        in: query
-        name: search
-        type: string
-      - description: Page
-        in: query
-        name: page
-        type: integer
-      - description: Page size
-        in: query
-        name: page_size
-        type: integer
+        - description: Search
+          in: query
+          name: search
+          type: string
+        - description: Page
+          in: query
+          name: page
+          type: integer
+        - description: Page size
+          in: query
+          name: page_size
+          type: integer
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.ListInstitutionsResponse'
+            $ref: "#/definitions/dto.ListInstitutionsResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: List user institutions
       tags:
-      - Institution
+        - Institution
   /v1/users/profile:
     delete:
       consumes:
-      - application/json
+        - application/json
       description: Delete logged-in user
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Delete logged-in user
       tags:
-      - User
+        - User
     get:
       consumes:
-      - application/json
+        - application/json
       description: Get logged-in user profile
       produces:
-      - application/json
+        - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.UserProfileResponse'
+            $ref: "#/definitions/dto.GetUserProfileResponse"
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Get logged-in user profile
       tags:
-      - User
+        - User
     put:
       consumes:
-      - application/json
+        - application/json
       description: Update logged-in user
       parameters:
-      - description: Request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.UpdateProfileRequest'
+        - description: Request body
+          in: body
+          name: request
+          required: true
+          schema:
+            $ref: "#/definitions/dto.UpdateProfileRequest"
       produces:
-      - application/json
+        - application/json
       responses:
         "204":
           description: No Content
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/dto.ErrorResponse'
+            $ref: "#/definitions/dto.ErrorResponse"
       security:
-      - BearerAuth: []
+        - BearerAuth: []
       summary: Update logged-in user
       tags:
-      - User
+        - User
 securityDefinitions:
   BasicAuth:
     type: basic

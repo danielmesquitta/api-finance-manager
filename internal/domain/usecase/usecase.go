@@ -4,7 +4,6 @@ import (
 	"math"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 )
 
@@ -100,13 +99,4 @@ func prepareTransactionOptions(
 	}
 
 	return opts
-}
-
-func calculatePercentageVariation(
-	curr, prev int64,
-) int64 {
-	if prev == 0 {
-		return 0
-	}
-	return money.FromPercentage(1 - (float64(curr) / float64(prev)))
 }

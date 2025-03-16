@@ -26,10 +26,10 @@ func NewCalculateCashVsInstallments(
 
 type CalculateCashVsInstallmentsInput struct {
 	PurchaseValue      int64               `json:"purchase_value"       validate:"required,min=0"`
-	CashDiscount       int64               `json:"cash_discount"        validate:"omitzero,min=0"`
+	CashDiscount       int64               `json:"cash_discount"        validate:"omitempty,min=0"`
 	Installments       int                 `json:"installments"         validate:"required,min=1"`
-	CreditCardCashback int64               `json:"cashback"             validate:"omitzero,min=0,max=10000"`
-	CreditCardInterest int64               `json:"credit_card_interest" validate:"omitzero,min=0,max=10000"`
+	CreditCardCashback int64               `json:"cashback"             validate:"omitempty,min=0,max=10000"`
+	CreditCardInterest int64               `json:"credit_card_interest" validate:"omitempty,min=0,max=10000"`
 	Interest           int64               `json:"interest"             validate:"required,min=0,max=10000"`
 	InterestType       entity.InterestType `json:"interest_type"        validate:"required,oneof=MONTHLY ANNUAL"`
 }

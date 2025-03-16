@@ -296,44 +296,106 @@ func TestGetTransaction(t *testing.T) {
 func TestUpdateTransaction(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		description   string
-		token         string
-		transactionID string
-		body          dto.UpdateTransactionRequest
-		expectedCode  int
-	}{
+	type Test struct {
+		description         string
+		token               string
+		transactionID       string
+		body                dto.UpdateTransactionRequest
+		expectedCode        int
+		expectedTransaction *entity.Transaction
+	}
+
+	tests := []Test{
 		{
 			description:   "Fail to update transaction without token",
 			token:         "",
 			transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 			expectedCode:  http.StatusBadRequest,
 		},
-		{
-			description:   "Update transaction",
-			token:         mockoauth.DefaultMockToken,
-			transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
-			expectedCode:  http.StatusNoContent,
-			body: dto.UpdateTransactionRequest{
-				UpdateTransactionInput: usecase.UpdateTransactionInput{
-					Name:   "Foo bar",
-					Amount: 5436,
-					Date:   time.Now(),
-					PaymentMethodID: uuid.MustParse(
-						"fc7adfa0-259c-430e-99f5-bef5281add10",
-					),
-					AccountID: uuid.MustParse(
-						"ac4d82a0-9eff-4936-8a2e-8d12591c9d00",
-					),
-					InstitutionID: uuid.MustParse(
-						"df5dbd97-89c7-4776-8b3f-7992bc2bb16b",
-					),
-					CategoryID: uuid.MustParse(
-						"059efe62-9a56-414b-bc8e-65caf03f12e4",
-					),
+		func() Test {
+			name := "Foo bar"
+			date := time.Now()
+			amount := int64(5436)
+			paymentMethodID := uuid.MustParse(
+				"fc7adfa0-259c-430e-99f5-bef5281add10",
+			)
+			accountID := uuid.MustParse(
+				"ac4d82a0-9eff-4936-8a2e-8d12591c9d00",
+			)
+			institutionID := uuid.MustParse(
+				"df5dbd97-89c7-4776-8b3f-7992bc2bb16b",
+			)
+			categoryID := uuid.MustParse(
+				"2a226707-1f75-4276-9697-3e7aac3c7db6",
+			)
+			return Test{
+				description:   "Full transaction update",
+				token:         mockoauth.DefaultMockToken,
+				transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
+				expectedCode:  http.StatusNoContent,
+				body: dto.UpdateTransactionRequest{
+					UpdateTransactionInput: usecase.UpdateTransactionInput{
+						Name:            name,
+						Amount:          amount,
+						Date:            date,
+						PaymentMethodID: paymentMethodID,
+						AccountID:       accountID,
+						InstitutionID:   institutionID,
+						CategoryID:      categoryID,
+					},
 				},
-			},
-		},
+				expectedTransaction: &entity.Transaction{
+					Name:            name,
+					Amount:          amount,
+					Date:            date,
+					PaymentMethodID: paymentMethodID,
+					AccountID:       &accountID,
+					InstitutionID:   &institutionID,
+					CategoryID:      categoryID,
+				},
+			}
+		}(),
+
+		func() Test {
+			name := "Foo bar"
+			date := time.Now()
+			amount := int64(5436)
+			paymentMethodID := uuid.MustParse(
+				"fc7adfa0-259c-430e-99f5-bef5281add10",
+			)
+			accountID := uuid.MustParse(
+				"e5f31705-cb65-42a5-9072-2b9b59e338a8",
+			)
+			institutionID := uuid.MustParse(
+				"88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
+			)
+			categoryID := uuid.MustParse(
+				"373b150b-94bd-44b2-abdd-2aab14e74fad",
+			)
+			return Test{
+				description:   "Partial transaction update",
+				token:         mockoauth.DefaultMockToken,
+				transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
+				expectedCode:  http.StatusNoContent,
+				body: dto.UpdateTransactionRequest{
+					UpdateTransactionInput: usecase.UpdateTransactionInput{
+						Name:            name,
+						Amount:          amount,
+						Date:            date,
+						PaymentMethodID: paymentMethodID,
+					},
+				},
+				expectedTransaction: &entity.Transaction{
+					Name:            name,
+					Amount:          amount,
+					Date:            date,
+					PaymentMethodID: paymentMethodID,
+					AccountID:       &accountID,
+					InstitutionID:   &institutionID,
+					CategoryID:      categoryID,
+				},
+			}
+		}(),
 	}
 
 	for _, test := range tests {
@@ -375,7 +437,7 @@ func TestUpdateTransaction(t *testing.T) {
 				return
 			}
 
-			transaction, err := app.db.GetTransaction(
+			actualTransaction, err := app.db.GetTransaction(
 				ctx,
 				sqlc.GetTransactionParams{
 					ID:     uuid.MustParse(test.transactionID),
@@ -384,27 +446,41 @@ func TestUpdateTransaction(t *testing.T) {
 			)
 			assert.Nil(t, err)
 
-			expectedTransaction := map[string]any{
-				"Name":            test.body.Name,
-				"Amount":          test.body.Amount,
-				"Date":            test.body.Date.Format(time.RFC3339),
-				"PaymentMethodID": test.body.PaymentMethodID,
-				"CategoryID":      test.body.CategoryID,
-				"AccountID":       test.body.AccountID,
-				"InstitutionID":   test.body.InstitutionID,
-			}
-
-			actualTransaction := map[string]any{
-				"Name":            transaction.Name,
-				"Amount":          transaction.Amount,
-				"Date":            transaction.Date.Format(time.RFC3339),
-				"PaymentMethodID": transaction.PaymentMethodID,
-				"CategoryID":      transaction.CategoryID,
-				"AccountID":       *transaction.AccountID,
-				"InstitutionID":   *transaction.InstitutionID,
-			}
-
-			assert.Equal(t, expectedTransaction, actualTransaction)
+			assert.Equal(
+				t,
+				test.expectedTransaction.Name,
+				actualTransaction.Name,
+			)
+			assert.Equal(
+				t,
+				test.expectedTransaction.Amount,
+				actualTransaction.Amount,
+			)
+			assert.Equal(
+				t,
+				test.expectedTransaction.Date.Format(time.RFC3339),
+				actualTransaction.Date.Format(time.RFC3339),
+			)
+			assert.Equal(
+				t,
+				test.expectedTransaction.PaymentMethodID.String(),
+				actualTransaction.PaymentMethodID.String(),
+			)
+			assert.Equal(
+				t,
+				test.expectedTransaction.CategoryID.String(),
+				actualTransaction.CategoryID.String(),
+			)
+			assert.Equal(
+				t,
+				test.expectedTransaction.AccountID.String(),
+				actualTransaction.AccountID.String(),
+			)
+			assert.Equal(
+				t,
+				test.expectedTransaction.InstitutionID.String(),
+				actualTransaction.InstitutionID.String(),
+			)
 		})
 	}
 }

@@ -69,7 +69,7 @@ func TestGetBudget(t *testing.T) {
 						},
 						Spent:                              18_379_70,
 						Available:                          1_620_30,
-						AvailablePercentageVariation:       83_22,
+						AvailablePercentageVariation:       -83_22,
 						AvailablePerDay:                    0,
 						AvailablePerDayPercentageVariation: 0,
 						ComparisonDates: dateutil.ComparisonDates{

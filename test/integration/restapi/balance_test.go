@@ -25,12 +25,12 @@ func TestGetBalance(t *testing.T) {
 	}
 
 	tests := []Test{
-		// {
-		// 	description:      "Fail to get balance without token",
-		// 	token:            "",
-		// 	expectedCode:     http.StatusBadRequest,
-		// 	expectedResponse: nil,
-		// },
+		{
+			description:      "Fail to get balance without token",
+			token:            "",
+			expectedCode:     http.StatusBadRequest,
+			expectedResponse: nil,
+		},
 		func() Test {
 			startDateStr := "2024-11-01T00:00:00-03:00"
 			endDateStr := "2024-11-30T23:59:59.999999999-03:00"
@@ -60,15 +60,15 @@ func TestGetBalance(t *testing.T) {
 							ComparisonStartDate: cmpStartDate,
 							ComparisonEndDate:   cmpEndDate,
 						},
-						CurrentBalance:             0,
-						PreviousBalance:            0,
-						BalancePercentageVariation: 0,
-						CurrentIncome:              0,
-						PreviousIncome:             0,
-						IncomePercentageVariation:  0,
-						CurrentExpense:             0,
-						PreviousExpense:            0,
-						ExpensePercentageVariation: 0,
+						CurrentBalance:             12_505_08,
+						PreviousBalance:            10_405_08,
+						BalancePercentageVariation: 20_18,
+						CurrentIncome:              160_758_24,
+						PreviousIncome:             55_143_52,
+						IncomePercentageVariation:  191_52,
+						CurrentExpense:             -123_649_55,
+						PreviousExpense:            -55_775_91,
+						ExpensePercentageVariation: 121_68,
 					},
 				},
 			}
@@ -111,6 +111,66 @@ func TestGetBalance(t *testing.T) {
 			if test.expectedResponse == nil {
 				return
 			}
+
+			assert.Equal(
+				t,
+				test.expectedResponse.GetBalanceOutput.ComparisonDates,
+				actualResponse.GetBalanceOutput.ComparisonDates,
+			)
+
+			assert.Equal(
+				t,
+				test.expectedResponse.GetBalanceOutput.CurrentBalance,
+				actualResponse.GetBalanceOutput.CurrentBalance,
+			)
+
+			assert.Equal(
+				t,
+				test.expectedResponse.GetBalanceOutput.PreviousBalance,
+				actualResponse.GetBalanceOutput.PreviousBalance,
+			)
+
+			assert.Equal(
+				t,
+				test.expectedResponse.GetBalanceOutput.BalancePercentageVariation,
+				actualResponse.GetBalanceOutput.BalancePercentageVariation,
+			)
+
+			assert.Equal(
+				t,
+				test.expectedResponse.GetBalanceOutput.CurrentIncome,
+				actualResponse.GetBalanceOutput.CurrentIncome,
+			)
+
+			assert.Equal(
+				t,
+				test.expectedResponse.GetBalanceOutput.PreviousIncome,
+				actualResponse.GetBalanceOutput.PreviousIncome,
+			)
+
+			assert.Equal(
+				t,
+				test.expectedResponse.GetBalanceOutput.IncomePercentageVariation,
+				actualResponse.GetBalanceOutput.IncomePercentageVariation,
+			)
+
+			assert.Equal(
+				t,
+				test.expectedResponse.GetBalanceOutput.CurrentExpense,
+				actualResponse.GetBalanceOutput.CurrentExpense,
+			)
+
+			assert.Equal(
+				t,
+				test.expectedResponse.GetBalanceOutput.PreviousExpense,
+				actualResponse.GetBalanceOutput.PreviousExpense,
+			)
+
+			assert.Equal(
+				t,
+				test.expectedResponse.GetBalanceOutput.ExpensePercentageVariation,
+				actualResponse.GetBalanceOutput.ExpensePercentageVariation,
+			)
 		})
 	}
 }

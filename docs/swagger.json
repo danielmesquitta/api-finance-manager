@@ -1920,7 +1920,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.UserProfileResponse"
+                            "$ref": "#/definitions/dto.GetUserProfileResponse"
                         }
                     },
                     "401": {
@@ -2909,7 +2909,7 @@
                 }
             }
         },
-        "dto.UserProfileResponse": {
+        "dto.GetUserProfileResponse": {
             "type": "object",
             "properties": {
                 "avatar": {

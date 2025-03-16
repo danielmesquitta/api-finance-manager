@@ -32,7 +32,7 @@ func NewUserHandler(
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Success 200 {object} dto.UserProfileResponse
+// @Success 200 {object} dto.GetUserProfileResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
@@ -47,7 +47,7 @@ func (h UserHandler) GetProfile(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	return c.JSON(dto.UserProfileResponse{
+	return c.JSON(dto.GetUserProfileResponse{
 		User: *user,
 	})
 }
@@ -65,19 +65,14 @@ func (h UserHandler) GetProfile(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/users/profile [put]
 func (h UserHandler) UpdateProfile(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
-
-	var req dto.UpdateProfileRequest
-	if err := c.BodyParser(&req); err != nil {
+	var in usecase.UpdateUserInput
+	if err := c.BodyParser(&in); err != nil {
 		return errs.New(err)
 	}
 
-	in := usecase.UpdateUserInput{
-		ID:    userID,
-		Name:  req.Name,
-		Email: req.Email,
-	}
+	claims := GetUserClaims(c)
+	userID := uuid.MustParse(claims.Issuer)
+	in.ID = userID
 
 	ctx := c.UserContext()
 	if err := h.uu.Execute(ctx, in); err != nil {

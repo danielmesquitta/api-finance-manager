@@ -871,7 +871,7 @@
                 ],
                 "type": "object"
             },
-            "dto.UserProfileResponse": {
+            "dto.GetUserProfileResponse": {
                 "properties": {
                     "avatar": {
                         "type": "string"
@@ -3559,7 +3559,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/dto.UserProfileResponse"
+                                    "$ref": "#/components/schemas/dto.GetUserProfileResponse"
                                 }
                             }
                         },

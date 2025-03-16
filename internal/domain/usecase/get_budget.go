@@ -147,7 +147,7 @@ func (uc *GetBudget) Execute(
 	available := budget.Amount - spent
 	availablePreviousMonth := budget.Amount - spentPreviousMonth
 
-	availablePercentageVariation := calculatePercentageVariation(
+	availablePercentageVariation := money.CalculatePercentageVariation(
 		available, availablePreviousMonth,
 	)
 
@@ -169,7 +169,7 @@ func (uc *GetBudget) Execute(
 			cmpDates.ComparisonEndDate.Day(),
 		)
 
-		availablePerDayPercentageVariation = calculatePercentageVariation(
+		availablePerDayPercentageVariation = money.CalculatePercentageVariation(
 			availablePerDay, availablePreviousMonthPerDay,
 		)
 	}
