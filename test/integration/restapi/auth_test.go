@@ -117,17 +117,16 @@ func TestRefreshToken(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			refreshToken := ""
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				refreshToken = signInRes.RefreshToken
+				signInRes = app.SignIn(test.token)
 			}
 
 			var actual dto.SignInResponse
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPost,
 				"/api/v1/auth/refresh",
-				WithBearerToken(refreshToken),
+				WithBearerToken(signInRes.RefreshToken),
 				WithResponse(&actual),
 			)
 			assert.Nil(t, err)

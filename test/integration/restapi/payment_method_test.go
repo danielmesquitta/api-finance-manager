@@ -64,10 +64,9 @@ func TestListPaymentMethods(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			accessToken := ""
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken = signInRes.AccessToken
+				signInRes = app.SignIn(test.token)
 			}
 
 			var out dto.ListPaymentMethodsResponse
@@ -75,7 +74,7 @@ func TestListPaymentMethods(t *testing.T) {
 				http.MethodGet,
 				"/api/v1/payment-methods",
 				WithQueryParams(test.queryParams),
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithResponse(&out),
 			)
 			assert.Nil(t, err)

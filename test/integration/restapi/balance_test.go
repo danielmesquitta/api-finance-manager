@@ -85,17 +85,16 @@ func TestGetBalance(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			accessToken := ""
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken = signInRes.AccessToken
+				signInRes = app.SignIn(test.token)
 			}
 
 			var actualResponse dto.GetBalanceResponse
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodGet,
 				"/api/v1/balances",
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithQueryParams(test.queryParams),
 				WithResponse(&actualResponse),
 			)

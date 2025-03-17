@@ -123,17 +123,16 @@ func TestGetBudget(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			accessToken := ""
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken = signInRes.AccessToken
+				signInRes = app.SignIn(test.token)
 			}
 
 			var actualResponse dto.GetBudgetResponse
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodGet,
 				"/api/v1/budgets",
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithQueryParams(test.queryParams),
 				WithResponse(&actualResponse),
 			)
@@ -332,19 +331,15 @@ func TestUpsertBudget(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			var (
-				accessToken string
-				user        *entity.User
-			)
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken, user = signInRes.AccessToken, &signInRes.User
+				signInRes = app.SignIn(test.token)
 			}
 
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPost,
 				"/api/v1/budgets",
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithBody(test.body),
 			)
 			assert.Nil(t, err)
@@ -365,7 +360,7 @@ func TestUpsertBudget(t *testing.T) {
 			actualBudget, err := app.db.GetBudget(
 				ctx,
 				sqlc.GetBudgetParams{
-					UserID: user.ID,
+					UserID: signInRes.User.ID,
 					Date:   parsedDate,
 				},
 			)
@@ -401,7 +396,6 @@ func TestUpsertBudget(t *testing.T) {
 
 				assert.Equal(t, expectedCategory.Amount, actualCategory.Amount)
 			}
-
 		})
 	}
 }

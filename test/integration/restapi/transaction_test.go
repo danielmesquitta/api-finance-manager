@@ -175,10 +175,9 @@ func TestListTransactions(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			accessToken := ""
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken = signInRes.AccessToken
+				signInRes = app.SignIn(test.token)
 			}
 
 			var out dto.ListTransactionsResponse
@@ -187,7 +186,7 @@ func TestListTransactions(t *testing.T) {
 				http.MethodGet,
 				"/api/v1/transactions",
 				WithQueryParams(test.queryParams),
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithResponse(&out),
 				WithError(&errRes),
 			)
@@ -260,17 +259,16 @@ func TestGetTransaction(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			accessToken := ""
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken = signInRes.AccessToken
+				signInRes = app.SignIn(test.token)
 			}
 
 			var out dto.GetTransactionResponse
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodGet,
 				"/api/v1/transactions/"+test.transactionID,
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithResponse(&out),
 			)
 			assert.Nil(t, err)
@@ -409,19 +407,15 @@ func TestUpdateTransaction(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			var (
-				accessToken string
-				user        *entity.User
-			)
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken, user = signInRes.AccessToken, &signInRes.User
+				signInRes = app.SignIn(test.token)
 			}
 
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPut,
 				"/api/v1/transactions/"+test.transactionID,
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithBody(test.body),
 			)
 			assert.Nil(t, err)
@@ -441,7 +435,7 @@ func TestUpdateTransaction(t *testing.T) {
 				ctx,
 				sqlc.GetTransactionParams{
 					ID:     uuid.MustParse(test.transactionID),
-					UserID: user.ID,
+					UserID: signInRes.User.ID,
 				},
 			)
 			assert.Nil(t, err)
@@ -548,19 +542,15 @@ func TestCreateTransaction(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			var (
-				accessToken string
-				user        *entity.User
-			)
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken, user = signInRes.AccessToken, &signInRes.User
+				signInRes = app.SignIn(test.token)
 			}
 
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPost,
 				"/api/v1/transactions",
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithBody(test.body),
 			)
 			assert.Nil(t, err)
@@ -578,7 +568,7 @@ func TestCreateTransaction(t *testing.T) {
 
 			transaction, err := app.db.GetLatestTransactionByUserID(
 				ctx,
-				user.ID.String(),
+				signInRes.User.ID.String(),
 			)
 			assert.Nil(t, err)
 

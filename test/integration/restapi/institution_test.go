@@ -78,10 +78,9 @@ func TestListInstitutions(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			accessToken := ""
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken = signInRes.AccessToken
+				signInRes = app.SignIn(test.token)
 			}
 
 			var out dto.ListInstitutionsResponse
@@ -89,7 +88,7 @@ func TestListInstitutions(t *testing.T) {
 				http.MethodGet,
 				"/api/v1/institutions",
 				WithQueryParams(test.queryParams),
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithResponse(&out),
 			)
 			assert.Nil(t, err)
@@ -188,10 +187,9 @@ func TestListUserInstitutions(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			accessToken := ""
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken = signInRes.AccessToken
+				signInRes = app.SignIn(test.token)
 			}
 
 			var out dto.ListInstitutionsResponse
@@ -199,7 +197,7 @@ func TestListUserInstitutions(t *testing.T) {
 				http.MethodGet,
 				"/api/v1/users/institutions",
 				WithQueryParams(test.queryParams),
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithResponse(&out),
 			)
 			assert.Nil(t, err)

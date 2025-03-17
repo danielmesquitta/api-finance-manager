@@ -79,17 +79,16 @@ func TestGetProfile(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			accessToken := ""
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken = signInRes.AccessToken
+				signInRes = app.SignIn(test.token)
 			}
 
 			var actualResponse dto.GetUserProfileResponse
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodGet,
 				"/api/v1/users/profile",
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithResponse(&actualResponse),
 			)
 			assert.Nil(t, err)
@@ -186,19 +185,15 @@ func TestUpdateProfile(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			var (
-				accessToken string
-				user        *entity.User
-			)
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken, user = signInRes.AccessToken, &signInRes.User
+				signInRes = app.SignIn(test.token)
 			}
 
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPut,
 				"/api/v1/users/profile",
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithBody(test.body),
 			)
 			assert.Nil(t, err)
@@ -216,7 +211,7 @@ func TestUpdateProfile(t *testing.T) {
 
 			actualUser, err := app.db.GetUserByID(
 				ctx,
-				user.ID,
+				signInRes.User.ID,
 			)
 			assert.Nil(t, err)
 
@@ -260,19 +255,15 @@ func TestDeleteProfile(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			var (
-				accessToken string
-				user        *entity.User
-			)
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken, user = signInRes.AccessToken, &signInRes.User
+				signInRes = app.SignIn(test.token)
 			}
 
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodDelete,
 				"/api/v1/users/profile",
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 			)
 			assert.Nil(t, err)
 
@@ -289,7 +280,7 @@ func TestDeleteProfile(t *testing.T) {
 
 			actualUser, err := app.db.GetUserByID(
 				ctx,
-				user.ID,
+				signInRes.User.ID,
 			)
 			assert.Nil(t, err)
 			assert.NotNil(t, actualUser.DeletedAt)

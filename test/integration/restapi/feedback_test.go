@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/stretchr/testify/assert"
@@ -49,19 +48,15 @@ func TestCreateFeedback(t *testing.T) {
 				assert.Nil(t, err)
 			}()
 
-			var (
-				accessToken string
-				user        *entity.User
-			)
+			signInRes := &dto.SignInResponse{}
 			if test.token != "" {
-				signInRes := app.SignIn(test.token)
-				accessToken, user = signInRes.AccessToken, &signInRes.User
+				signInRes = app.SignIn(test.token)
 			}
 
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPost,
 				"/api/v1/feedbacks",
-				WithBearerToken(accessToken),
+				WithBearerToken(signInRes.AccessToken),
 				WithBody(test.body),
 			)
 			assert.Nil(t, err)
@@ -79,21 +74,16 @@ func TestCreateFeedback(t *testing.T) {
 
 			feedback, err := app.db.GetLatestFeedbackByUserID(
 				ctx,
-				user.ID.String(),
+				signInRes.User.ID.String(),
 			)
 			assert.Nil(t, err)
 
-			expectedFeedback := map[string]any{
-				"Message": test.body.Message,
-				"UserID":  user.ID.String(),
-			}
-
-			actualFeedback := map[string]any{
-				"Message": feedback.Message,
-				"UserID":  feedback.UserID.String(),
-			}
-
-			assert.Equal(t, expectedFeedback, actualFeedback)
+			assert.Equal(t, test.body.Message, feedback.Message)
+			assert.Equal(
+				t,
+				signInRes.User.ID.String(),
+				feedback.UserID.String(),
+			)
 		})
 	}
 }
