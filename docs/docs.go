@@ -461,7 +461,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
-                "description": "List ai chat messages",
+                "description": "List ai chats messages",
                 "consumes": [
                     "application/json"
                 ],
@@ -471,7 +471,7 @@ const docTemplate = `{
                 "tags": [
                     "AI Chat"
                 ],
-                "summary": "List ai chat messages",
+                "summary": "List ai chats messages",
                 "parameters": [
                     {
                         "type": "string",
@@ -480,12 +480,6 @@ const docTemplate = `{
                         "name": "ai_chat_id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Search",
-                        "name": "search",
-                        "in": "query"
                     },
                     {
                         "type": "integer",
@@ -504,7 +498,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.ListAIChatMessagesResponse"
+                            "$ref": "#/definitions/dto.ListAIChatMessagesAndAnswersResponse"
                         }
                     },
                     "401": {
@@ -2516,6 +2510,41 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.GetUserProfileResponse": {
+            "type": "object",
+            "properties": {
+                "avatar": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "subscription_expires_at": {
+                    "type": "string"
+                },
+                "synchronized_at": {
+                    "type": "string"
+                },
+                "tier": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.HealthResponse": {
             "type": "object",
             "properties": {
@@ -2524,13 +2553,13 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.ListAIChatMessagesResponse": {
+        "dto.ListAIChatMessagesAndAnswersResponse": {
             "type": "object",
             "properties": {
                 "items": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.AIChatMessage"
+                        "$ref": "#/definitions/entity.AIChatMessageAndAnswer"
                     }
                 },
                 "page": {
@@ -2916,41 +2945,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.GetUserProfileResponse": {
-            "type": "object",
-            "properties": {
-                "avatar": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "subscription_expires_at": {
-                    "type": "string"
-                },
-                "synchronized_at": {
-                    "type": "string"
-                },
-                "tier": {
-                    "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.AIChat": {
             "type": "object",
             "properties": {
@@ -2974,19 +2968,13 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.AIChatMessage": {
+        "entity.AIChatMessageAndAnswer": {
             "type": "object",
             "properties": {
-                "ai_chat_id": {
-                    "type": "string"
+                "author": {
+                    "$ref": "#/definitions/entity.AIChatMessageAuthor"
                 },
                 "created_at": {
-                    "type": "string"
-                },
-                "created_by_user_id": {
-                    "type": "string"
-                },
-                "deleted_at": {
                     "type": "string"
                 },
                 "id": {
@@ -2995,10 +2983,21 @@ const docTemplate = `{
                 "message": {
                     "type": "string"
                 },
-                "updated_at": {
+                "rating": {
                     "type": "string"
                 }
             }
+        },
+        "entity.AIChatMessageAuthor": {
+            "type": "string",
+            "enum": [
+                "USER",
+                "ARTIFICIAL_INTELLIGENCE"
+            ],
+            "x-enum-varnames": [
+                "AIChatMessageAuthorUser",
+                "AIChatMessageAuthorAI"
+            ]
         },
         "entity.FullTransaction": {
             "type": "object",
@@ -3079,9 +3078,6 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
                 }
             }
         },
@@ -3125,9 +3121,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }

@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
@@ -26,8 +27,9 @@ func NewUpdateAIChat(
 }
 
 type UpdateAIChatInput struct {
-	ID    uuid.UUID `json:"-"     validate:"required"`
-	Title string    `json:"title" validate:"required"`
+	ID    uuid.UUID   `json:"-"     validate:"required"`
+	Title string      `json:"title" validate:"required"`
+	Tier  entity.Tier `json:"-"     validate:"required,oneof=TRIAL PREMIUM"`
 }
 
 func (uc *UpdateAIChat) Execute(

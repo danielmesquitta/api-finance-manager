@@ -7,7 +7,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type BudgetHandler struct {
@@ -52,8 +51,10 @@ func (h BudgetHandler) Upsert(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 	in.UserID = userID
 
 	ctx := c.UserContext()
@@ -81,10 +82,12 @@ func (h BudgetHandler) Upsert(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets [get]
 func (h BudgetHandler) Get(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
-	date, err := parseDateParam(c, QueryParamDate)
+	date, err := parseDateQueryParam(c, QueryParamDate)
 	if err != nil {
 		return errs.New(err)
 	}
@@ -118,11 +121,17 @@ func (h BudgetHandler) Get(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets/categories/{category_id} [get]
 func (h BudgetHandler) GetTransactionCategory(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	categoryID, err := parseUUIDPathParam(c, pathParamCategoryID)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	date := c.Query(QueryParamDate)
-	categoryID := uuid.MustParse(c.Params(pathParamCategoryID))
 
 	ctx := c.UserContext()
 	out, err := h.gbc.Execute(ctx, usecase.GetBudgetCategoryInput{
@@ -155,17 +164,22 @@ func (h BudgetHandler) GetTransactionCategory(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets/categories/{category_id}/transactions [get]
 func (h *BudgetHandler) ListCategoryTransactions(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
-
-	paginationIn := parsePaginationParams(c)
-
-	date, err := parseDateParam(c, QueryParamDate)
+	userID, _, err := GetUser(c)
 	if err != nil {
 		return errs.New(err)
 	}
 
-	categoryID := uuid.MustParse(c.Params(pathParamCategoryID))
+	paginationIn := parsePaginationParams(c)
+
+	date, err := parseDateQueryParam(c, QueryParamDate)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	categoryID, err := parseUUIDPathParam(c, pathParamCategoryID)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	in := usecase.ListBudgetCategoryTransactionsInput{
 		PaginationInput: paginationIn,
@@ -196,12 +210,13 @@ func (h *BudgetHandler) ListCategoryTransactions(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets [delete]
 func (h BudgetHandler) Delete(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.Must(uuid.Parse(claims.Issuer))
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	ctx := c.UserContext()
-	err := h.db.Execute(ctx, userID)
-	if err != nil {
+	if err := h.db.Execute(ctx, userID); err != nil {
 		return errs.New(err)
 	}
 

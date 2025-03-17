@@ -471,6 +471,41 @@
                 },
                 "type": "object"
             },
+            "dto.GetUserProfileResponse": {
+                "properties": {
+                    "avatar": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "deleted_at": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "subscription_expires_at": {
+                        "type": "string"
+                    },
+                    "synchronized_at": {
+                        "type": "string"
+                    },
+                    "tier": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
             "dto.HealthResponse": {
                 "properties": {
                     "status": {
@@ -479,11 +514,11 @@
                 },
                 "type": "object"
             },
-            "dto.ListAIChatMessagesResponse": {
+            "dto.ListAIChatMessagesAndAnswersResponse": {
                 "properties": {
                     "items": {
                         "items": {
-                            "$ref": "#/components/schemas/entity.AIChatMessage"
+                            "$ref": "#/components/schemas/entity.AIChatMessageAndAnswer"
                         },
                         "type": "array"
                     },
@@ -871,41 +906,6 @@
                 ],
                 "type": "object"
             },
-            "dto.GetUserProfileResponse": {
-                "properties": {
-                    "avatar": {
-                        "type": "string"
-                    },
-                    "created_at": {
-                        "type": "string"
-                    },
-                    "deleted_at": {
-                        "type": "string"
-                    },
-                    "email": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "subscription_expires_at": {
-                        "type": "string"
-                    },
-                    "synchronized_at": {
-                        "type": "string"
-                    },
-                    "tier": {
-                        "type": "string"
-                    },
-                    "updated_at": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
             "entity.AIChat": {
                 "properties": {
                     "created_at": {
@@ -929,18 +929,12 @@
                 },
                 "type": "object"
             },
-            "entity.AIChatMessage": {
+            "entity.AIChatMessageAndAnswer": {
                 "properties": {
-                    "ai_chat_id": {
-                        "type": "string"
+                    "author": {
+                        "$ref": "#/components/schemas/entity.AIChatMessageAuthor"
                     },
                     "created_at": {
-                        "type": "string"
-                    },
-                    "created_by_user_id": {
-                        "type": "string"
-                    },
-                    "deleted_at": {
                         "type": "string"
                     },
                     "id": {
@@ -949,11 +943,22 @@
                     "message": {
                         "type": "string"
                     },
-                    "updated_at": {
+                    "rating": {
                         "type": "string"
                     }
                 },
                 "type": "object"
+            },
+            "entity.AIChatMessageAuthor": {
+                "enum": [
+                    "USER",
+                    "ARTIFICIAL_INTELLIGENCE"
+                ],
+                "type": "string",
+                "x-enum-varnames": [
+                    "AIChatMessageAuthorUser",
+                    "AIChatMessageAuthorAI"
+                ]
             },
             "entity.FullTransaction": {
                 "properties": {
@@ -1033,9 +1038,6 @@
                     },
                     "name": {
                         "type": "string"
-                    },
-                    "updated_at": {
-                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -1079,9 +1081,6 @@
                         "type": "string"
                     },
                     "name": {
-                        "type": "string"
-                    },
-                    "updated_at": {
                         "type": "string"
                     }
                 },
@@ -1769,7 +1768,7 @@
         },
         "/v1/ai-chats/{ai_chat_id}/messages": {
             "get": {
-                "description": "List ai chat messages",
+                "description": "List ai chats messages",
                 "parameters": [
                     {
                         "description": "AI Chat ID",
@@ -1778,14 +1777,6 @@
                         "required": true,
                         "schema": {
                             "format": "uuid",
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Search",
-                        "in": "query",
-                        "name": "search",
-                        "schema": {
                             "type": "string"
                         }
                     },
@@ -1811,7 +1802,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/dto.ListAIChatMessagesResponse"
+                                    "$ref": "#/components/schemas/dto.ListAIChatMessagesAndAnswersResponse"
                                 }
                             }
                         },
@@ -1843,7 +1834,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "summary": "List ai chat messages",
+                "summary": "List ai chats messages",
                 "tags": [
                     "AI Chat"
                 ]

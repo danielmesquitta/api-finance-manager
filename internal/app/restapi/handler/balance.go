@@ -6,7 +6,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type BalanceHandler struct {
@@ -44,8 +43,10 @@ func NewBalanceHandler(
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/balances [get]
 func (h *BalanceHandler) Get(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	transactionOptions, err := prepareTransactionOptions(c)
 	if err != nil {

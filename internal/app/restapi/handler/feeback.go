@@ -7,7 +7,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type FeedbackHandler struct {
@@ -40,8 +39,10 @@ func (h *FeedbackHandler) Create(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 	body.UserID = userID
 
 	ctx := c.UserContext()

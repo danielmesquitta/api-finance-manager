@@ -8,7 +8,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -46,11 +45,14 @@ func NewAIChatHandler(
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/ai-chats [post]
 func (h *AIChatHandler) Create(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
+	userID, tier, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	in := usecase.CreateAIChatInput{
-		UserID: uuid.MustParse(claims.Issuer),
-		Tier:   claims.Tier,
+		UserID: userID,
+		Tier:   tier,
 	}
 
 	ctx := c.UserContext()
@@ -75,7 +77,10 @@ func (h *AIChatHandler) Create(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/ai-chats/{ai_chat_id} [delete]
 func (h *AIChatHandler) Delete(c *fiber.Ctx) error {
-	aiChatID := uuid.MustParse(c.Params(pathParamAIChatID))
+	aiChatID, err := parseUUIDPathParam(c, pathParamAIChatID)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	ctx := c.UserContext()
 	if err := h.dac.Execute(ctx, aiChatID); err != nil {
@@ -104,13 +109,22 @@ func (h *AIChatHandler) Update(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	aiChatID := uuid.MustParse(c.Params(pathParamAIChatID))
+	aiChatID, err := parseUUIDPathParam(c, pathParamAIChatID)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	_, tier, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	var in usecase.UpdateAIChatInput
 	if err := copier.Copy(&in, body); err != nil {
 		return errs.New(err)
 	}
 	in.ID = aiChatID
+	in.Tier = tier
 
 	ctx := c.UserContext()
 	if err := h.uac.Execute(ctx, in); err != nil {
@@ -137,8 +151,10 @@ func (h AIChatHandler) List(c *fiber.Ctx) error {
 	search := c.Query(QueryParamSearch)
 	paginationIn := parsePaginationParams(c)
 
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	in := usecase.ListAIChatsInput{
 		PaginationInput: paginationIn,
@@ -163,6 +179,7 @@ func (h AIChatHandler) List(c *fiber.Ctx) error {
 // @Security BearerAuth
 // @Accept json
 // @Produce json
+// @Param ai_chat_id path string true "AI Chat ID" format(uuid)
 // @Param page query int false "Page"
 // @Param page_size query int false "Page size"
 // @Success 200 {object} dto.ListAIChatMessagesAndAnswersResponse
@@ -170,8 +187,12 @@ func (h AIChatHandler) List(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/ai-chats/{ai_chat_id}/messages [get]
 func (h AIChatHandler) ListMessages(c *fiber.Ctx) error {
+	aiChatID, err := parseUUIDPathParam(c, pathParamAIChatID)
+	if err != nil {
+		return errs.New(err)
+	}
+
 	paginationIn := parsePaginationParams(c)
-	aiChatID := uuid.MustParse(c.Params(pathParamAIChatID))
 
 	in := usecase.ListAIChatMessagesAndAnswersInput{
 		PaginationInput: paginationIn,

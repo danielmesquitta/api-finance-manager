@@ -91,8 +91,10 @@ func (h InstitutionHandler) List(c *fiber.Ctx) error {
 func (h InstitutionHandler) ListUserInstitutions(c *fiber.Ctx) error {
 	search := c.Query(QueryParamSearch)
 	paginationIn := parsePaginationParams(c)
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	in := usecase.ListInstitutionsInput{
 		PaginationInput: paginationIn,

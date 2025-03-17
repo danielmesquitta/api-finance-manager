@@ -53,7 +53,24 @@ func parsePaginationParams(
 	}
 }
 
-func parseDateParam(
+func parseUUIDPathParam(
+	c *fiber.Ctx,
+	param PathParam,
+) (uuid.UUID, error) {
+	paramValue := c.Params(param)
+	if paramValue == "" {
+		return uuid.Nil, errs.ErrInvalidUUID
+	}
+
+	parsed, err := uuid.Parse(paramValue)
+	if err != nil {
+		return uuid.Nil, errs.ErrInvalidUUID
+	}
+
+	return parsed, nil
+}
+
+func parseDateQueryParam(
 	c *fiber.Ctx,
 	param QueryParam,
 ) (time.Time, error) {
@@ -70,7 +87,7 @@ func parseDateParam(
 	return date, nil
 }
 
-func parseUUIDsParam(
+func parseUUIDQueryParams(
 	c *fiber.Ctx,
 	param QueryParam,
 ) ([]uuid.UUID, error) {
@@ -96,15 +113,15 @@ func parseUUIDsParam(
 	return uuids, nil
 }
 
-func parseBoolParam(
+func parseBoolQueryParam(
 	c *fiber.Ctx,
 	param QueryParam,
-) (bool, error) {
+) bool {
 	paramValue := c.QueryBool(param)
-	return paramValue, nil
+	return paramValue
 }
 
-func parseNillableBoolParam(
+func parseNillableBoolQueryParam(
 	c *fiber.Ctx,
 	param QueryParam,
 ) (*bool, error) {
@@ -121,7 +138,7 @@ func parseNillableBoolParam(
 	return &b, nil
 }
 
-func GetUserClaims(
+func GetClaims(
 	c *fiber.Ctx,
 ) *jwtutil.UserClaims {
 	token, ok := c.Locals(jwtutil.ClaimsKey).(*jwt.Token)
@@ -151,9 +168,23 @@ func GetUserClaims(
 		Issuer:                issuer,
 		IssuedAt:              issuedAt.Time,
 		ExpiresAt:             expiresAt.Time,
-		Tier:                  entity.Tier(tier),
+		Tier:                  tier,
 		SubscriptionExpiresAt: subscriptionExpiresAt,
 	}
+}
+
+func GetUser(c *fiber.Ctx) (userID uuid.UUID, tier entity.Tier, err error) {
+	claims := GetClaims(c)
+	if claims == nil {
+		return uuid.Nil, "", errs.ErrUnauthorized
+	}
+
+	userID, err = uuid.Parse(claims.Issuer)
+	if err != nil {
+		return uuid.Nil, "", errs.ErrUnauthorized
+	}
+
+	return userID, claims.Tier, nil
 }
 
 func prepareTransactionOptions(
@@ -161,42 +192,35 @@ func prepareTransactionOptions(
 ) (*repo.TransactionOptions, error) {
 	search := c.Query(QueryParamSearch)
 
-	paymentMethodIDs, err := parseUUIDsParam(c, QueryParamPaymentMethodIDs)
+	paymentMethodIDs, err := parseUUIDQueryParams(c, QueryParamPaymentMethodIDs)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	institutionIDs, err := parseUUIDsParam(c, QueryParamInstitutionIDs)
+	institutionIDs, err := parseUUIDQueryParams(c, QueryParamInstitutionIDs)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	categoryIDs, err := parseUUIDsParam(c, QueryParamCategoryIDs)
+	categoryIDs, err := parseUUIDQueryParams(c, QueryParamCategoryIDs)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	isExpense, err := parseBoolParam(c, QueryParamIsExpense)
+	isExpense := parseBoolQueryParam(c, QueryParamIsExpense)
+	isIncome := parseBoolQueryParam(c, QueryParamIsIncome)
+
+	isIgnored, err := parseNillableBoolQueryParam(c, QueryParamIsIgnored)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	isIncome, err := parseBoolParam(c, QueryParamIsIncome)
+	startDate, err := parseDateQueryParam(c, QueryParamStartDate)
 	if err != nil {
 		return nil, errs.New(err)
 	}
 
-	isIgnored, err := parseNillableBoolParam(c, QueryParamIsIgnored)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	startDate, err := parseDateParam(c, QueryParamStartDate)
-	if err != nil {
-		return nil, errs.New(err)
-	}
-
-	endDate, err := parseDateParam(c, QueryParamEndDate)
+	endDate, err := parseDateQueryParam(c, QueryParamEndDate)
 	if err != nil {
 		return nil, errs.New(err)
 	}

@@ -5,7 +5,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type AuthHandler struct {
@@ -70,8 +69,10 @@ func (h *AuthHandler) SignIn(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/auth/refresh [post]
 func (h *AuthHandler) RefreshToken(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	ctx := c.UserContext()
 	out, err := h.rt.Execute(

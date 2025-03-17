@@ -5,7 +5,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type UserHandler struct {
@@ -38,8 +37,10 @@ func NewUserHandler(
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/users/profile [get]
 func (h UserHandler) GetProfile(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	ctx := c.UserContext()
 	user, err := h.gu.Execute(ctx, userID)
@@ -70,8 +71,10 @@ func (h UserHandler) UpdateProfile(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 	in.ID = userID
 
 	ctx := c.UserContext()
@@ -94,8 +97,10 @@ func (h UserHandler) UpdateProfile(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/users/profile [delete]
 func (h UserHandler) DeleteProfile(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	ctx := c.UserContext()
 	if err := h.du.Execute(ctx, userID); err != nil {

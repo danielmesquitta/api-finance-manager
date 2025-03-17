@@ -41,7 +41,7 @@ func TestCreateAIChat(t *testing.T) {
 		{
 			description:  "Should not create a new AI chat for a free tier user",
 			token:        mockoauth.FreeTierMockToken,
-			expectedCode: http.StatusUnauthorized,
+			expectedCode: http.StatusBadRequest,
 			shouldCreate: false,
 		},
 	}

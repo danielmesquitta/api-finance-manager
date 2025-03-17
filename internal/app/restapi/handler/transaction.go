@@ -7,7 +7,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
 type TransactionHandler struct {
@@ -51,7 +50,11 @@ func (h *TransactionHandler) Create(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	in.UserID = uuid.MustParse(GetUserClaims(c).Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
+	in.UserID = userID
 
 	ctx := c.UserContext()
 	if err := h.ct.Execute(ctx, in); err != nil {
@@ -74,10 +77,15 @@ func (h *TransactionHandler) Create(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions/{transaction_id} [get]
 func (h TransactionHandler) Get(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
-	transactionID := uuid.MustParse(c.Params(pathParamTransactionID))
+	transactionID, err := parseUUIDPathParam(c, pathParamTransactionID)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	in := usecase.GetTransactionInput{
 		ID:     transactionID,
@@ -107,7 +115,7 @@ func (h TransactionHandler) Get(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/admin/transactions/sync [post]
 func (h *TransactionHandler) Sync(c *fiber.Ctx) error {
-	userIDs, err := parseUUIDsParam(c, QueryParamUserIDs)
+	userIDs, err := parseUUIDQueryParams(c, QueryParamUserIDs)
 	if err != nil {
 		return errs.New(err)
 	}
@@ -146,8 +154,10 @@ func (h *TransactionHandler) Sync(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions [get]
 func (h *TransactionHandler) List(c *fiber.Ctx) error {
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	paginationIn := parsePaginationParams(c)
 
@@ -190,10 +200,15 @@ func (h TransactionHandler) Update(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+	userID, _, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
 
-	transactionID := uuid.MustParse(c.Params(pathParamTransactionID))
+	transactionID, err := parseUUIDPathParam(c, pathParamTransactionID)
+	if err != nil {
+		return errs.New(err)
+	}
 
 	in.ID = transactionID
 	in.UserID = userID

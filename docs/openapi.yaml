@@ -1,2299 +1,2294 @@
 components:
-  schemas:
-    dateutil.ComparisonDates:
-      properties:
-        comparison_end_date:
-          type: string
-        comparison_start_date:
-          type: string
-        end_date:
-          type: string
-        start_date:
-          type: string
-      type: object
-    dto.CashVsInstallmentsRequest:
-      properties:
-        cash_discount:
-          minimum: 0
-          type: integer
-        cashback:
-          maximum: 10000
-          minimum: 0
-          type: integer
-        credit_card_interest:
-          maximum: 10000
-          minimum: 0
-          type: integer
-        installments:
-          minimum: 1
-          type: integer
-        interest:
-          maximum: 10000
-          minimum: 0
-          type: integer
-        interest_type:
-          allOf:
-            - $ref: "#/components/schemas/entity.InterestType"
-          enum:
-            - MONTHLY
-            - ANNUAL
-        purchase_value:
-          minimum: 0
-          type: integer
-      required:
-        - installments
-        - interest
-        - interest_type
-        - purchase_value
-      type: object
-    dto.CashVsInstallmentsResponse:
-      properties:
-        cash_flow_by_month:
-          additionalProperties:
-            $ref: "#/components/schemas/usecase.CashFlow"
-          type: object
-        savings_with_cash:
-          type: integer
-        savings_with_credit_card:
-          type: integer
-      type: object
-    dto.CompoundInterestRequest:
-      properties:
-        initial_deposit:
-          type: integer
-        interest:
-          maximum: 10000
-          minimum: 0
-          type: integer
-        interest_type:
-          allOf:
-            - $ref: "#/components/schemas/entity.InterestType"
-          enum:
-            - MONTHLY
-            - ANNUAL
-        monthly_deposit:
-          type: integer
-        period_in_months:
-          minimum: 1
-          type: integer
-      required:
-        - interest
-        - interest_type
-        - period_in_months
-      type: object
-    dto.CompoundInterestResponse:
-      properties:
-        by_month:
-          additionalProperties:
-            $ref: "#/components/schemas/usecase.CompoundInterestResult"
-          type: object
-        total_amount:
-          type: integer
-        total_deposit:
-          type: integer
-        total_interest:
-          type: integer
-      type: object
-    dto.CreateAIChatResponse:
-      properties:
-        created_at:
-          type: string
-        deleted_at:
-          type: string
-        id:
-          type: string
-        title:
-          type: string
-        updated_at:
-          type: string
-        user_id:
-          type: string
-      type: object
-    dto.CreateAccountsRequest:
-      properties:
-        clientUserId:
-          type: string
-        connector:
-          $ref: "#/components/schemas/usecase.CreateAccountsInstitution"
-        executionStatus:
-          type: string
-        id:
-          type: string
-      required:
-        - clientUserId
-        - connector
-        - executionStatus
-        - id
-      type: object
-    dto.CreateFeedbackRequest:
-      properties:
-        message:
-          type: string
-      required:
-        - message
-      type: object
-    dto.CreateTransactionRequest:
-      properties:
-        amount:
-          type: integer
-        category_id:
-          type: string
-        date:
-          type: string
-        name:
-          type: string
-        payment_method_id:
-          type: string
-      required:
-        - amount
-        - date
-        - name
-        - payment_method_id
-      type: object
-    dto.EmergencyReserveRequest:
-      properties:
-        job_type:
-          allOf:
-            - $ref: "#/components/schemas/entity.JobType"
-          enum:
-            - ENTREPRENEUR
-            - EMPLOYEE
-            - CIVIL_SERVANT
-        monthly_expenses:
-          minimum: 0
-          type: integer
-        monthly_income:
-          minimum: 0
-          type: integer
-        monthly_savings_percentage:
-          maximum: 10000
-          minimum: 0
-          type: integer
-      required:
-        - job_type
-      type: object
-    dto.EmergencyReserveResponse:
-      properties:
-        months_to_achieve_emergency_reserve:
-          type: integer
-        recommended_reserve_in_months:
-          type: integer
-        recommended_reserve_in_value:
-          type: integer
-      type: object
-    dto.ErrorItem:
-      properties:
-        name:
-          type: string
-        reason:
-          type: string
-      type: object
-    dto.ErrorResponse:
-      properties:
-        errors:
-          items:
-            $ref: "#/components/schemas/dto.ErrorItem"
-          type: array
-        message:
-          type: string
-      type: object
-    dto.GetBalanceResponse:
-      properties:
-        balance_percentage_variation:
-          type: integer
-        comparison_dates:
-          $ref: "#/components/schemas/dateutil.ComparisonDates"
-        current_balance:
-          type: integer
-        current_expense:
-          type: integer
-        current_income:
-          type: integer
-        expense_percentage_variation:
-          type: integer
-        income_percentage_variation:
-          type: integer
-        previous_balance:
-          type: integer
-        previous_expense:
-          type: integer
-        previous_income:
-          type: integer
-      type: object
-    dto.GetBudgetCategoryResponse:
-      properties:
-        amount:
-          type: integer
-        available:
-          type: integer
-        created_at:
-          type: string
-        deleted_at:
-          type: string
-        external_id:
-          type: string
-        id:
-          type: string
-        name:
-          type: string
-        spent:
-          type: integer
-        updated_at:
-          type: string
-      type: object
-    dto.GetBudgetResponse:
-      properties:
-        amount:
-          type: integer
-        available:
-          type: integer
-        available_per_day:
-          type: integer
-        available_per_day_percentage_variation:
-          type: integer
-        available_percentage_variation:
-          type: integer
-        budget_categories:
-          items:
-            $ref: "#/components/schemas/usecase.GetBudgetBudgetCategories"
-          type: array
-        comparison_dates:
-          $ref: "#/components/schemas/dateutil.ComparisonDates"
-        created_at:
-          type: string
-        date:
-          type: string
-        deleted_at:
-          type: string
-        id:
-          type: string
-        spent:
-          type: integer
-        updated_at:
-          type: string
-        user_id:
-          type: string
-      type: object
-    dto.GetTransactionResponse:
-      properties:
-        account_id:
-          type: string
-        amount:
-          type: integer
-        category_id:
-          type: string
-        category_name:
-          type: string
-        created_at:
-          type: string
-        date:
-          type: string
-        deleted_at:
-          type: string
-        external_id:
-          type: string
-        id:
-          type: string
-        institution_id:
-          type: string
-        institution_logo:
-          type: string
-        institution_name:
-          type: string
-        is_ignored:
-          type: boolean
-        name:
-          type: string
-        payment_method_id:
-          type: string
-        payment_method_name:
-          type: string
-        updated_at:
-          type: string
-        user_id:
-          type: string
-      type: object
-    dto.HealthResponse:
-      properties:
-        status:
-          type: string
-      type: object
-    dto.ListAIChatMessagesResponse:
-      properties:
-        items:
-          items:
-            $ref: "#/components/schemas/entity.AIChatMessage"
-          type: array
-        page:
-          type: integer
-        page_size:
-          type: integer
-        total_items:
-          type: integer
-        total_pages:
-          type: integer
-      type: object
-    dto.ListAIChatsResponse:
-      properties:
-        items:
-          items:
-            $ref: "#/components/schemas/entity.AIChat"
-          type: array
-        page:
-          type: integer
-        page_size:
-          type: integer
-        total_items:
-          type: integer
-        total_pages:
-          type: integer
-      type: object
-    dto.ListInstitutionsResponse:
-      properties:
-        items:
-          items:
-            $ref: "#/components/schemas/entity.Institution"
-          type: array
-        page:
-          type: integer
-        page_size:
-          type: integer
-        total_items:
-          type: integer
-        total_pages:
-          type: integer
-      type: object
-    dto.ListPaymentMethodsResponse:
-      properties:
-        items:
-          items:
-            $ref: "#/components/schemas/entity.PaymentMethod"
-          type: array
-        page:
-          type: integer
-        page_size:
-          type: integer
-        total_items:
-          type: integer
-        total_pages:
-          type: integer
-      type: object
-    dto.ListTransactionCategoriesResponse:
-      properties:
-        items:
-          items:
-            $ref: "#/components/schemas/entity.TransactionCategory"
-          type: array
-        page:
-          type: integer
-        page_size:
-          type: integer
-        total_items:
-          type: integer
-        total_pages:
-          type: integer
-      type: object
-    dto.ListTransactionsResponse:
-      properties:
-        items:
-          items:
-            $ref: "#/components/schemas/entity.FullTransaction"
-          type: array
-        page:
-          type: integer
-        page_size:
-          type: integer
-        total_items:
-          type: integer
-        total_pages:
-          type: integer
-      type: object
-    dto.RetirementRequest:
-      properties:
-        age:
-          minimum: 0
-          type: integer
-        goal_income:
-          minimum: 0
-          type: integer
-        goal_patrimony:
-          minimum: 0
-          type: integer
-        income_investment_percentage:
-          maximum: 10000
-          minimum: 0
-          type: integer
-        initial_deposit:
-          type: integer
-        interest:
-          maximum: 10000
-          minimum: 0
-          type: integer
-        interest_type:
-          allOf:
-            - $ref: "#/components/schemas/entity.InterestType"
-          enum:
-            - MONTHLY
-            - ANNUAL
-        life_expectancy:
-          minimum: 1
-          type: integer
-        monthly_income:
-          minimum: 0
-          type: integer
-        retirement_age:
-          minimum: 1
-          type: integer
-      required:
-        - age
-        - goal_income
-        - goal_patrimony
-        - income_investment_percentage
-        - interest
-        - interest_type
-        - life_expectancy
-        - monthly_income
-        - retirement_age
-      type: object
-    dto.RetirementResponse:
-      properties:
-        achieved_goal_income:
-          type: boolean
-        achieved_goal_patrimony:
-          type: boolean
-        exceeded_goal:
-          type: boolean
-        exceeded_goal_amount:
-          type: integer
-        heritage:
-          type: integer
-        max_monthly_expenses:
-          type: integer
-        property_on_retirement:
-          type: integer
-      type: object
-    dto.SignInRequest:
-      properties:
-        provider:
-          allOf:
-            - $ref: "#/components/schemas/entity.Provider"
-          enum:
-            - GOOGLE
-            - APPLE
-            - REFRESH
-            - MOCK
-      required:
-        - provider
-      type: object
-    dto.SignInResponse:
-      properties:
-        access_token:
-          type: string
-        refresh_token:
-          type: string
-        user:
-          $ref: "#/components/schemas/entity.User"
-      type: object
-    dto.SimpleInterestRequest:
-      properties:
-        initial_deposit:
-          minimum: 0
-          type: integer
-        interest:
-          maximum: 10000
-          minimum: 0
-          type: integer
-        interest_type:
-          allOf:
-            - $ref: "#/components/schemas/entity.InterestType"
-          enum:
-            - MONTHLY
-            - ANNUAL
-        period_in_months:
-          minimum: 1
-          type: integer
-      required:
-        - interest
-        - interest_type
-        - period_in_months
-      type: object
-    dto.SimpleInterestResponse:
-      properties:
-        by_month:
-          additionalProperties:
-            $ref: "#/components/schemas/usecase.SimpleInterestResult"
-          type: object
-        total_amount:
-          type: integer
-        total_deposit:
-          type: integer
-        total_interest:
-          type: integer
-      type: object
-    dto.UpdateAIChatRequest:
-      properties:
-        title:
-          type: string
-      required:
-        - title
-      type: object
-    dto.UpdateProfileRequest:
-      properties:
-        email:
-          type: string
-        name:
-          type: string
-      type: object
-    dto.UpdateTransactionRequest:
-      properties:
-        account_id:
-          type: string
-        amount:
-          type: integer
-        category_id:
-          type: string
-        date:
-          type: string
-        id:
-          type: string
-        institution_id:
-          type: string
-        name:
-          type: string
-        payment_method_id:
-          type: string
-      required:
-        - id
-      type: object
-    dto.UpsertBudgetRequest:
-      properties:
-        amount:
-          type: integer
-        categories:
-          items:
-            $ref: "#/components/schemas/usecase.UpsertBudgetCategoryInput"
-          type: array
-        date:
-          type: string
-      required:
-        - amount
-        - date
-      type: object
-    dto.GetUserProfileResponse:
-      properties:
-        avatar:
-          type: string
-        created_at:
-          type: string
-        deleted_at:
-          type: string
-        email:
-          type: string
-        id:
-          type: string
-        name:
-          type: string
-        subscription_expires_at:
-          type: string
-        synchronized_at:
-          type: string
-        tier:
-          type: string
-        updated_at:
-          type: string
-      type: object
-    entity.AIChat:
-      properties:
-        created_at:
-          type: string
-        deleted_at:
-          type: string
-        id:
-          type: string
-        title:
-          type: string
-        updated_at:
-          type: string
-        user_id:
-          type: string
-      type: object
-    entity.AIChatMessage:
-      properties:
-        ai_chat_id:
-          type: string
-        created_at:
-          type: string
-        created_by_user_id:
-          type: string
-        deleted_at:
-          type: string
-        id:
-          type: string
-        message:
-          type: string
-        updated_at:
-          type: string
-      type: object
-    entity.FullTransaction:
-      properties:
-        account_id:
-          type: string
-        amount:
-          type: integer
-        category_id:
-          type: string
-        category_name:
-          type: string
-        created_at:
-          type: string
-        date:
-          type: string
-        deleted_at:
-          type: string
-        external_id:
-          type: string
-        id:
-          type: string
-        institution_id:
-          type: string
-        institution_logo:
-          type: string
-        institution_name:
-          type: string
-        is_ignored:
-          type: boolean
-        name:
-          type: string
-        payment_method_id:
-          type: string
-        payment_method_name:
-          type: string
-        updated_at:
-          type: string
-        user_id:
-          type: string
-      type: object
-    entity.Institution:
-      properties:
-        created_at:
-          type: string
-        deleted_at:
-          type: string
-        external_id:
-          type: string
-        id:
-          type: string
-        logo:
-          type: string
-        name:
-          type: string
-        updated_at:
-          type: string
-      type: object
-    entity.InterestType:
-      enum:
-        - MONTHLY
-        - ANNUAL
-      type: string
-      x-enum-varnames:
-        - InterestTypeMonthly
-        - InterestTypeAnnual
-    entity.JobType:
-      enum:
-        - ENTREPRENEUR
-        - EMPLOYEE
-        - CIVIL_SERVANT
-      type: string
-      x-enum-varnames:
-        - JobTypeEntrepreneur
-        - JobTypeEmployee
-        - JobTypeCivilServant
-    entity.PaymentMethod:
-      properties:
-        created_at:
-          type: string
-        deleted_at:
-          type: string
-        external_id:
-          type: string
-        id:
-          type: string
-        name:
-          type: string
-        updated_at:
-          type: string
-      type: object
-    entity.Provider:
-      enum:
-        - GOOGLE
-        - APPLE
-        - REFRESH
-        - MOCK
-      type: string
-      x-enum-varnames:
-        - ProviderGoogle
-        - ProviderApple
-        - ProviderRefresh
-        - ProviderMock
-    entity.TransactionCategory:
-      properties:
-        created_at:
-          type: string
-        deleted_at:
-          type: string
-        external_id:
-          type: string
-        id:
-          type: string
-        name:
-          type: string
-        updated_at:
-          type: string
-      type: object
-    entity.User:
-      properties:
-        avatar:
-          type: string
-        created_at:
-          type: string
-        deleted_at:
-          type: string
-        email:
-          type: string
-        id:
-          type: string
-        name:
-          type: string
-        subscription_expires_at:
-          type: string
-        synchronized_at:
-          type: string
-        tier:
-          type: string
-        updated_at:
-          type: string
-      type: object
-    usecase.CashFlow:
-      properties:
-        cash:
-          type: integer
-        credit_card:
-          type: integer
-      type: object
-    usecase.CompoundInterestResult:
-      properties:
-        monthly_interest:
-          type: integer
-        total_amount:
-          type: integer
-        total_deposit:
-          type: integer
-        total_interest:
-          type: integer
-      type: object
-    usecase.CreateAccountsInstitution:
-      properties:
-        id:
-          type: integer
-      required:
-        - id
-      type: object
-    usecase.GetBudgetBudgetCategories:
-      properties:
-        amount:
-          type: integer
-        available:
-          type: integer
-        budget_id:
-          type: string
-        category:
-          $ref: "#/components/schemas/entity.TransactionCategory"
-        category_id:
-          type: string
-        created_at:
-          type: string
-        deleted_at:
-          type: string
-        id:
-          type: string
-        spent:
-          type: integer
-        updated_at:
-          type: string
-      type: object
-    usecase.SimpleInterestResult:
-      properties:
-        total_amount:
-          type: integer
-        total_deposit:
-          type: integer
-        total_interest:
-          type: integer
-      type: object
-    usecase.UpsertBudgetCategoryInput:
-      properties:
-        amount:
-          type: integer
-        category_id:
-          type: string
-      required:
-        - amount
-        - category_id
-      type: object
-  securitySchemes:
-    BasicAuth:
-      scheme: basic
-      type: http
-    BearerAuth:
-      description: Type "Bearer" followed by a space and JWT token.
-      in: header
-      name: Authorization
-      type: apiKey
+    schemas:
+        dateutil.ComparisonDates:
+            properties:
+                comparison_end_date:
+                    type: string
+                comparison_start_date:
+                    type: string
+                end_date:
+                    type: string
+                start_date:
+                    type: string
+            type: object
+        dto.CashVsInstallmentsRequest:
+            properties:
+                cash_discount:
+                    minimum: 0
+                    type: integer
+                cashback:
+                    maximum: 10000
+                    minimum: 0
+                    type: integer
+                credit_card_interest:
+                    maximum: 10000
+                    minimum: 0
+                    type: integer
+                installments:
+                    minimum: 1
+                    type: integer
+                interest:
+                    maximum: 10000
+                    minimum: 0
+                    type: integer
+                interest_type:
+                    allOf:
+                        - $ref: '#/components/schemas/entity.InterestType'
+                    enum:
+                        - MONTHLY
+                        - ANNUAL
+                purchase_value:
+                    minimum: 0
+                    type: integer
+            required:
+                - installments
+                - interest
+                - interest_type
+                - purchase_value
+            type: object
+        dto.CashVsInstallmentsResponse:
+            properties:
+                cash_flow_by_month:
+                    additionalProperties:
+                        $ref: '#/components/schemas/usecase.CashFlow'
+                    type: object
+                savings_with_cash:
+                    type: integer
+                savings_with_credit_card:
+                    type: integer
+            type: object
+        dto.CompoundInterestRequest:
+            properties:
+                initial_deposit:
+                    type: integer
+                interest:
+                    maximum: 10000
+                    minimum: 0
+                    type: integer
+                interest_type:
+                    allOf:
+                        - $ref: '#/components/schemas/entity.InterestType'
+                    enum:
+                        - MONTHLY
+                        - ANNUAL
+                monthly_deposit:
+                    type: integer
+                period_in_months:
+                    minimum: 1
+                    type: integer
+            required:
+                - interest
+                - interest_type
+                - period_in_months
+            type: object
+        dto.CompoundInterestResponse:
+            properties:
+                by_month:
+                    additionalProperties:
+                        $ref: '#/components/schemas/usecase.CompoundInterestResult'
+                    type: object
+                total_amount:
+                    type: integer
+                total_deposit:
+                    type: integer
+                total_interest:
+                    type: integer
+            type: object
+        dto.CreateAIChatResponse:
+            properties:
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                id:
+                    type: string
+                title:
+                    type: string
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
+        dto.CreateAccountsRequest:
+            properties:
+                clientUserId:
+                    type: string
+                connector:
+                    $ref: '#/components/schemas/usecase.CreateAccountsInstitution'
+                executionStatus:
+                    type: string
+                id:
+                    type: string
+            required:
+                - clientUserId
+                - connector
+                - executionStatus
+                - id
+            type: object
+        dto.CreateFeedbackRequest:
+            properties:
+                message:
+                    type: string
+            required:
+                - message
+            type: object
+        dto.CreateTransactionRequest:
+            properties:
+                amount:
+                    type: integer
+                category_id:
+                    type: string
+                date:
+                    type: string
+                name:
+                    type: string
+                payment_method_id:
+                    type: string
+            required:
+                - amount
+                - date
+                - name
+                - payment_method_id
+            type: object
+        dto.EmergencyReserveRequest:
+            properties:
+                job_type:
+                    allOf:
+                        - $ref: '#/components/schemas/entity.JobType'
+                    enum:
+                        - ENTREPRENEUR
+                        - EMPLOYEE
+                        - CIVIL_SERVANT
+                monthly_expenses:
+                    minimum: 0
+                    type: integer
+                monthly_income:
+                    minimum: 0
+                    type: integer
+                monthly_savings_percentage:
+                    maximum: 10000
+                    minimum: 0
+                    type: integer
+            required:
+                - job_type
+            type: object
+        dto.EmergencyReserveResponse:
+            properties:
+                months_to_achieve_emergency_reserve:
+                    type: integer
+                recommended_reserve_in_months:
+                    type: integer
+                recommended_reserve_in_value:
+                    type: integer
+            type: object
+        dto.ErrorItem:
+            properties:
+                name:
+                    type: string
+                reason:
+                    type: string
+            type: object
+        dto.ErrorResponse:
+            properties:
+                errors:
+                    items:
+                        $ref: '#/components/schemas/dto.ErrorItem'
+                    type: array
+                message:
+                    type: string
+            type: object
+        dto.GetBalanceResponse:
+            properties:
+                balance_percentage_variation:
+                    type: integer
+                comparison_dates:
+                    $ref: '#/components/schemas/dateutil.ComparisonDates'
+                current_balance:
+                    type: integer
+                current_expense:
+                    type: integer
+                current_income:
+                    type: integer
+                expense_percentage_variation:
+                    type: integer
+                income_percentage_variation:
+                    type: integer
+                previous_balance:
+                    type: integer
+                previous_expense:
+                    type: integer
+                previous_income:
+                    type: integer
+            type: object
+        dto.GetBudgetCategoryResponse:
+            properties:
+                amount:
+                    type: integer
+                available:
+                    type: integer
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                name:
+                    type: string
+                spent:
+                    type: integer
+                updated_at:
+                    type: string
+            type: object
+        dto.GetBudgetResponse:
+            properties:
+                amount:
+                    type: integer
+                available:
+                    type: integer
+                available_per_day:
+                    type: integer
+                available_per_day_percentage_variation:
+                    type: integer
+                available_percentage_variation:
+                    type: integer
+                budget_categories:
+                    items:
+                        $ref: '#/components/schemas/usecase.GetBudgetBudgetCategories'
+                    type: array
+                comparison_dates:
+                    $ref: '#/components/schemas/dateutil.ComparisonDates'
+                created_at:
+                    type: string
+                date:
+                    type: string
+                deleted_at:
+                    type: string
+                id:
+                    type: string
+                spent:
+                    type: integer
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
+        dto.GetTransactionResponse:
+            properties:
+                account_id:
+                    type: string
+                amount:
+                    type: integer
+                category_id:
+                    type: string
+                category_name:
+                    type: string
+                created_at:
+                    type: string
+                date:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                institution_id:
+                    type: string
+                institution_logo:
+                    type: string
+                institution_name:
+                    type: string
+                is_ignored:
+                    type: boolean
+                name:
+                    type: string
+                payment_method_id:
+                    type: string
+                payment_method_name:
+                    type: string
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
+        dto.GetUserProfileResponse:
+            properties:
+                avatar:
+                    type: string
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                email:
+                    type: string
+                id:
+                    type: string
+                name:
+                    type: string
+                subscription_expires_at:
+                    type: string
+                synchronized_at:
+                    type: string
+                tier:
+                    type: string
+                updated_at:
+                    type: string
+            type: object
+        dto.HealthResponse:
+            properties:
+                status:
+                    type: string
+            type: object
+        dto.ListAIChatMessagesAndAnswersResponse:
+            properties:
+                items:
+                    items:
+                        $ref: '#/components/schemas/entity.AIChatMessageAndAnswer'
+                    type: array
+                page:
+                    type: integer
+                page_size:
+                    type: integer
+                total_items:
+                    type: integer
+                total_pages:
+                    type: integer
+            type: object
+        dto.ListAIChatsResponse:
+            properties:
+                items:
+                    items:
+                        $ref: '#/components/schemas/entity.AIChat'
+                    type: array
+                page:
+                    type: integer
+                page_size:
+                    type: integer
+                total_items:
+                    type: integer
+                total_pages:
+                    type: integer
+            type: object
+        dto.ListInstitutionsResponse:
+            properties:
+                items:
+                    items:
+                        $ref: '#/components/schemas/entity.Institution'
+                    type: array
+                page:
+                    type: integer
+                page_size:
+                    type: integer
+                total_items:
+                    type: integer
+                total_pages:
+                    type: integer
+            type: object
+        dto.ListPaymentMethodsResponse:
+            properties:
+                items:
+                    items:
+                        $ref: '#/components/schemas/entity.PaymentMethod'
+                    type: array
+                page:
+                    type: integer
+                page_size:
+                    type: integer
+                total_items:
+                    type: integer
+                total_pages:
+                    type: integer
+            type: object
+        dto.ListTransactionCategoriesResponse:
+            properties:
+                items:
+                    items:
+                        $ref: '#/components/schemas/entity.TransactionCategory'
+                    type: array
+                page:
+                    type: integer
+                page_size:
+                    type: integer
+                total_items:
+                    type: integer
+                total_pages:
+                    type: integer
+            type: object
+        dto.ListTransactionsResponse:
+            properties:
+                items:
+                    items:
+                        $ref: '#/components/schemas/entity.FullTransaction'
+                    type: array
+                page:
+                    type: integer
+                page_size:
+                    type: integer
+                total_items:
+                    type: integer
+                total_pages:
+                    type: integer
+            type: object
+        dto.RetirementRequest:
+            properties:
+                age:
+                    minimum: 0
+                    type: integer
+                goal_income:
+                    minimum: 0
+                    type: integer
+                goal_patrimony:
+                    minimum: 0
+                    type: integer
+                income_investment_percentage:
+                    maximum: 10000
+                    minimum: 0
+                    type: integer
+                initial_deposit:
+                    type: integer
+                interest:
+                    maximum: 10000
+                    minimum: 0
+                    type: integer
+                interest_type:
+                    allOf:
+                        - $ref: '#/components/schemas/entity.InterestType'
+                    enum:
+                        - MONTHLY
+                        - ANNUAL
+                life_expectancy:
+                    minimum: 1
+                    type: integer
+                monthly_income:
+                    minimum: 0
+                    type: integer
+                retirement_age:
+                    minimum: 1
+                    type: integer
+            required:
+                - age
+                - goal_income
+                - goal_patrimony
+                - income_investment_percentage
+                - interest
+                - interest_type
+                - life_expectancy
+                - monthly_income
+                - retirement_age
+            type: object
+        dto.RetirementResponse:
+            properties:
+                achieved_goal_income:
+                    type: boolean
+                achieved_goal_patrimony:
+                    type: boolean
+                exceeded_goal:
+                    type: boolean
+                exceeded_goal_amount:
+                    type: integer
+                heritage:
+                    type: integer
+                max_monthly_expenses:
+                    type: integer
+                property_on_retirement:
+                    type: integer
+            type: object
+        dto.SignInRequest:
+            properties:
+                provider:
+                    allOf:
+                        - $ref: '#/components/schemas/entity.Provider'
+                    enum:
+                        - GOOGLE
+                        - APPLE
+                        - REFRESH
+                        - MOCK
+            required:
+                - provider
+            type: object
+        dto.SignInResponse:
+            properties:
+                access_token:
+                    type: string
+                refresh_token:
+                    type: string
+                user:
+                    $ref: '#/components/schemas/entity.User'
+            type: object
+        dto.SimpleInterestRequest:
+            properties:
+                initial_deposit:
+                    minimum: 0
+                    type: integer
+                interest:
+                    maximum: 10000
+                    minimum: 0
+                    type: integer
+                interest_type:
+                    allOf:
+                        - $ref: '#/components/schemas/entity.InterestType'
+                    enum:
+                        - MONTHLY
+                        - ANNUAL
+                period_in_months:
+                    minimum: 1
+                    type: integer
+            required:
+                - interest
+                - interest_type
+                - period_in_months
+            type: object
+        dto.SimpleInterestResponse:
+            properties:
+                by_month:
+                    additionalProperties:
+                        $ref: '#/components/schemas/usecase.SimpleInterestResult'
+                    type: object
+                total_amount:
+                    type: integer
+                total_deposit:
+                    type: integer
+                total_interest:
+                    type: integer
+            type: object
+        dto.UpdateAIChatRequest:
+            properties:
+                title:
+                    type: string
+            required:
+                - title
+            type: object
+        dto.UpdateProfileRequest:
+            properties:
+                email:
+                    type: string
+                name:
+                    type: string
+            type: object
+        dto.UpdateTransactionRequest:
+            properties:
+                account_id:
+                    type: string
+                amount:
+                    type: integer
+                category_id:
+                    type: string
+                date:
+                    type: string
+                id:
+                    type: string
+                institution_id:
+                    type: string
+                name:
+                    type: string
+                payment_method_id:
+                    type: string
+            required:
+                - id
+            type: object
+        dto.UpsertBudgetRequest:
+            properties:
+                amount:
+                    type: integer
+                categories:
+                    items:
+                        $ref: '#/components/schemas/usecase.UpsertBudgetCategoryInput'
+                    type: array
+                date:
+                    type: string
+            required:
+                - amount
+                - date
+            type: object
+        entity.AIChat:
+            properties:
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                id:
+                    type: string
+                title:
+                    type: string
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
+        entity.AIChatMessageAndAnswer:
+            properties:
+                author:
+                    $ref: '#/components/schemas/entity.AIChatMessageAuthor'
+                created_at:
+                    type: string
+                id:
+                    type: string
+                message:
+                    type: string
+                rating:
+                    type: string
+            type: object
+        entity.AIChatMessageAuthor:
+            enum:
+                - USER
+                - ARTIFICIAL_INTELLIGENCE
+            type: string
+            x-enum-varnames:
+                - AIChatMessageAuthorUser
+                - AIChatMessageAuthorAI
+        entity.FullTransaction:
+            properties:
+                account_id:
+                    type: string
+                amount:
+                    type: integer
+                category_id:
+                    type: string
+                category_name:
+                    type: string
+                created_at:
+                    type: string
+                date:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                institution_id:
+                    type: string
+                institution_logo:
+                    type: string
+                institution_name:
+                    type: string
+                is_ignored:
+                    type: boolean
+                name:
+                    type: string
+                payment_method_id:
+                    type: string
+                payment_method_name:
+                    type: string
+                updated_at:
+                    type: string
+                user_id:
+                    type: string
+            type: object
+        entity.Institution:
+            properties:
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                logo:
+                    type: string
+                name:
+                    type: string
+            type: object
+        entity.InterestType:
+            enum:
+                - MONTHLY
+                - ANNUAL
+            type: string
+            x-enum-varnames:
+                - InterestTypeMonthly
+                - InterestTypeAnnual
+        entity.JobType:
+            enum:
+                - ENTREPRENEUR
+                - EMPLOYEE
+                - CIVIL_SERVANT
+            type: string
+            x-enum-varnames:
+                - JobTypeEntrepreneur
+                - JobTypeEmployee
+                - JobTypeCivilServant
+        entity.PaymentMethod:
+            properties:
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                name:
+                    type: string
+            type: object
+        entity.Provider:
+            enum:
+                - GOOGLE
+                - APPLE
+                - REFRESH
+                - MOCK
+            type: string
+            x-enum-varnames:
+                - ProviderGoogle
+                - ProviderApple
+                - ProviderRefresh
+                - ProviderMock
+        entity.TransactionCategory:
+            properties:
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                external_id:
+                    type: string
+                id:
+                    type: string
+                name:
+                    type: string
+                updated_at:
+                    type: string
+            type: object
+        entity.User:
+            properties:
+                avatar:
+                    type: string
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                email:
+                    type: string
+                id:
+                    type: string
+                name:
+                    type: string
+                subscription_expires_at:
+                    type: string
+                synchronized_at:
+                    type: string
+                tier:
+                    type: string
+                updated_at:
+                    type: string
+            type: object
+        usecase.CashFlow:
+            properties:
+                cash:
+                    type: integer
+                credit_card:
+                    type: integer
+            type: object
+        usecase.CompoundInterestResult:
+            properties:
+                monthly_interest:
+                    type: integer
+                total_amount:
+                    type: integer
+                total_deposit:
+                    type: integer
+                total_interest:
+                    type: integer
+            type: object
+        usecase.CreateAccountsInstitution:
+            properties:
+                id:
+                    type: integer
+            required:
+                - id
+            type: object
+        usecase.GetBudgetBudgetCategories:
+            properties:
+                amount:
+                    type: integer
+                available:
+                    type: integer
+                budget_id:
+                    type: string
+                category:
+                    $ref: '#/components/schemas/entity.TransactionCategory'
+                category_id:
+                    type: string
+                created_at:
+                    type: string
+                deleted_at:
+                    type: string
+                id:
+                    type: string
+                spent:
+                    type: integer
+                updated_at:
+                    type: string
+            type: object
+        usecase.SimpleInterestResult:
+            properties:
+                total_amount:
+                    type: integer
+                total_deposit:
+                    type: integer
+                total_interest:
+                    type: integer
+            type: object
+        usecase.UpsertBudgetCategoryInput:
+            properties:
+                amount:
+                    type: integer
+                category_id:
+                    type: string
+            required:
+                - amount
+                - category_id
+            type: object
+    securitySchemes:
+        BasicAuth:
+            scheme: basic
+            type: http
+        BearerAuth:
+            description: Type "Bearer" followed by a space and JWT token.
+            in: header
+            name: Authorization
+            type: apiKey
 info:
-  contact:
-    email: danielmesquitta123@gmail.com
-    name: Daniel Mesquita
-  description: API Finance Manager
-  title: API Finance Manager
-  version: "1.0"
+    contact:
+        email: danielmesquitta123@gmail.com
+        name: Daniel Mesquita
+    description: API Finance Manager
+    title: API Finance Manager
+    version: "1.0"
 openapi: 3.0.3
 paths:
-  /health:
-    post:
-      description: Health check
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.HealthResponse"
-          description: OK
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      summary: Health check
-      tags:
-        - Health
-  /v1/admin/accounts:
-    post:
-      description: Webhook to sync user accounts from open finance
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.CreateAccountsRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "204":
-          description: No Content
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BasicAuth: []
-      summary: Sync accounts from open finance
-      tags:
-        - Account
-  /v1/admin/balances/sync:
-    post:
-      description: Sync account balances from open finance
-      responses:
-        "204":
-          description: No Content
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BasicAuth: []
-      summary: Sync account balances from open finance
-      tags:
-        - Balance
-  /v1/admin/institutions/sync:
-    post:
-      description: Sync institutions from open finance
-      responses:
-        "204":
-          description: No Content
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BasicAuth: []
-      summary: Sync institutions from open finance
-      tags:
-        - Institution
-  /v1/admin/transactions/categories/sync:
-    post:
-      description: Sync categories from open finance
-      responses:
-        "204":
-          description: No Content
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BasicAuth: []
-      summary: Sync categories from open finance
-      tags:
-        - Category
-  /v1/admin/transactions/sync:
-    post:
-      description: Webhook to sync transactions from open finance
-      parameters:
-        - description: User IDs
-          in: query
-          name: user_ids
-          schema:
-            items:
-              type: string
-            type: array
-      responses:
-        "204":
-          description: No Content
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BasicAuth: []
-      summary: Sync transactions from open finance
-      tags:
-        - Transaction
-  /v1/ai-chats:
-    get:
-      description: List ai chats
-      parameters:
-        - description: Search
-          in: query
-          name: search
-          schema:
-            type: string
-        - description: Page
-          in: query
-          name: page
-          schema:
-            type: integer
-        - description: Page size
-          in: query
-          name: page_size
-          schema:
-            type: integer
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ListAIChatsResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: List ai chats
-      tags:
-        - AI Chat
-    post:
-      description: Create ai chat
-      responses:
-        "201":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.CreateAIChatResponse"
-          description: Created
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Create ai chat
-      tags:
-        - AI Chat
-  /v1/ai-chats/{ai_chat_id}:
-    delete:
-      description: Delete ai chat
-      parameters:
-        - description: AI Chat ID
-          in: path
-          name: ai_chat_id
-          required: true
-          schema:
-            format: uuid
-            type: string
-      responses:
-        "204":
-          description: No Content
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Delete ai chat
-      tags:
-        - AI Chat
-    put:
-      description: Update ai chat
-      parameters:
-        - description: AI Chat ID
-          in: path
-          name: ai_chat_id
-          required: true
-          schema:
-            format: uuid
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.UpdateAIChatRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "204":
-          description: No Content
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Update ai chat
-      tags:
-        - AI Chat
-  /v1/ai-chats/{ai_chat_id}/messages:
-    get:
-      description: List ai chat messages
-      parameters:
-        - description: AI Chat ID
-          in: path
-          name: ai_chat_id
-          required: true
-          schema:
-            format: uuid
-            type: string
-        - description: Search
-          in: query
-          name: search
-          schema:
-            type: string
-        - description: Page
-          in: query
-          name: page
-          schema:
-            type: integer
-        - description: Page size
-          in: query
-          name: page_size
-          schema:
-            type: integer
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ListAIChatMessagesResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: List ai chat messages
-      tags:
-        - AI Chat
-  /v1/auth/refresh:
-    post:
-      description: Use refresh token to generate new access token
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.SignInResponse"
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Refresh token
-      tags:
-        - Auth
-  /v1/auth/sign-in:
-    post:
-      description: Authenticate user through Google or Apple token
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.SignInRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.SignInResponse"
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Sign in
-      tags:
-        - Auth
-  /v1/balances:
-    get:
-      description: Gets user total balance and transactions monthly balance with previous month comparison
-      parameters:
-        - description: Search
-          in: query
-          name: search
-          schema:
-            type: string
-        - description: Start date
-          in: query
-          name: start_date
-          schema:
-            format: date
-            type: string
-        - description: End date
-          in: query
-          name: end_date
-          schema:
-            format: date
-            type: string
-        - description: Institution IDs
-          in: query
-          name: institution_ids
-          schema:
-            items:
-              type: string
-            type: array
-        - description: Category IDs
-          in: query
-          name: category_ids
-          schema:
-            items:
-              type: string
-            type: array
-        - description: Payment method IDs
-          in: query
-          name: payment_method_ids
-          schema:
-            items:
-              type: string
-            type: array
-        - description: Filter only expenses
-          in: query
-          name: is_expense
-          schema:
-            type: boolean
-        - description: Filter only incomes
-          in: query
-          name: is_income
-          schema:
-            type: boolean
-        - description: Filter ignored or not ignored transactions
-          in: query
-          name: is_ignored
-          schema:
-            type: boolean
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.GetBalanceResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Get balance
-      tags:
-        - Balance
-  /v1/budgets:
-    delete:
-      description: Delete budget
-      responses:
-        "204":
-          description: No Content
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Delete budget
-      tags:
-        - Budget
-    get:
-      description: Get budget
-      parameters:
-        - description: Date
-          in: query
-          name: date
-          required: true
-          schema:
-            format: date
-            type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.GetBudgetResponse"
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Get budget
-      tags:
-        - Budget
-    post:
-      description: Create or update budget
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.UpsertBudgetRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "204":
-          description: No Content
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Create or update budget
-      tags:
-        - Budget
-  /v1/budgets/categories/{category_id}:
-    get:
-      description: Get budget category
-      parameters:
-        - description: Category ID
-          in: path
-          name: category_id
-          required: true
-          schema:
-            format: uuid
-            type: string
-        - description: Date
-          in: query
-          name: date
-          required: true
-          schema:
-            format: date
-            type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.GetBudgetCategoryResponse"
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Get budget category
-      tags:
-        - Budget
-  /v1/budgets/categories/{category_id}/transactions:
-    get:
-      description: List budget category transactions
-      parameters:
-        - description: Category ID
-          in: path
-          name: category_id
-          required: true
-          schema:
-            format: uuid
-            type: string
-        - description: Page
-          in: query
-          name: page
-          schema:
-            type: integer
-        - description: Page size
-          in: query
-          name: page_size
-          schema:
-            type: integer
-        - description: Date
-          in: query
-          name: date
-          required: true
-          schema:
-            format: date
-            type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ListTransactionsResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: List budget category transactions
-      tags:
-        - Budget
-  /v1/calculator/cash-vs-installments:
-    post:
-      description: Calculate cash vs installments
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.CashVsInstallmentsRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.CashVsInstallmentsResponse"
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Calculate cash vs installments
-      tags:
-        - Calculator
-  /v1/calculator/compound-interest:
-    post:
-      description: Calculate compound interest
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.CompoundInterestRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.CompoundInterestResponse"
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Calculate compound interest
-      tags:
-        - Calculator
-  /v1/calculator/emergency-reserve:
-    post:
-      description: Calculate emergency reserve
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.EmergencyReserveRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.EmergencyReserveResponse"
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Calculate emergency reserve
-      tags:
-        - Calculator
-  /v1/calculator/retirement:
-    post:
-      description: Calculate investments needed for retirement
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.RetirementRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.RetirementResponse"
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Calculate retirement
-      tags:
-        - Calculator
-  /v1/calculator/simple-interest:
-    post:
-      description: Calculate simple interest
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.SimpleInterestRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.SimpleInterestResponse"
-          description: OK
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Calculate simple interest
-      tags:
-        - Calculator
-  /v1/feedbacks:
-    post:
-      description: Create feedback
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.CreateFeedbackRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "201":
-          description: Created
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Create feedback
-      tags:
-        - Feedback
-  /v1/institutions:
-    get:
-      description: List all institutions
-      parameters:
-        - description: Search
-          in: query
-          name: search
-          schema:
-            type: string
-        - description: Page
-          in: query
-          name: page
-          schema:
-            type: integer
-        - description: Page size
-          in: query
-          name: page_size
-          schema:
-            type: integer
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ListInstitutionsResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: List institutions
-      tags:
-        - Institution
-  /v1/payment-methods:
-    get:
-      description: List payment methods
-      parameters:
-        - description: Search
-          in: query
-          name: search
-          schema:
-            type: string
-        - description: Page
-          in: query
-          name: page
-          schema:
-            type: integer
-        - description: Page size
-          in: query
-          name: page_size
-          schema:
-            type: integer
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ListPaymentMethodsResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: List payment methods
-      tags:
-        - Payment Method
-  /v1/transactions:
-    get:
-      description: List transactions
-      parameters:
-        - description: Search
-          in: query
-          name: search
-          schema:
-            type: string
-        - description: Page
-          in: query
-          name: page
-          schema:
-            type: integer
-        - description: Page size
-          in: query
-          name: page_size
-          schema:
-            type: integer
-        - description: Start date
-          in: query
-          name: start_date
-          schema:
-            format: date
-            type: string
-        - description: End date
-          in: query
-          name: end_date
-          schema:
-            format: date
-            type: string
-        - description: Institution IDs
-          in: query
-          name: institution_ids
-          schema:
-            items:
-              type: string
-            type: array
-        - description: Category IDs
-          in: query
-          name: category_ids
-          schema:
-            items:
-              type: string
-            type: array
-        - description: Payment method IDs
-          in: query
-          name: payment_method_ids
-          schema:
-            items:
-              type: string
-            type: array
-        - description: Filter only expenses
-          in: query
-          name: is_expense
-          schema:
-            type: boolean
-        - description: Filter only incomes
-          in: query
-          name: is_income
-          schema:
-            type: boolean
-        - description: Filter ignored or not ignored transactions
-          in: query
-          name: is_ignored
-          schema:
-            type: boolean
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ListTransactionsResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: List transactions
-      tags:
-        - Transaction
-    post:
-      description: Create transactions
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.CreateTransactionRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "201":
-          description: Created
-        "400":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Bad Request
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Create transactions
-      tags:
-        - Transaction
-  /v1/transactions/{transaction_id}:
-    get:
-      description: Get transaction
-      parameters:
-        - description: Transaction ID
-          in: path
-          name: transaction_id
-          required: true
-          schema:
-            format: uuid
-            type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.GetTransactionResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Get transaction
-      tags:
-        - Transaction
-    put:
-      description: Update transaction
-      parameters:
-        - description: Transaction ID
-          in: path
-          name: transaction_id
-          required: true
-          schema:
-            format: uuid
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.UpdateTransactionRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "204":
-          description: No Content
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Update transaction
-      tags:
-        - Transaction
-  /v1/transactions/categories:
-    get:
-      description: List categories
-      parameters:
-        - description: Search
-          in: query
-          name: search
-          schema:
-            type: string
-        - description: Page
-          in: query
-          name: page
-          schema:
-            type: integer
-        - description: Page size
-          in: query
-          name: page_size
-          schema:
-            type: integer
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ListTransactionCategoriesResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: List categories
-      tags:
-        - Category
-  /v1/users/institutions:
-    get:
-      description: List user institutions
-      parameters:
-        - description: Search
-          in: query
-          name: search
-          schema:
-            type: string
-        - description: Page
-          in: query
-          name: page
-          schema:
-            type: integer
-        - description: Page size
-          in: query
-          name: page_size
-          schema:
-            type: integer
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ListInstitutionsResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: List user institutions
-      tags:
-        - Institution
-  /v1/users/profile:
-    delete:
-      description: Delete logged-in user
-      responses:
-        "204":
-          description: No Content
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Delete logged-in user
-      tags:
-        - User
-    get:
-      description: Get logged-in user profile
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.GetUserProfileResponse"
-          description: OK
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Get logged-in user profile
-      tags:
-        - User
-    put:
-      description: Update logged-in user
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/dto.UpdateProfileRequest"
-        description: Request body
-        required: true
-        x-originalParamName: request
-      responses:
-        "204":
-          description: No Content
-        "401":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Unauthorized
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Not Found
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/dto.ErrorResponse"
-          description: Internal Server Error
-      security:
-        - BearerAuth: []
-      summary: Update logged-in user
-      tags:
-        - User
+    /health:
+        post:
+            description: Health check
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.HealthResponse'
+                    description: OK
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            summary: Health check
+            tags:
+                - Health
+    /v1/admin/accounts:
+        post:
+            description: Webhook to sync user accounts from open finance
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.CreateAccountsRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BasicAuth: []
+            summary: Sync accounts from open finance
+            tags:
+                - Account
+    /v1/admin/balances/sync:
+        post:
+            description: Sync account balances from open finance
+            responses:
+                "204":
+                    description: No Content
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BasicAuth: []
+            summary: Sync account balances from open finance
+            tags:
+                - Balance
+    /v1/admin/institutions/sync:
+        post:
+            description: Sync institutions from open finance
+            responses:
+                "204":
+                    description: No Content
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BasicAuth: []
+            summary: Sync institutions from open finance
+            tags:
+                - Institution
+    /v1/admin/transactions/categories/sync:
+        post:
+            description: Sync categories from open finance
+            responses:
+                "204":
+                    description: No Content
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BasicAuth: []
+            summary: Sync categories from open finance
+            tags:
+                - Category
+    /v1/admin/transactions/sync:
+        post:
+            description: Webhook to sync transactions from open finance
+            parameters:
+                - description: User IDs
+                  in: query
+                  name: user_ids
+                  schema:
+                    items:
+                        type: string
+                    type: array
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BasicAuth: []
+            summary: Sync transactions from open finance
+            tags:
+                - Transaction
+    /v1/ai-chats:
+        get:
+            description: List ai chats
+            parameters:
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListAIChatsResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List ai chats
+            tags:
+                - AI Chat
+        post:
+            description: Create ai chat
+            responses:
+                "201":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.CreateAIChatResponse'
+                    description: Created
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Create ai chat
+            tags:
+                - AI Chat
+    /v1/ai-chats/{ai_chat_id}:
+        delete:
+            description: Delete ai chat
+            parameters:
+                - description: AI Chat ID
+                  in: path
+                  name: ai_chat_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Delete ai chat
+            tags:
+                - AI Chat
+        put:
+            description: Update ai chat
+            parameters:
+                - description: AI Chat ID
+                  in: path
+                  name: ai_chat_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.UpdateAIChatRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Update ai chat
+            tags:
+                - AI Chat
+    /v1/ai-chats/{ai_chat_id}/messages:
+        get:
+            description: List ai chats messages
+            parameters:
+                - description: AI Chat ID
+                  in: path
+                  name: ai_chat_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListAIChatMessagesAndAnswersResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List ai chats messages
+            tags:
+                - AI Chat
+    /v1/auth/refresh:
+        post:
+            description: Use refresh token to generate new access token
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.SignInResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Refresh token
+            tags:
+                - Auth
+    /v1/auth/sign-in:
+        post:
+            description: Authenticate user through Google or Apple token
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.SignInRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.SignInResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Sign in
+            tags:
+                - Auth
+    /v1/balances:
+        get:
+            description: Gets user total balance and transactions monthly balance with previous month comparison
+            parameters:
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Start date
+                  in: query
+                  name: start_date
+                  schema:
+                    format: date
+                    type: string
+                - description: End date
+                  in: query
+                  name: end_date
+                  schema:
+                    format: date
+                    type: string
+                - description: Institution IDs
+                  in: query
+                  name: institution_ids
+                  schema:
+                    items:
+                        type: string
+                    type: array
+                - description: Category IDs
+                  in: query
+                  name: category_ids
+                  schema:
+                    items:
+                        type: string
+                    type: array
+                - description: Payment method IDs
+                  in: query
+                  name: payment_method_ids
+                  schema:
+                    items:
+                        type: string
+                    type: array
+                - description: Filter only expenses
+                  in: query
+                  name: is_expense
+                  schema:
+                    type: boolean
+                - description: Filter only incomes
+                  in: query
+                  name: is_income
+                  schema:
+                    type: boolean
+                - description: Filter ignored or not ignored transactions
+                  in: query
+                  name: is_ignored
+                  schema:
+                    type: boolean
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.GetBalanceResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Get balance
+            tags:
+                - Balance
+    /v1/budgets:
+        delete:
+            description: Delete budget
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Delete budget
+            tags:
+                - Budget
+        get:
+            description: Get budget
+            parameters:
+                - description: Date
+                  in: query
+                  name: date
+                  required: true
+                  schema:
+                    format: date
+                    type: string
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.GetBudgetResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Get budget
+            tags:
+                - Budget
+        post:
+            description: Create or update budget
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.UpsertBudgetRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "204":
+                    description: No Content
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Create or update budget
+            tags:
+                - Budget
+    /v1/budgets/categories/{category_id}:
+        get:
+            description: Get budget category
+            parameters:
+                - description: Category ID
+                  in: path
+                  name: category_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+                - description: Date
+                  in: query
+                  name: date
+                  required: true
+                  schema:
+                    format: date
+                    type: string
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.GetBudgetCategoryResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Get budget category
+            tags:
+                - Budget
+    /v1/budgets/categories/{category_id}/transactions:
+        get:
+            description: List budget category transactions
+            parameters:
+                - description: Category ID
+                  in: path
+                  name: category_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+                - description: Date
+                  in: query
+                  name: date
+                  required: true
+                  schema:
+                    format: date
+                    type: string
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListTransactionsResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List budget category transactions
+            tags:
+                - Budget
+    /v1/calculator/cash-vs-installments:
+        post:
+            description: Calculate cash vs installments
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.CashVsInstallmentsRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.CashVsInstallmentsResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Calculate cash vs installments
+            tags:
+                - Calculator
+    /v1/calculator/compound-interest:
+        post:
+            description: Calculate compound interest
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.CompoundInterestRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.CompoundInterestResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Calculate compound interest
+            tags:
+                - Calculator
+    /v1/calculator/emergency-reserve:
+        post:
+            description: Calculate emergency reserve
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.EmergencyReserveRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.EmergencyReserveResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Calculate emergency reserve
+            tags:
+                - Calculator
+    /v1/calculator/retirement:
+        post:
+            description: Calculate investments needed for retirement
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.RetirementRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.RetirementResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Calculate retirement
+            tags:
+                - Calculator
+    /v1/calculator/simple-interest:
+        post:
+            description: Calculate simple interest
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.SimpleInterestRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.SimpleInterestResponse'
+                    description: OK
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Calculate simple interest
+            tags:
+                - Calculator
+    /v1/feedbacks:
+        post:
+            description: Create feedback
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.CreateFeedbackRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "201":
+                    description: Created
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Create feedback
+            tags:
+                - Feedback
+    /v1/institutions:
+        get:
+            description: List all institutions
+            parameters:
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListInstitutionsResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List institutions
+            tags:
+                - Institution
+    /v1/payment-methods:
+        get:
+            description: List payment methods
+            parameters:
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListPaymentMethodsResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List payment methods
+            tags:
+                - Payment Method
+    /v1/transactions:
+        get:
+            description: List transactions
+            parameters:
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+                - description: Start date
+                  in: query
+                  name: start_date
+                  schema:
+                    format: date
+                    type: string
+                - description: End date
+                  in: query
+                  name: end_date
+                  schema:
+                    format: date
+                    type: string
+                - description: Institution IDs
+                  in: query
+                  name: institution_ids
+                  schema:
+                    items:
+                        type: string
+                    type: array
+                - description: Category IDs
+                  in: query
+                  name: category_ids
+                  schema:
+                    items:
+                        type: string
+                    type: array
+                - description: Payment method IDs
+                  in: query
+                  name: payment_method_ids
+                  schema:
+                    items:
+                        type: string
+                    type: array
+                - description: Filter only expenses
+                  in: query
+                  name: is_expense
+                  schema:
+                    type: boolean
+                - description: Filter only incomes
+                  in: query
+                  name: is_income
+                  schema:
+                    type: boolean
+                - description: Filter ignored or not ignored transactions
+                  in: query
+                  name: is_ignored
+                  schema:
+                    type: boolean
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListTransactionsResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List transactions
+            tags:
+                - Transaction
+        post:
+            description: Create transactions
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.CreateTransactionRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "201":
+                    description: Created
+                "400":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Bad Request
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Create transactions
+            tags:
+                - Transaction
+    /v1/transactions/{transaction_id}:
+        get:
+            description: Get transaction
+            parameters:
+                - description: Transaction ID
+                  in: path
+                  name: transaction_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.GetTransactionResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Get transaction
+            tags:
+                - Transaction
+        put:
+            description: Update transaction
+            parameters:
+                - description: Transaction ID
+                  in: path
+                  name: transaction_id
+                  required: true
+                  schema:
+                    format: uuid
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.UpdateTransactionRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "204":
+                    description: No Content
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Update transaction
+            tags:
+                - Transaction
+    /v1/transactions/categories:
+        get:
+            description: List categories
+            parameters:
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListTransactionCategoriesResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List categories
+            tags:
+                - Category
+    /v1/users/institutions:
+        get:
+            description: List user institutions
+            parameters:
+                - description: Search
+                  in: query
+                  name: search
+                  schema:
+                    type: string
+                - description: Page
+                  in: query
+                  name: page
+                  schema:
+                    type: integer
+                - description: Page size
+                  in: query
+                  name: page_size
+                  schema:
+                    type: integer
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ListInstitutionsResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: List user institutions
+            tags:
+                - Institution
+    /v1/users/profile:
+        delete:
+            description: Delete logged-in user
+            responses:
+                "204":
+                    description: No Content
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Delete logged-in user
+            tags:
+                - User
+        get:
+            description: Get logged-in user profile
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.GetUserProfileResponse'
+                    description: OK
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Get logged-in user profile
+            tags:
+                - User
+        put:
+            description: Update logged-in user
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/dto.UpdateProfileRequest'
+                description: Request body
+                required: true
+                x-originalParamName: request
+            responses:
+                "204":
+                    description: No Content
+                "401":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Unauthorized
+                "404":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Not Found
+                "500":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/dto.ErrorResponse'
+                    description: Internal Server Error
+            security:
+                - BearerAuth: []
+            summary: Update logged-in user
+            tags:
+                - User

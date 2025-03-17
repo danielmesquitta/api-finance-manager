@@ -78,7 +78,7 @@ func (m *Middleware) handleInternalServerError(
 	}
 
 	userId := ""
-	claims := handler.GetUserClaims(c)
+	claims := handler.GetClaims(c)
 	if claims != nil {
 		userId = claims.Issuer
 	}

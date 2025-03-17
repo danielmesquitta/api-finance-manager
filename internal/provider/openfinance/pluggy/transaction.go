@@ -208,7 +208,17 @@ func (c *Client) ListTransactions(
 			continue
 		}
 
-		accountUUID := uuid.MustParse(accountID)
+		accountUUID, err := uuid.Parse(accountID)
+		if err != nil {
+			slog.Error(
+				"openfinance-list-transactions: error parsing account ID to UUID",
+				"accountID",
+				accountID,
+				"err",
+				err,
+			)
+			continue
+		}
 		transaction.AccountID = &accountUUID
 
 		transactions = append(transactions, *transaction)
