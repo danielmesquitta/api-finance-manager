@@ -64,11 +64,11 @@ func (r *TransactionCategoryRepo) CreateTransactionCategories(
 	return nil
 }
 
-func (r *TransactionCategoryRepo) GetTransactionCategory(
+func (r *TransactionCategoryRepo) GetTransactionCategoryByID(
 	ctx context.Context,
 	id uuid.UUID,
 ) (*entity.TransactionCategory, error) {
-	category, err := r.db.GetTransactionCategory(ctx, id)
+	category, err := r.db.GetTransactionCategoryByID(ctx, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil

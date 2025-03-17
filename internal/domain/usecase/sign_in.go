@@ -118,7 +118,7 @@ func (uc *SignIn) Execute(
 		return nil, errs.New(err)
 	}
 
-	deletedUser, err := uc.ur.GetUserByEmail(ctx, hashedEmail)
+	deletedUser, err := uc.ur.GetDeletedUserByHashedEmail(ctx, hashedEmail)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -137,7 +137,6 @@ func (uc *SignIn) refreshToken(
 	if user == nil {
 		return nil, errs.ErrUserNotFound
 	}
-
 	return uc.signIn(ctx, user)
 }
 

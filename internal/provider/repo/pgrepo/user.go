@@ -67,6 +67,26 @@ func (r *UserRepo) GetUserByEmail(
 	return &result, nil
 }
 
+func (r *UserRepo) GetDeletedUserByHashedEmail(
+	ctx context.Context,
+	hashedEmail string,
+) (*entity.User, error) {
+	user, err := r.db.GetDeletedUserByHashedEmail(ctx, hashedEmail)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+		return nil, errs.New(err)
+	}
+
+	result := entity.User{}
+	if err := copier.Copy(&result, user); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return &result, nil
+}
+
 func (r *UserRepo) GetUserByID(
 	ctx context.Context,
 	id uuid.UUID,

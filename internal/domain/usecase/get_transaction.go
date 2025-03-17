@@ -7,17 +7,16 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
-	"github.com/jinzhu/copier"
 )
 
-type GetTransaction struct {
+type GetTransactionByID struct {
 	tr repo.TransactionRepo
 }
 
 func NewGetTransaction(
 	tr repo.TransactionRepo,
-) *GetTransaction {
-	return &GetTransaction{
+) *GetTransactionByID {
+	return &GetTransactionByID{
 		tr: tr,
 	}
 }
@@ -27,20 +26,15 @@ type GetTransactionInput struct {
 	UserID uuid.UUID `json:"user_id"`
 }
 
-func (uc *GetTransaction) Execute(
+func (uc *GetTransactionByID) Execute(
 	ctx context.Context,
 	in GetTransactionInput,
 ) (*entity.FullTransaction, error) {
-	var repoParams repo.GetTransactionParams
-	if err := copier.Copy(&repoParams, in); err != nil {
-		return nil, errs.New(err)
-	}
-
-	transaction, err := uc.tr.GetTransaction(ctx, repoParams)
+	transaction, err := uc.tr.GetTransactionByID(ctx, in.ID)
 	if err != nil {
 		return nil, errs.New(err)
 	}
-	if transaction == nil {
+	if transaction == nil || transaction.UserID != in.UserID {
 		return nil, errs.ErrTransactionNotFound
 	}
 

@@ -21,12 +21,12 @@ func TestCreateFeedback(t *testing.T) {
 		expectedCode int
 	}{
 		{
-			description:  "Fail to create feedback without token",
+			description:  "fails without token",
 			token:        "",
 			expectedCode: http.StatusBadRequest,
 		},
 		{
-			description:  "Create feedback",
+			description:  "creates feedback",
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusCreated,
 			body: dto.CreateFeedbackRequest{

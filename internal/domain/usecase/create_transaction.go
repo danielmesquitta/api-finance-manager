@@ -68,7 +68,10 @@ func (uc *CreateTransaction) Execute(
 	})
 
 	g.Go(func() error {
-		paymentMethod, err := uc.pmr.GetPaymentMethod(ctx, in.PaymentMethodID)
+		paymentMethod, err := uc.pmr.GetPaymentMethodByID(
+			ctx,
+			in.PaymentMethodID,
+		)
 		if err != nil {
 			return err
 		}
@@ -86,7 +89,7 @@ func (uc *CreateTransaction) Execute(
 		if in.CategoryID == nil {
 			category, err = uc.tcr.GetDefaultTransactionCategory(ctx)
 		} else {
-			category, err = uc.tcr.GetTransactionCategory(ctx, *in.CategoryID)
+			category, err = uc.tcr.GetTransactionCategoryByID(ctx, *in.CategoryID)
 		}
 		if err != nil {
 			return errs.New(err)

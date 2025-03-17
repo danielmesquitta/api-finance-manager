@@ -53,7 +53,7 @@ type TransactionCategoryRepo interface {
 		ctx context.Context,
 		params []CreateTransactionCategoriesParams,
 	) error
-	GetTransactionCategory(
+	GetTransactionCategoryByID(
 		ctx context.Context,
 		id uuid.UUID,
 	) (*entity.TransactionCategory, error)

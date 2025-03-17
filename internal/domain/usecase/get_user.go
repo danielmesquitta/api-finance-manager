@@ -32,6 +32,5 @@ func (uc *GetUser) Execute(
 	if user == nil {
 		return nil, errs.ErrUserNotFound
 	}
-
 	return user, nil
 }

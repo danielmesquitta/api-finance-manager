@@ -46,16 +46,11 @@ func (u *UpdateTransaction) Execute(
 		return errs.New(err)
 	}
 
-	getTransactionRepoParams := repo.GetTransactionParams{
-		ID:     in.ID,
-		UserID: in.UserID,
-	}
-
-	transaction, err := u.tr.GetTransaction(ctx, getTransactionRepoParams)
+	transaction, err := u.tr.GetTransactionByID(ctx, in.ID)
 	if err != nil {
 		return errs.New(err)
 	}
-	if transaction == nil {
+	if transaction == nil || transaction.UserID != in.UserID {
 		return errs.ErrTransactionNotFound
 	}
 

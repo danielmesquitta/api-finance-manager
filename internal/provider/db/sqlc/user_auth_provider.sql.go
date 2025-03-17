@@ -38,6 +38,7 @@ SELECT id, external_id, provider, verified_email, created_at, updated_at, delete
 FROM user_auth_providers
 WHERE user_id = $1
   AND provider = $2
+  AND deleted_at IS NULL
 `
 
 type GetUserAuthProviderParams struct {

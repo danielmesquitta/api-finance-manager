@@ -31,6 +31,9 @@ FROM accounts a
   JOIN user_institutions ui ON a.user_institution_id = ui.id
 WHERE a.type = 'BANK'
   AND ui.user_id = $1
+  AND a.deleted_at IS NULL
+  AND ui.deleted_at IS NULL
+  AND ab.deleted_at IS NULL
 `
 
 type GetUserBalanceOnDateParams struct {

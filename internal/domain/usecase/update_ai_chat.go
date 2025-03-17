@@ -40,7 +40,7 @@ func (uc *UpdateAIChat) Execute(
 		return errs.New(err)
 	}
 
-	aiChat, err := uc.acr.GetAIChat(ctx, in.ID)
+	aiChat, err := uc.acr.GetAIChatByID(ctx, in.ID)
 	if err != nil {
 		return errs.New(err)
 	}

@@ -120,7 +120,7 @@ func (h BudgetHandler) Get(c *fiber.Ctx) error {
 // @Failure 404 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/budgets/categories/{category_id} [get]
-func (h BudgetHandler) GetTransactionCategory(c *fiber.Ctx) error {
+func (h BudgetHandler) GetTransactionCategoryByID(c *fiber.Ctx) error {
 	categoryID, err := parseUUIDPathParam(c, pathParamCategoryID)
 	if err != nil {
 		return errs.New(err)

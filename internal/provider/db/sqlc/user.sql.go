@@ -85,10 +85,36 @@ func (q *Queries) DestroyUser(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const getDeletedUserByHashedEmail = `-- name: GetDeletedUserByHashedEmail :one
+SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+FROM users
+WHERE email = $1
+  AND deleted_at IS NOT NULL
+`
+
+func (q *Queries) GetDeletedUserByHashedEmail(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRow(ctx, getDeletedUserByHashedEmail, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Email,
+		&i.Tier,
+		&i.Avatar,
+		&i.SubscriptionExpiresAt,
+		&i.SynchronizedAt,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.DeletedAt,
+	)
+	return i, err
+}
+
 const getUserByEmail = `-- name: GetUserByEmail :one
 SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 FROM users
 WHERE email = $1
+  AND deleted_at IS NULL
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
@@ -113,6 +139,7 @@ const getUserByID = `-- name: GetUserByID :one
 SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
 FROM users
 WHERE id = $1
+  AND deleted_at IS NULL
 `
 
 func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {

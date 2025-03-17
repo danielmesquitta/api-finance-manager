@@ -38,6 +38,10 @@ type UserRepo interface {
 		id uuid.UUID,
 	) error
 	GetUserByEmail(ctx context.Context, email string) (*entity.User, error)
+	GetDeletedUserByHashedEmail(
+		ctx context.Context,
+		email string,
+	) (*entity.User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (*entity.User, error)
 	UpdateUser(
 		ctx context.Context,

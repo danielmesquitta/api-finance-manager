@@ -43,6 +43,9 @@ func (uc *UpdateUser) Execute(
 	if err != nil {
 		return errs.New(err)
 	}
+	if user == nil {
+		return errs.ErrUserNotFound
+	}
 
 	params := repo.UpdateUserParams{}
 	if err := copier.Copy(&params, user); err != nil {

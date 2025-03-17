@@ -18,7 +18,7 @@ func TestHealth(t *testing.T) {
 		expectedBody *dto.HealthResponse
 	}{
 		{
-			description:  "Health check",
+			description:  "health check",
 			expectedCode: 200,
 			expectedBody: &dto.HealthResponse{Status: "ok"},
 		},

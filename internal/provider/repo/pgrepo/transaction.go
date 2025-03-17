@@ -110,16 +110,11 @@ func (r *TransactionRepo) CreateTransaction(
 	return nil
 }
 
-func (r *TransactionRepo) GetTransaction(
+func (r *TransactionRepo) GetTransactionByID(
 	ctx context.Context,
-	params repo.GetTransactionParams,
+	id uuid.UUID,
 ) (*entity.FullTransaction, error) {
-	dbParams := sqlc.GetTransactionParams{}
-	if err := copier.Copy(&dbParams, params); err != nil {
-		return nil, errs.New(err)
-	}
-
-	transaction, err := r.db.GetTransaction(ctx, dbParams)
+	transaction, err := r.db.GetTransactionByID(ctx, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil

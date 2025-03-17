@@ -109,7 +109,7 @@ func (r *Router) Register(
 	usersApiV1.Get("/budgets", r.bh.Get)
 	usersApiV1.Get(
 		"/budgets/categories/:category_id",
-		r.bh.GetTransactionCategory,
+		r.bh.GetTransactionCategoryByID,
 	)
 	usersApiV1.Get(
 		"/budgets/categories/:category_id/transactions",

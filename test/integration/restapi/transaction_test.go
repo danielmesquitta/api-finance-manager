@@ -10,7 +10,6 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
-	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -27,14 +26,14 @@ func TestListTransactions(t *testing.T) {
 		expectedTransactionIDs []string
 	}{
 		{
-			description:            "Fail to list transactions without token",
+			description:            "fails without token",
 			queryParams:            map[string]string{},
 			token:                  "",
 			expectedCode:           http.StatusBadRequest,
 			expectedTransactionIDs: []string{},
 		},
 		{
-			description: "List transactions",
+			description: "lists transactions",
 			queryParams: map[string]string{
 				handler.QueryParamPageSize: "10",
 			},
@@ -54,7 +53,7 @@ func TestListTransactions(t *testing.T) {
 			},
 		},
 		{
-			description: "Filter transactions by payment method id",
+			description: "filters transactions by payment method id",
 			queryParams: map[string]string{
 				handler.QueryParamPaymentMethodIDs: "5d140153-c072-42ce-b19c-c5c9b528dba4",
 				handler.QueryParamPageSize:         "5",
@@ -70,7 +69,7 @@ func TestListTransactions(t *testing.T) {
 			},
 		},
 		{
-			description: "Filter transactions by category id",
+			description: "filters transactions by category id",
 			queryParams: map[string]string{
 				handler.QueryParamCategoryIDs: "059efe62-9a56-414b-bc8e-65caf03f12e4,ed80ba2a-1b70-40b1-b14c-ff63797dd58e",
 			},
@@ -85,7 +84,7 @@ func TestListTransactions(t *testing.T) {
 			},
 		},
 		{
-			description: "Filter transactions by institution id",
+			description: "filters transactions by institution id",
 			queryParams: map[string]string{
 				handler.QueryParamInstitutionIDs: "88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
 				handler.QueryParamPageSize:       "5",
@@ -101,7 +100,7 @@ func TestListTransactions(t *testing.T) {
 			},
 		},
 		{
-			description: "Filter transactions by is expense",
+			description: "filters transactions by is expense",
 			queryParams: map[string]string{
 				handler.QueryParamIsExpense: "TRUE",
 				handler.QueryParamPageSize:  "5",
@@ -117,7 +116,7 @@ func TestListTransactions(t *testing.T) {
 			},
 		},
 		{
-			description: "Filter transactions by is income",
+			description: "filters transactions by is income",
 			queryParams: map[string]string{
 				handler.QueryParamIsIncome: "TRUE",
 				handler.QueryParamPageSize: "5",
@@ -133,7 +132,7 @@ func TestListTransactions(t *testing.T) {
 			},
 		},
 		{
-			description: "Filter transactions by is ignored",
+			description: "filters transactions by is ignored",
 			queryParams: map[string]string{
 				handler.QueryParamIsIgnored: "TRUE",
 				handler.QueryParamPageSize:  "5",
@@ -149,7 +148,7 @@ func TestListTransactions(t *testing.T) {
 			},
 		},
 		{
-			description: "Filter transactions by date period",
+			description: "filters transactions by date period",
 			queryParams: map[string]string{
 				handler.QueryParamStartDate: "2024-11-29T00:00:00.000-03:00",
 				handler.QueryParamEndDate:   "2024-11-30T23:59:59.999-03:00",
@@ -235,7 +234,7 @@ func TestGetTransaction(t *testing.T) {
 		expectedTransactionID string
 	}{
 		{
-			description:   "Fail to list transactions without token",
+			description:   "fails without token",
 			token:         "",
 			transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 			expectedCode:  http.StatusBadRequest,
@@ -305,13 +304,13 @@ func TestUpdateTransaction(t *testing.T) {
 
 	tests := []Test{
 		{
-			description:   "Fail to update transaction without token",
+			description:   "fails without token",
 			token:         "",
 			transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 			expectedCode:  http.StatusBadRequest,
 		},
 		{
-			description:   "Fail to update non-existing transaction",
+			description:   "fails with non-existing transaction",
 			token:         mockoauth.PremiumTierMockToken,
 			transactionID: "5fde4a75-f4df-415e-86bb-d7e24d488e36",
 			expectedCode:  http.StatusNotFound,
@@ -338,7 +337,7 @@ func TestUpdateTransaction(t *testing.T) {
 				"2a226707-1f75-4276-9697-3e7aac3c7db6",
 			)
 			return Test{
-				description:   "Full transaction update",
+				description:   "updates full transaction",
 				token:         mockoauth.PremiumTierMockToken,
 				transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 				expectedCode:  http.StatusNoContent,
@@ -382,7 +381,7 @@ func TestUpdateTransaction(t *testing.T) {
 				"373b150b-94bd-44b2-abdd-2aab14e74fad",
 			)
 			return Test{
-				description:   "Partial transaction update",
+				description:   "updates partial transaction",
 				token:         mockoauth.PremiumTierMockToken,
 				transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 				expectedCode:  http.StatusNoContent,
@@ -442,15 +441,17 @@ func TestUpdateTransaction(t *testing.T) {
 				return
 			}
 
-			actualTransaction, err := app.db.GetTransaction(
+			actualTransaction, err := app.db.GetTransactionByID(
 				ctx,
-				sqlc.GetTransactionParams{
-					ID:     uuid.MustParse(test.transactionID),
-					UserID: signInRes.User.ID,
-				},
+				uuid.MustParse(test.transactionID),
 			)
 			assert.Nil(t, err)
 
+			assert.Equal(
+				t,
+				signInRes.User.ID.String(),
+				actualTransaction.UserID.String(),
+			)
 			assert.Equal(
 				t,
 				test.expectedTransaction.Name,
@@ -500,12 +501,12 @@ func TestCreateTransaction(t *testing.T) {
 		expectedCode int
 	}{
 		{
-			description:  "Fail to create transaction without token",
+			description:  "fails without token",
 			token:        "",
 			expectedCode: http.StatusBadRequest,
 		},
 		{
-			description:  "Create transaction",
+			description:  "creates transaction",
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusCreated,
 			body: func() dto.CreateTransactionRequest {
@@ -526,7 +527,7 @@ func TestCreateTransaction(t *testing.T) {
 			}(),
 		},
 		{
-			description:  "Create transaction without category",
+			description:  "creates transaction without category",
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusCreated,
 			body: dto.CreateTransactionRequest{

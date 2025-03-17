@@ -87,11 +87,11 @@ func (r *AIChatRepo) DeleteAIChat(ctx context.Context, id uuid.UUID) error {
 	return r.db.DeleteAIChat(ctx, id)
 }
 
-func (r *AIChatRepo) GetAIChat(
+func (r *AIChatRepo) GetAIChatByID(
 	ctx context.Context,
 	id uuid.UUID,
 ) (*entity.AIChat, error) {
-	aiChat, err := r.db.GetAIChat(ctx, id)
+	aiChat, err := r.db.GetAIChatByID(ctx, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil

@@ -47,7 +47,7 @@ type AIChatRepo interface {
 		ctx context.Context,
 		id uuid.UUID,
 	) error
-	GetAIChat(
+	GetAIChatByID(
 		ctx context.Context,
 		id uuid.UUID,
 	) (*entity.AIChat, error)

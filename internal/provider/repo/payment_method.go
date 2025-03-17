@@ -44,7 +44,7 @@ type PaymentMethodRepo interface {
 		ctx context.Context,
 		params []CreatePaymentMethodsParams,
 	) error
-	GetPaymentMethod(
+	GetPaymentMethodByID(
 		ctx context.Context,
 		id uuid.UUID,
 	) (*entity.PaymentMethod, error)

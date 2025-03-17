@@ -37,15 +37,15 @@ func (q *Queries) GetDefaultTransactionCategory(ctx context.Context) (Transactio
 	return i, err
 }
 
-const getTransactionCategory = `-- name: GetTransactionCategory :one
+const getTransactionCategoryByID = `-- name: GetTransactionCategoryByID :one
 SELECT id, external_id, name, created_at, updated_at, deleted_at
 FROM transaction_categories
 WHERE id = $1
   AND deleted_at IS NULL
 `
 
-func (q *Queries) GetTransactionCategory(ctx context.Context, id uuid.UUID) (TransactionCategory, error) {
-	row := q.db.QueryRow(ctx, getTransactionCategory, id)
+func (q *Queries) GetTransactionCategoryByID(ctx context.Context, id uuid.UUID) (TransactionCategory, error) {
+	row := q.db.QueryRow(ctx, getTransactionCategoryByID, id)
 	var i TransactionCategory
 	err := row.Scan(
 		&i.ID,

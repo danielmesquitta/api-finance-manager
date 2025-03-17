@@ -66,14 +66,15 @@ func (q *Queries) DeleteAIChat(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const getAIChat = `-- name: GetAIChat :one
+const getAIChatByID = `-- name: GetAIChatByID :one
 SELECT id, title, created_at, updated_at, deleted_at, user_id
 FROM ai_chats
 WHERE id = $1
+  AND deleted_at IS NULL
 `
 
-func (q *Queries) GetAIChat(ctx context.Context, id uuid.UUID) (AiChat, error) {
-	row := q.db.QueryRow(ctx, getAIChat, id)
+func (q *Queries) GetAIChatByID(ctx context.Context, id uuid.UUID) (AiChat, error) {
+	row := q.db.QueryRow(ctx, getAIChatByID, id)
 	var i AiChat
 	err := row.Scan(
 		&i.ID,

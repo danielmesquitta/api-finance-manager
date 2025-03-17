@@ -26,7 +26,7 @@ func TestGetBalance(t *testing.T) {
 
 	tests := []Test{
 		{
-			description:      "Fail to get balance without token",
+			description:      "fails without token",
 			token:            "",
 			expectedCode:     http.StatusBadRequest,
 			expectedResponse: nil,

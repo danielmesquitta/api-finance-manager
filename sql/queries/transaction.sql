@@ -34,7 +34,7 @@ SET name = $2,
 WHERE id = $1
   AND user_id = $9
   AND deleted_at IS NULL;
--- name: GetTransaction :one
+-- name: GetTransactionByID :one
 SELECT transactions.*,
   transaction_categories.name as category_name,
   institutions.name as institution_name,
@@ -45,5 +45,4 @@ FROM transactions
   LEFT JOIN institutions ON transactions.institution_id = institutions.id
   LEFT JOIN payment_methods ON transactions.payment_method_id = payment_methods.id
 WHERE transactions.id = $1
-  AND user_id = $2
   AND transactions.deleted_at IS NULL;

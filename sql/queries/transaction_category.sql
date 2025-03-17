@@ -1,7 +1,7 @@
 -- name: CreateTransactionCategories :copyfrom
 INSERT INTO transaction_categories (external_id, name)
 VALUES ($1, $2);
--- name: GetTransactionCategory :one
+-- name: GetTransactionCategoryByID :one
 SELECT *
 FROM transaction_categories
 WHERE id = $1

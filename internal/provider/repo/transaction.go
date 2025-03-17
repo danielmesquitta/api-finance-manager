@@ -108,9 +108,9 @@ type TransactionRepo interface {
 		ctx context.Context,
 		params []CreateTransactionsParams,
 	) error
-	GetTransaction(
+	GetTransactionByID(
 		ctx context.Context,
-		params GetTransactionParams,
+		id uuid.UUID,
 	) (*entity.FullTransaction, error)
 	ListTransactions(
 		ctx context.Context,

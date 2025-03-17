@@ -64,11 +64,11 @@ func (r *PaymentMethodRepo) CreatePaymentMethods(
 	return nil
 }
 
-func (r *PaymentMethodRepo) GetPaymentMethod(
+func (r *PaymentMethodRepo) GetPaymentMethodByID(
 	ctx context.Context,
 	id uuid.UUID,
 ) (*entity.PaymentMethod, error) {
-	paymentMethod, err := r.db.GetPaymentMethod(ctx, id)
+	paymentMethod, err := r.db.GetPaymentMethodByID(ctx, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil

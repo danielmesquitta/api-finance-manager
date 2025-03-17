@@ -120,11 +120,6 @@ type CreateTransactionsParams struct {
 	IsIgnored       bool       `json:"is_ignored"`
 }
 
-type GetTransactionParams struct {
-	ID     uuid.UUID `json:"id"`
-	UserID uuid.UUID `json:"user_id"`
-}
-
 type UpdateTransactionParams struct {
 	ID              uuid.UUID  `json:"id"`
 	Name            string     `json:"name"`

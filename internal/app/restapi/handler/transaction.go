@@ -12,7 +12,7 @@ import (
 type TransactionHandler struct {
 	sa *usecase.SyncTransactions
 	lt *usecase.ListTransactions
-	gt *usecase.GetTransaction
+	gt *usecase.GetTransactionByID
 	ut *usecase.UpdateTransaction
 	ct *usecase.CreateTransaction
 }
@@ -20,7 +20,7 @@ type TransactionHandler struct {
 func NewTransactionHandler(
 	sa *usecase.SyncTransactions,
 	lt *usecase.ListTransactions,
-	gt *usecase.GetTransaction,
+	gt *usecase.GetTransactionByID,
 	ut *usecase.UpdateTransaction,
 	ct *usecase.CreateTransaction,
 ) *TransactionHandler {

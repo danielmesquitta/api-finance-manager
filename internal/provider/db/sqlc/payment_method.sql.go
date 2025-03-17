@@ -16,15 +16,15 @@ type CreatePaymentMethodsParams struct {
 	Name       string `json:"name"`
 }
 
-const getPaymentMethod = `-- name: GetPaymentMethod :one
+const getPaymentMethodByID = `-- name: GetPaymentMethodByID :one
 SELECT id, external_id, name, created_at, deleted_at
 FROM payment_methods
 WHERE id = $1
   AND deleted_at IS NULL
 `
 
-func (q *Queries) GetPaymentMethod(ctx context.Context, id uuid.UUID) (PaymentMethod, error) {
-	row := q.db.QueryRow(ctx, getPaymentMethod, id)
+func (q *Queries) GetPaymentMethodByID(ctx context.Context, id uuid.UUID) (PaymentMethod, error) {
+	row := q.db.QueryRow(ctx, getPaymentMethodByID, id)
 	var i PaymentMethod
 	err := row.Scan(
 		&i.ID,

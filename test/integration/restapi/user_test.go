@@ -25,14 +25,14 @@ func TestGetProfile(t *testing.T) {
 
 	tests := []Test{
 		{
-			description:  "Fail to list transactions without token",
+			description:  "fails without token",
 			token:        "",
 			expectedCode: http.StatusBadRequest,
 		},
 		func() Test {
 			avatar := "https://avatar.iran.liara.run/public/15"
 			return Test{
-				description:  "Get John Doe profile",
+				description:  "gets premium tier profile",
 				token:        mockoauth.PremiumTierMockToken,
 				expectedCode: http.StatusOK,
 				expectedResponse: &dto.GetUserProfileResponse{
@@ -51,7 +51,7 @@ func TestGetProfile(t *testing.T) {
 		func() Test {
 			avatar := "https://avatar.iran.liara.run/public/82"
 			return Test{
-				description:  "Get Jane Doe profile",
+				description:  "gets free tier profile",
 				token:        mockoauth.FreeTierMockToken,
 				expectedCode: http.StatusOK,
 				expectedResponse: &dto.GetUserProfileResponse{
@@ -126,7 +126,7 @@ func TestUpdateProfile(t *testing.T) {
 
 	tests := []Test{
 		{
-			description:  "Fail to update user without token",
+			description:  "fails without token",
 			token:        "",
 			expectedCode: http.StatusBadRequest,
 		},
@@ -135,7 +135,7 @@ func TestUpdateProfile(t *testing.T) {
 			name := "Johnathan Doe"
 			email := "johnathandoe@gmail.com"
 			return Test{
-				description:  "Full user update",
+				description:  "updates full user",
 				token:        mockoauth.PremiumTierMockToken,
 				expectedCode: http.StatusNoContent,
 				body: dto.UpdateProfileRequest{
@@ -156,7 +156,7 @@ func TestUpdateProfile(t *testing.T) {
 			id := uuid.MustParse("fdfdc888-da64-4988-8ad3-f739862c4ceb")
 			name := "Johnathan Doe"
 			return Test{
-				description:  "Partial user update",
+				description:  "updates partial user",
 				token:        mockoauth.PremiumTierMockToken,
 				expectedCode: http.StatusNoContent,
 				body: dto.UpdateProfileRequest{
@@ -233,12 +233,12 @@ func TestDeleteProfile(t *testing.T) {
 
 	tests := []Test{
 		{
-			description:  "Fail to update user without token",
+			description:  "fails without token",
 			token:        "",
 			expectedCode: http.StatusBadRequest,
 		},
 		{
-			description:  "Delete user profile",
+			description:  "deletes user",
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusNoContent,
 		},
@@ -283,7 +283,13 @@ func TestDeleteProfile(t *testing.T) {
 				signInRes.User.ID,
 			)
 			assert.Nil(t, err)
+
 			assert.NotNil(t, actualUser.DeletedAt)
+
+			userBeforeDeletion, ok := mockoauth.Users[test.token]
+			assert.True(t, ok)
+			assert.NotEqual(t, userBeforeDeletion.Email, actualUser.Email)
+			assert.NotEqual(t, userBeforeDeletion.Name, actualUser.Name)
 		})
 	}
 }

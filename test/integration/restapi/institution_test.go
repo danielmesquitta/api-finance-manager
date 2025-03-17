@@ -22,14 +22,14 @@ func TestListInstitutions(t *testing.T) {
 		expectedInstitutionIDs []string
 	}{
 		{
-			description:            "Fail to list institutions without token",
+			description:            "fails without token",
 			queryParams:            map[string]string{},
 			token:                  "",
 			expectedCode:           http.StatusBadRequest,
 			expectedInstitutionIDs: []string{},
 		},
 		{
-			description:  "List all institutions",
+			description:  "lists institutions",
 			queryParams:  map[string]string{},
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
@@ -43,7 +43,7 @@ func TestListInstitutions(t *testing.T) {
 			},
 		},
 		{
-			description: "Paginate institutions",
+			description: "paginates institutions",
 			queryParams: map[string]string{
 				handler.QueryParamPage:     "2",
 				handler.QueryParamPageSize: "2",
@@ -56,7 +56,7 @@ func TestListInstitutions(t *testing.T) {
 			},
 		},
 		{
-			description: "Search institutions",
+			description: "searches institutions",
 			queryParams: map[string]string{
 				handler.QueryParamSearch: "Int",
 			},
@@ -136,14 +136,14 @@ func TestListUserInstitutions(t *testing.T) {
 		expectedInstitutionIDs []string
 	}{
 		{
-			description:            "Fail to list institutions without token",
+			description:            "fails without token",
 			queryParams:            map[string]string{},
 			token:                  "",
 			expectedCode:           http.StatusBadRequest,
 			expectedInstitutionIDs: []string{},
 		},
 		{
-			description:  "List all institutions",
+			description:  "lists user institutions",
 			queryParams:  map[string]string{},
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
@@ -153,7 +153,7 @@ func TestListUserInstitutions(t *testing.T) {
 			},
 		},
 		{
-			description: "Paginate institutions",
+			description: "paginates institutions",
 			queryParams: map[string]string{
 				handler.QueryParamPage:     "1",
 				handler.QueryParamPageSize: "1",
@@ -165,7 +165,7 @@ func TestListUserInstitutions(t *testing.T) {
 			},
 		},
 		{
-			description: "Search institutions",
+			description: "searches institutions",
 			queryParams: map[string]string{
 				handler.QueryParamSearch: "nub",
 			},

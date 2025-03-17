@@ -58,7 +58,7 @@ type CreateTransactionsParams struct {
 	IsIgnored       bool       `json:"is_ignored"`
 }
 
-const getTransaction = `-- name: GetTransaction :one
+const getTransactionByID = `-- name: GetTransactionByID :one
 SELECT transactions.id, transactions.external_id, transactions.name, transactions.amount, transactions.is_ignored, transactions.date, transactions.created_at, transactions.updated_at, transactions.deleted_at, transactions.payment_method_id, transactions.user_id, transactions.category_id, transactions.account_id, transactions.institution_id,
   transaction_categories.name as category_name,
   institutions.name as institution_name,
@@ -69,16 +69,10 @@ FROM transactions
   LEFT JOIN institutions ON transactions.institution_id = institutions.id
   LEFT JOIN payment_methods ON transactions.payment_method_id = payment_methods.id
 WHERE transactions.id = $1
-  AND user_id = $2
   AND transactions.deleted_at IS NULL
 `
 
-type GetTransactionParams struct {
-	ID     uuid.UUID `json:"id"`
-	UserID uuid.UUID `json:"user_id"`
-}
-
-type GetTransactionRow struct {
+type GetTransactionByIDRow struct {
 	ID                uuid.UUID  `json:"id"`
 	ExternalID        *string    `json:"external_id"`
 	Name              string     `json:"name"`
@@ -99,9 +93,9 @@ type GetTransactionRow struct {
 	PaymentMethodName *string    `json:"payment_method_name"`
 }
 
-func (q *Queries) GetTransaction(ctx context.Context, arg GetTransactionParams) (GetTransactionRow, error) {
-	row := q.db.QueryRow(ctx, getTransaction, arg.ID, arg.UserID)
-	var i GetTransactionRow
+func (q *Queries) GetTransactionByID(ctx context.Context, id uuid.UUID) (GetTransactionByIDRow, error) {
+	row := q.db.QueryRow(ctx, getTransactionByID, id)
+	var i GetTransactionByIDRow
 	err := row.Scan(
 		&i.ID,
 		&i.ExternalID,

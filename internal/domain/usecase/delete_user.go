@@ -29,6 +29,9 @@ func (uc *DeleteUser) Execute(ctx context.Context, id uuid.UUID) error {
 	if err != nil {
 		return errs.New(err)
 	}
+	if user == nil {
+		return errs.ErrUserNotFound
+	}
 
 	hashedName, err := uc.h.Hash(user.Name)
 	if err != nil {

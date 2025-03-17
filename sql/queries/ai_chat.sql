@@ -24,10 +24,11 @@ WHERE id = $1;
 UPDATE ai_chats
 SET deleted_at = now()
 WHERE id = $1;
--- name: GetAIChat :one
+-- name: GetAIChatByID :one
 SELECT *
 FROM ai_chats
-WHERE id = $1;
+WHERE id = $1
+  AND deleted_at IS NULL;
 -- name: ListAIChatMessagesAndAnswers :many
 WITH combined_messages AS (
   SELECT m.id,

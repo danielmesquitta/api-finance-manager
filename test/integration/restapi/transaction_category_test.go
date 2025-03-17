@@ -22,14 +22,14 @@ func TestListTransactionCategories(t *testing.T) {
 		expectedTransactionCategoryIDs []string
 	}{
 		{
-			description:                    "Fail to list transaction categories without token",
+			description:                    "fails without tokenout token",
 			queryParams:                    map[string]string{},
 			token:                          "",
 			expectedCode:                   http.StatusBadRequest,
 			expectedTransactionCategoryIDs: []string{},
 		},
 		{
-			description: "List all transaction categories",
+			description: "lists transaction categories",
 			queryParams: map[string]string{
 				handler.QueryParamPageSize: "100",
 			},
@@ -61,7 +61,7 @@ func TestListTransactionCategories(t *testing.T) {
 			},
 		},
 		{
-			description: "Search transaction categories",
+			description: "searches transaction categories",
 			queryParams: map[string]string{
 				handler.QueryParamSearch: "Emprestimos",
 			},

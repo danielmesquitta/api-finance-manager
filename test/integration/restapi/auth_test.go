@@ -23,7 +23,7 @@ func TestSignIn(t *testing.T) {
 		expectedEmail string
 	}{
 		{
-			description: "Sign in with registered user",
+			description: "signs in with registered user",
 			body: &dto.SignInRequest{
 				SignInInput: usecase.SignInInput{
 					Provider: entity.ProviderMock,
@@ -34,7 +34,7 @@ func TestSignIn(t *testing.T) {
 			expectedEmail: mockoauth.Users[mockoauth.PremiumTierMockToken].User.Email,
 		},
 		{
-			description: "Sign in with unregistered user",
+			description: "signs in with unregistered user",
 			body: &dto.SignInRequest{
 				SignInInput: usecase.SignInInput{
 					Provider: entity.ProviderMock,
@@ -94,13 +94,13 @@ func TestRefreshToken(t *testing.T) {
 		expectedEmail string
 	}{
 		{
-			description:   "Refresh token",
+			description:   "refreshes token",
 			token:         mockoauth.PremiumTierMockToken,
 			expectedCode:  http.StatusOK,
 			expectedEmail: mockoauth.Users[mockoauth.PremiumTierMockToken].User.Email,
 		},
 		{
-			description:   "Fail to refresh token without access token",
+			description:   "fails without access token",
 			token:         "",
 			expectedCode:  http.StatusBadRequest,
 			expectedEmail: "",

@@ -24,7 +24,7 @@ func (uc *DeleteAIChat) Execute(
 	ctx context.Context,
 	id uuid.UUID,
 ) error {
-	aiChat, err := uc.acr.GetAIChat(ctx, id)
+	aiChat, err := uc.acr.GetAIChatByID(ctx, id)
 	if err != nil {
 		return errs.New(err)
 	}

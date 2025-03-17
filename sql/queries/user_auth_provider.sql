@@ -9,4 +9,5 @@ WHERE id = $1;
 SELECT *
 FROM user_auth_providers
 WHERE user_id = $1
-  AND provider = $2;
+  AND provider = $2
+  AND deleted_at IS NULL;

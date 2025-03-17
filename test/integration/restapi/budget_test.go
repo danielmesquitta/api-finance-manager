@@ -30,7 +30,7 @@ func TestGetBudget(t *testing.T) {
 
 	tests := []Test{
 		{
-			description:      "Fail to list budgets without token",
+			description:      "fails without token",
 			token:            "",
 			expectedCode:     http.StatusBadRequest,
 			expectedResponse: nil,
@@ -54,7 +54,7 @@ func TestGetBudget(t *testing.T) {
 			)
 
 			return Test{
-				description: "Get budget",
+				description: "gets budget",
 				token:       mockoauth.PremiumTierMockToken,
 				queryParams: map[string]string{
 					handler.QueryParamDate: dateStr,
@@ -252,12 +252,12 @@ func TestUpsertBudget(t *testing.T) {
 		expectedCode int
 	}{
 		{
-			description:  "Fail to update budget without token",
+			description:  "fails without token",
 			token:        "",
 			expectedCode: http.StatusBadRequest,
 		},
 		{
-			description:  "Create budget",
+			description:  "creates budget",
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusNoContent,
 			body: dto.UpsertBudgetRequest{
@@ -288,7 +288,7 @@ func TestUpsertBudget(t *testing.T) {
 			},
 		},
 		{
-			description:  "Update budget",
+			description:  "updates budget",
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusNoContent,
 			body: dto.UpsertBudgetRequest{

@@ -22,14 +22,14 @@ func TestListPaymentMethods(t *testing.T) {
 		expectedPaymentMethodIDs []string
 	}{
 		{
-			description:              "Fail to list payment methods without token",
+			description:              "fails without token",
 			queryParams:              map[string]string{},
 			token:                    "",
 			expectedCode:             http.StatusBadRequest,
 			expectedPaymentMethodIDs: []string{},
 		},
 		{
-			description:  "List all payment methods",
+			description:  "lists payment methods",
 			queryParams:  map[string]string{},
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
@@ -42,7 +42,7 @@ func TestListPaymentMethods(t *testing.T) {
 			},
 		},
 		{
-			description: "Search payment methods",
+			description: "searches payment methods",
 			queryParams: map[string]string{
 				handler.QueryParamSearch: "Cartao",
 			},
