@@ -133,6 +133,7 @@ var providers = []any{
 	usecase.NewCreateAIChat,
 	usecase.NewDeleteAIChat,
 	usecase.NewUpdateAIChat,
+	usecase.NewListAIChatMessagesAndAnswers,
 
 	handler.NewAuthHandler,
 	handler.NewCalculatorHandler,

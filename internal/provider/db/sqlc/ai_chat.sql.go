@@ -132,8 +132,8 @@ const listAIChatMessagesAndAnswers = `-- name: ListAIChatMessagesAndAnswers :man
 WITH combined_messages AS (
   SELECT m.id,
     m.message,
-    NULL as rating,
-    'USER' as author,
+    NULL::text AS rating,
+    'USER' AS author,
     m.created_at
   FROM ai_chat_messages m
   WHERE m.ai_chat_id = $1
@@ -142,7 +142,7 @@ WITH combined_messages AS (
   SELECT r.id,
     r.message,
     r.rating,
-    'AI' as author,
+    'AI' AS author,
     r.created_at
   FROM ai_chat_answers r
     JOIN ai_chat_messages m ON m.id = r.ai_chat_message_id
@@ -163,11 +163,11 @@ type ListAIChatMessagesAndAnswersParams struct {
 }
 
 type ListAIChatMessagesAndAnswersRow struct {
-	ID        uuid.UUID   `json:"id"`
-	Message   string      `json:"message"`
-	Rating    interface{} `json:"rating"`
-	Author    string      `json:"author"`
-	CreatedAt time.Time   `json:"created_at"`
+	ID        uuid.UUID `json:"id"`
+	Message   string    `json:"message"`
+	Rating    *string   `json:"rating"`
+	Author    string    `json:"author"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 func (q *Queries) ListAIChatMessagesAndAnswers(ctx context.Context, arg ListAIChatMessagesAndAnswersParams) ([]ListAIChatMessagesAndAnswersRow, error) {

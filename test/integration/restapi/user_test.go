@@ -278,7 +278,7 @@ func TestDeleteProfile(t *testing.T) {
 				return
 			}
 
-			actualUser, err := app.db.GetUserByID(
+			actualUser, err := app.db.GetLatestDeletedUser(
 				ctx,
 				signInRes.User.ID,
 			)

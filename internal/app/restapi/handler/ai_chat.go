@@ -24,12 +24,14 @@ func NewAIChatHandler(
 	dac *usecase.DeleteAIChat,
 	uac *usecase.UpdateAIChat,
 	lac *usecase.ListAIChats,
+	lacmr *usecase.ListAIChatMessagesAndAnswers,
 ) *AIChatHandler {
 	return &AIChatHandler{
-		cac: cac,
-		dac: dac,
-		uac: uac,
-		lac: lac,
+		cac:   cac,
+		dac:   dac,
+		uac:   uac,
+		lac:   lac,
+		lacmr: lacmr,
 	}
 }
 

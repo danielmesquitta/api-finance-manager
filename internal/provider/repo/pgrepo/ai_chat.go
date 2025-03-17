@@ -135,9 +135,12 @@ func (r *AIChatRepo) ListAIChatMessagesAndAnswers(
 	messages, err := r.db.ListAIChatMessagesAndAnswers(ctx, dbParams)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil
+			return []entity.AIChatMessageAndAnswer{}, nil
 		}
 		return nil, errs.New(err)
+	}
+	if len(messages) == 0 {
+		return []entity.AIChatMessageAndAnswer{}, nil
 	}
 
 	result := []entity.AIChatMessageAndAnswer{}

@@ -33,8 +33,8 @@ WHERE id = $1
 WITH combined_messages AS (
   SELECT m.id,
     m.message,
-    NULL as rating,
-    'USER' as author,
+    NULL::text AS rating,
+    'USER' AS author,
     m.created_at
   FROM ai_chat_messages m
   WHERE m.ai_chat_id = $1
@@ -43,7 +43,7 @@ WITH combined_messages AS (
   SELECT r.id,
     r.message,
     r.rating,
-    'AI' as author,
+    'AI' AS author,
     r.created_at
   FROM ai_chat_answers r
     JOIN ai_chat_messages m ON m.id = r.ai_chat_message_id

@@ -3,7 +3,6 @@ package query
 import (
 	"context"
 	"errors"
-	"log"
 	"math"
 	"reflect"
 
@@ -97,10 +96,6 @@ func (qb *QueryBuilder) scan(
 	dest any,
 	args ...any,
 ) error {
-	if qb.e.Environment == config.EnvironmentTest {
-		log.Printf("Query: %s", sql)
-	}
-
 	val := reflect.ValueOf(dest)
 	if val.Kind() != reflect.Ptr {
 		return errs.New("dest must be a pointer")
