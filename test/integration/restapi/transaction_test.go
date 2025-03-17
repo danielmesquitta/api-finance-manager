@@ -310,6 +310,17 @@ func TestUpdateTransaction(t *testing.T) {
 			transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 			expectedCode:  http.StatusBadRequest,
 		},
+		{
+			description:   "Fail to update non-existing transaction",
+			token:         mockoauth.PremiumTierMockToken,
+			transactionID: "5fde4a75-f4df-415e-86bb-d7e24d488e36",
+			expectedCode:  http.StatusNotFound,
+			body: dto.UpdateTransactionRequest{
+				UpdateTransactionInput: usecase.UpdateTransactionInput{
+					Name: "Lorem ipsum",
+				},
+			},
+		},
 		func() Test {
 			name := "Foo bar"
 			date := time.Now()

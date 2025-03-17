@@ -139,8 +139,19 @@ func TestUpdateAIChat(t *testing.T) {
 				},
 			},
 		},
+		{
+			description:  "Fail to update non-existing AI chat",
+			token:        mockoauth.PremiumTierMockToken,
+			aiChatID:     "5fde4a75-f4df-415e-86bb-d7e24d488e36",
+			expectedCode: http.StatusNotFound,
+			body: dto.UpdateAIChatRequest{
+				UpdateAIChatInput: usecase.UpdateAIChatInput{
+					Title: "Non-existing AI chat",
+				},
+			},
+		},
 		func() Test {
-			title := "Foo bar"
+			title := "Lorem ipsum"
 			return Test{
 				description:  "AI chat update",
 				token:        mockoauth.PremiumTierMockToken,

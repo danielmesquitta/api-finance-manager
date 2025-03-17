@@ -93,6 +93,9 @@ func (r *AIChatRepo) GetAIChat(
 ) (*entity.AIChat, error) {
 	aiChat, err := r.db.GetAIChat(ctx, id)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
 		return nil, errs.New(err)
 	}
 
