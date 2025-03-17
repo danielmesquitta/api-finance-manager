@@ -17,11 +17,20 @@ VALUES (
     '2025-03-11 00:00:00.000 -0300'
   ),
   (
+    '1698b17e-13a6-4ac9-9aa1-9408f29078af'::uuid,
+    'Jennifer Doe',
+    'jenniferdoe@email.com',
+    'TRIAL',
+    NULL,
+    NOW() + INTERVAL '1 month',
+    '2025-03-11 00:00:00.000 -0300'
+  ),
+  (
     '5b4694a9-c810-41a2-bca6-74c3f3850fe7'::uuid,
     'Jane Doe',
     'janedoe@email.com',
     'FREE',
     'https://avatar.iran.liara.run/public/82',
     NULL,
-    '2025-03-11 00:00:00.000 -0300'
-  )
+    NULL
+  );

@@ -13,4 +13,8 @@ var (
 		"Provedor de autenticação inválido",
 		ErrCodeValidation,
 	)
+	ErrUnauthorizedTier = New(
+		"Você não possui permissão para acessar esse recurso, faça o upgrade de sua assinatura",
+		ErrCodeUnauthorized,
+	)
 )

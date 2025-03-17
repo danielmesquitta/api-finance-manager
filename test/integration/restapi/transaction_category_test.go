@@ -33,7 +33,7 @@ func TestListTransactionCategories(t *testing.T) {
 			queryParams: map[string]string{
 				handler.QueryParamPageSize: "100",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionCategoryIDs: []string{
 				"30996ce1-e273-4cf3-9eb6-df0e1df03bba",
@@ -65,7 +65,7 @@ func TestListTransactionCategories(t *testing.T) {
 			queryParams: map[string]string{
 				handler.QueryParamSearch: "Emprestimos",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionCategoryIDs: []string{
 				"470850a0-781b-4892-8e96-5590d16c9fe1",

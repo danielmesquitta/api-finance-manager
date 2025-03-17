@@ -46,7 +46,7 @@ func TestGetBalance(t *testing.T) {
 
 			return Test{
 				description: "Get balance",
-				token:       mockoauth.DefaultMockToken,
+				token:       mockoauth.PremiumTierMockToken,
 				queryParams: map[string]string{
 					handler.QueryParamStartDate: startDateStr,
 					handler.QueryParamEndDate:   endDateStr,

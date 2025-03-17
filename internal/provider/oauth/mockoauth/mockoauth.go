@@ -13,7 +13,8 @@ type MockOAuth struct {
 	e *config.Env
 }
 
-const DefaultMockToken = "default_mock_token"
+const PremiumTierMockToken = "premium_mock_token"
+const TrialTierMockToken = "trial_mock_token"
 const FreeTierMockToken = "free_tier_mock_token"
 const UnregisteredUserMockToken = "unregistered_user_mock_token"
 
@@ -23,7 +24,7 @@ type User struct {
 }
 
 var Users = map[string]*User{
-	DefaultMockToken: func() *User {
+	PremiumTierMockToken: func() *User {
 		avatar := "https://avatar.iran.liara.run/public/15"
 		subscriptionExpiresAt := time.Now().AddDate(0, 1, 0)
 		return &User{
@@ -31,11 +32,27 @@ var Users = map[string]*User{
 				Name:                  "John Doe",
 				Email:                 "johndoe@email.com",
 				Avatar:                &avatar,
-				Tier:                  string(entity.TierPremium),
+				Tier:                  entity.TierPremium,
 				SubscriptionExpiresAt: &subscriptionExpiresAt,
 			},
 			AuthProvider: &entity.UserAuthProvider{
 				ExternalID:    "6c2342aa-bdac-4efe-a31b-3a018072cff9",
+				Provider:      entity.ProviderMock,
+				VerifiedEmail: true,
+			},
+		}
+	}(),
+	TrialTierMockToken: func() *User {
+		subscriptionExpiresAt := time.Now().AddDate(0, 1, 0)
+		return &User{
+			User: &entity.User{
+				Name:                  "Jennifer Doe",
+				Email:                 "jenniferdoe@email.com",
+				Tier:                  entity.TierTrial,
+				SubscriptionExpiresAt: &subscriptionExpiresAt,
+			},
+			AuthProvider: &entity.UserAuthProvider{
+				ExternalID:    "2a35fa25-2809-40d7-beeb-0d2766171b1d",
 				Provider:      entity.ProviderMock,
 				VerifiedEmail: true,
 			},
@@ -48,7 +65,7 @@ var Users = map[string]*User{
 				Name:   "Jane Doe",
 				Email:  "janedoe@email.com",
 				Avatar: &avatar,
-				Tier:   string(entity.TierFree),
+				Tier:   entity.TierFree,
 			},
 			AuthProvider: &entity.UserAuthProvider{
 				ExternalID:    "016aecbd-fae5-4ff0-9046-03b7eabf6a5c",
@@ -64,7 +81,7 @@ var Users = map[string]*User{
 				Name:   "Joseph Doe",
 				Email:  "josephdoe@email.com",
 				Avatar: &avatar,
-				Tier:   string(entity.TierFree),
+				Tier:   entity.TierFree,
 			},
 			AuthProvider: &entity.UserAuthProvider{
 				ExternalID:    "2824923b-2d93-4473-8397-32680bb412b4",
@@ -93,7 +110,7 @@ func (m *MockOAuth) GetUser(
 ) (*entity.User, *entity.UserAuthProvider, error) {
 	user, ok := Users[token]
 	if !ok {
-		user = Users[DefaultMockToken]
+		user = Users[PremiumTierMockToken]
 	}
 
 	return user.User, user.AuthProvider, nil

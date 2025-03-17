@@ -38,7 +38,7 @@ func TestListTransactions(t *testing.T) {
 			queryParams: map[string]string{
 				handler.QueryParamPageSize: "10",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
 				"cac59381-300c-4f63-be76-7a2f654cd480",
@@ -59,7 +59,7 @@ func TestListTransactions(t *testing.T) {
 				handler.QueryParamPaymentMethodIDs: "5d140153-c072-42ce-b19c-c5c9b528dba4",
 				handler.QueryParamPageSize:         "5",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
 				"04d434cf-a2b7-4c13-82db-8d3b93b0ca40",
@@ -74,7 +74,7 @@ func TestListTransactions(t *testing.T) {
 			queryParams: map[string]string{
 				handler.QueryParamCategoryIDs: "059efe62-9a56-414b-bc8e-65caf03f12e4,ed80ba2a-1b70-40b1-b14c-ff63797dd58e",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
 				"332df5e6-2624-451b-b95f-437094731851",
@@ -90,7 +90,7 @@ func TestListTransactions(t *testing.T) {
 				handler.QueryParamInstitutionIDs: "88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
 				handler.QueryParamPageSize:       "5",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
 				"cac59381-300c-4f63-be76-7a2f654cd480",
@@ -106,7 +106,7 @@ func TestListTransactions(t *testing.T) {
 				handler.QueryParamIsExpense: "TRUE",
 				handler.QueryParamPageSize:  "5",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
 				"cac59381-300c-4f63-be76-7a2f654cd480",
@@ -122,7 +122,7 @@ func TestListTransactions(t *testing.T) {
 				handler.QueryParamIsIncome: "TRUE",
 				handler.QueryParamPageSize: "5",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
 				"d42f49d6-6652-4268-8970-f4293eb63c03",
@@ -138,7 +138,7 @@ func TestListTransactions(t *testing.T) {
 				handler.QueryParamIsIgnored: "TRUE",
 				handler.QueryParamPageSize:  "5",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
 				"c0c71a23-41f5-4688-9441-544eaf2bdc76",
@@ -155,7 +155,7 @@ func TestListTransactions(t *testing.T) {
 				handler.QueryParamEndDate:   "2024-11-30T23:59:59.999-03:00",
 				handler.QueryParamPageSize:  "5",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
 				"68c59c47-1359-4f04-89bf-8f97f4b0b8f9",
@@ -243,7 +243,7 @@ func TestGetTransaction(t *testing.T) {
 		},
 		{
 			description:           "Get transactions",
-			token:                 mockoauth.DefaultMockToken,
+			token:                 mockoauth.PremiumTierMockToken,
 			transactionID:         "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 			expectedCode:          http.StatusOK,
 			expectedTransactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
@@ -330,7 +330,7 @@ func TestUpdateTransaction(t *testing.T) {
 			)
 			return Test{
 				description:   "Full transaction update",
-				token:         mockoauth.DefaultMockToken,
+				token:         mockoauth.PremiumTierMockToken,
 				transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 				expectedCode:  http.StatusNoContent,
 				body: dto.UpdateTransactionRequest{
@@ -374,7 +374,7 @@ func TestUpdateTransaction(t *testing.T) {
 			)
 			return Test{
 				description:   "Partial transaction update",
-				token:         mockoauth.DefaultMockToken,
+				token:         mockoauth.PremiumTierMockToken,
 				transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 				expectedCode:  http.StatusNoContent,
 				body: dto.UpdateTransactionRequest{
@@ -495,13 +495,13 @@ func TestCreateTransaction(t *testing.T) {
 		expectedCode int
 	}{
 		{
-			description:  "Fail to update transaction without token",
+			description:  "Fail to create transaction without token",
 			token:        "",
 			expectedCode: http.StatusBadRequest,
 		},
 		{
 			description:  "Create transaction",
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusCreated,
 			body: func() dto.CreateTransactionRequest {
 				categoryID := uuid.MustParse(
@@ -522,7 +522,7 @@ func TestCreateTransaction(t *testing.T) {
 		},
 		{
 			description:  "Create transaction without category",
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusCreated,
 			body: dto.CreateTransactionRequest{
 				CreateTransactionInput: usecase.CreateTransactionInput{
@@ -591,23 +591,23 @@ func TestCreateTransaction(t *testing.T) {
 				expectedCategoryID = &defaultCategoryID
 			}
 
-			expectedTransaction := map[string]any{
-				"Name":            test.body.Name,
-				"Amount":          test.body.Amount,
-				"PaymentMethodID": test.body.PaymentMethodID,
-				"Date":            test.body.Date.Format(time.RFC3339),
-				"CategoryID":      *expectedCategoryID,
-			}
-
-			actualTransaction := map[string]any{
-				"Name":            transaction.Name,
-				"Amount":          transaction.Amount,
-				"PaymentMethodID": transaction.PaymentMethodID,
-				"Date":            transaction.Date.Format(time.RFC3339),
-				"CategoryID":      transaction.CategoryID,
-			}
-
-			assert.Equal(t, expectedTransaction, actualTransaction)
+			assert.Equal(t, test.body.Name, transaction.Name)
+			assert.Equal(t, test.body.Amount, transaction.Amount)
+			assert.Equal(
+				t,
+				test.body.PaymentMethodID.String(),
+				transaction.PaymentMethodID.String(),
+			)
+			assert.Equal(
+				t,
+				test.body.Date.Format(time.RFC3339),
+				transaction.Date.Format(time.RFC3339),
+			)
+			assert.Equal(
+				t,
+				expectedCategoryID.String(),
+				transaction.CategoryID.String(),
+			)
 		})
 	}
 }

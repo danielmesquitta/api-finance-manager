@@ -31,7 +31,7 @@ func TestListPaymentMethods(t *testing.T) {
 		{
 			description:  "List all payment methods",
 			queryParams:  map[string]string{},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedPaymentMethodIDs: []string{
 				"5d140153-c072-42ce-b19c-c5c9b528dba4",
@@ -46,7 +46,7 @@ func TestListPaymentMethods(t *testing.T) {
 			queryParams: map[string]string{
 				handler.QueryParamSearch: "Cartao",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedPaymentMethodIDs: []string{
 				"b9098717-97ff-4051-a474-b0d703680176",

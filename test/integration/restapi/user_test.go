@@ -33,7 +33,7 @@ func TestGetProfile(t *testing.T) {
 			avatar := "https://avatar.iran.liara.run/public/15"
 			return Test{
 				description:  "Get John Doe profile",
-				token:        mockoauth.DefaultMockToken,
+				token:        mockoauth.PremiumTierMockToken,
 				expectedCode: http.StatusOK,
 				expectedResponse: &dto.GetUserProfileResponse{
 					User: entity.User{
@@ -137,7 +137,7 @@ func TestUpdateProfile(t *testing.T) {
 			email := "johnathandoe@gmail.com"
 			return Test{
 				description:  "Full user update",
-				token:        mockoauth.DefaultMockToken,
+				token:        mockoauth.PremiumTierMockToken,
 				expectedCode: http.StatusNoContent,
 				body: dto.UpdateProfileRequest{
 					UpdateUserInput: usecase.UpdateUserInput{
@@ -158,7 +158,7 @@ func TestUpdateProfile(t *testing.T) {
 			name := "Johnathan Doe"
 			return Test{
 				description:  "Partial user update",
-				token:        mockoauth.DefaultMockToken,
+				token:        mockoauth.PremiumTierMockToken,
 				expectedCode: http.StatusNoContent,
 				body: dto.UpdateProfileRequest{
 					UpdateUserInput: usecase.UpdateUserInput{
@@ -244,7 +244,7 @@ func TestDeleteProfile(t *testing.T) {
 		},
 		{
 			description:  "Delete user profile",
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusNoContent,
 		},
 	}

@@ -21,11 +21,20 @@ func NewCreateAIChat(
 	}
 }
 
+type CreateAIChatInput struct {
+	UserID uuid.UUID   `json:"-"`
+	Tier   entity.Tier `json:"-"`
+}
+
 func (uc *CreateAIChat) Execute(
 	ctx context.Context,
-	userID uuid.UUID,
+	in CreateAIChatInput,
 ) (*entity.AIChat, error) {
-	latestAIChat, err := uc.acr.GetLatestAIChatByUserID(ctx, userID)
+	if in.Tier == entity.TierFree {
+		return nil, errs.ErrUnauthorizedTier
+	}
+
+	latestAIChat, err := uc.acr.GetLatestAIChatByUserID(ctx, in.UserID)
 	if err != nil {
 		return nil, errs.New(err)
 	}
@@ -34,7 +43,7 @@ func (uc *CreateAIChat) Execute(
 		return &latestAIChat.AIChat, nil
 	}
 
-	aiChat, err := uc.acr.CreateAIChat(ctx, userID)
+	aiChat, err := uc.acr.CreateAIChat(ctx, in.UserID)
 	if err != nil {
 		return nil, errs.New(aiChat)
 	}

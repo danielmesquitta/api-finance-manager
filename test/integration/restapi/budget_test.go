@@ -55,7 +55,7 @@ func TestGetBudget(t *testing.T) {
 
 			return Test{
 				description: "Get budget",
-				token:       mockoauth.DefaultMockToken,
+				token:       mockoauth.PremiumTierMockToken,
 				queryParams: map[string]string{
 					handler.QueryParamDate: dateStr,
 				},
@@ -259,7 +259,7 @@ func TestUpsertBudget(t *testing.T) {
 		},
 		{
 			description:  "Create budget",
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusNoContent,
 			body: dto.UpsertBudgetRequest{
 				UpsertBudgetInput: usecase.UpsertBudgetInput{
@@ -290,7 +290,7 @@ func TestUpsertBudget(t *testing.T) {
 		},
 		{
 			description:  "Update budget",
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusNoContent,
 			body: dto.UpsertBudgetRequest{
 				UpsertBudgetInput: usecase.UpsertBudgetInput{

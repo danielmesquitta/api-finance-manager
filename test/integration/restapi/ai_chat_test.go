@@ -4,37 +4,45 @@ import (
 	"context"
 	"net/http"
 	"testing"
+	"time"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateFeedback(t *testing.T) {
+func TestCreateAIChat(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		description  string
 		token        string
-		body         dto.CreateFeedbackRequest
 		expectedCode int
+		shouldCreate bool
 	}{
 		{
-			description:  "Fail to create feedback without token",
+			description:  "Fail to create ai chat without token",
 			token:        "",
 			expectedCode: http.StatusBadRequest,
+			shouldCreate: false,
 		},
 		{
-			description:  "Create feedback",
+			description:  "Should not create a new AI chat if the user's latest one is empty",
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusCreated,
-			body: dto.CreateFeedbackRequest{
-				CreateFeedbackInput: usecase.CreateFeedbackInput{
-					Message: "Loren ipsum dolor sit amet",
-				},
-			},
+			shouldCreate: false,
+		},
+		{
+			description:  "Create a new AI chat",
+			token:        mockoauth.TrialTierMockToken,
+			expectedCode: http.StatusCreated,
+			shouldCreate: true,
+		},
+		{
+			description:  "Should not create a new AI chat for a free tier user",
+			token:        mockoauth.FreeTierMockToken,
+			expectedCode: http.StatusUnauthorized,
+			shouldCreate: false,
 		},
 	}
 
@@ -60,9 +68,8 @@ func TestCreateFeedback(t *testing.T) {
 
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPost,
-				"/api/v1/feedbacks",
+				"/api/v1/ai-chats",
 				WithBearerToken(accessToken),
-				WithBody(test.body),
 			)
 			assert.Nil(t, err)
 
@@ -77,23 +84,28 @@ func TestCreateFeedback(t *testing.T) {
 				return
 			}
 
-			feedback, err := app.db.GetLatestFeedbackByUserID(
+			aiChat, err := app.db.GetLatestAIChatByUserID(
 				ctx,
-				user.ID.String(),
+				user.ID,
 			)
 			assert.Nil(t, err)
 
-			expectedFeedback := map[string]any{
-				"Message": test.body.Message,
-				"UserID":  user.ID.String(),
+			now := time.Now()
+			if test.shouldCreate {
+				assert.GreaterOrEqual(
+					t,
+					aiChat.CreatedAt.Unix()+60,
+					now.Unix(),
+				)
+				assert.Nil(t, aiChat.Title)
+			} else {
+				assert.GreaterOrEqual(
+					t,
+					now.Unix(),
+					aiChat.CreatedAt.Unix()+60,
+				)
 			}
 
-			actualFeedback := map[string]any{
-				"Message": feedback.Message,
-				"UserID":  feedback.UserID.String(),
-			}
-
-			assert.Equal(t, expectedFeedback, actualFeedback)
 		})
 	}
 }

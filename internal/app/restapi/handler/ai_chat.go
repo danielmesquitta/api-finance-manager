@@ -47,13 +47,14 @@ func NewAIChatHandler(
 // @Router /v1/ai-chats [post]
 func (h *AIChatHandler) Create(c *fiber.Ctx) error {
 	claims := GetUserClaims(c)
-	userID := uuid.MustParse(claims.Issuer)
+
+	in := usecase.CreateAIChatInput{
+		UserID: uuid.MustParse(claims.Issuer),
+		Tier:   claims.Tier,
+	}
 
 	ctx := c.UserContext()
-	out, err := h.cac.Execute(
-		ctx,
-		userID,
-	)
+	out, err := h.cac.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}

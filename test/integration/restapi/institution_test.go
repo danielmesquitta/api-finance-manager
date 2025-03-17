@@ -31,7 +31,7 @@ func TestListInstitutions(t *testing.T) {
 		{
 			description:  "List all institutions",
 			queryParams:  map[string]string{},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
 				"eb3a4329-ba36-4000-9123-748e2c1fdd60",
@@ -48,7 +48,7 @@ func TestListInstitutions(t *testing.T) {
 				handler.QueryParamPage:     "2",
 				handler.QueryParamPageSize: "2",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
 				"df5dbd97-89c7-4776-8b3f-7992bc2bb16b",
@@ -60,7 +60,7 @@ func TestListInstitutions(t *testing.T) {
 			queryParams: map[string]string{
 				handler.QueryParamSearch: "Int",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
 				"eb3a4329-ba36-4000-9123-748e2c1fdd60",
@@ -146,7 +146,7 @@ func TestListUserInstitutions(t *testing.T) {
 		{
 			description:  "List all institutions",
 			queryParams:  map[string]string{},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
 				"88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
@@ -159,7 +159,7 @@ func TestListUserInstitutions(t *testing.T) {
 				handler.QueryParamPage:     "1",
 				handler.QueryParamPageSize: "1",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
 				"88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",
@@ -170,7 +170,7 @@ func TestListUserInstitutions(t *testing.T) {
 			queryParams: map[string]string{
 				handler.QueryParamSearch: "nub",
 			},
-			token:        mockoauth.DefaultMockToken,
+			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedInstitutionIDs: []string{
 				"88f812ab-9bc9-4830-afc6-7ac0ba67b1ec",

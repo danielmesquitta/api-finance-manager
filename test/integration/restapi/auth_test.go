@@ -29,9 +29,9 @@ func TestSignIn(t *testing.T) {
 					Provider: entity.ProviderMock,
 				},
 			},
-			token:         mockoauth.DefaultMockToken,
+			token:         mockoauth.PremiumTierMockToken,
 			expectedCode:  http.StatusOK,
-			expectedEmail: mockoauth.Users[mockoauth.DefaultMockToken].User.Email,
+			expectedEmail: mockoauth.Users[mockoauth.PremiumTierMockToken].User.Email,
 		},
 		{
 			description: "Sign in with unregistered user",
@@ -95,9 +95,9 @@ func TestRefreshToken(t *testing.T) {
 	}{
 		{
 			description:   "Refresh token",
-			token:         mockoauth.DefaultMockToken,
+			token:         mockoauth.PremiumTierMockToken,
 			expectedCode:  http.StatusOK,
-			expectedEmail: mockoauth.Users[mockoauth.DefaultMockToken].User.Email,
+			expectedEmail: mockoauth.Users[mockoauth.PremiumTierMockToken].User.Email,
 		},
 		{
 			description:   "Fail to refresh token without access token",
