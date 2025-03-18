@@ -1,6 +1,6 @@
 module github.com/danielmesquitta/api-finance-manager
 
-go 1.24.0
+go 1.24.1
 
 require (
 	github.com/doug-martin/goqu/v9 v9.19.0
