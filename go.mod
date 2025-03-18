@@ -17,7 +17,7 @@ require (
 	github.com/google/wire v0.6.0
 	github.com/jackc/pgx/v5 v5.7.2
 	github.com/jinzhu/copier v0.4.0
-	github.com/openai/openai-go v0.1.0-alpha.62
+	github.com/openai/openai-go v0.1.0-alpha.65
 	github.com/redis/go-redis/v9 v9.7.1
 	github.com/spf13/viper v1.20.0
 	github.com/stretchr/testify v1.10.0
@@ -67,7 +67,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/lufia/plan9stats v0.0.0-20250303091104-876f3ea5145d // indirect
+	github.com/lufia/plan9stats v0.0.0-20250317134145-8bc96cf8fc35 // indirect
 	github.com/magiconair/properties v1.8.9 // indirect
 	github.com/mailru/easyjson v0.9.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
