@@ -58,7 +58,7 @@ lint:
 
 .PHONY: lint-fix
 lint-fix:
-	@golangci-lint run --fix && golines **/*.go -w -m 80 && go run cmd/lintfix/main.go
+	@golangci-lint run --fix && golines **/*.go -w -m 80
 
 .PHONY: zip_migrations
 zip_migrations:
