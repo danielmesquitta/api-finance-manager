@@ -6,7 +6,7 @@ import (
 	"math"
 	"reflect"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
@@ -16,12 +16,12 @@ import (
 )
 
 type QueryBuilder struct {
-	e *config.Env
+	e *env.Env
 	p *pgxpool.Pool
 }
 
 func NewQueryBuilder(
-	e *config.Env,
+	e *env.Env,
 	p *pgxpool.Pool,
 ) *QueryBuilder {
 	return &QueryBuilder{

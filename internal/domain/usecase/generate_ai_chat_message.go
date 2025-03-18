@@ -19,7 +19,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 )
 
-type CreateAIChatMessage struct {
+type GenerateAIChatMessage struct {
 	v     *validator.Validator
 	tx    tx.TX
 	db    *db.DB
@@ -32,7 +32,7 @@ type CreateAIChatMessage struct {
 	ir    repo.InstitutionRepo
 }
 
-func NewCreateAIChatMessage(
+func NewGenerateAIChatMessage(
 	v *validator.Validator,
 	tx tx.TX,
 	db *db.DB,
@@ -43,8 +43,8 @@ func NewCreateAIChatMessage(
 	pmr repo.PaymentMethodRepo,
 	tcr repo.TransactionCategoryRepo,
 	ir repo.InstitutionRepo,
-) *CreateAIChatMessage {
-	return &CreateAIChatMessage{
+) *GenerateAIChatMessage {
+	return &GenerateAIChatMessage{
 		v:     v,
 		tx:    tx,
 		db:    db,
@@ -58,15 +58,16 @@ func NewCreateAIChatMessage(
 	}
 }
 
-type CreateAIChatMessageInput struct {
-	UserID   uuid.UUID `json:"-"       validate:"required"`
-	AIChatID uuid.UUID `json:"-"       validate:"required"`
-	Message  string    `json:"message" validate:"required,max=512"`
+type GenerateAIChatMessageInput struct {
+	UserID   uuid.UUID   `json:"-"       validate:"required"`
+	AIChatID uuid.UUID   `json:"-"       validate:"required"`
+	Message  string      `json:"message" validate:"required,max=512"`
+	Tier     entity.Tier `json:"-"       validate:"required,oneof=TRIAL PREMIUM"`
 }
 
-func (uc *CreateAIChatMessage) Execute(
+func (uc *GenerateAIChatMessage) Execute(
 	ctx context.Context,
-	in CreateAIChatMessageInput,
+	in GenerateAIChatMessageInput,
 ) (*entity.AIChatAnswer, error) {
 	if err := uc.v.Validate(in); err != nil {
 		return nil, errs.New(err)
@@ -79,9 +80,9 @@ func (uc *CreateAIChatMessage) Execute(
 
 	var aiChatAnswer *entity.AIChatAnswer
 	err = uc.tx.Do(ctx, func(ctx context.Context) error {
-		aiChatMessage, err := uc.acmr.CreateAIChatMessage(
+		aiChatMessage, err := uc.acmr.GenerateAIChatMessage(
 			ctx,
-			repo.CreateAIChatMessageParams{
+			repo.GenerateAIChatMessageParams{
 				AiChatID: in.AIChatID,
 				Message:  in.Message,
 			},
@@ -110,9 +111,9 @@ func (uc *CreateAIChatMessage) Execute(
 	return aiChatAnswer, nil
 }
 
-func (uc *CreateAIChatMessage) generateMessageResponse(
+func (uc *GenerateAIChatMessage) generateMessageResponse(
 	ctx context.Context,
-	in CreateAIChatMessageInput,
+	in GenerateAIChatMessageInput,
 ) (string, error) {
 	const FunctionGetChatHistory = "get_chat_history"
 	const FunctionGetUserFinancialData = "get_user_financial_data"
@@ -213,7 +214,7 @@ func (uc *CreateAIChatMessage) generateMessageResponse(
 	return completion.Choices[0].Message.Content, nil
 }
 
-func (uc *CreateAIChatMessage) getChatHistory(
+func (uc *GenerateAIChatMessage) getChatHistory(
 	ctx context.Context,
 	aiChatID uuid.UUID,
 ) (string, error) {
@@ -234,7 +235,7 @@ func (uc *CreateAIChatMessage) getChatHistory(
 	return string(jsonData), nil
 }
 
-func (uc *CreateAIChatMessage) getUserFinancialData(
+func (uc *GenerateAIChatMessage) getUserFinancialData(
 	ctx context.Context,
 	userID uuid.UUID,
 	message string,
@@ -250,7 +251,7 @@ func (uc *CreateAIChatMessage) getUserFinancialData(
 	return uc.executeSQLQuery(ctx, sqlQuery)
 }
 
-func (uc *CreateAIChatMessage) generateSQLQuery(
+func (uc *GenerateAIChatMessage) generateSQLQuery(
 	ctx context.Context,
 	userID uuid.UUID,
 	message string,
@@ -436,7 +437,7 @@ IMPORTANT RULES:
 	return chatCompletion.Choices[0].Message.Content, nil
 }
 
-func (uc *CreateAIChatMessage) executeSQLQuery(
+func (uc *GenerateAIChatMessage) executeSQLQuery(
 	ctx context.Context,
 	sqlQuery string,
 ) (string, error) {

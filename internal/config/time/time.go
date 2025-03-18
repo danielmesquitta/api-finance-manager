@@ -1,8 +1,8 @@
-package config
+package time
 
 import "time"
 
-func setServerTimeZone() {
+func SetServerTimeZone() {
 	loc, _ := time.LoadLocation("America/Sao_Paulo")
 	time.Local = loc
 }

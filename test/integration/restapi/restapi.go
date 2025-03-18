@@ -13,6 +13,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
@@ -24,9 +25,9 @@ import (
 )
 
 var (
-	wg  sync.WaitGroup
-	env *config.Env
-	val *validator.Validator
+	wg sync.WaitGroup
+	ev *env.Env
+	vl *validator.Validator
 )
 
 type TestApp struct {
@@ -39,16 +40,16 @@ func init() {
 	wg.Add(1)
 	defer wg.Done()
 
-	val = validator.New()
-	env = config.LoadConfig(val)
+	vl = validator.New()
+	ev = config.LoadConfig(vl)
 }
 
 func NewTestApp(
 	t *testing.T,
 ) (app *TestApp, cleanUp func(context.Context) error) {
 	wg.Wait()
-	v := *val
-	e := *env
+	v := *vl
+	e := *ev
 
 	mu := sync.Mutex{}
 	g, gCtx := errgroup.WithContext(context.Background())
@@ -94,7 +95,7 @@ func NewTestApp(
 	e.PostgresDatabaseURL = postgresDatabaseURL
 	e.RedisDatabaseURL = redisDatabaseURL
 
-	restAPI := restapi.NewTest(&v, &e, t)
+	restAPI := restapi.NewTest(&v, &e)
 
 	app = &TestApp{
 		t:  t,

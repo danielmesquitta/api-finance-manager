@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
@@ -13,7 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func NewPGXPool(e *config.Env) *pgxpool.Pool {
+func NewPGXPool(e *env.Env) *pgxpool.Pool {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 

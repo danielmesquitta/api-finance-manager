@@ -23,7 +23,7 @@ type App struct {
 	DB *db.DB
 }
 
-func newApp(
+func BuildApp(
 	m *middleware.Middleware,
 	r *router.Router,
 	c cache.Cache,

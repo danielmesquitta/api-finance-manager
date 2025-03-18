@@ -1,7 +1,7 @@
 package openai
 
 import (
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/openai/openai-go"
 	"github.com/openai/openai-go/option"
 )
@@ -11,7 +11,7 @@ type OpenAI struct {
 }
 
 func NewOpenAI(
-	e *config.Env,
+	e *env.Env,
 ) *OpenAI {
 	client := openai.NewClient(
 		option.WithAPIKey(e.OpenAIAPIKey),

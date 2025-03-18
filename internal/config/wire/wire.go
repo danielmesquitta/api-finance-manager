@@ -1,19 +1,23 @@
-package restapi
+package wire
 
 import (
 	"github.com/google/wire"
 
+	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/router"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/hash"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/rediscache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/gpt/openai"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
@@ -29,6 +33,13 @@ func init() {
 	_ = testProviders
 	_ = stagingProviders
 	_ = prodProviders
+	_ = params
+}
+
+func params(
+	v *validator.Validator,
+	e *env.Env,
+) {
 }
 
 var providers = []any{
@@ -42,6 +53,7 @@ var providers = []any{
 	db.NewPGXPool,
 	query.NewQueryBuilder,
 	db.NewDB,
+	openai.NewOpenAI,
 
 	wire.Bind(new(tx.TX), new(*tx.PgxTX)),
 	tx.NewPgxTX,
@@ -85,14 +97,11 @@ var providers = []any{
 	wire.Bind(new(repo.AIChatRepo), new(*pgrepo.AIChatRepo)),
 	pgrepo.NewAIChatRepo,
 
-	// wire.Bind(new(repo.AIChatMessageRepo), new(*pgrepo.AIChatMessageRepo)),
-	// pgrepo.NewAIChatMessageRepo,
+	wire.Bind(new(repo.AIChatMessageRepo), new(*pgrepo.AIChatMessageRepo)),
+	pgrepo.NewAIChatMessageRepo,
 
-	// wire.Bind(
-	// 	new(repo.AIChatAnswerRepo),
-	// 	new(*pgrepo.AIChatAnswerRepo),
-	// ),
-	// pgrepo.NewAIChatAnswerRepo,
+	wire.Bind(new(repo.AIChatAnswerRepo), new(*pgrepo.AIChatAnswerRepo)),
+	pgrepo.NewAIChatAnswerRepo,
 
 	wire.Bind(
 		new(repo.UserAuthProviderRepo),
@@ -134,6 +143,7 @@ var providers = []any{
 	usecase.NewDeleteAIChat,
 	usecase.NewUpdateAIChat,
 	usecase.NewListAIChatMessagesAndAnswers,
+	usecase.NewGenerateAIChatMessage,
 
 	handler.NewAuthHandler,
 	handler.NewCalculatorHandler,
@@ -154,32 +164,28 @@ var providers = []any{
 
 	router.NewRouter,
 
-	newApp,
+	restapi.BuildApp,
 }
 
 var devProviders = []any{
 	mockoauth.NewMockOAuth,
-
 	wire.Bind(new(openfinance.Client), new(*mockpluggy.Client)),
 	mockpluggy.NewClient,
 }
 
 var testProviders = []any{
 	mockoauth.NewMockOAuth,
-
 	wire.Bind(new(openfinance.Client), new(*mockpluggy.Client)),
 	mockpluggy.NewClient,
 }
 
 var stagingProviders = []any{
 	mockoauth.NewMockOAuth,
-
 	wire.Bind(new(openfinance.Client), new(*mockpluggy.Client)),
 	mockpluggy.NewClient,
 }
 
 var prodProviders = []any{
 	wire.Value((*mockoauth.MockOAuth)(nil)),
-
 	wire.Bind(new(openfinance.Client), new(*pluggy.Client)),
 }

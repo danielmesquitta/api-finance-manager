@@ -111,6 +111,71 @@ func TestCreateAIChat(t *testing.T) {
 	}
 }
 
+func TestGenerateAIChatMessage(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		description  string
+		token        string
+		expectedCode int
+	}{
+		{
+			description:  "fails without token",
+			token:        "",
+			expectedCode: http.StatusBadRequest,
+		},
+		{
+			description:  "should not create a new AI chat if the user's latest one is empty",
+			token:        mockoauth.PremiumTierMockToken,
+			expectedCode: http.StatusCreated,
+		},
+		{
+			description:  "creates a new AI chat",
+			token:        mockoauth.TrialTierMockToken,
+			expectedCode: http.StatusCreated,
+		},
+		{
+			description:  "should not create a new AI chat for a free tier user",
+			token:        mockoauth.FreeTierMockToken,
+			expectedCode: http.StatusBadRequest,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.description, func(t *testing.T) {
+			t.Parallel()
+			app, cleanUp := NewTestApp(t)
+			defer func() {
+				err := cleanUp(context.Background())
+				assert.Nil(t, err)
+			}()
+
+			signInRes := &dto.SignInResponse{}
+			if test.token != "" {
+				signInRes = app.SignIn(test.token)
+			}
+
+			statusCode, rawBody, err := app.MakeRequest(
+				http.MethodPost,
+				"/api/v1/ai-chats",
+				WithBearerToken(signInRes.AccessToken),
+			)
+			assert.Nil(t, err)
+
+			assert.Equal(
+				t,
+				test.expectedCode,
+				statusCode,
+				rawBody,
+			)
+
+			if test.expectedCode != http.StatusCreated {
+				return
+			}
+		})
+	}
+}
+
 func TestUpdateAIChat(t *testing.T) {
 	t.Parallel()
 

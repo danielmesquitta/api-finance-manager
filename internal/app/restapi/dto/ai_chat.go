@@ -20,3 +20,7 @@ type CreateAIChatResponse struct {
 type UpdateAIChatRequest struct {
 	usecase.UpdateAIChatInput
 }
+
+type GenerateAIChatMessageRequest struct {
+	usecase.GenerateAIChatMessageInput
+}

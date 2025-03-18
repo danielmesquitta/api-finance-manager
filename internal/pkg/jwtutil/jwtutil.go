@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/golang-jwt/jwt/v5"
@@ -38,7 +38,7 @@ type JWT struct {
 }
 
 func NewJWT(
-	e *config.Env,
+	e *env.Env,
 ) *JWT {
 	keys := map[TokenType][]byte{
 		TokenTypeAccess:  []byte(e.JWTAccessTokenSecretKey),

@@ -4,9 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path"
 	"strings"
 	"text/template"
 )
+
+const wireConfigFilename = "internal/config/wire/wire.go" // Source
+const wireOutputFilename = "internal/app/restapi/wire.go" // Destination
+const mainPackageImport = "github.com/danielmesquitta/api-finance-manager/internal/app/restapi"
 
 type wireConfigData struct {
 	PackageName      string
@@ -18,6 +23,7 @@ type wireConfigData struct {
 type environmentConfig struct {
 	Name      string
 	Providers []string
+	Params    []string
 }
 
 // Use a text/template to generate the final wire.go.
@@ -37,9 +43,9 @@ import (
 {{- range .Environments }}
 // New{{ .Name }} wires up the application in {{ .Name | lower }} mode.
 func New{{ .Name }}(
-    v *validator.Validator,
-    e *config.Env,
-    t *testing.T,
+{{- range .Params }}
+    {{.}},
+{{- end }}
 ) *App {
     wire.Build(
   {{- range .Providers }}
@@ -52,9 +58,6 @@ func New{{ .Name }}(
 `
 
 func main() {
-	wireConfigFilename := "internal/app/restapi/config.go"          // Source
-	wireOutputFilename := "internal/app/restapi/wire_config_gen.go" // Destination
-
 	data, err := parseWireConfig(wireConfigFilename)
 	if err != nil {
 		panic(err)
@@ -76,7 +79,10 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 	}
 	defer file.Close()
 
+	packageName := path.Base(mainPackageImport)
+
 	data := &wireConfigData{
+		PackageName:      packageName,
 		Imports:          []string{},
 		DefaultProviders: []string{},
 		Environments:     []environmentConfig{},
@@ -85,6 +91,7 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 	scanner := bufio.NewScanner(file)
 
 	inImportBlock := false
+	inParamsBlock := false
 	currentSection := ""
 
 	environmentNames := []string{"Dev", "Staging", "Test", "Prod"}
@@ -93,6 +100,7 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 	providerSections := map[string]*[]string{
 		"var providers = []any{": &data.DefaultProviders,
 	}
+	params := []string{}
 
 	environments := map[string]*environmentConfig{}
 	for _, env := range environmentNames {
@@ -113,15 +121,6 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 		line := scanner.Text()
 		line = strings.TrimSpace(line)
 
-		// Detect package name
-		if strings.HasPrefix(line, "package ") && data.PackageName == "" {
-			parts := strings.Fields(line)
-			if len(parts) == 2 {
-				data.PackageName = parts[1]
-				continue
-			}
-		}
-
 		// Detect start/end of import block
 		if strings.HasPrefix(line, "import (") {
 			inImportBlock = true
@@ -140,12 +139,33 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 				strings.HasPrefix(impLine, ")") {
 				continue
 			}
+			// Skip the main package import
+			if impLine == mainPackageImport {
+				continue
+			}
 			// De-duplicate imports
 			if _, seen := importSet[impLine]; !seen {
 				importSet[impLine] = true
 				data.Imports = append(data.Imports, impLine)
 			}
 			continue
+		}
+
+		// Detect start/end of params block
+		if strings.HasPrefix(line, "func params(") {
+			inParamsBlock = true
+			continue
+		}
+
+		if inParamsBlock && strings.HasPrefix(line, ") {") {
+			inParamsBlock = false
+			continue
+		}
+
+		if inParamsBlock {
+			paramLine := strings.TrimSpace(line)
+			paramLine = strings.TrimSuffix(paramLine, ",")
+			params = append(params, paramLine)
 		}
 
 		// Check if this line starts a provider section
@@ -168,6 +188,15 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 			if trimmed != "" && trimmed != "}" {
 				// Get the slice pointer for this section and append to it
 				if slice, ok := providerSections[currentSection]; ok {
+					// Remove main package reference from provider
+					if strings.HasPrefix(trimmed, packageName) {
+						trimmed = strings.Replace(
+							trimmed,
+							packageName+".",
+							"",
+							1,
+						)
+					}
 					*slice = append(*slice, trimmed)
 				}
 			}
@@ -178,26 +207,13 @@ func parseWireConfig(filename string) (*wireConfigData, error) {
 		return nil, err
 	}
 
-	// Add required imports
-	mustHaveImports := []string{
-		"github.com/google/wire",
-		"github.com/danielmesquitta/api-finance-manager/internal/config",
-		"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator",
-		"testing",
-	}
-	for _, imp := range mustHaveImports {
-		if _, seen := importSet[imp]; !seen {
-			importSet[imp] = true
-			data.Imports = append(data.Imports, imp)
-		}
-	}
-
 	for _, env := range environments {
 		providers := append(env.Providers, data.DefaultProviders...)
 
 		data.Environments = append(data.Environments, environmentConfig{
 			Name:      env.Name,
 			Providers: providers,
+			Params:    params,
 		})
 	}
 

@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
@@ -18,7 +18,7 @@ import (
 )
 
 type SyncBalances struct {
-	e   *config.Env
+	e   *env.Env
 	tx  tx.TX
 	o   openfinance.Client
 	c   cache.Cache
@@ -27,7 +27,7 @@ type SyncBalances struct {
 }
 
 func NewSyncBalances(
-	e *config.Env,
+	e *env.Env,
 	tx tx.TX,
 	o openfinance.Client,
 	c cache.Cache,

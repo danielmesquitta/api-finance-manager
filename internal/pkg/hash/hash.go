@@ -6,15 +6,15 @@ import (
 	"encoding/base64"
 	"errors"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type Hasher struct {
-	e *config.Env
+	e *env.Env
 }
 
-func NewHasher(e *config.Env) *Hasher {
+func NewHasher(e *env.Env) *Hasher {
 	return &Hasher{
 		e: e,
 	}

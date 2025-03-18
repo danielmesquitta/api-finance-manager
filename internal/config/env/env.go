@@ -1,9 +1,10 @@
-package config
+package env
 
 import (
 	"bytes"
 	_ "embed"
 	"fmt"
+	"log"
 	"os"
 
 	root "github.com/danielmesquitta/api-finance-manager"
@@ -42,6 +43,18 @@ type Env struct {
 	SyncBalancesMaxAccounts          int         `mapstructure:"SYNC_BALANCES_MAX_ACCOUNTS"          validate:"required,min=1"`
 	SyncTransactionsMaxAccounts      int         `mapstructure:"SYNC_TRANSACTIONS_MAX_ACCOUNTS"      validate:"required,min=1"`
 	OpenAIAPIKey                     string      `mapstructure:"OPEN_AI_API_KEY"                     validate:"required"`
+}
+
+func NewEnv(v *validator.Validator) *Env {
+	e := &Env{
+		v: v,
+	}
+
+	if err := e.loadEnv(); err != nil {
+		log.Fatalf("failed to load environment variables: %v", err)
+	}
+
+	return e
 }
 
 func (e *Env) loadEnv() error {

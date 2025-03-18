@@ -5,6 +5,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi"
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 )
 
@@ -25,17 +26,17 @@ func main() {
 
 	var app *restapi.App
 	switch e.Environment {
-	case config.EnvironmentProduction:
-		app = restapi.NewProd(v, e, nil)
+	case env.EnvironmentProduction:
+		app = restapi.NewProd(v, e)
 
-	case config.EnvironmentTest:
-		app = restapi.NewTest(v, e, nil)
+	case env.EnvironmentTest:
+		app = restapi.NewTest(v, e)
 
-	case config.EnvironmentStaging:
-		app = restapi.NewStaging(v, e, nil)
+	case env.EnvironmentStaging:
+		app = restapi.NewStaging(v, e)
 
 	default:
-		app = restapi.NewDev(v, e, nil)
+		app = restapi.NewDev(v, e)
 	}
 
 	if err := app.Listen(":" + e.Port); err != nil {

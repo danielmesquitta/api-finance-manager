@@ -4,13 +4,13 @@ import (
 	"context"
 	"time"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth"
 )
 
 type MockOAuth struct {
-	e *config.Env
+	e *env.Env
 }
 
 const PremiumTierMockToken = "premium_mock_token"
@@ -93,9 +93,9 @@ var Users = map[string]*User{
 }
 
 func NewMockOAuth(
-	e *config.Env,
+	e *env.Env,
 ) *MockOAuth {
-	if e.Environment == config.EnvironmentProduction {
+	if e.Environment == env.EnvironmentProduction {
 		panic("mock oauth not allowed in production")
 	}
 

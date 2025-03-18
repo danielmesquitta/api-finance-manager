@@ -6,11 +6,11 @@ import (
 	_ "github.com/danielmesquitta/api-finance-manager/docs" // swagger docs
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 )
 
 type Router struct {
-	e   *config.Env
+	e   *env.Env
 	m   *middleware.Middleware
 	hh  *handler.HealthHandler
 	dh  *handler.DocHandler
@@ -29,7 +29,7 @@ type Router struct {
 }
 
 func NewRouter(
-	e *config.Env,
+	e *env.Env,
 	m *middleware.Middleware,
 	hh *handler.HealthHandler,
 	dh *handler.DocHandler,

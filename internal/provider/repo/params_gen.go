@@ -49,7 +49,7 @@ type UpdateAIChatAnswerParams struct {
 	Rating *string   `json:"rating"`
 }
 
-type CreateAIChatMessageParams struct {
+type GenerateAIChatMessageParams struct {
 	Message  string    `json:"message"`
 	AiChatID uuid.UUID `json:"ai_chat_id"`
 }

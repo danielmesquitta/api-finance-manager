@@ -24,17 +24,17 @@ func NewAIChatMessageRepo(
 	}
 }
 
-func (r *AIChatMessageRepo) CreateAIChatMessage(
+func (r *AIChatMessageRepo) GenerateAIChatMessage(
 	ctx context.Context,
-	params repo.CreateAIChatMessageParams,
+	params repo.GenerateAIChatMessageParams,
 ) (*entity.AIChatMessage, error) {
-	dbParams := sqlc.CreateAIChatMessageParams{}
+	dbParams := sqlc.GenerateAIChatMessageParams{}
 	if err := copier.Copy(&dbParams, params); err != nil {
 		return nil, errs.New(err)
 	}
 
 	tx := r.db.UseTx(ctx)
-	aiChat, err := tx.CreateAIChatMessage(ctx, dbParams)
+	aiChat, err := tx.GenerateAIChatMessage(ctx, dbParams)
 	if err != nil {
 		return nil, errs.New(err)
 	}

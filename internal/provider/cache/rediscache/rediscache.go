@@ -6,7 +6,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
 )
 
@@ -15,7 +15,7 @@ type RedisCache struct {
 }
 
 func NewRedisCache(
-	e *config.Env,
+	e *env.Env,
 ) *RedisCache {
 	opts, err := redis.ParseURL(e.RedisDatabaseURL)
 	if err != nil {

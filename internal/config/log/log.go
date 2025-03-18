@@ -1,4 +1,4 @@
-package config
+package log
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/fatih/color"
 )
 
@@ -68,13 +69,13 @@ func (h *prettyHandler) Handle(ctx context.Context, r slog.Record) error {
 	return nil
 }
 
-func setDefaultLogger(
-	e *Env,
+func SetDefaultLogger(
+	e *env.Env,
 ) {
 	var logger *slog.Logger
 
 	switch e.Environment {
-	case EnvironmentProduction, EnvironmentStaging:
+	case env.EnvironmentProduction, env.EnvironmentStaging:
 		logger = slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	default:

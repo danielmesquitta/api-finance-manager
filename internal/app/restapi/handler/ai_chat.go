@@ -17,6 +17,7 @@ type AIChatHandler struct {
 	uac   *usecase.UpdateAIChat
 	lac   *usecase.ListAIChats
 	lacmr *usecase.ListAIChatMessagesAndAnswers
+	gacm  *usecase.GenerateAIChatMessage
 }
 
 func NewAIChatHandler(
@@ -25,6 +26,7 @@ func NewAIChatHandler(
 	uac *usecase.UpdateAIChat,
 	lac *usecase.ListAIChats,
 	lacmr *usecase.ListAIChatMessagesAndAnswers,
+	gacm *usecase.GenerateAIChatMessage,
 ) *AIChatHandler {
 	return &AIChatHandler{
 		cac:   cac,
@@ -32,6 +34,7 @@ func NewAIChatHandler(
 		uac:   uac,
 		lac:   lac,
 		lacmr: lacmr,
+		gacm:  gacm,
 	}
 }
 
@@ -208,4 +211,45 @@ func (h AIChatHandler) ListMessages(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(res)
+}
+
+// @Summary Generate ai chat message
+// @Description Generate ai chat message
+// @Tags AI Chat
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param ai_chat_id path string true "AI Chat ID" format(uuid)
+// @Param request body dto.UpdateAIChatRequest true "Request body"
+// @Success 201 {object} dto.CreateAIChatResponse
+// @Failure 400 {object} dto.ErrorResponse
+// @Failure 401 {object} dto.ErrorResponse
+// @Failure 500 {object} dto.ErrorResponse
+// @Router /v1/ai-chats/{ai_chat_id}/messages [post]
+func (h *AIChatHandler) GenerateMessage(c *fiber.Ctx) error {
+	var in usecase.GenerateAIChatMessageInput
+	if err := c.BodyParser(&in); err != nil {
+		return errs.New(err)
+	}
+
+	userID, tier, err := GetUser(c)
+	if err != nil {
+		return errs.New(err)
+	}
+	in.UserID = userID
+	in.Tier = tier
+
+	aiChatID, err := parseUUIDPathParam(c, pathParamAIChatID)
+	if err != nil {
+		return errs.New(err)
+	}
+	in.AIChatID = aiChatID
+
+	ctx := c.UserContext()
+	out, err := h.gacm.Execute(ctx, in)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	return c.Status(http.StatusCreated).JSON(out)
 }

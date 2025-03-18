@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/config"
+	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
@@ -21,7 +21,7 @@ import (
 )
 
 type SyncTransactions struct {
-	e   *config.Env
+	e   *env.Env
 	o   openfinance.Client
 	c   cache.Cache
 	tx  tx.TX
@@ -33,7 +33,7 @@ type SyncTransactions struct {
 }
 
 func NewSyncTransactions(
-	e *config.Env,
+	e *env.Env,
 	o openfinance.Client,
 	c cache.Cache,
 	tx tx.TX,
