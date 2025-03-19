@@ -59,7 +59,7 @@ type CreateTransactionsParams struct {
 }
 
 const getTransactionByID = `-- name: GetTransactionByID :one
-SELECT transactions.id, transactions.external_id, transactions.name, transactions.amount, transactions.is_ignored, transactions.date, transactions.created_at, transactions.updated_at, transactions.deleted_at, transactions.payment_method_id, transactions.user_id, transactions.category_id, transactions.account_id, transactions.institution_id,
+SELECT transactions.id, transactions.external_id, transactions.name, transactions.search_document, transactions.amount, transactions.is_ignored, transactions.date, transactions.created_at, transactions.updated_at, transactions.deleted_at, transactions.payment_method_id, transactions.user_id, transactions.category_id, transactions.account_id, transactions.institution_id,
   transaction_categories.name as category_name,
   institutions.name as institution_name,
   institutions.logo as institution_logo,
@@ -76,6 +76,7 @@ type GetTransactionByIDRow struct {
 	ID                uuid.UUID  `json:"id"`
 	ExternalID        *string    `json:"external_id"`
 	Name              string     `json:"name"`
+	SearchDocument    string     `json:"search_document"`
 	Amount            int64      `json:"amount"`
 	IsIgnored         bool       `json:"is_ignored"`
 	Date              time.Time  `json:"date"`
@@ -100,6 +101,7 @@ func (q *Queries) GetTransactionByID(ctx context.Context, id uuid.UUID) (GetTran
 		&i.ID,
 		&i.ExternalID,
 		&i.Name,
+		&i.SearchDocument,
 		&i.Amount,
 		&i.IsIgnored,
 		&i.Date,

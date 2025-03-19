@@ -169,15 +169,16 @@ model TransactionCategory {
 }
 
 model Transaction {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String?
-  name        String
-  amount      BigInt
-  is_ignored  Boolean   @default(false)
-  date        DateTime  @db.Timestamptz()
-  created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at  DateTime? @db.Timestamptz()
+  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id     String?
+  name            String
+  search_document Unsupported("tsvector") @default(dbgenerated("''::tsvector"))
+  amount          BigInt
+  is_ignored      Boolean                 @default(false)
+  date            DateTime                @db.Timestamptz()
+  created_at      DateTime                @default(now()) @db.Timestamptz()
+  updated_at      DateTime                @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at      DateTime?               @db.Timestamptz()
 
   payment_method_id String        @db.Uuid
   payment_method    PaymentMethod @relation(fields: [payment_method_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -194,6 +195,7 @@ model Transaction {
   institution    Institution? @relation(fields: [institution_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   institution_id String?      @db.Uuid
 
+  @@index([search_document], type: Gin)
   @@map("transactions")
 }
 

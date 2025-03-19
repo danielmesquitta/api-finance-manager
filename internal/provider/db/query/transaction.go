@@ -182,8 +182,8 @@ func (qb *QueryBuilder) SumTransactionsByCategory(
 	query = qb.buildTransactionsQuery(query, options, whereExps, nil)
 
 	rows := []struct {
-		CategoryID uuid.UUID `json:"category_id"`
-		Sum        int64     `json:"sum"`
+		CategoryID uuid.UUID `db:"category_id"`
+		Sum        int64     `db:"sum"`
 	}{}
 	if err := qb.Scan(ctx, query, &rows); err != nil {
 		return nil, errs.New(err)
@@ -208,12 +208,12 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
-		searchExp, distanceExp := qb.buildSearch(
+		searchExp, orderExp := qb.buildSearchV2(
 			options.Search,
-			schema.Transaction.ColumnName(),
+			schema.Transaction.ColumnSearchDocument(),
 		)
 		whereExps = append(whereExps, searchExp)
-		orderedExps = append(orderedExps, distanceExp.Asc())
+		orderedExps = append(orderedExps, orderExp.Asc())
 	}
 
 	if len(options.CategoryIDs) > 0 {

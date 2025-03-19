@@ -2,7 +2,9 @@ package query
 
 import (
 	"context"
+	"database/sql"
 	"errors"
+	"fmt"
 	"math"
 	"reflect"
 
@@ -10,23 +12,21 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/doug-martin/goqu/v9"
 	"github.com/doug-martin/goqu/v9/exp"
-	"github.com/georgysavva/scany/v2/pgxscan"
-	"github.com/jackc/pgx/v5"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jmoiron/sqlx"
 )
 
 type QueryBuilder struct {
-	e *env.Env
-	p *pgxpool.Pool
+	e  *env.Env
+	db *sqlx.DB
 }
 
 func NewQueryBuilder(
 	e *env.Env,
-	p *pgxpool.Pool,
+	db *sqlx.DB,
 ) *QueryBuilder {
 	return &QueryBuilder{
-		e: e,
-		p: p,
+		e:  e,
+		db: db,
 	}
 }
 
@@ -43,9 +43,25 @@ func (qb *QueryBuilder) calculateMaxLevenshteinDistance(search string) int {
 	return maxLevenshteinDistance
 }
 
+func (qb *QueryBuilder) buildSearchV2(
+	search, column string,
+) (exp.Expression, exp.Orderable) {
+	searchQuery := fmt.Sprintf("%s @@ plainto_tsquery('portuguese', ?)", column)
+
+	whereExp := goqu.L(searchQuery, search)
+
+	orderExp := goqu.Func(
+		"ts_rank",
+		goqu.I(column),
+		goqu.L("plainto_tsquery('portuguese', ?)", search),
+	)
+
+	return whereExp, orderExp
+}
+
 func (qb *QueryBuilder) buildSearch(
 	search, column string,
-) (exp.Expression, exp.SQLFunctionExpression) {
+) (exp.Expression, exp.Orderable) {
 	unaccentedColumn := goqu.Func("lower", goqu.Func(
 		"unaccent",
 		goqu.I(column),
@@ -84,15 +100,15 @@ func (qb *QueryBuilder) Scan(
 
 func (qb *QueryBuilder) ScanRaw(
 	ctx context.Context,
-	sql string,
+	query string,
 	dest any,
 ) error {
-	return qb.scan(ctx, sql, dest)
+	return qb.scan(ctx, query, dest)
 }
 
 func (qb *QueryBuilder) scan(
 	ctx context.Context,
-	sql string,
+	query string,
 	dest any,
 	args ...any,
 ) error {
@@ -105,8 +121,8 @@ func (qb *QueryBuilder) scan(
 
 	switch elemKind {
 	case reflect.Slice:
-		if err := pgxscan.Select(ctx, qb.p, dest, sql, args...); err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
+		if err := qb.db.SelectContext(ctx, dest, query, args...); err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
 				return nil
 			}
 			return errs.New(err)
@@ -114,8 +130,8 @@ func (qb *QueryBuilder) scan(
 		return nil
 
 	case reflect.Struct:
-		if err := pgxscan.Get(ctx, qb.p, dest, sql, args...); err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
+		if err := qb.db.GetContext(ctx, dest, query, args...); err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
 				return nil
 			}
 			return errs.New(err)
@@ -123,9 +139,9 @@ func (qb *QueryBuilder) scan(
 		return nil
 
 	default:
-		row := qb.p.QueryRow(ctx, sql, args...)
+		row := qb.db.QueryRowContext(ctx, query, args...)
 		if err := row.Scan(dest); err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
+			if errors.Is(err, sql.ErrNoRows) {
 				return nil
 			}
 			return errs.New(err)

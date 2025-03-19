@@ -104,6 +104,7 @@ type Transaction struct {
 	ID              uuid.UUID  `json:"id"`
 	ExternalID      *string    `json:"external_id"`
 	Name            string     `json:"name"`
+	SearchDocument  string     `json:"search_document"`
 	Amount          int64      `json:"amount"`
 	IsIgnored       bool       `json:"is_ignored"`
 	Date            time.Time  `json:"date"`

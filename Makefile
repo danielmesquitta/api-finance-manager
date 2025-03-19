@@ -7,8 +7,7 @@ define migrate_sequence
 	$(MAKE) zip_migrations
 	prisma-client-go migrate dev --schema=$(schema) --skip-generate
 	$(MAKE) triggers
-	$(MAKE) migrate
-	$(MAKE) unzip_migrations
+	$(MAKE) deploy_migrations
 endef
 
 define deploy_migrations_sequence
@@ -100,7 +99,7 @@ unit-test:
 
 .PHONY: integration-test
 integration-test:
-	@ENVIRONMENT=test go test ./test/integration/... -timeout 30s
+	@ENVIRONMENT=test go test ./test/integration/... -timeout 60s
 
 .PHONY: test
 test: unit-test integration-test

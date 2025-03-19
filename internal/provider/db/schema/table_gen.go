@@ -422,6 +422,10 @@ func (t tableTransaction) ColumnPaymentMethodID() string {
 	return fmt.Sprintf("%s.payment_method_id", t)
 }
 
+func (t tableTransaction) ColumnSearchDocument() string {
+	return fmt.Sprintf("%s.search_document", t)
+}
+
 func (t tableTransaction) ColumnUpdatedAt() string {
 	return fmt.Sprintf("%s.updated_at", t)
 }

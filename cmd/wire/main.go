@@ -3,6 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"go/format"
+	"io"
 	"os"
 	"path"
 	"strings"
@@ -231,11 +233,42 @@ func generateWireFile(outputFilename string, data *wireConfigData) error {
 		return err
 	}
 
-	f, err := os.Create(outputFilename)
+	gff := &GoFileFormatter{}
+	if err := tmpl.Execute(gff, data); err != nil {
+		return err
+	}
+
+	if err := gff.Format(); err != nil {
+		return err
+	}
+
+	if err := os.WriteFile(outputFilename, gff.Bytes(), 0644); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type GoFileFormatter struct {
+	data []byte
+}
+
+func (f *GoFileFormatter) Write(p []byte) (n int, err error) {
+	f.data = append(f.data, p...)
+	return len(p), nil
+}
+
+func (f *GoFileFormatter) Format() error {
+	formatted, err := format.Source(f.data)
 	if err != nil {
 		return err
 	}
-	defer f.Close()
-
-	return tmpl.Execute(f, data)
+	f.data = formatted
+	return nil
 }
+
+func (f *GoFileFormatter) Bytes() []byte {
+	return f.data
+}
+
+var _ io.Writer = &GoFileFormatter{}

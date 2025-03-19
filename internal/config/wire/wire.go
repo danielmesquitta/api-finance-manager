@@ -51,6 +51,7 @@ var providers = []any{
 	pluggy.NewClient,
 
 	db.NewPGXPool,
+	db.NewSQLX,
 	query.NewQueryBuilder,
 	db.NewDB,
 	openai.NewOpenAI,

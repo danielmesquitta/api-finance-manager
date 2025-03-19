@@ -141,6 +141,7 @@ CREATE TABLE "transactions" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT,
     "name" TEXT NOT NULL,
+    "search_document" tsvector NOT NULL DEFAULT ''::tsvector,
     "amount" BIGINT NOT NULL,
     "is_ignored" BOOLEAN NOT NULL DEFAULT false,
     "date" TIMESTAMPTZ NOT NULL,
@@ -200,6 +201,9 @@ CREATE TABLE "users" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ai_chat_answers_ai_chat_message_id_key" ON "ai_chat_answers"("ai_chat_message_id");
+
+-- CreateIndex
+CREATE INDEX "transactions_search_document_idx" ON "transactions" USING GIN ("search_document");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");

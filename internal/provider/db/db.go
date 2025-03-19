@@ -11,25 +11,9 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
+	"github.com/jmoiron/sqlx"
 )
-
-func NewPGXPool(e *env.Env) *pgxpool.Pool {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	pool, err := pgxpool.New(ctx, e.PostgresDatabaseURL)
-	if err != nil {
-		log.Fatalf("could not connect to the database: %v", err)
-		return nil
-	}
-
-	if err := pool.Ping(ctx); err != nil {
-		log.Fatalf("could not ping the database: %v", err)
-		return nil
-	}
-
-	return pool
-}
 
 type DB struct {
 	*sqlc.Queries
@@ -56,4 +40,27 @@ func (db *DB) UseTx(
 		}
 	}
 	return db
+}
+
+func NewPGXPool(e *env.Env) *pgxpool.Pool {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	pool, err := pgxpool.New(ctx, e.PostgresDatabaseURL)
+	if err != nil {
+		log.Fatalf("could not connect to the database: %v", err)
+		return nil
+	}
+
+	if err := pool.Ping(ctx); err != nil {
+		log.Fatalf("could not ping the database: %v", err)
+		return nil
+	}
+
+	return pool
+}
+
+func NewSQLX(p *pgxpool.Pool) *sqlx.DB {
+	pgxdb := stdlib.OpenDBFromPool(p)
+	return sqlx.NewDb(pgxdb, "pgx")
 }

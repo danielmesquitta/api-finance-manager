@@ -162,6 +162,70 @@ func TestListTransactions(t *testing.T) {
 				"e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 			},
 		},
+		{
+			description: "search transactions by institution name",
+			queryParams: map[string]string{
+				handler.QueryParamSearch:   "nubank",
+				handler.QueryParamPageSize: "5",
+			},
+			token:        mockoauth.PremiumTierMockToken,
+			expectedCode: http.StatusOK,
+			expectedTransactionIDs: []string{
+				"cac59381-300c-4f63-be76-7a2f654cd480",
+				"e827eec2-1fc4-4976-a3ae-86294a0fc338",
+				"5a509fd8-a0bf-43d0-b142-60a803b34141",
+				"2b5fe271-4da7-4332-9226-170073e07d2e",
+				"c7e63e56-b4e6-4423-af2c-bf5a1c529519",
+			},
+		},
+		{
+			description: "search transactions by payment method name",
+			queryParams: map[string]string{
+				handler.QueryParamSearch:   "pix",
+				handler.QueryParamPageSize: "5",
+			},
+			token:        mockoauth.PremiumTierMockToken,
+			expectedCode: http.StatusOK,
+			expectedTransactionIDs: []string{
+				"c45d4330-4d8c-4174-9de7-70352a0f3e4e",
+				"7e9ee5e5-8e6d-42cf-ab52-a7a834dbc5cf",
+				"bb488e52-e911-40d4-9786-fe755013a9dd",
+				"59a754cb-def9-4728-9d4e-565ec1774702",
+				"dccd57b9-eb39-4c3c-8502-34ae6ca82b8d",
+			},
+		},
+		{
+			description: "search transactions by category name",
+			queryParams: map[string]string{
+				handler.QueryParamSearch:   "transporte",
+				handler.QueryParamPageSize: "5",
+			},
+			token:        mockoauth.PremiumTierMockToken,
+			expectedCode: http.StatusOK,
+			expectedTransactionIDs: []string{
+				"33f86bd0-cbb9-40e9-bdb9-c7a5d0ab0e5f",
+				"351093fb-d63d-406f-a8e0-ddd8a37b9bcb",
+				"dcbaccad-1c50-4f68-91d7-9645671fc66e",
+				"7cad86b1-5579-41b0-b927-0d6d6ccc7669",
+				"7ed055ed-fbff-492c-9767-11e07d60cc5c",
+			},
+		},
+		{
+			description: "search transactions by transaction name",
+			queryParams: map[string]string{
+				handler.QueryParamSearch:   "daniel santos de mesquita",
+				handler.QueryParamPageSize: "5",
+			},
+			token:        mockoauth.PremiumTierMockToken,
+			expectedCode: http.StatusOK,
+			expectedTransactionIDs: []string{
+				"dccd57b9-eb39-4c3c-8502-34ae6ca82b8d",
+				"1425810b-3536-4259-aa3e-b1833df06e5d",
+				"59a754cb-def9-4728-9d4e-565ec1774702",
+				"155fdf1b-9199-44d9-8fb2-2f7ebbd06440",
+				"312cf698-f131-4f14-8fd9-b0ffda75bfa2",
+			},
+		},
 	}
 
 	for _, test := range tests {

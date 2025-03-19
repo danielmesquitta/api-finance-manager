@@ -19,9 +19,9 @@ const (
 )
 
 type AIChatMessageAndAnswer struct {
-	ID        uuid.UUID           `json:"id,omitempty"`
-	Message   string              `json:"message,omitempty"`
-	Rating    *string             `json:"rating,omitempty"`
-	Author    AIChatMessageAuthor `json:"author,omitempty"`
-	CreatedAt time.Time           `json:"created_at,omitempty"`
+	ID        uuid.UUID           `db:"id"         json:"id,omitempty"`
+	Message   string              `db:"message"    json:"message,omitempty"`
+	Rating    *string             `db:"rating"     json:"rating,omitempty"`
+	Author    AIChatMessageAuthor `db:"author"     json:"author,omitempty"`
+	CreatedAt time.Time           `db:"created_at" json:"created_at,omitempty"`
 }
