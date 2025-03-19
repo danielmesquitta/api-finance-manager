@@ -1,7 +1,9 @@
 include .env
 schema=./sql/schema.prisma
 
-define create_migration_sequence
+ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+
+define migrate_sequence
 	$(MAKE) zip_migrations
 	prisma-client-go migrate dev --schema=$(schema) --skip-generate
 	$(MAKE) triggers
@@ -9,7 +11,7 @@ define create_migration_sequence
 	$(MAKE) unzip_migrations
 endef
 
-define migrate_sequence
+define deploy_migrations_sequence
 	$(MAKE) zip_migrations
 	prisma-client-go migrate deploy --schema=$(schema)
 	$(MAKE) unzip_migrations
@@ -68,13 +70,21 @@ zip_migrations:
 unzip_migrations:
 	@prisma-go-tools unzip --schema=$(schema)
 
-.PHONY: create_migration
-create_migration:
-	@$(create_migration_sequence)
-
 .PHONY: migrate
 migrate:
 	@$(migrate_sequence)
+
+.PHONY: create_migration
+create_migration:
+	@./bin/create_migration.sh sql/migrations $(ARGS)
+
+.PHONY: create_testdata
+create_testdata:
+	@./bin/create_migration.sh sql/testdata $(ARGS)
+
+.PHONY: deploy_migrations
+deploy_migrations:
+	@$(deploy_migrations_sequence)
 
 .PHONY: reset_db
 reset_db:

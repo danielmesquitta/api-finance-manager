@@ -10,7 +10,6 @@ import (
 type AccountOptions struct {
 	Limit                uint                 `json:"limit"`
 	Offset               uint                 `json:"offset"`
-	Search               string               `json:"search"`
 	UserIDs              []uuid.UUID          `json:"user_id"`
 	ExternalIDs          []string             `json:"external_ids"`
 	UserTiers            []entity.Tier        `json:"user_tiers"`
@@ -27,12 +26,6 @@ func WithAccountPagination(
 	return func(o *AccountOptions) {
 		o.Limit = limit
 		o.Offset = offset
-	}
-}
-
-func WithAccountSearch(search string) AccountOption {
-	return func(o *AccountOptions) {
-		o.Search = search
 	}
 }
 

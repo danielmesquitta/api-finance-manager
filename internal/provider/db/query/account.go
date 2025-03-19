@@ -2,7 +2,6 @@ package query
 
 import (
 	"context"
-	"strings"
 	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
@@ -141,16 +140,6 @@ func (qb *QueryBuilder) buildAccountJoins(
 func (qb *QueryBuilder) buildAccountExpressions(
 	options repo.AccountOptions,
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
-	options.Search = strings.TrimSpace(options.Search)
-	if options.Search != "" {
-		searchExp, distanceExp := qb.buildSearch(
-			options.Search,
-			schema.Account.ColumnName(),
-		)
-		whereExps = append(whereExps, searchExp)
-		orderedExps = append(orderedExps, distanceExp.Asc())
-	}
-
 	if len(options.UserIDs) > 0 {
 		exp := goqu.I(schema.User.ColumnID()).In(options.UserIDs)
 		whereExps = append(whereExps, exp)
