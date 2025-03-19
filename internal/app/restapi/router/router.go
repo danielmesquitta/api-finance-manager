@@ -132,5 +132,7 @@ func (r *Router) Register(
 	usersApiV1.Delete("/ai-chats/:ai_chat_id", r.aih.Delete)
 	usersApiV1.Put("/ai-chats/:ai_chat_id", r.aih.Update)
 	usersApiV1.Get("/ai-chats", r.aih.List)
+
 	usersApiV1.Get("/ai-chats/:ai_chat_id/messages", r.aih.ListMessages)
+	usersApiV1.Post("/ai-chats/:ai_chat_id/messages", r.aih.GenerateMessage)
 }
