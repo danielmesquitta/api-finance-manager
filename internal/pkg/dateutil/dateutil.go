@@ -21,7 +21,7 @@ func ToDayStart(
 		0,
 		0,
 		0,
-		time.Local,
+		date.Location(),
 	)
 	return dayStart
 }
@@ -37,7 +37,7 @@ func ToDayEnd(
 		0,
 		0,
 		0,
-		time.Local,
+		date.Location(),
 	)
 
 	monthEnd = monthEnd.Add(-time.Nanosecond)
@@ -56,7 +56,7 @@ func ToMonthStart(
 		0,
 		0,
 		0,
-		time.Local,
+		date.Location(),
 	)
 	return monthStart
 }
@@ -72,7 +72,7 @@ func ToMonthEnd(
 		0,
 		0,
 		0,
-		time.Local,
+		date.Location(),
 	)
 
 	monthEnd = monthEnd.Add(-time.Nanosecond)
@@ -81,22 +81,21 @@ func ToMonthEnd(
 }
 
 func ToMonthDay(
-	monthStart time.Time,
+	date time.Time,
 	day int,
 ) time.Time {
 	monthSameDay := time.Date(
-		monthStart.Year(),
-		monthStart.Month(),
+		date.Year(),
+		date.Month(),
 		day,
 		0,
 		0,
 		0,
 		0,
-		time.Local,
+		date.Location(),
 	)
-	// If the previous month has less days than the current month, we need to
-	// go back until we reach the last day of the month
-	for monthSameDay.Month() != monthStart.Month() {
+	// If day is greater than the last day of the month, adjust to the last day
+	for monthSameDay.Month() != date.Month() {
 		monthSameDay = monthSameDay.AddDate(0, 0, -1)
 	}
 	return monthSameDay
