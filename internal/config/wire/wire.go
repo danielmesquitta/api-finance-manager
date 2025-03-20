@@ -184,7 +184,7 @@ var providers = []any{
 
 	router.NewRouter,
 
-	server.BuildApp,
+	server.Build,
 }
 
 var devProviders = []any{

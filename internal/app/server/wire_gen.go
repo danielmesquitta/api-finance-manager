@@ -118,7 +118,7 @@ func NewDev(v *validator.Validator, e *env.Env) *App {
 	generateAIChatMessageUseCase := aichat.NewGenerateAIChatMessageUseCase(v, pgxTX, dbDB, openAI, aiChatRepo, aiChatMessageRepo, aiChatAnswerRepo, paymentMethodRepo, transactionCategoryRepo, institutionRepo)
 	aiChatHandler := handler.NewAIChatHandler(createAIChatUseCase, deleteAIChatUseCase, updateAIChatUseCase, listAIChatsUseCase, listAIChatMessagesAndAnswersUseCase, generateAIChatMessageUseCase)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, transactionCategoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, feedbackHandler, paymentMethodHandler, aiChatHandler)
-	app := BuildApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
+	app := Build(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 
@@ -201,7 +201,7 @@ func NewStaging(v *validator.Validator, e *env.Env) *App {
 	generateAIChatMessageUseCase := aichat.NewGenerateAIChatMessageUseCase(v, pgxTX, dbDB, openAI, aiChatRepo, aiChatMessageRepo, aiChatAnswerRepo, paymentMethodRepo, transactionCategoryRepo, institutionRepo)
 	aiChatHandler := handler.NewAIChatHandler(createAIChatUseCase, deleteAIChatUseCase, updateAIChatUseCase, listAIChatsUseCase, listAIChatMessagesAndAnswersUseCase, generateAIChatMessageUseCase)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, transactionCategoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, feedbackHandler, paymentMethodHandler, aiChatHandler)
-	app := BuildApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
+	app := Build(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 
@@ -284,7 +284,7 @@ func NewTest(v *validator.Validator, e *env.Env) *App {
 	generateAIChatMessageUseCase := aichat.NewGenerateAIChatMessageUseCase(v, pgxTX, dbDB, openAI, aiChatRepo, aiChatMessageRepo, aiChatAnswerRepo, paymentMethodRepo, transactionCategoryRepo, institutionRepo)
 	aiChatHandler := handler.NewAIChatHandler(createAIChatUseCase, deleteAIChatUseCase, updateAIChatUseCase, listAIChatsUseCase, listAIChatMessagesAndAnswersUseCase, generateAIChatMessageUseCase)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, transactionCategoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, feedbackHandler, paymentMethodHandler, aiChatHandler)
-	app := BuildApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
+	app := Build(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 
@@ -366,7 +366,7 @@ func NewProd(v *validator.Validator, e *env.Env) *App {
 	generateAIChatMessageUseCase := aichat.NewGenerateAIChatMessageUseCase(v, pgxTX, dbDB, openAI, aiChatRepo, aiChatMessageRepo, aiChatAnswerRepo, paymentMethodRepo, transactionCategoryRepo, institutionRepo)
 	aiChatHandler := handler.NewAIChatHandler(createAIChatUseCase, deleteAIChatUseCase, updateAIChatUseCase, listAIChatsUseCase, listAIChatMessagesAndAnswersUseCase, generateAIChatMessageUseCase)
 	routerRouter := router.NewRouter(e, middlewareMiddleware, healthHandler, docHandler, authHandler, calculatorHandler, institutionHandler, transactionCategoryHandler, budgetHandler, userHandler, accountHandler, transactionHandler, feedbackHandler, paymentMethodHandler, aiChatHandler)
-	app := BuildApp(middlewareMiddleware, routerRouter, redisCache, dbDB)
+	app := Build(middlewareMiddleware, routerRouter, redisCache, dbDB)
 	return app
 }
 

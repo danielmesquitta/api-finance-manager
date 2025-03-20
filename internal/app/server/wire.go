@@ -146,7 +146,7 @@ func NewDev(
 		handler.NewHealthHandler,
 		middleware.NewMiddleware,
 		router.NewRouter,
-		BuildApp,
+		Build,
 	)
 	return &App{}
 }
@@ -257,7 +257,7 @@ func NewStaging(
 		handler.NewHealthHandler,
 		middleware.NewMiddleware,
 		router.NewRouter,
-		BuildApp,
+		Build,
 	)
 	return &App{}
 }
@@ -368,7 +368,7 @@ func NewTest(
 		handler.NewHealthHandler,
 		middleware.NewMiddleware,
 		router.NewRouter,
-		BuildApp,
+		Build,
 	)
 	return &App{}
 }
@@ -478,7 +478,7 @@ func NewProd(
 		handler.NewHealthHandler,
 		middleware.NewMiddleware,
 		router.NewRouter,
-		BuildApp,
+		Build,
 	)
 	return &App{}
 }
