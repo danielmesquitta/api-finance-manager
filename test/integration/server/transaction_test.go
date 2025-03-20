@@ -187,11 +187,11 @@ func TestListTransactions(t *testing.T) {
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
-				"c45d4330-4d8c-4174-9de7-70352a0f3e4e",
-				"7e9ee5e5-8e6d-42cf-ab52-a7a834dbc5cf",
-				"bb488e52-e911-40d4-9786-fe755013a9dd",
-				"59a754cb-def9-4728-9d4e-565ec1774702",
-				"dccd57b9-eb39-4c3c-8502-34ae6ca82b8d",
+				"04d434cf-a2b7-4c13-82db-8d3b93b0ca40",
+				"aac3289e-e691-4216-a551-be52858a5a5c",
+				"cfe030c5-363c-4d56-b9a6-a270689d3f53",
+				"c53caf93-0f45-4b84-8d93-0a141ae9a93f",
+				"d1a19260-aa4d-4b75-b639-301be5cae12d",
 			},
 		},
 		{
@@ -204,10 +204,10 @@ func TestListTransactions(t *testing.T) {
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
 				"33f86bd0-cbb9-40e9-bdb9-c7a5d0ab0e5f",
-				"351093fb-d63d-406f-a8e0-ddd8a37b9bcb",
+				"7ed055ed-fbff-492c-9767-11e07d60cc5c",
+				"a87fa722-55d4-44a0-91c2-7e424fbd1f3a",
 				"dcbaccad-1c50-4f68-91d7-9645671fc66e",
 				"7cad86b1-5579-41b0-b927-0d6d6ccc7669",
-				"7ed055ed-fbff-492c-9767-11e07d60cc5c",
 			},
 		},
 		{

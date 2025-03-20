@@ -63,7 +63,7 @@ func TestListTransactionCategories(t *testing.T) {
 		{
 			description: "searches transaction categories",
 			queryParams: map[string]string{
-				handler.QueryParamSearch: "Emprestimos",
+				handler.QueryParamSearch: "emprestimos",
 			},
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,

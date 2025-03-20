@@ -44,7 +44,7 @@ func TestListPaymentMethods(t *testing.T) {
 		{
 			description: "searches payment methods",
 			queryParams: map[string]string{
-				handler.QueryParamSearch: "Cartao",
+				handler.QueryParamSearch: "cartao de credito",
 			},
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,

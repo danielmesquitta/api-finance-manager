@@ -3,11 +3,11 @@
 -- its category name, and its payment method name.
 CREATE OR REPLACE FUNCTION compute_transaction_search_document(p_transaction_id UUID) RETURNS VOID AS $$ BEGIN
 UPDATE transactions
-SET search_document = to_tsvector('portuguese', COALESCE(name, '')) || to_tsvector(
+SET search_document = to_tsvector('portuguese', COALESCE(unaccent(name), '')) || to_tsvector(
     'portuguese',
     COALESCE(
       (
-        SELECT name
+        SELECT unaccent(name) AS name
         FROM institutions
         WHERE institutions.id = transactions.institution_id
       ),
@@ -17,7 +17,7 @@ SET search_document = to_tsvector('portuguese', COALESCE(name, '')) || to_tsvect
     'portuguese',
     COALESCE(
       (
-        SELECT name
+        SELECT unaccent(name) AS name
         FROM transaction_categories
         WHERE transaction_categories.id = transactions.category_id
       ),
@@ -27,7 +27,7 @@ SET search_document = to_tsvector('portuguese', COALESCE(name, '')) || to_tsvect
     'portuguese',
     COALESCE(
       (
-        SELECT name
+        SELECT unaccent(name) AS name
         FROM payment_methods
         WHERE payment_methods.id = transactions.payment_method_id
       ),

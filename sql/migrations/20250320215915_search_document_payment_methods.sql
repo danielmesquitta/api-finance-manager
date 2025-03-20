@@ -1,7 +1,7 @@
 -- Computes and updates the search_document field for a given payment method.
 CREATE OR REPLACE FUNCTION compute_payment_method_search_document(p_payment_method_id UUID) RETURNS VOID AS $$ BEGIN
 UPDATE payment_methods
-SET search_document = to_tsvector('portuguese', COALESCE(name, ''))
+SET search_document = to_tsvector('portuguese', COALESCE(unaccent(name), ''))
 WHERE id = p_payment_method_id;
 END;
 $$ LANGUAGE plpgsql;

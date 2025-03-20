@@ -3,7 +3,7 @@
 -- ai_chat_messages and ai_chat_answers, converting each part to a tsvector.
 CREATE OR REPLACE FUNCTION compute_ai_chat_search_document(p_ai_chat_id UUID) RETURNS VOID AS $$ BEGIN
 UPDATE ai_chats
-SET search_document = to_tsvector('portuguese', COALESCE(title, '')) || (
+SET search_document = to_tsvector('portuguese', COALESCE(unaccent(title), '')) || (
     SELECT COALESCE(
         to_tsvector(
           'portuguese',
@@ -13,12 +13,12 @@ SET search_document = to_tsvector('portuguese', COALESCE(title, '')) || (
       )
     FROM (
         -- Get all messages from this chat
-        SELECT message
+        SELECT unaccent(message) AS message
         FROM ai_chat_messages
         WHERE ai_chat_id = p_ai_chat_id
         UNION ALL
         -- Get all answer messages for messages in this chat
-        SELECT message
+        SELECT unaccent(message) AS message
         FROM ai_chat_answers
         WHERE ai_chat_message_id IN (
             SELECT id

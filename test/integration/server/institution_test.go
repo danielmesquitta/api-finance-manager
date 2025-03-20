@@ -58,7 +58,7 @@ func TestListInstitutions(t *testing.T) {
 		{
 			description: "searches institutions",
 			queryParams: map[string]string{
-				handler.QueryParamSearch: "Int",
+				handler.QueryParamSearch: "inter",
 			},
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
@@ -165,9 +165,9 @@ func TestListUserInstitutions(t *testing.T) {
 			},
 		},
 		{
-			description: "searches institutions",
+			description: "searches user institutions",
 			queryParams: map[string]string{
-				handler.QueryParamSearch: "nub",
+				handler.QueryParamSearch: "nubank",
 			},
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,

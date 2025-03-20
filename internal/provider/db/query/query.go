@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"math"
 	"reflect"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
@@ -35,25 +34,20 @@ type Join struct {
 	Condition exp.JoinCondition
 }
 
-func (qb *QueryBuilder) calculateMaxLevenshteinDistance(search string) int {
-	searchLength := float64(len(search))
-	maxLevenshteinDistance := int(
-		math.Floor(qb.e.MaxLevenshteinDistancePercentage * searchLength),
-	)
-	return maxLevenshteinDistance
-}
-
 func (qb *QueryBuilder) buildSearch(
 	search, column string,
 ) (exp.Expression, exp.Orderable) {
-	searchQuery := fmt.Sprintf("%s @@ plainto_tsquery('portuguese', ?)", column)
+	searchQuery := fmt.Sprintf(
+		"%s @@ plainto_tsquery('portuguese', unaccent(?))",
+		column,
+	)
 
 	whereExp := goqu.L(searchQuery, search)
 
 	orderExp := goqu.Func(
 		"ts_rank",
 		goqu.I(column),
-		goqu.L("plainto_tsquery('portuguese', ?)", search),
+		goqu.L("plainto_tsquery('portuguese', unaccent(?))", search),
 	)
 
 	return whereExp, orderExp

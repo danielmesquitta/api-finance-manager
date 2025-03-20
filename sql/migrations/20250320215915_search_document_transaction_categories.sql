@@ -1,7 +1,7 @@
 -- Computes and updates the search_document field for a given transaction category.
 CREATE OR REPLACE FUNCTION compute_transaction_category_search_document(p_category_id UUID) RETURNS VOID AS $$ BEGIN
 UPDATE transaction_categories
-SET search_document = to_tsvector('portuguese', COALESCE(name, ''))
+SET search_document = to_tsvector('portuguese', COALESCE(unaccent(name), ''))
 WHERE id = p_category_id;
 END;
 $$ LANGUAGE plpgsql;

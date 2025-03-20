@@ -1,7 +1,7 @@
 -- Computes and updates the search_document field for a given institution.
 CREATE OR REPLACE FUNCTION compute_institution_search_document(p_institution_id UUID) RETURNS VOID AS $$ BEGIN
 UPDATE institutions
-SET search_document = to_tsvector('portuguese', COALESCE(name, ''))
+SET search_document = to_tsvector('portuguese', COALESCE(unaccent(name), ''))
 WHERE id = p_institution_id;
 END;
 $$ LANGUAGE plpgsql;
