@@ -44,12 +44,13 @@ type AIChatAnswer struct {
 }
 
 type AIChat struct {
-	ID        uuid.UUID  `db:"id" json:"id,omitempty"`
-	Title     *string    `db:"title" json:"title,omitempty"`
-	CreatedAt time.Time  `db:"created_at" json:"created_at,omitempty"`
-	UpdatedAt time.Time  `db:"updated_at" json:"updated_at,omitempty"`
-	DeletedAt *time.Time `db:"deleted_at" json:"deleted_at,omitempty"`
-	UserID    uuid.UUID  `db:"user_id" json:"user_id,omitempty"`
+	ID             uuid.UUID  `db:"id" json:"id,omitempty"`
+	Title          *string    `db:"title" json:"title,omitempty"`
+	SearchDocument any        `db:"search_document" json:"search_document,omitempty"`
+	CreatedAt      time.Time  `db:"created_at" json:"created_at,omitempty"`
+	UpdatedAt      time.Time  `db:"updated_at" json:"updated_at,omitempty"`
+	DeletedAt      *time.Time `db:"deleted_at" json:"deleted_at,omitempty"`
+	UserID         uuid.UUID  `db:"user_id" json:"user_id,omitempty"`
 }
 
 type BudgetCategory struct {
@@ -81,29 +82,32 @@ type Feedback struct {
 }
 
 type Institution struct {
-	ID         uuid.UUID  `db:"id" json:"id,omitempty"`
-	ExternalID string     `db:"external_id" json:"external_id,omitempty"`
-	Name       string     `db:"name" json:"name,omitempty"`
-	Logo       *string    `db:"logo" json:"logo,omitempty"`
-	CreatedAt  time.Time  `db:"created_at" json:"created_at,omitempty"`
-	DeletedAt  *time.Time `db:"deleted_at" json:"deleted_at,omitempty"`
+	ID             uuid.UUID  `db:"id" json:"id,omitempty"`
+	ExternalID     string     `db:"external_id" json:"external_id,omitempty"`
+	Name           string     `db:"name" json:"name,omitempty"`
+	SearchDocument any        `db:"search_document" json:"search_document,omitempty"`
+	Logo           *string    `db:"logo" json:"logo,omitempty"`
+	CreatedAt      time.Time  `db:"created_at" json:"created_at,omitempty"`
+	DeletedAt      *time.Time `db:"deleted_at" json:"deleted_at,omitempty"`
 }
 
 type PaymentMethod struct {
-	ID         uuid.UUID  `db:"id" json:"id,omitempty"`
-	ExternalID string     `db:"external_id" json:"external_id,omitempty"`
-	Name       string     `db:"name" json:"name,omitempty"`
-	CreatedAt  time.Time  `db:"created_at" json:"created_at,omitempty"`
-	DeletedAt  *time.Time `db:"deleted_at" json:"deleted_at,omitempty"`
+	ID             uuid.UUID  `db:"id" json:"id,omitempty"`
+	ExternalID     string     `db:"external_id" json:"external_id,omitempty"`
+	Name           string     `db:"name" json:"name,omitempty"`
+	SearchDocument any        `db:"search_document" json:"search_document,omitempty"`
+	CreatedAt      time.Time  `db:"created_at" json:"created_at,omitempty"`
+	DeletedAt      *time.Time `db:"deleted_at" json:"deleted_at,omitempty"`
 }
 
 type TransactionCategory struct {
-	ID         uuid.UUID  `db:"id" json:"id,omitempty"`
-	ExternalID string     `db:"external_id" json:"external_id,omitempty"`
-	Name       string     `db:"name" json:"name,omitempty"`
-	CreatedAt  time.Time  `db:"created_at" json:"created_at,omitempty"`
-	UpdatedAt  time.Time  `db:"updated_at" json:"updated_at,omitempty"`
-	DeletedAt  *time.Time `db:"deleted_at" json:"deleted_at,omitempty"`
+	ID             uuid.UUID  `db:"id" json:"id,omitempty"`
+	ExternalID     string     `db:"external_id" json:"external_id,omitempty"`
+	Name           string     `db:"name" json:"name,omitempty"`
+	SearchDocument any        `db:"search_document" json:"search_document,omitempty"`
+	CreatedAt      time.Time  `db:"created_at" json:"created_at,omitempty"`
+	UpdatedAt      time.Time  `db:"updated_at" json:"updated_at,omitempty"`
+	DeletedAt      *time.Time `db:"deleted_at" json:"deleted_at,omitempty"`
 }
 
 type Transaction struct {

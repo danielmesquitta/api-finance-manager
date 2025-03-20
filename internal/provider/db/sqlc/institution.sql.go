@@ -16,7 +16,7 @@ type CreateInstitutionsParams struct {
 }
 
 const getInstitutionByExternalID = `-- name: GetInstitutionByExternalID :one
-SELECT id, external_id, name, logo, created_at, deleted_at
+SELECT id, external_id, name, search_document, logo, created_at, deleted_at
 FROM institutions
 WHERE external_id = $1
   AND deleted_at IS NULL
@@ -29,6 +29,7 @@ func (q *Queries) GetInstitutionByExternalID(ctx context.Context, externalID str
 		&i.ID,
 		&i.ExternalID,
 		&i.Name,
+		&i.SearchDocument,
 		&i.Logo,
 		&i.CreatedAt,
 		&i.DeletedAt,

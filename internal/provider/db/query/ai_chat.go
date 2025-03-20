@@ -75,12 +75,12 @@ func (qb *QueryBuilder) buildAIChatExpressions(
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
-		searchExp, distanceExp := qb.buildSearch(
+		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.AIChat.ColumnTitle(),
+			schema.AIChat.ColumnSearchDocument(),
 		)
 		whereExps = append(whereExps, searchExp)
-		orderedExps = append(orderedExps, distanceExp.Asc())
+		orderedExps = append(orderedExps, orderExp.Desc())
 	}
 
 	orderedExps = append(

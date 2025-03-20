@@ -29,12 +29,13 @@ type AccountBalance struct {
 }
 
 type AiChat struct {
-	ID        uuid.UUID  `json:"id"`
-	Title     *string    `json:"title"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
-	UserID    uuid.UUID  `json:"user_id"`
+	ID             uuid.UUID  `json:"id"`
+	Title          *string    `json:"title"`
+	SearchDocument string     `json:"search_document"`
+	CreatedAt      time.Time  `json:"created_at"`
+	UpdatedAt      time.Time  `json:"updated_at"`
+	DeletedAt      *time.Time `json:"deleted_at"`
+	UserID         uuid.UUID  `json:"user_id"`
 }
 
 type AiChatAnswer struct {
@@ -84,20 +85,22 @@ type Feedback struct {
 }
 
 type Institution struct {
-	ID         uuid.UUID  `json:"id"`
-	ExternalID string     `json:"external_id"`
-	Name       string     `json:"name"`
-	Logo       *string    `json:"logo"`
-	CreatedAt  time.Time  `json:"created_at"`
-	DeletedAt  *time.Time `json:"deleted_at"`
+	ID             uuid.UUID  `json:"id"`
+	ExternalID     string     `json:"external_id"`
+	Name           string     `json:"name"`
+	SearchDocument string     `json:"search_document"`
+	Logo           *string    `json:"logo"`
+	CreatedAt      time.Time  `json:"created_at"`
+	DeletedAt      *time.Time `json:"deleted_at"`
 }
 
 type PaymentMethod struct {
-	ID         uuid.UUID  `json:"id"`
-	ExternalID string     `json:"external_id"`
-	Name       string     `json:"name"`
-	CreatedAt  time.Time  `json:"created_at"`
-	DeletedAt  *time.Time `json:"deleted_at"`
+	ID             uuid.UUID  `json:"id"`
+	ExternalID     string     `json:"external_id"`
+	Name           string     `json:"name"`
+	SearchDocument string     `json:"search_document"`
+	CreatedAt      time.Time  `json:"created_at"`
+	DeletedAt      *time.Time `json:"deleted_at"`
 }
 
 type Transaction struct {
@@ -119,12 +122,13 @@ type Transaction struct {
 }
 
 type TransactionCategory struct {
-	ID         uuid.UUID  `json:"id"`
-	ExternalID string     `json:"external_id"`
-	Name       string     `json:"name"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	DeletedAt  *time.Time `json:"deleted_at"`
+	ID             uuid.UUID  `json:"id"`
+	ExternalID     string     `json:"external_id"`
+	Name           string     `json:"name"`
+	SearchDocument string     `json:"search_document"`
+	CreatedAt      time.Time  `json:"created_at"`
+	UpdatedAt      time.Time  `json:"updated_at"`
+	DeletedAt      *time.Time `json:"deleted_at"`
 }
 
 type User struct {

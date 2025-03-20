@@ -208,12 +208,12 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
-		searchExp, orderExp := qb.buildSearchV2(
+		searchExp, orderExp := qb.buildSearch(
 			options.Search,
 			schema.Transaction.ColumnSearchDocument(),
 		)
 		whereExps = append(whereExps, searchExp)
-		orderedExps = append(orderedExps, orderExp.Asc())
+		orderedExps = append(orderedExps, orderExp.Desc())
 	}
 
 	if len(options.CategoryIDs) > 0 {

@@ -100,12 +100,12 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
-		searchExp, distanceExp := qb.buildSearch(
+		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.Institution.ColumnName(),
+			schema.Institution.ColumnSearchDocument(),
 		)
 		whereExps = append(whereExps, searchExp)
-		orderedExps = append(orderedExps, distanceExp.Asc())
+		orderedExps = append(orderedExps, orderExp.Desc())
 	}
 
 	if len(options.UserIDs) > 0 {

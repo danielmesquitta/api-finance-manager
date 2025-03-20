@@ -68,17 +68,19 @@ model AIChatAnswer {
 }
 
 model AIChat {
-  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title      String?
-  created_at DateTime  @default(now()) @db.Timestamptz()
-  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at DateTime? @db.Timestamptz()
+  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title           String?
+  search_document Unsupported("tsvector") @default(dbgenerated("''::tsvector"))
+  created_at      DateTime                @default(now()) @db.Timestamptz()
+  updated_at      DateTime                @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at      DateTime?               @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
 
   ai_chat_messages AIChatMessage[]
 
+  @@index([search_document], type: Gin)
   @@map("ai_chats")
 }
 
@@ -127,44 +129,50 @@ model Feedback {
 }
 
 model Institution {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String
-  name        String
-  logo        String?
-  created_at  DateTime  @default(now()) @db.Timestamptz()
-  deleted_at  DateTime? @db.Timestamptz()
+  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id     String
+  name            String
+  search_document Unsupported("tsvector") @default(dbgenerated("''::tsvector"))
+  logo            String?
+  created_at      DateTime                @default(now()) @db.Timestamptz()
+  deleted_at      DateTime?               @db.Timestamptz()
 
   transactions Transaction[]
 
   user_institutions UserInstitution[]
 
+  @@index([search_document], type: Gin)
   @@map("institutions")
 }
 
 model PaymentMethod {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String
-  name        String
-  created_at  DateTime  @default(now()) @db.Timestamptz()
-  deleted_at  DateTime? @db.Timestamptz()
+  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id     String
+  name            String
+  search_document Unsupported("tsvector") @default(dbgenerated("''::tsvector"))
+  created_at      DateTime                @default(now()) @db.Timestamptz()
+  deleted_at      DateTime?               @db.Timestamptz()
 
   transactions Transaction[]
 
+  @@index([search_document], type: Gin)
   @@map("payment_methods")
 }
 
 model TransactionCategory {
-  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id String
-  name        String
-  created_at  DateTime  @default(now()) @db.Timestamptz()
-  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at  DateTime? @db.Timestamptz()
+  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id     String
+  name            String
+  search_document Unsupported("tsvector") @default(dbgenerated("''::tsvector"))
+  created_at      DateTime                @default(now()) @db.Timestamptz()
+  updated_at      DateTime                @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at      DateTime?               @db.Timestamptz()
 
   transactions Transaction[]
 
   budget_categories BudgetCategory[]
 
+  @@index([search_document], type: Gin)
   @@map("transaction_categories")
 }
 

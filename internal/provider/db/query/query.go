@@ -43,7 +43,7 @@ func (qb *QueryBuilder) calculateMaxLevenshteinDistance(search string) int {
 	return maxLevenshteinDistance
 }
 
-func (qb *QueryBuilder) buildSearchV2(
+func (qb *QueryBuilder) buildSearch(
 	search, column string,
 ) (exp.Expression, exp.Orderable) {
 	searchQuery := fmt.Sprintf("%s @@ plainto_tsquery('portuguese', ?)", column)
@@ -57,32 +57,6 @@ func (qb *QueryBuilder) buildSearchV2(
 	)
 
 	return whereExp, orderExp
-}
-
-func (qb *QueryBuilder) buildSearch(
-	search, column string,
-) (exp.Expression, exp.Orderable) {
-	unaccentedColumn := goqu.Func("lower", goqu.Func(
-		"unaccent",
-		goqu.I(column),
-	))
-	searchPlaceholder := goqu.L("?", search)
-	unaccentedSearch := goqu.Func(
-		"lower",
-		goqu.Func("unaccent", searchPlaceholder),
-	)
-	distanceExp := goqu.Func(
-		"levenshtein",
-		unaccentedColumn,
-		unaccentedSearch,
-	)
-	maxLevenshteinDistance := qb.calculateMaxLevenshteinDistance(search)
-	likeInput := goqu.Func("concat", "%", unaccentedSearch, "%")
-	whereExp := goqu.Or(
-		unaccentedColumn.Like(likeInput),
-		distanceExp.Lte(maxLevenshteinDistance),
-	)
-	return whereExp, distanceExp
 }
 
 func (qb *QueryBuilder) Scan(

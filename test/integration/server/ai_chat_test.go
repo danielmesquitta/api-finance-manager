@@ -469,3 +469,137 @@ func TestListAIChatMessagesAndAnswers(t *testing.T) {
 		})
 	}
 }
+
+func TestListAIChats(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		description       string
+		queryParams       map[string]string
+		token             string
+		expectedCode      int
+		expectedAIChatIDs []string
+	}{
+		{
+			description:       "fails without token",
+			queryParams:       map[string]string{},
+			token:             "",
+			expectedCode:      http.StatusBadRequest,
+			expectedAIChatIDs: []string{},
+		},
+		{
+			description:  "lists ai chats",
+			queryParams:  map[string]string{},
+			token:        mockoauth.PremiumTierMockToken,
+			expectedCode: http.StatusOK,
+			expectedAIChatIDs: []string{
+				"9945780b-c3f8-4464-a83d-e063d2faf93d",
+				"df2017de-e019-4d14-b540-b31aafddffb8",
+				"f957350a-2a26-4bc1-9af3-0e83193b6c6f",
+			},
+		},
+		{
+			description: "searches ai chats by title",
+			queryParams: map[string]string{
+				handler.QueryParamSearch: "meu saldo",
+			},
+			token:        mockoauth.PremiumTierMockToken,
+			expectedCode: http.StatusOK,
+			expectedAIChatIDs: []string{
+				"9945780b-c3f8-4464-a83d-e063d2faf93d",
+			},
+		},
+		{
+			description: "searches ai chats by message",
+			queryParams: map[string]string{
+				handler.QueryParamSearch: "gastei com comida",
+			},
+			token:        mockoauth.PremiumTierMockToken,
+			expectedCode: http.StatusOK,
+			expectedAIChatIDs: []string{
+				"9945780b-c3f8-4464-a83d-e063d2faf93d",
+			},
+		},
+		{
+			description: "searches ai chats by answer",
+			queryParams: map[string]string{
+				handler.QueryParamSearch: "saldo é",
+			},
+			token:        mockoauth.PremiumTierMockToken,
+			expectedCode: http.StatusOK,
+			expectedAIChatIDs: []string{
+				"9945780b-c3f8-4464-a83d-e063d2faf93d",
+			},
+		},
+		{
+			description: "paginates ai chats",
+			queryParams: map[string]string{
+				handler.QueryParamPageSize: "2",
+			},
+			token:        mockoauth.PremiumTierMockToken,
+			expectedCode: http.StatusOK,
+			expectedAIChatIDs: []string{
+				"9945780b-c3f8-4464-a83d-e063d2faf93d",
+				"df2017de-e019-4d14-b540-b31aafddffb8",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.description, func(t *testing.T) {
+			t.Parallel()
+
+			app, cleanUp := NewTestApp(t)
+			defer func() {
+				err := cleanUp(context.Background())
+				assert.Nil(t, err)
+			}()
+
+			signInRes := &dto.SignInResponse{}
+			if test.token != "" {
+				signInRes = app.SignIn(test.token)
+			}
+
+			var out dto.ListAIChatsResponse
+			var errRes dto.ErrorResponse
+			statusCode, rawBody, err := app.MakeRequest(
+				http.MethodGet,
+				"/api/v1/ai-chats",
+				WithQueryParams(test.queryParams),
+				WithBearerToken(signInRes.AccessToken),
+				WithResponse(&out),
+				WithError(&errRes),
+			)
+			assert.Nil(t, err)
+
+			assert.Equal(
+				t,
+				test.expectedCode,
+				statusCode,
+				rawBody,
+			)
+
+			if len(test.expectedAIChatIDs) == 0 {
+				assert.Empty(t, out.Items)
+				return
+			}
+
+			assert.Len(
+				t,
+				out.Items,
+				len(test.expectedAIChatIDs),
+			)
+
+			aiChatMessageIDs := make([]string, len(out.Items))
+			for i, aiChatMessage := range out.Items {
+				aiChatMessageIDs[i] = aiChatMessage.ID.String()
+			}
+
+			assert.ElementsMatch(
+				t,
+				test.expectedAIChatIDs,
+				aiChatMessageIDs,
+			)
+		})
+	}
+}

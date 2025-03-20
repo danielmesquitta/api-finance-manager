@@ -32,7 +32,7 @@ func (q *Queries) DeleteBudgetCategories(ctx context.Context, budgetID uuid.UUID
 
 const getBudgetCategory = `-- name: GetBudgetCategory :one
 SELECT bc.id, bc.amount, bc.created_at, bc.updated_at, bc.deleted_at, bc.budget_id, bc.category_id,
-  tc.id, tc.external_id, tc.name, tc.created_at, tc.updated_at, tc.deleted_at
+  tc.id, tc.external_id, tc.name, tc.search_document, tc.created_at, tc.updated_at, tc.deleted_at
 FROM budget_categories bc
   JOIN transaction_categories tc ON bc.category_id = tc.id
   JOIN budgets b ON bc.budget_id = b.id
@@ -66,6 +66,7 @@ func (q *Queries) GetBudgetCategory(ctx context.Context, arg GetBudgetCategoryPa
 		&i.TransactionCategory.ID,
 		&i.TransactionCategory.ExternalID,
 		&i.TransactionCategory.Name,
+		&i.TransactionCategory.SearchDocument,
 		&i.TransactionCategory.CreatedAt,
 		&i.TransactionCategory.UpdatedAt,
 		&i.TransactionCategory.DeletedAt,
@@ -75,7 +76,7 @@ func (q *Queries) GetBudgetCategory(ctx context.Context, arg GetBudgetCategoryPa
 
 const listBudgetCategories = `-- name: ListBudgetCategories :many
 SELECT bc.id, bc.amount, bc.created_at, bc.updated_at, bc.deleted_at, bc.budget_id, bc.category_id,
-  tc.id, tc.external_id, tc.name, tc.created_at, tc.updated_at, tc.deleted_at
+  tc.id, tc.external_id, tc.name, tc.search_document, tc.created_at, tc.updated_at, tc.deleted_at
 FROM budget_categories bc
   JOIN transaction_categories tc ON bc.category_id = tc.id
 WHERE budget_id = $1
@@ -108,6 +109,7 @@ func (q *Queries) ListBudgetCategories(ctx context.Context, budgetID uuid.UUID) 
 			&i.TransactionCategory.ID,
 			&i.TransactionCategory.ExternalID,
 			&i.TransactionCategory.Name,
+			&i.TransactionCategory.SearchDocument,
 			&i.TransactionCategory.CreatedAt,
 			&i.TransactionCategory.UpdatedAt,
 			&i.TransactionCategory.DeletedAt,
