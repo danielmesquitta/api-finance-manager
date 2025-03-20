@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/feedback"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/stretchr/testify/assert"
 )
@@ -30,7 +30,7 @@ func TestCreateFeedback(t *testing.T) {
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusCreated,
 			body: dto.CreateFeedbackRequest{
-				CreateFeedbackInput: usecase.CreateFeedbackInput{
+				CreateFeedbackUseCaseInput: feedback.CreateFeedbackUseCaseInput{
 					Message: "Loren ipsum dolor sit amet",
 				},
 			},

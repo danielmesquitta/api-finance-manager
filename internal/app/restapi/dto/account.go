@@ -1,7 +1,13 @@
 package dto
 
-import "github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+import (
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/account"
+)
 
 type CreateAccountsRequest struct {
-	usecase.CreateAccountsInput
+	account.CreateAccountsUseCaseInput
+}
+
+type GetAccountsBalanceResponse struct {
+	account.GetAccountsBalanceUseCaseOutput
 }

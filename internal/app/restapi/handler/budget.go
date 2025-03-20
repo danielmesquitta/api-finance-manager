@@ -5,24 +5,24 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/budget"
 	"github.com/gofiber/fiber/v2"
 )
 
 type BudgetHandler struct {
-	ub   *usecase.UpsertBudget
-	gb   *usecase.GetBudget
-	gbc  *usecase.GetBudgetCategory
-	db   *usecase.DeleteBudget
-	lbct *usecase.ListBudgetCategoryTransactions
+	ub   *budget.UpsertBudgetUseCase
+	gb   *budget.GetBudgetUseCase
+	gbc  *budget.GetBudgetCategoryUseCase
+	db   *budget.DeleteBudgetUseCase
+	lbct *budget.ListBudgetCategoryTransactionsUseCase
 }
 
 func NewBudgetHandler(
-	ub *usecase.UpsertBudget,
-	gb *usecase.GetBudget,
-	gbc *usecase.GetBudgetCategory,
-	db *usecase.DeleteBudget,
-	lbct *usecase.ListBudgetCategoryTransactions,
+	ub *budget.UpsertBudgetUseCase,
+	gb *budget.GetBudgetUseCase,
+	gbc *budget.GetBudgetCategoryUseCase,
+	db *budget.DeleteBudgetUseCase,
+	lbct *budget.ListBudgetCategoryTransactionsUseCase,
 ) *BudgetHandler {
 	return &BudgetHandler{
 		ub:   ub,
@@ -60,7 +60,7 @@ func (h BudgetHandler) Upsert(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	if err := h.ub.Execute(
 		ctx,
-		in.UpsertBudgetInput,
+		in.UpsertBudgetUseCaseInput,
 	); err != nil {
 		return errs.New(err)
 	}
@@ -93,7 +93,7 @@ func (h BudgetHandler) Get(c *fiber.Ctx) error {
 	}
 
 	ctx := c.UserContext()
-	out, err := h.gb.Execute(ctx, usecase.GetBudgetInput{
+	out, err := h.gb.Execute(ctx, budget.GetBudgetUseCaseInput{
 		UserID: userID,
 		Date:   date,
 	})
@@ -102,7 +102,7 @@ func (h BudgetHandler) Get(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(dto.GetBudgetResponse{
-		GetBudgetOutput: *out,
+		GetBudgetUseCaseOutput: *out,
 	})
 }
 
@@ -134,7 +134,7 @@ func (h BudgetHandler) GetTransactionCategoryByID(c *fiber.Ctx) error {
 	date := c.Query(QueryParamDate)
 
 	ctx := c.UserContext()
-	out, err := h.gbc.Execute(ctx, usecase.GetBudgetCategoryInput{
+	out, err := h.gbc.Execute(ctx, budget.GetBudgetCategoryUseCaseInput{
 		UserID:     userID,
 		Date:       date,
 		CategoryID: categoryID,
@@ -144,7 +144,7 @@ func (h BudgetHandler) GetTransactionCategoryByID(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(dto.GetBudgetCategoryResponse{
-		GetBudgetCategoryOutput: *out,
+		GetBudgetCategoryUseCaseOutput: *out,
 	})
 }
 
@@ -181,7 +181,7 @@ func (h *BudgetHandler) ListCategoryTransactions(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	in := usecase.ListBudgetCategoryTransactionsInput{
+	in := budget.ListBudgetCategoryTransactionsUseCaseInput{
 		PaginationInput: paginationIn,
 		Date:            date,
 		UserID:          userID,

@@ -7,7 +7,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/user"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -139,7 +139,7 @@ func TestUpdateProfile(t *testing.T) {
 				token:        mockoauth.PremiumTierMockToken,
 				expectedCode: http.StatusNoContent,
 				body: dto.UpdateProfileRequest{
-					UpdateUserInput: usecase.UpdateUserInput{
+					UpdateUserUseCaseInput: user.UpdateUserUseCaseInput{
 						ID:    id,
 						Name:  name,
 						Email: email,
@@ -160,7 +160,7 @@ func TestUpdateProfile(t *testing.T) {
 				token:        mockoauth.PremiumTierMockToken,
 				expectedCode: http.StatusNoContent,
 				body: dto.UpdateProfileRequest{
-					UpdateUserInput: usecase.UpdateUserInput{
+					UpdateUserUseCaseInput: user.UpdateUserUseCaseInput{
 						ID:   id,
 						Name: name,
 					},

@@ -5,16 +5,16 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/feedback"
 	"github.com/gofiber/fiber/v2"
 )
 
 type FeedbackHandler struct {
-	cf *usecase.CreateFeedback
+	cf *feedback.CreateFeedbackUseCase
 }
 
 func NewFeedbackHandler(
-	cf *usecase.CreateFeedback,
+	cf *feedback.CreateFeedbackUseCase,
 ) *FeedbackHandler {
 	return &FeedbackHandler{
 		cf: cf,
@@ -48,7 +48,7 @@ func (h *FeedbackHandler) Create(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	if err := h.cf.Execute(
 		ctx,
-		body.CreateFeedbackInput,
+		body.CreateFeedbackUseCaseInput,
 	); err != nil {
 		return errs.New(err)
 	}

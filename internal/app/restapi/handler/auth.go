@@ -3,18 +3,18 @@ package handler
 import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/auth"
 	"github.com/gofiber/fiber/v2"
 )
 
 type AuthHandler struct {
-	si *usecase.SignIn
-	rt *usecase.RefreshToken
+	si *auth.SignInUseCase
+	rt *auth.RefreshTokenUseCase
 }
 
 func NewAuthHandler(
-	si *usecase.SignIn,
-	rt *usecase.RefreshToken,
+	si *auth.SignInUseCase,
+	rt *auth.RefreshTokenUseCase,
 ) *AuthHandler {
 	return &AuthHandler{
 		si: si,
@@ -48,7 +48,7 @@ func (h *AuthHandler) SignIn(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	out, err := h.si.Execute(
 		ctx,
-		usecase.SignInInput{Token: token, Provider: body.Provider},
+		auth.SignInUseCaseInput{Token: token, Provider: body.Provider},
 	)
 	if err != nil {
 		return errs.New(err)

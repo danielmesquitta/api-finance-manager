@@ -10,7 +10,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/aichat"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -201,7 +201,7 @@ func TestUpdateAIChat(t *testing.T) {
 			aiChatID:     "df2017de-e019-4d14-b540-b31aafddffb8",
 			expectedCode: http.StatusBadRequest,
 			body: dto.UpdateAIChatRequest{
-				UpdateAIChatInput: usecase.UpdateAIChatInput{
+				UpdateAIChatUseCaseInput: aichat.UpdateAIChatUseCaseInput{
 					Title: "Foo bar",
 				},
 			},
@@ -212,7 +212,7 @@ func TestUpdateAIChat(t *testing.T) {
 			aiChatID:     "5fde4a75-f4df-415e-86bb-d7e24d488e36",
 			expectedCode: http.StatusNotFound,
 			body: dto.UpdateAIChatRequest{
-				UpdateAIChatInput: usecase.UpdateAIChatInput{
+				UpdateAIChatUseCaseInput: aichat.UpdateAIChatUseCaseInput{
 					Title: "Non-existing AI chat",
 				},
 			},
@@ -225,7 +225,7 @@ func TestUpdateAIChat(t *testing.T) {
 				aiChatID:     "df2017de-e019-4d14-b540-b31aafddffb8",
 				expectedCode: http.StatusNoContent,
 				body: dto.UpdateAIChatRequest{
-					UpdateAIChatInput: usecase.UpdateAIChatInput{
+					UpdateAIChatUseCaseInput: aichat.UpdateAIChatUseCaseInput{
 						Title: title,
 					},
 				},

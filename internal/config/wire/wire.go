@@ -8,7 +8,17 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/router"
 	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/account"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/aichat"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/auth"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/budget"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/calc"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/feedback"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/institution"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/paymentmethod"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/transaction"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/transactioncategory"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/user"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/hash"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/jwtutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
@@ -110,51 +120,60 @@ var providers = []any{
 	),
 	pgrepo.NewUserAuthProviderRepo,
 
-	usecase.NewSignIn,
-	usecase.NewRefreshToken,
-	usecase.NewCalculateCompoundInterest,
-	usecase.NewCalculateEmergencyReserve,
-	usecase.NewCalculateRetirement,
-	usecase.NewCalculateSimpleInterest,
-	usecase.NewSyncInstitutions,
-	usecase.NewSyncCategories,
-	usecase.NewListTransactionCategories,
-	usecase.NewUpsertBudget,
-	usecase.NewGetBudget,
-	usecase.NewDeleteBudget,
-	usecase.NewGetUser,
-	usecase.NewCreateAccounts,
-	usecase.NewSyncTransactions,
-	usecase.NewCalculateCashVsInstallments,
-	usecase.NewListTransactions,
-	usecase.NewListInstitutions,
-	usecase.NewGetBudgetCategory,
-	usecase.NewListBudgetCategoryTransactions,
-	usecase.NewGetTransaction,
-	usecase.NewUpdateTransaction,
-	usecase.NewGetBalance,
-	usecase.NewSyncBalances,
-	usecase.NewCreateTransaction,
-	usecase.NewUpdateUser,
-	usecase.NewDeleteUser,
-	usecase.NewCreateFeedback,
-	usecase.NewListPaymentMethods,
-	usecase.NewListAIChats,
-	usecase.NewCreateAIChat,
-	usecase.NewDeleteAIChat,
-	usecase.NewUpdateAIChat,
-	usecase.NewListAIChatMessagesAndAnswers,
-	usecase.NewGenerateAIChatMessage,
+	account.NewCreateAccountsUseCase,
+	account.NewGetAccountsBalanceUseCase,
+	account.NewSyncAccountsBalancesUseCase,
+
+	aichat.NewListAIChatsUseCase,
+	aichat.NewCreateAIChatUseCase,
+	aichat.NewDeleteAIChatUseCase,
+	aichat.NewUpdateAIChatUseCase,
+	aichat.NewListAIChatMessagesAndAnswersUseCase,
+	aichat.NewGenerateAIChatMessageUseCase,
+
+	auth.NewSignInUseCase,
+	auth.NewRefreshTokenUseCase,
+
+	budget.NewUpsertBudgetUseCase,
+	budget.NewGetBudgetUseCase,
+	budget.NewDeleteBudgetUseCase,
+	budget.NewGetBudgetCategoryUseCase,
+	budget.NewListBudgetCategoryTransactionsUseCase,
+
+	calc.NewCalculateCompoundInterestUseCase,
+	calc.NewCalculateEmergencyReserveUseCase,
+	calc.NewCalculateRetirementUseCase,
+	calc.NewCalculateSimpleInterestUseCase,
+	calc.NewCalculateCashVsInstallmentsUseCase,
+
+	feedback.NewCreateFeedbackUseCase,
+
+	institution.NewSyncInstitutionsUseCase,
+	institution.NewListInstitutionsUseCase,
+
+	paymentmethod.NewListPaymentMethodsUseCase,
+
+	transaction.NewSyncTransactionsUseCase,
+	transaction.NewListTransactionsUseCase,
+	transaction.NewGetTransactionUseCase,
+	transaction.NewUpdateTransactionUseCase,
+	transaction.NewCreateTransactionUseCase,
+
+	transactioncategory.NewSyncTransactionCategoriesUseCase,
+	transactioncategory.NewListTransactionCategoriesUseCase,
+
+	user.NewGetUserUseCase,
+	user.NewUpdateUserUseCase,
+	user.NewDeleteUserUseCase,
 
 	handler.NewAuthHandler,
 	handler.NewCalculatorHandler,
 	handler.NewInstitutionHandler,
-	handler.NewCategoryHandler,
+	handler.NewTransactionCategoryHandler,
 	handler.NewBudgetHandler,
 	handler.NewUserHandler,
 	handler.NewAccountHandler,
 	handler.NewTransactionHandler,
-	handler.NewBalanceHandler,
 	handler.NewDocHandler,
 	handler.NewFeedbackHandler,
 	handler.NewPaymentMethodHandler,

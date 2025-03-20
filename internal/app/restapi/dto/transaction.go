@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/transaction"
 )
 
 type ListTransactionsResponse struct {
@@ -14,9 +14,9 @@ type GetTransactionResponse struct {
 }
 
 type UpdateTransactionRequest struct {
-	usecase.UpdateTransactionInput
+	transaction.UpdateTransactionUseCaseInput
 }
 
 type CreateTransactionRequest struct {
-	usecase.CreateTransactionInput
+	transaction.CreateTransactionUseCaseInput
 }

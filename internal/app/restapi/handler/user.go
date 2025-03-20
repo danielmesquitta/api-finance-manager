@@ -3,20 +3,20 @@ package handler
 import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/user"
 	"github.com/gofiber/fiber/v2"
 )
 
 type UserHandler struct {
-	gu *usecase.GetUser
-	uu *usecase.UpdateUser
-	du *usecase.DeleteUser
+	gu *user.GetUserUseCase
+	uu *user.UpdateUserUseCase
+	du *user.DeleteUserUseCase
 }
 
 func NewUserHandler(
-	gu *usecase.GetUser,
-	uu *usecase.UpdateUser,
-	du *usecase.DeleteUser,
+	gu *user.GetUserUseCase,
+	uu *user.UpdateUserUseCase,
+	du *user.DeleteUserUseCase,
 ) *UserHandler {
 	return &UserHandler{
 		gu: gu,
@@ -66,7 +66,7 @@ func (h UserHandler) GetProfile(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/users/profile [put]
 func (h UserHandler) UpdateProfile(c *fiber.Ctx) error {
-	var in usecase.UpdateUserInput
+	var in user.UpdateUserUseCaseInput
 	if err := c.BodyParser(&in); err != nil {
 		return errs.New(err)
 	}

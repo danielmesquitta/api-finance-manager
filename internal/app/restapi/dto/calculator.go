@@ -1,43 +1,43 @@
 package dto
 
-import "github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+import "github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/calc"
 
 type CompoundInterestRequest struct {
-	usecase.CalculateCompoundInterestInput
+	calc.CalculateCompoundInterestUseCaseInput
 }
 
 type CompoundInterestResponse struct {
-	usecase.CalculateCompoundInterestOutput
+	calc.CalculateCompoundInterestUseCaseOutput
 }
 
 type EmergencyReserveRequest struct {
-	usecase.CalculateEmergencyReserveInput
+	calc.CalculateEmergencyReserveUseCaseInput
 }
 
 type EmergencyReserveResponse struct {
-	usecase.CalculateEmergencyReserveOutput
+	calc.CalculateEmergencyReserveUseCaseOutput
 }
 
 type RetirementRequest struct {
-	usecase.CalculateRetirementInput
+	calc.CalculateRetirementUseCaseInput
 }
 
 type RetirementResponse struct {
-	usecase.CalculateRetirementOutput
+	calc.CalculateRetirementUseCaseOutput
 }
 
 type SimpleInterestRequest struct {
-	usecase.CalculateSimpleInterestInput
+	calc.CalculateSimpleInterestUseCaseInput
 }
 
 type SimpleInterestResponse struct {
-	usecase.CalculateSimpleInterestOutput
+	calc.CalculateSimpleInterestUseCaseOutput
 }
 
 type CashVsInstallmentsRequest struct {
-	usecase.CalculateCashVsInstallmentsInput
+	calc.CalculateCashVsInstallmentsUseCaseInput
 }
 
 type CashVsInstallmentsResponse struct {
-	usecase.CalculateCashVsInstallmentsOutput
+	calc.CalculateCashVsInstallmentsUseCaseOutput
 }

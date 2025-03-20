@@ -514,6 +514,69 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Generate ai chat message",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI Chat"
+                ],
+                "summary": "Generate ai chat message",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "AI Chat ID",
+                        "name": "ai_chat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateAIChatRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateAIChatResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
             }
         },
         "/v1/auth/refresh": {
@@ -636,7 +699,7 @@ const docTemplate = `{
                 "tags": [
                     "Balance"
                 ],
-                "summary": "Get balance",
+                "summary": "Get accounts balance",
                 "parameters": [
                     {
                         "type": "string",
@@ -711,7 +774,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/dto.GetBalanceResponse"
+                            "$ref": "#/definitions/dto.GetAccountsBalanceResponse"
                         }
                     },
                     "401": {
@@ -2040,6 +2103,109 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "account.CreateAccountsUseCaseInstitution": {
+            "type": "object",
+            "required": [
+                "id"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "budget.GetBudgetUseCaseBudgetCategories": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "available": {
+                    "type": "integer"
+                },
+                "budget_id": {
+                    "type": "string"
+                },
+                "category": {
+                    "$ref": "#/definitions/entity.TransactionCategory"
+                },
+                "category_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "spent": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "budget.UpsertBudgetUseCaseCategoryInput": {
+            "type": "object",
+            "required": [
+                "amount",
+                "category_id"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "category_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "calc.CashFlow": {
+            "type": "object",
+            "properties": {
+                "cash": {
+                    "type": "integer"
+                },
+                "credit_card": {
+                    "type": "integer"
+                }
+            }
+        },
+        "calc.CompoundInterestResult": {
+            "type": "object",
+            "properties": {
+                "monthly_interest": {
+                    "type": "integer"
+                },
+                "total_amount": {
+                    "type": "integer"
+                },
+                "total_deposit": {
+                    "type": "integer"
+                },
+                "total_interest": {
+                    "type": "integer"
+                }
+            }
+        },
+        "calc.SimpleInterestResult": {
+            "type": "object",
+            "properties": {
+                "total_amount": {
+                    "type": "integer"
+                },
+                "total_deposit": {
+                    "type": "integer"
+                },
+                "total_interest": {
+                    "type": "integer"
+                }
+            }
+        },
         "dateutil.ComparisonDates": {
             "type": "object",
             "properties": {
@@ -2112,7 +2278,7 @@ const docTemplate = `{
                 "cash_flow_by_month": {
                     "type": "object",
                     "additionalProperties": {
-                        "$ref": "#/definitions/usecase.CashFlow"
+                        "$ref": "#/definitions/calc.CashFlow"
                     }
                 },
                 "savings_with_cash": {
@@ -2165,7 +2331,7 @@ const docTemplate = `{
                 "by_month": {
                     "type": "object",
                     "additionalProperties": {
-                        "$ref": "#/definitions/usecase.CompoundInterestResult"
+                        "$ref": "#/definitions/calc.CompoundInterestResult"
                     }
                 },
                 "total_amount": {
@@ -2215,7 +2381,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "connector": {
-                    "$ref": "#/definitions/usecase.CreateAccountsInstitution"
+                    "$ref": "#/definitions/account.CreateAccountsUseCaseInstitution"
                 },
                 "executionStatus": {
                     "type": "string"
@@ -2334,7 +2500,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.GetBalanceResponse": {
+        "dto.GetAccountsBalanceResponse": {
             "type": "object",
             "properties": {
                 "balance_percentage_variation": {
@@ -2422,7 +2588,7 @@ const docTemplate = `{
                 "budget_categories": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/usecase.GetBudgetBudgetCategories"
+                        "$ref": "#/definitions/budget.GetBudgetUseCaseBudgetCategories"
                     }
                 },
                 "comparison_dates": {
@@ -2502,6 +2668,7 @@ const docTemplate = `{
                 "payment_method_name": {
                     "type": "string"
                 },
+                "search_document": {},
                 "updated_at": {
                     "type": "string"
                 },
@@ -2856,7 +3023,7 @@ const docTemplate = `{
                 "by_month": {
                     "type": "object",
                     "additionalProperties": {
-                        "$ref": "#/definitions/usecase.SimpleInterestResult"
+                        "$ref": "#/definitions/calc.SimpleInterestResult"
                     }
                 },
                 "total_amount": {
@@ -2937,7 +3104,7 @@ const docTemplate = `{
                 "categories": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/usecase.UpsertBudgetCategoryInput"
+                        "$ref": "#/definitions/budget.UpsertBudgetUseCaseCategoryInput"
                     }
                 },
                 "date": {
@@ -3050,6 +3217,7 @@ const docTemplate = `{
                 "payment_method_name": {
                     "type": "string"
                 },
+                "search_document": {},
                 "updated_at": {
                     "type": "string"
                 },
@@ -3194,109 +3362,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.CashFlow": {
-            "type": "object",
-            "properties": {
-                "cash": {
-                    "type": "integer"
-                },
-                "credit_card": {
-                    "type": "integer"
-                }
-            }
-        },
-        "usecase.CompoundInterestResult": {
-            "type": "object",
-            "properties": {
-                "monthly_interest": {
-                    "type": "integer"
-                },
-                "total_amount": {
-                    "type": "integer"
-                },
-                "total_deposit": {
-                    "type": "integer"
-                },
-                "total_interest": {
-                    "type": "integer"
-                }
-            }
-        },
-        "usecase.CreateAccountsInstitution": {
-            "type": "object",
-            "required": [
-                "id"
-            ],
-            "properties": {
-                "id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "usecase.GetBudgetBudgetCategories": {
-            "type": "object",
-            "properties": {
-                "amount": {
-                    "type": "integer"
-                },
-                "available": {
-                    "type": "integer"
-                },
-                "budget_id": {
-                    "type": "string"
-                },
-                "category": {
-                    "$ref": "#/definitions/entity.TransactionCategory"
-                },
-                "category_id": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "spent": {
-                    "type": "integer"
-                },
-                "updated_at": {
-                    "type": "string"
-                }
-            }
-        },
-        "usecase.SimpleInterestResult": {
-            "type": "object",
-            "properties": {
-                "total_amount": {
-                    "type": "integer"
-                },
-                "total_deposit": {
-                    "type": "integer"
-                },
-                "total_interest": {
-                    "type": "integer"
-                }
-            }
-        },
-        "usecase.UpsertBudgetCategoryInput": {
-            "type": "object",
-            "required": [
-                "amount",
-                "category_id"
-            ],
-            "properties": {
-                "amount": {
-                    "type": "integer"
-                },
-                "category_id": {
                     "type": "string"
                 }
             }

@@ -1,6 +1,109 @@
 {
     "components": {
         "schemas": {
+            "account.CreateAccountsUseCaseInstitution": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "id"
+                ],
+                "type": "object"
+            },
+            "budget.GetBudgetUseCaseBudgetCategories": {
+                "properties": {
+                    "amount": {
+                        "type": "integer"
+                    },
+                    "available": {
+                        "type": "integer"
+                    },
+                    "budget_id": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/entity.TransactionCategory"
+                    },
+                    "category_id": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "deleted_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string"
+                    },
+                    "spent": {
+                        "type": "integer"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "budget.UpsertBudgetUseCaseCategoryInput": {
+                "properties": {
+                    "amount": {
+                        "type": "integer"
+                    },
+                    "category_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "amount",
+                    "category_id"
+                ],
+                "type": "object"
+            },
+            "calc.CashFlow": {
+                "properties": {
+                    "cash": {
+                        "type": "integer"
+                    },
+                    "credit_card": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "calc.CompoundInterestResult": {
+                "properties": {
+                    "monthly_interest": {
+                        "type": "integer"
+                    },
+                    "total_amount": {
+                        "type": "integer"
+                    },
+                    "total_deposit": {
+                        "type": "integer"
+                    },
+                    "total_interest": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "calc.SimpleInterestResult": {
+                "properties": {
+                    "total_amount": {
+                        "type": "integer"
+                    },
+                    "total_deposit": {
+                        "type": "integer"
+                    },
+                    "total_interest": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
             "dateutil.ComparisonDates": {
                 "properties": {
                     "comparison_end_date": {
@@ -71,7 +174,7 @@
                 "properties": {
                     "cash_flow_by_month": {
                         "additionalProperties": {
-                            "$ref": "#/components/schemas/usecase.CashFlow"
+                            "$ref": "#/components/schemas/calc.CashFlow"
                         },
                         "type": "object"
                     },
@@ -124,7 +227,7 @@
                 "properties": {
                     "by_month": {
                         "additionalProperties": {
-                            "$ref": "#/components/schemas/usecase.CompoundInterestResult"
+                            "$ref": "#/components/schemas/calc.CompoundInterestResult"
                         },
                         "type": "object"
                     },
@@ -169,7 +272,7 @@
                         "type": "string"
                     },
                     "connector": {
-                        "$ref": "#/components/schemas/usecase.CreateAccountsInstitution"
+                        "$ref": "#/components/schemas/account.CreateAccountsUseCaseInstitution"
                     },
                     "executionStatus": {
                         "type": "string"
@@ -295,7 +398,7 @@
                 },
                 "type": "object"
             },
-            "dto.GetBalanceResponse": {
+            "dto.GetAccountsBalanceResponse": {
                 "properties": {
                     "balance_percentage_variation": {
                         "type": "integer"
@@ -381,7 +484,7 @@
                     },
                     "budget_categories": {
                         "items": {
-                            "$ref": "#/components/schemas/usecase.GetBudgetBudgetCategories"
+                            "$ref": "#/components/schemas/budget.GetBudgetUseCaseBudgetCategories"
                         },
                         "type": "array"
                     },
@@ -462,6 +565,7 @@
                     "payment_method_name": {
                         "type": "string"
                     },
+                    "search_document": {},
                     "updated_at": {
                         "type": "string"
                     },
@@ -815,7 +919,7 @@
                 "properties": {
                     "by_month": {
                         "additionalProperties": {
-                            "$ref": "#/components/schemas/usecase.SimpleInterestResult"
+                            "$ref": "#/components/schemas/calc.SimpleInterestResult"
                         },
                         "type": "object"
                     },
@@ -892,7 +996,7 @@
                     },
                     "categories": {
                         "items": {
-                            "$ref": "#/components/schemas/usecase.UpsertBudgetCategoryInput"
+                            "$ref": "#/components/schemas/budget.UpsertBudgetUseCaseCategoryInput"
                         },
                         "type": "array"
                     },
@@ -1010,6 +1114,7 @@
                     "payment_method_name": {
                         "type": "string"
                     },
+                    "search_document": {},
                     "updated_at": {
                         "type": "string"
                     },
@@ -1157,109 +1262,6 @@
                         "type": "string"
                     }
                 },
-                "type": "object"
-            },
-            "usecase.CashFlow": {
-                "properties": {
-                    "cash": {
-                        "type": "integer"
-                    },
-                    "credit_card": {
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "usecase.CompoundInterestResult": {
-                "properties": {
-                    "monthly_interest": {
-                        "type": "integer"
-                    },
-                    "total_amount": {
-                        "type": "integer"
-                    },
-                    "total_deposit": {
-                        "type": "integer"
-                    },
-                    "total_interest": {
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "usecase.CreateAccountsInstitution": {
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "id"
-                ],
-                "type": "object"
-            },
-            "usecase.GetBudgetBudgetCategories": {
-                "properties": {
-                    "amount": {
-                        "type": "integer"
-                    },
-                    "available": {
-                        "type": "integer"
-                    },
-                    "budget_id": {
-                        "type": "string"
-                    },
-                    "category": {
-                        "$ref": "#/components/schemas/entity.TransactionCategory"
-                    },
-                    "category_id": {
-                        "type": "string"
-                    },
-                    "created_at": {
-                        "type": "string"
-                    },
-                    "deleted_at": {
-                        "type": "string"
-                    },
-                    "id": {
-                        "type": "string"
-                    },
-                    "spent": {
-                        "type": "integer"
-                    },
-                    "updated_at": {
-                        "type": "string"
-                    }
-                },
-                "type": "object"
-            },
-            "usecase.SimpleInterestResult": {
-                "properties": {
-                    "total_amount": {
-                        "type": "integer"
-                    },
-                    "total_deposit": {
-                        "type": "integer"
-                    },
-                    "total_interest": {
-                        "type": "integer"
-                    }
-                },
-                "type": "object"
-            },
-            "usecase.UpsertBudgetCategoryInput": {
-                "properties": {
-                    "amount": {
-                        "type": "integer"
-                    },
-                    "category_id": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "amount",
-                    "category_id"
-                ],
                 "type": "object"
             }
         },
@@ -1838,6 +1840,84 @@
                 "tags": [
                     "AI Chat"
                 ]
+            },
+            "post": {
+                "description": "Generate ai chat message",
+                "parameters": [
+                    {
+                        "description": "AI Chat ID",
+                        "in": "path",
+                        "name": "ai_chat_id",
+                        "required": true,
+                        "schema": {
+                            "format": "uuid",
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/dto.UpdateAIChatRequest"
+                            }
+                        }
+                    },
+                    "description": "Request body",
+                    "required": true,
+                    "x-originalParamName": "request"
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.CreateAIChatResponse"
+                                }
+                            }
+                        },
+                        "description": "Created"
+                    },
+                    "400": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/dto.ErrorResponse"
+                                }
+                            }
+                        },
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "summary": "Generate ai chat message",
+                "tags": [
+                    "AI Chat"
+                ]
             }
         },
         "/v1/auth/refresh": {
@@ -2057,7 +2137,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/dto.GetBalanceResponse"
+                                    "$ref": "#/components/schemas/dto.GetAccountsBalanceResponse"
                                 }
                             }
                         },
@@ -2089,7 +2169,7 @@
                         "BearerAuth": []
                     }
                 ],
-                "summary": "Get balance",
+                "summary": "Get accounts balance",
                 "tags": [
                     "Balance"
                 ]

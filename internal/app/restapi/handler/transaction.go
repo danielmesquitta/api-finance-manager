@@ -5,24 +5,24 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/transaction"
 	"github.com/gofiber/fiber/v2"
 )
 
 type TransactionHandler struct {
-	sa *usecase.SyncTransactions
-	lt *usecase.ListTransactions
-	gt *usecase.GetTransactionByID
-	ut *usecase.UpdateTransaction
-	ct *usecase.CreateTransaction
+	sa *transaction.SyncTransactionsUseCase
+	lt *transaction.ListTransactionsUseCase
+	gt *transaction.GetTransactionUseCase
+	ut *transaction.UpdateTransactionUseCase
+	ct *transaction.CreateTransactionUseCase
 }
 
 func NewTransactionHandler(
-	sa *usecase.SyncTransactions,
-	lt *usecase.ListTransactions,
-	gt *usecase.GetTransactionByID,
-	ut *usecase.UpdateTransaction,
-	ct *usecase.CreateTransaction,
+	sa *transaction.SyncTransactionsUseCase,
+	lt *transaction.ListTransactionsUseCase,
+	gt *transaction.GetTransactionUseCase,
+	ut *transaction.UpdateTransactionUseCase,
+	ct *transaction.CreateTransactionUseCase,
 ) *TransactionHandler {
 	return &TransactionHandler{
 		sa: sa,
@@ -45,7 +45,7 @@ func NewTransactionHandler(
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions [post]
 func (h *TransactionHandler) Create(c *fiber.Ctx) error {
-	in := usecase.CreateTransactionInput{}
+	in := transaction.CreateTransactionUseCaseInput{}
 	if err := c.BodyParser(&in); err != nil {
 		return errs.New(err)
 	}
@@ -87,7 +87,7 @@ func (h TransactionHandler) Get(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	in := usecase.GetTransactionInput{
+	in := transaction.GetTransactionUseCaseInput{
 		ID:     transactionID,
 		UserID: userID,
 	}
@@ -120,7 +120,7 @@ func (h *TransactionHandler) Sync(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	in := usecase.SyncTransactionsInput{
+	in := transaction.SyncTransactionsUseCaseInput{
 		UserIDs: userIDs,
 	}
 
@@ -166,7 +166,7 @@ func (h *TransactionHandler) List(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	in := usecase.ListTransactionsInput{
+	in := transaction.ListTransactionsUseCaseInput{
 		PaginationInput:    paginationIn,
 		TransactionOptions: *transactionOptions,
 		UserID:             userID,
@@ -195,7 +195,7 @@ func (h *TransactionHandler) List(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions/{transaction_id} [put]
 func (h TransactionHandler) Update(c *fiber.Ctx) error {
-	in := usecase.UpdateTransactionInput{}
+	in := transaction.UpdateTransactionUseCaseInput{}
 	if err := c.BodyParser(&in); err != nil {
 		return errs.New(err)
 	}

@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/aichat"
 )
 
 type ListAIChatsResponse struct {
@@ -18,9 +18,9 @@ type CreateAIChatResponse struct {
 }
 
 type UpdateAIChatRequest struct {
-	usecase.UpdateAIChatInput
+	aichat.UpdateAIChatUseCaseInput
 }
 
 type GenerateAIChatMessageRequest struct {
-	usecase.GenerateAIChatMessageInput
+	aichat.GenerateAIChatMessageUseCaseInput
 }

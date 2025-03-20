@@ -3,24 +3,24 @@ package handler
 import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/calc"
 	"github.com/gofiber/fiber/v2"
 )
 
 type CalculatorHandler struct {
-	cci *usecase.CalculateCompoundInterest
-	cer *usecase.CalculateEmergencyReserve
-	cr  *usecase.CalculateRetirement
-	csi *usecase.CalculateSimpleInterest
-	cvi *usecase.CalculateCashVsInstallments
+	cci *calc.CalculateCompoundInterestUseCase
+	cer *calc.CalculateEmergencyReserveUseCase
+	cr  *calc.CalculateRetirementUseCase
+	csi *calc.CalculateSimpleInterestUseCase
+	cvi *calc.CalculateCashVsInstallmentsUseCase
 }
 
 func NewCalculatorHandler(
-	cci *usecase.CalculateCompoundInterest,
-	cer *usecase.CalculateEmergencyReserve,
-	cr *usecase.CalculateRetirement,
-	csi *usecase.CalculateSimpleInterest,
-	cvi *usecase.CalculateCashVsInstallments,
+	cci *calc.CalculateCompoundInterestUseCase,
+	cer *calc.CalculateEmergencyReserveUseCase,
+	cr *calc.CalculateRetirementUseCase,
+	csi *calc.CalculateSimpleInterestUseCase,
+	cvi *calc.CalculateCashVsInstallmentsUseCase,
 ) *CalculatorHandler {
 	return &CalculatorHandler{
 		cci: cci,
@@ -52,14 +52,14 @@ func (h CalculatorHandler) CompoundInterest(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	out, err := h.cci.Execute(
 		ctx,
-		body.CalculateCompoundInterestInput,
+		body.CalculateCompoundInterestUseCaseInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
 	return c.JSON(dto.CompoundInterestResponse{
-		CalculateCompoundInterestOutput: *out,
+		CalculateCompoundInterestUseCaseOutput: *out,
 	})
 }
 
@@ -84,14 +84,14 @@ func (h CalculatorHandler) EmergencyReserve(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	out, err := h.cer.Execute(
 		ctx,
-		body.CalculateEmergencyReserveInput,
+		body.CalculateEmergencyReserveUseCaseInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
 	return c.JSON(dto.EmergencyReserveResponse{
-		CalculateEmergencyReserveOutput: *out,
+		CalculateEmergencyReserveUseCaseOutput: *out,
 	})
 }
 
@@ -116,14 +116,14 @@ func (h CalculatorHandler) Retirement(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	out, err := h.cr.Execute(
 		ctx,
-		body.CalculateRetirementInput,
+		body.CalculateRetirementUseCaseInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
 	return c.JSON(dto.RetirementResponse{
-		CalculateRetirementOutput: *out,
+		CalculateRetirementUseCaseOutput: *out,
 	})
 }
 
@@ -148,14 +148,14 @@ func (h CalculatorHandler) SimpleInterest(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	out, err := h.csi.Execute(
 		ctx,
-		body.CalculateSimpleInterestInput,
+		body.CalculateSimpleInterestUseCaseInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
 	return c.JSON(dto.SimpleInterestResponse{
-		CalculateSimpleInterestOutput: *out,
+		CalculateSimpleInterestUseCaseOutput: *out,
 	})
 }
 
@@ -180,13 +180,13 @@ func (h CalculatorHandler) CashVsInstallments(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	out, err := h.cvi.Execute(
 		ctx,
-		body.CalculateCashVsInstallmentsInput,
+		body.CalculateCashVsInstallmentsUseCaseInput,
 	)
 	if err != nil {
 		return errs.New(err)
 	}
 
 	return c.JSON(dto.CashVsInstallmentsResponse{
-		CalculateCashVsInstallmentsOutput: *out,
+		CalculateCashVsInstallmentsUseCaseOutput: *out,
 	})
 }

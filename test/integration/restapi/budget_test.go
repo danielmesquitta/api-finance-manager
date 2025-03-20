@@ -8,7 +8,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/budget"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
@@ -61,7 +61,7 @@ func TestGetBudget(t *testing.T) {
 				},
 				expectedCode: http.StatusOK,
 				expectedResponse: &dto.GetBudgetResponse{
-					GetBudgetOutput: usecase.GetBudgetOutput{
+					GetBudgetUseCaseOutput: budget.GetBudgetUseCaseOutput{
 						Budget: entity.Budget{
 							ID:     budgetID,
 							Amount: 20_000_00,
@@ -78,7 +78,7 @@ func TestGetBudget(t *testing.T) {
 							ComparisonStartDate: cmpStartDate,
 							ComparisonEndDate:   cmpEndDate,
 						},
-						BudgetCategories: []usecase.GetBudgetBudgetCategories{
+						BudgetCategories: []budget.GetBudgetUseCaseBudgetCategories{
 							{
 								BudgetCategory: entity.BudgetCategory{
 									ID: uuid.MustParse(
@@ -215,7 +215,7 @@ func TestGetBudget(t *testing.T) {
 				len(actualResponse.BudgetCategories),
 			)
 
-			actualBudgetCategories := map[uuid.UUID]usecase.GetBudgetBudgetCategories{}
+			actualBudgetCategories := map[uuid.UUID]budget.GetBudgetUseCaseBudgetCategories{}
 			for _, budgetCategory := range actualResponse.BudgetCategories {
 				actualBudgetCategories[budgetCategory.BudgetCategory.ID] = budgetCategory
 			}
@@ -261,10 +261,10 @@ func TestUpsertBudget(t *testing.T) {
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusNoContent,
 			body: dto.UpsertBudgetRequest{
-				UpsertBudgetInput: usecase.UpsertBudgetInput{
+				UpsertBudgetUseCaseInput: budget.UpsertBudgetUseCaseInput{
 					Amount: 15_000_00,
 					Date:   "2025-03-14T00:00:00-03:00",
-					Categories: []usecase.UpsertBudgetCategoryInput{
+					Categories: []budget.UpsertBudgetUseCaseCategoryInput{
 						{
 							Amount: 5_000_00,
 							CategoryID: uuid.MustParse(
@@ -292,10 +292,10 @@ func TestUpsertBudget(t *testing.T) {
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusNoContent,
 			body: dto.UpsertBudgetRequest{
-				UpsertBudgetInput: usecase.UpsertBudgetInput{
+				UpsertBudgetUseCaseInput: budget.UpsertBudgetUseCaseInput{
 					Amount: 15_000_00,
 					Date:   "2024-10-15T00:00:00.000-03:00",
-					Categories: []usecase.UpsertBudgetCategoryInput{
+					Categories: []budget.UpsertBudgetUseCaseCategoryInput{
 						{
 							Amount: 5_000_00,
 							CategoryID: uuid.MustParse(

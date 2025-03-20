@@ -1,17 +1,17 @@
 package dto
 
 import (
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/budget"
 )
 
 type UpsertBudgetRequest struct {
-	usecase.UpsertBudgetInput
+	budget.UpsertBudgetUseCaseInput
 }
 
 type GetBudgetResponse struct {
-	usecase.GetBudgetOutput
+	budget.GetBudgetUseCaseOutput
 }
 
 type GetBudgetCategoryResponse struct {
-	usecase.GetBudgetCategoryOutput
+	budget.GetBudgetCategoryUseCaseOutput
 }

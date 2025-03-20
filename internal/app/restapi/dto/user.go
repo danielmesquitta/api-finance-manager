@@ -2,7 +2,7 @@ package dto
 
 import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/user"
 )
 
 type GetUserProfileResponse struct {
@@ -10,5 +10,5 @@ type GetUserProfileResponse struct {
 }
 
 type UpdateProfileRequest struct {
-	usecase.UpdateUserInput
+	user.UpdateUserUseCaseInput
 }

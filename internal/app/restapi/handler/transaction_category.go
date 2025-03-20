@@ -4,23 +4,23 @@ import (
 	"net/http"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/transactioncategory"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/gofiber/fiber/v2"
 )
 
-type CategoryHandler struct {
-	sc *usecase.SyncCategories
-	lc *usecase.ListTransactionCategories
+type TransactionCategoryHandler struct {
+	stc *transactioncategory.SyncTransactionCategoriesUseCase
+	ltc *transactioncategory.ListTransactionCategoriesUseCase
 }
 
-func NewCategoryHandler(
-	sc *usecase.SyncCategories,
-	lc *usecase.ListTransactionCategories,
-) *CategoryHandler {
-	return &CategoryHandler{
-		sc: sc,
-		lc: lc,
+func NewTransactionCategoryHandler(
+	stc *transactioncategory.SyncTransactionCategoriesUseCase,
+	ltc *transactioncategory.ListTransactionCategoriesUseCase,
+) *TransactionCategoryHandler {
+	return &TransactionCategoryHandler{
+		stc: stc,
+		ltc: ltc,
 	}
 }
 
@@ -33,8 +33,8 @@ func NewCategoryHandler(
 // @Success 204
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/admin/transactions/categories/sync [post]
-func (h CategoryHandler) Sync(c *fiber.Ctx) error {
-	if err := h.sc.Execute(c.UserContext()); err != nil {
+func (h TransactionCategoryHandler) Sync(c *fiber.Ctx) error {
+	if err := h.stc.Execute(c.UserContext()); err != nil {
 		return errs.New(err)
 	}
 
@@ -54,11 +54,11 @@ func (h CategoryHandler) Sync(c *fiber.Ctx) error {
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/transactions/categories [get]
-func (h CategoryHandler) List(c *fiber.Ctx) error {
+func (h TransactionCategoryHandler) List(c *fiber.Ctx) error {
 	search := c.Query(QueryParamSearch)
 	paginationIn := parsePaginationParams(c)
 
-	in := usecase.ListCategoriesInput{
+	in := transactioncategory.ListCategoriesInput{
 		PaginationInput: paginationIn,
 		TransactionCategoryOptions: repo.TransactionCategoryOptions{
 			Search: search,
@@ -66,7 +66,7 @@ func (h CategoryHandler) List(c *fiber.Ctx) error {
 	}
 
 	ctx := c.UserContext()
-	res, err := h.lc.Execute(ctx, in)
+	res, err := h.ltc.Execute(ctx, in)
 	if err != nil {
 		return errs.New(err)
 	}

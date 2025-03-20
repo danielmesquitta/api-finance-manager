@@ -15,7 +15,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/auth"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/test/container"
 	"github.com/danielmesquitta/api-finance-manager/test/db"
@@ -237,7 +237,7 @@ func (ta *TestApp) MakeRequest(
 
 func (ta *TestApp) SignIn(token string) *dto.SignInResponse {
 	body := dto.SignInRequest{
-		SignInInput: usecase.SignInInput{
+		SignInUseCaseInput: auth.SignInUseCaseInput{
 			Provider: entity.ProviderMock,
 		},
 	}

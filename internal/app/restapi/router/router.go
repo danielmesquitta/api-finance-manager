@@ -17,12 +17,11 @@ type Router struct {
 	ah  *handler.AuthHandler
 	ch  *handler.CalculatorHandler
 	ih  *handler.InstitutionHandler
-	cth *handler.CategoryHandler
+	tch *handler.TransactionCategoryHandler
 	bh  *handler.BudgetHandler
 	uh  *handler.UserHandler
 	ach *handler.AccountHandler
 	th  *handler.TransactionHandler
-	bah *handler.BalanceHandler
 	fh  *handler.FeedbackHandler
 	pmh *handler.PaymentMethodHandler
 	aih *handler.AIChatHandler
@@ -36,12 +35,11 @@ func NewRouter(
 	ah *handler.AuthHandler,
 	ch *handler.CalculatorHandler,
 	ih *handler.InstitutionHandler,
-	cth *handler.CategoryHandler,
+	tch *handler.TransactionCategoryHandler,
 	bh *handler.BudgetHandler,
 	uh *handler.UserHandler,
 	ach *handler.AccountHandler,
 	th *handler.TransactionHandler,
-	bah *handler.BalanceHandler,
 	fh *handler.FeedbackHandler,
 	pmh *handler.PaymentMethodHandler,
 	aih *handler.AIChatHandler,
@@ -54,12 +52,11 @@ func NewRouter(
 		ah:  ah,
 		ch:  ch,
 		ih:  ih,
-		cth: cth,
+		tch: tch,
 		bh:  bh,
 		uh:  uh,
 		ach: ach,
 		th:  th,
-		bah: bah,
 		fh:  fh,
 		pmh: pmh,
 		aih: aih,
@@ -84,9 +81,9 @@ func (r *Router) Register(
 	adminApiV1 := apiV1.Group("/admin", r.m.BasicAuth())
 	adminApiV1.Post("/institutions/sync", r.ih.Sync)
 	adminApiV1.Post("/accounts", r.ach.Create)
-	adminApiV1.Post("/transactions/categories/sync", r.cth.Sync)
+	adminApiV1.Post("/accounts/balances/sync", r.ach.Sync)
+	adminApiV1.Post("/transactions/categories/sync", r.tch.Sync)
 	adminApiV1.Post("/transactions/sync", r.th.Sync)
-	adminApiV1.Post("/balances/sync", r.bah.Sync)
 
 	usersApiV1 := apiV1.Group("", r.m.BearerAuthAccessToken())
 
@@ -100,7 +97,7 @@ func (r *Router) Register(
 	usersApiV1.Post("/calculator/simple-interest", r.ch.SimpleInterest)
 	usersApiV1.Post("/calculator/cash-vs-installments", r.ch.CashVsInstallments)
 
-	usersApiV1.Get("/transactions/categories", r.cth.List)
+	usersApiV1.Get("/transactions/categories", r.tch.List)
 
 	usersApiV1.Get("/institutions", r.ih.List)
 	usersApiV1.Get("/users/institutions", r.ih.ListUserInstitutions)
@@ -117,7 +114,7 @@ func (r *Router) Register(
 	)
 	usersApiV1.Delete("/budgets", r.bh.Delete)
 
-	usersApiV1.Get("/balances", r.bah.Get)
+	usersApiV1.Get("/accounts/balances", r.ach.GetBalance)
 
 	usersApiV1.Post("/transactions", r.th.Create)
 	usersApiV1.Get("/transactions", r.th.List)

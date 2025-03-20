@@ -4,20 +4,20 @@ import (
 	"net/http"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/institution"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
 type InstitutionHandler struct {
-	si *usecase.SyncInstitutions
-	li *usecase.ListInstitutions
+	si *institution.SyncInstitutionsUseCase
+	li *institution.ListInstitutionsUseCase
 }
 
 func NewInstitutionHandler(
-	si *usecase.SyncInstitutions,
-	li *usecase.ListInstitutions,
+	si *institution.SyncInstitutionsUseCase,
+	li *institution.ListInstitutionsUseCase,
 ) *InstitutionHandler {
 	return &InstitutionHandler{
 		si: si,
@@ -59,7 +59,7 @@ func (h InstitutionHandler) List(c *fiber.Ctx) error {
 	search := c.Query(QueryParamSearch)
 	paginationIn := parsePaginationParams(c)
 
-	in := usecase.ListInstitutionsInput{
+	in := institution.ListInstitutionsUseCaseInput{
 		PaginationInput: paginationIn,
 		InstitutionOptions: repo.InstitutionOptions{
 			Search: search,
@@ -96,7 +96,7 @@ func (h InstitutionHandler) ListUserInstitutions(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	in := usecase.ListInstitutionsInput{
+	in := institution.ListInstitutionsUseCaseInput{
 		PaginationInput: paginationIn,
 		InstitutionOptions: repo.InstitutionOptions{
 			UserIDs: []uuid.UUID{userID},

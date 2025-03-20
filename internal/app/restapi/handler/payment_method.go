@@ -2,17 +2,17 @@ package handler
 
 import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/paymentmethod"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/gofiber/fiber/v2"
 )
 
 type PaymentMethodHandler struct {
-	lpm *usecase.ListPaymentMethods
+	lpm *paymentmethod.ListPaymentMethodsUseCase
 }
 
 func NewPaymentMethodHandler(
-	lpm *usecase.ListPaymentMethods,
+	lpm *paymentmethod.ListPaymentMethodsUseCase,
 ) *PaymentMethodHandler {
 	return &PaymentMethodHandler{
 		lpm: lpm,
@@ -36,7 +36,7 @@ func (h PaymentMethodHandler) List(c *fiber.Ctx) error {
 	search := c.Query(QueryParamSearch)
 	paginationIn := parsePaginationParams(c)
 
-	in := usecase.ListPaymentMethodsInput{
+	in := paymentmethod.ListPaymentMethodsUseCaseInput{
 		PaginationInput: paginationIn,
 		PaymentMethodOptions: repo.PaymentMethodOptions{
 			Search: search,

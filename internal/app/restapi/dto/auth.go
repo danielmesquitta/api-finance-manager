@@ -1,13 +1,13 @@
 package dto
 
 import (
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/auth"
 )
 
 type SignInRequest struct {
-	usecase.SignInInput
+	auth.SignInUseCaseInput
 }
 
 type SignInResponse struct {
-	usecase.SignInOutput
+	auth.SignInUseCaseOutput
 }

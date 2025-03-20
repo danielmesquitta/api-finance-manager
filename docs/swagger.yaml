@@ -1,5 +1,72 @@
 basePath: /api
 definitions:
+  account.CreateAccountsUseCaseInstitution:
+    properties:
+      id:
+        type: integer
+    required:
+    - id
+    type: object
+  budget.GetBudgetUseCaseBudgetCategories:
+    properties:
+      amount:
+        type: integer
+      available:
+        type: integer
+      budget_id:
+        type: string
+      category:
+        $ref: '#/definitions/entity.TransactionCategory'
+      category_id:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      spent:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  budget.UpsertBudgetUseCaseCategoryInput:
+    properties:
+      amount:
+        type: integer
+      category_id:
+        type: string
+    required:
+    - amount
+    - category_id
+    type: object
+  calc.CashFlow:
+    properties:
+      cash:
+        type: integer
+      credit_card:
+        type: integer
+    type: object
+  calc.CompoundInterestResult:
+    properties:
+      monthly_interest:
+        type: integer
+      total_amount:
+        type: integer
+      total_deposit:
+        type: integer
+      total_interest:
+        type: integer
+    type: object
+  calc.SimpleInterestResult:
+    properties:
+      total_amount:
+        type: integer
+      total_deposit:
+        type: integer
+      total_interest:
+        type: integer
+    type: object
   dateutil.ComparisonDates:
     properties:
       comparison_end_date:
@@ -50,7 +117,7 @@ definitions:
     properties:
       cash_flow_by_month:
         additionalProperties:
-          $ref: '#/definitions/usecase.CashFlow'
+          $ref: '#/definitions/calc.CashFlow'
         type: object
       savings_with_cash:
         type: integer
@@ -85,7 +152,7 @@ definitions:
     properties:
       by_month:
         additionalProperties:
-          $ref: '#/definitions/usecase.CompoundInterestResult'
+          $ref: '#/definitions/calc.CompoundInterestResult'
         type: object
       total_amount:
         type: integer
@@ -114,7 +181,7 @@ definitions:
       clientUserId:
         type: string
       connector:
-        $ref: '#/definitions/usecase.CreateAccountsInstitution'
+        $ref: '#/definitions/account.CreateAccountsUseCaseInstitution'
       executionStatus:
         type: string
       id:
@@ -197,7 +264,7 @@ definitions:
       message:
         type: string
     type: object
-  dto.GetBalanceResponse:
+  dto.GetAccountsBalanceResponse:
     properties:
       balance_percentage_variation:
         type: integer
@@ -255,7 +322,7 @@ definitions:
         type: integer
       budget_categories:
         items:
-          $ref: '#/definitions/usecase.GetBudgetBudgetCategories'
+          $ref: '#/definitions/budget.GetBudgetUseCaseBudgetCategories'
         type: array
       comparison_dates:
         $ref: '#/definitions/dateutil.ComparisonDates'
@@ -308,6 +375,7 @@ definitions:
         type: string
       payment_method_name:
         type: string
+      search_document: {}
       updated_at:
         type: string
       user_id:
@@ -544,7 +612,7 @@ definitions:
     properties:
       by_month:
         additionalProperties:
-          $ref: '#/definitions/usecase.SimpleInterestResult'
+          $ref: '#/definitions/calc.SimpleInterestResult'
         type: object
       total_amount:
         type: integer
@@ -594,7 +662,7 @@ definitions:
         type: integer
       categories:
         items:
-          $ref: '#/definitions/usecase.UpsertBudgetCategoryInput'
+          $ref: '#/definitions/budget.UpsertBudgetUseCaseCategoryInput'
         type: array
       date:
         type: string
@@ -672,6 +740,7 @@ definitions:
         type: string
       payment_method_name:
         type: string
+      search_document: {}
       updated_at:
         type: string
       user_id:
@@ -772,73 +841,6 @@ definitions:
         type: string
       updated_at:
         type: string
-    type: object
-  usecase.CashFlow:
-    properties:
-      cash:
-        type: integer
-      credit_card:
-        type: integer
-    type: object
-  usecase.CompoundInterestResult:
-    properties:
-      monthly_interest:
-        type: integer
-      total_amount:
-        type: integer
-      total_deposit:
-        type: integer
-      total_interest:
-        type: integer
-    type: object
-  usecase.CreateAccountsInstitution:
-    properties:
-      id:
-        type: integer
-    required:
-    - id
-    type: object
-  usecase.GetBudgetBudgetCategories:
-    properties:
-      amount:
-        type: integer
-      available:
-        type: integer
-      budget_id:
-        type: string
-      category:
-        $ref: '#/definitions/entity.TransactionCategory'
-      category_id:
-        type: string
-      created_at:
-        type: string
-      deleted_at:
-        type: string
-      id:
-        type: string
-      spent:
-        type: integer
-      updated_at:
-        type: string
-    type: object
-  usecase.SimpleInterestResult:
-    properties:
-      total_amount:
-        type: integer
-      total_deposit:
-        type: integer
-      total_interest:
-        type: integer
-    type: object
-  usecase.UpsertBudgetCategoryInput:
-    properties:
-      amount:
-        type: integer
-      category_id:
-        type: string
-    required:
-    - amount
-    - category_id
     type: object
 info:
   contact:
@@ -1164,6 +1166,47 @@ paths:
       summary: List ai chats messages
       tags:
       - AI Chat
+    post:
+      consumes:
+      - application/json
+      description: Generate ai chat message
+      parameters:
+      - description: AI Chat ID
+        format: uuid
+        in: path
+        name: ai_chat_id
+        required: true
+        type: string
+      - description: Request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateAIChatRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.CreateAIChatResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Generate ai chat message
+      tags:
+      - AI Chat
   /v1/auth/refresh:
     post:
       consumes:
@@ -1289,7 +1332,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/dto.GetBalanceResponse'
+            $ref: '#/definitions/dto.GetAccountsBalanceResponse'
         "401":
           description: Unauthorized
           schema:
@@ -1300,7 +1343,7 @@ paths:
             $ref: '#/definitions/dto.ErrorResponse'
       security:
       - BearerAuth: []
-      summary: Get balance
+      summary: Get accounts balance
       tags:
       - Balance
   /v1/budgets:

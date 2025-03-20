@@ -11,7 +11,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/auth"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 )
@@ -35,7 +35,7 @@ func main() {
 
 	res, err := client.R().
 		SetHeader(fiber.HeaderAuthorization, mockoauth.PremiumTierMockToken).
-		SetBody(dto.SignInRequest{SignInInput: usecase.SignInInput{
+		SetBody(dto.SignInRequest{SignInUseCaseInput: auth.SignInUseCaseInput{
 			Provider: entity.ProviderMock,
 		}}).
 		SetResult(&signInRes).

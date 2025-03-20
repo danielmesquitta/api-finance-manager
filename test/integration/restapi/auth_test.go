@@ -7,7 +7,7 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/auth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,7 +25,7 @@ func TestSignIn(t *testing.T) {
 		{
 			description: "signs in with registered user",
 			body: &dto.SignInRequest{
-				SignInInput: usecase.SignInInput{
+				SignInUseCaseInput: auth.SignInUseCaseInput{
 					Provider: entity.ProviderMock,
 				},
 			},
@@ -36,7 +36,7 @@ func TestSignIn(t *testing.T) {
 		{
 			description: "signs in with unregistered user",
 			body: &dto.SignInRequest{
-				SignInInput: usecase.SignInInput{
+				SignInUseCaseInput: auth.SignInUseCaseInput{
 					Provider: entity.ProviderMock,
 				},
 			},

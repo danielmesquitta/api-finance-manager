@@ -9,7 +9,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/transaction"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
@@ -379,7 +379,7 @@ func TestUpdateTransaction(t *testing.T) {
 			transactionID: "5fde4a75-f4df-415e-86bb-d7e24d488e36",
 			expectedCode:  http.StatusNotFound,
 			body: dto.UpdateTransactionRequest{
-				UpdateTransactionInput: usecase.UpdateTransactionInput{
+				UpdateTransactionUseCaseInput: transaction.UpdateTransactionUseCaseInput{
 					Name: "Lorem ipsum",
 				},
 			},
@@ -406,7 +406,7 @@ func TestUpdateTransaction(t *testing.T) {
 				transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 				expectedCode:  http.StatusNoContent,
 				body: dto.UpdateTransactionRequest{
-					UpdateTransactionInput: usecase.UpdateTransactionInput{
+					UpdateTransactionUseCaseInput: transaction.UpdateTransactionUseCaseInput{
 						Name:            name,
 						Amount:          amount,
 						Date:            date,
@@ -450,7 +450,7 @@ func TestUpdateTransaction(t *testing.T) {
 				transactionID: "e1c73c22-7d52-43e2-80a8-63ce6da99e53",
 				expectedCode:  http.StatusNoContent,
 				body: dto.UpdateTransactionRequest{
-					UpdateTransactionInput: usecase.UpdateTransactionInput{
+					UpdateTransactionUseCaseInput: transaction.UpdateTransactionUseCaseInput{
 						Name:            name,
 						Amount:          amount,
 						Date:            date,
@@ -578,7 +578,7 @@ func TestCreateTransaction(t *testing.T) {
 					"373b150b-94bd-44b2-abdd-2aab14e74fad",
 				)
 				return dto.CreateTransactionRequest{
-					CreateTransactionInput: usecase.CreateTransactionInput{
+					CreateTransactionUseCaseInput: transaction.CreateTransactionUseCaseInput{
 						Name:   "Foo bar",
 						Amount: 5436,
 						PaymentMethodID: uuid.MustParse(
@@ -595,7 +595,7 @@ func TestCreateTransaction(t *testing.T) {
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusCreated,
 			body: dto.CreateTransactionRequest{
-				CreateTransactionInput: usecase.CreateTransactionInput{
+				CreateTransactionUseCaseInput: transaction.CreateTransactionUseCaseInput{
 					Name:   "Foo bar",
 					Amount: -6543,
 					PaymentMethodID: uuid.MustParse(

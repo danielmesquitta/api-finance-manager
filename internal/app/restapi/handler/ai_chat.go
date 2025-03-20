@@ -5,28 +5,28 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/aichat"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/copier"
 )
 
 type AIChatHandler struct {
-	cac   *usecase.CreateAIChat
-	dac   *usecase.DeleteAIChat
-	uac   *usecase.UpdateAIChat
-	lac   *usecase.ListAIChats
-	lacmr *usecase.ListAIChatMessagesAndAnswers
-	gacm  *usecase.GenerateAIChatMessage
+	cac   *aichat.CreateAIChatUseCase
+	dac   *aichat.DeleteAIChatUseCase
+	uac   *aichat.UpdateAIChatUseCase
+	lac   *aichat.ListAIChatsUseCase
+	lacmr *aichat.ListAIChatMessagesAndAnswersUseCase
+	gacm  *aichat.GenerateAIChatMessageUseCase
 }
 
 func NewAIChatHandler(
-	cac *usecase.CreateAIChat,
-	dac *usecase.DeleteAIChat,
-	uac *usecase.UpdateAIChat,
-	lac *usecase.ListAIChats,
-	lacmr *usecase.ListAIChatMessagesAndAnswers,
-	gacm *usecase.GenerateAIChatMessage,
+	cac *aichat.CreateAIChatUseCase,
+	dac *aichat.DeleteAIChatUseCase,
+	uac *aichat.UpdateAIChatUseCase,
+	lac *aichat.ListAIChatsUseCase,
+	lacmr *aichat.ListAIChatMessagesAndAnswersUseCase,
+	gacm *aichat.GenerateAIChatMessageUseCase,
 ) *AIChatHandler {
 	return &AIChatHandler{
 		cac:   cac,
@@ -55,7 +55,7 @@ func (h *AIChatHandler) Create(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	in := usecase.CreateAIChatInput{
+	in := aichat.CreateAIChatUseCaseInput{
 		UserID: userID,
 		Tier:   tier,
 	}
@@ -124,7 +124,7 @@ func (h *AIChatHandler) Update(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	var in usecase.UpdateAIChatInput
+	var in aichat.UpdateAIChatUseCaseInput
 	if err := copier.Copy(&in, body); err != nil {
 		return errs.New(err)
 	}
@@ -161,7 +161,7 @@ func (h AIChatHandler) List(c *fiber.Ctx) error {
 		return errs.New(err)
 	}
 
-	in := usecase.ListAIChatsInput{
+	in := aichat.ListAIChatsUseCaseInput{
 		PaginationInput: paginationIn,
 		AIChatOptions: repo.AIChatOptions{
 			Search: search,
@@ -199,7 +199,7 @@ func (h AIChatHandler) ListMessages(c *fiber.Ctx) error {
 
 	paginationIn := parsePaginationParams(c)
 
-	in := usecase.ListAIChatMessagesAndAnswersInput{
+	in := aichat.ListAIChatMessagesAndAnswersUseCaseInput{
 		PaginationInput: paginationIn,
 		AIChatID:        aiChatID,
 	}
@@ -227,7 +227,7 @@ func (h AIChatHandler) ListMessages(c *fiber.Ctx) error {
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /v1/ai-chats/{ai_chat_id}/messages [post]
 func (h *AIChatHandler) GenerateMessage(c *fiber.Ctx) error {
-	var in usecase.GenerateAIChatMessageInput
+	var in aichat.GenerateAIChatMessageUseCaseInput
 	if err := c.BodyParser(&in); err != nil {
 		return errs.New(err)
 	}
