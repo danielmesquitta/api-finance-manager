@@ -7,6 +7,6 @@ RUN make migrate
 RUN make build
 
 FROM gcr.io/distroless/static-debian12
-COPY --from=builder /app/tmp/restapi .
+COPY --from=builder /app/tmp/server .
 EXPOSE 8080
-CMD ["./restapi"]
+CMD ["./server"]

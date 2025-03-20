@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 
 	root "github.com/danielmesquitta/api-finance-manager"
-	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/dto"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/server/dto"
 	"github.com/danielmesquitta/api-finance-manager/internal/config"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/auth"

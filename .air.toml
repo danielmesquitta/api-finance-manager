@@ -4,11 +4,11 @@ tmp_dir = "tmp"
 
 [build]
 args_bin = []
-bin = "./tmp/restapi"
-cmd = "go build -o ./tmp/restapi ./cmd/restapi"
+bin = "./tmp/server"
+cmd = "go build -o ./tmp/server ./cmd/server"
 delay = 1000
 exclude_dir = ["tmp", "docs", "internal/provider/db/sqlc"]
-exclude_file = ["internal/app/restapi/wire.go"]
+exclude_file = ["internal/app/server/wire.go"]
 exclude_regex = ["_test.go", "_gen.go"]
 exclude_unchanged = false
 follow_symlink = false

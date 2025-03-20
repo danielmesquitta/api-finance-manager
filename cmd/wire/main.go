@@ -12,8 +12,8 @@ import (
 )
 
 const wireConfigFilename = "internal/config/wire/wire.go" // Source
-const wireOutputFilename = "internal/app/restapi/wire.go" // Destination
-const mainPackageImport = "github.com/danielmesquitta/api-finance-manager/internal/app/restapi"
+const wireOutputFilename = "internal/app/server/wire.go"  // Destination
+const mainPackageImport = "github.com/danielmesquitta/api-finance-manager/internal/app/server"
 
 type wireConfigData struct {
 	PackageName      string

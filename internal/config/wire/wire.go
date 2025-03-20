@@ -3,10 +3,10 @@ package wire
 import (
 	"github.com/google/wire"
 
-	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi"
-	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/handler"
-	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/middleware"
-	"github.com/danielmesquitta/api-finance-manager/internal/app/restapi/router"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/server"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/server/handler"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/server/middleware"
+	"github.com/danielmesquitta/api-finance-manager/internal/app/server/router"
 	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/account"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/aichat"
@@ -184,7 +184,7 @@ var providers = []any{
 
 	router.NewRouter,
 
-	restapi.BuildApp,
+	server.BuildApp,
 }
 
 var devProviders = []any{

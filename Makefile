@@ -47,11 +47,11 @@ generate:
 
 .PHONY: docs
 docs:
-	@swag init -g ./cmd/restapi/main.go -o ./docs -q && swag2op init -g cmd/restapi/main.go -q --openapiOutputDir ./tmp && mv ./tmp/swagger.json ./docs/openapi.json && mv ./tmp/swagger.yaml ./docs/openapi.yaml
+	@swag init -g ./cmd/server/main.go -o ./docs -q && swag2op init -g cmd/server/main.go -q --openapiOutputDir ./tmp && mv ./tmp/swagger.json ./docs/openapi.json && mv ./tmp/swagger.yaml ./docs/openapi.yaml
 
 .PHONY: build
 build:
-	@GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o ./tmp/restapi ./cmd/restapi
+	@GOOS=linux CGO_ENABLED=0 go build -ldflags="-w -s" -o ./tmp/server ./cmd/server
 
 .PHONY: lint
 lint:
