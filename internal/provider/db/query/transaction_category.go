@@ -76,7 +76,7 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 	if options.Search != "" {
 		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.TransactionCategory.ColumnSearchDocument(),
+			schema.TransactionCategory.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, orderExp.Desc())

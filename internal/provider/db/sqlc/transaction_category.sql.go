@@ -17,7 +17,7 @@ type CreateTransactionCategoriesParams struct {
 }
 
 const getDefaultTransactionCategory = `-- name: GetDefaultTransactionCategory :one
-SELECT id, external_id, name, search_document, created_at, updated_at, deleted_at
+SELECT id, external_id, name, created_at, updated_at, deleted_at
 FROM transaction_categories
 WHERE external_id = '99999999'
   AND deleted_at IS NULL
@@ -30,7 +30,6 @@ func (q *Queries) GetDefaultTransactionCategory(ctx context.Context) (Transactio
 		&i.ID,
 		&i.ExternalID,
 		&i.Name,
-		&i.SearchDocument,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
@@ -39,7 +38,7 @@ func (q *Queries) GetDefaultTransactionCategory(ctx context.Context) (Transactio
 }
 
 const getTransactionCategoryByID = `-- name: GetTransactionCategoryByID :one
-SELECT id, external_id, name, search_document, created_at, updated_at, deleted_at
+SELECT id, external_id, name, created_at, updated_at, deleted_at
 FROM transaction_categories
 WHERE id = $1
   AND deleted_at IS NULL
@@ -52,7 +51,6 @@ func (q *Queries) GetTransactionCategoryByID(ctx context.Context, id uuid.UUID) 
 		&i.ID,
 		&i.ExternalID,
 		&i.Name,
-		&i.SearchDocument,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,

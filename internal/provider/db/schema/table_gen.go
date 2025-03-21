@@ -26,10 +26,6 @@ func (t tableAIChat) ColumnID() string {
 	return fmt.Sprintf("%s.id", t)
 }
 
-func (t tableAIChat) ColumnSearchDocument() string {
-	return fmt.Sprintf("%s.search_document", t)
-}
-
 func (t tableAIChat) ColumnTitle() string {
 	return fmt.Sprintf("%s.title", t)
 }
@@ -334,10 +330,6 @@ func (t tableInstitution) ColumnName() string {
 	return fmt.Sprintf("%s.name", t)
 }
 
-func (t tableInstitution) ColumnSearchDocument() string {
-	return fmt.Sprintf("%s.search_document", t)
-}
-
 const Institution = tableInstitution("institutions")
 
 type tablePaymentMethod string
@@ -368,10 +360,6 @@ func (t tablePaymentMethod) ColumnID() string {
 
 func (t tablePaymentMethod) ColumnName() string {
 	return fmt.Sprintf("%s.name", t)
-}
-
-func (t tablePaymentMethod) ColumnSearchDocument() string {
-	return fmt.Sprintf("%s.search_document", t)
 }
 
 const PaymentMethod = tablePaymentMethod("payment_methods")
@@ -434,10 +422,6 @@ func (t tableTransaction) ColumnPaymentMethodID() string {
 	return fmt.Sprintf("%s.payment_method_id", t)
 }
 
-func (t tableTransaction) ColumnSearchDocument() string {
-	return fmt.Sprintf("%s.search_document", t)
-}
-
 func (t tableTransaction) ColumnUpdatedAt() string {
 	return fmt.Sprintf("%s.updated_at", t)
 }
@@ -476,10 +460,6 @@ func (t tableTransactionCategory) ColumnID() string {
 
 func (t tableTransactionCategory) ColumnName() string {
 	return fmt.Sprintf("%s.name", t)
-}
-
-func (t tableTransactionCategory) ColumnSearchDocument() string {
-	return fmt.Sprintf("%s.search_document", t)
 }
 
 func (t tableTransactionCategory) ColumnUpdatedAt() string {

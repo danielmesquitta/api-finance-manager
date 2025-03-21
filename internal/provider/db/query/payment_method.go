@@ -76,7 +76,7 @@ func (qb *QueryBuilder) buildPaymentMethodExpressions(
 	if options.Search != "" {
 		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.PaymentMethod.ColumnSearchDocument(),
+			schema.PaymentMethod.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, orderExp.Desc())

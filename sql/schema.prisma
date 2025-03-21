@@ -1,7 +1,7 @@
 datasource db {
   provider   = "postgresql"
   url        = env("POSTGRES_DATABASE_URL")
-  extensions = [unaccent]
+  extensions = [unaccent, pg_trgm]
 }
 
 generator client {
@@ -68,19 +68,17 @@ model AIChatAnswer {
 }
 
 model AIChat {
-  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title           String?
-  search_document Unsupported("tsvector") @default(dbgenerated("''::tsvector"))
-  created_at      DateTime                @default(now()) @db.Timestamptz()
-  updated_at      DateTime                @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at      DateTime?               @db.Timestamptz()
+  id         String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title      String?
+  created_at DateTime  @default(now()) @db.Timestamptz()
+  updated_at DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at DateTime? @db.Timestamptz()
 
   user    User   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   user_id String @db.Uuid
 
   ai_chat_messages AIChatMessage[]
 
-  @@index([search_document], type: Gin)
   @@map("ai_chats")
 }
 
@@ -129,64 +127,57 @@ model Feedback {
 }
 
 model Institution {
-  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id     String
-  name            String
-  search_document Unsupported("tsvector") @default(dbgenerated("''::tsvector"))
-  logo            String?
-  created_at      DateTime                @default(now()) @db.Timestamptz()
-  deleted_at      DateTime?               @db.Timestamptz()
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String
+  name        String
+  logo        String?
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
 
   transactions Transaction[]
 
   user_institutions UserInstitution[]
 
-  @@index([search_document], type: Gin)
   @@map("institutions")
 }
 
 model PaymentMethod {
-  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id     String
-  name            String
-  search_document Unsupported("tsvector") @default(dbgenerated("''::tsvector"))
-  created_at      DateTime                @default(now()) @db.Timestamptz()
-  deleted_at      DateTime?               @db.Timestamptz()
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String
+  name        String
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
 
   transactions Transaction[]
 
-  @@index([search_document], type: Gin)
   @@map("payment_methods")
 }
 
 model TransactionCategory {
-  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id     String
-  name            String
-  search_document Unsupported("tsvector") @default(dbgenerated("''::tsvector"))
-  created_at      DateTime                @default(now()) @db.Timestamptz()
-  updated_at      DateTime                @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at      DateTime?               @db.Timestamptz()
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String
+  name        String
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
 
   transactions Transaction[]
 
   budget_categories BudgetCategory[]
 
-  @@index([search_document], type: Gin)
   @@map("transaction_categories")
 }
 
 model Transaction {
-  id              String                  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  external_id     String?
-  name            String
-  search_document Unsupported("tsvector") @default(dbgenerated("''::tsvector"))
-  amount          BigInt
-  is_ignored      Boolean                 @default(false)
-  date            DateTime                @db.Timestamptz()
-  created_at      DateTime                @default(now()) @db.Timestamptz()
-  updated_at      DateTime                @default(now()) @updatedAt @db.Timestamptz()
-  deleted_at      DateTime?               @db.Timestamptz()
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  external_id String?
+  name        String
+  amount      BigInt
+  is_ignored  Boolean   @default(false)
+  date        DateTime  @db.Timestamptz()
+  created_at  DateTime  @default(now()) @db.Timestamptz()
+  updated_at  DateTime  @default(now()) @updatedAt @db.Timestamptz()
+  deleted_at  DateTime? @db.Timestamptz()
 
   payment_method_id String        @db.Uuid
   payment_method    PaymentMethod @relation(fields: [payment_method_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -203,7 +194,6 @@ model Transaction {
   institution    Institution? @relation(fields: [institution_id], references: [id], onDelete: SetNull, onUpdate: Cascade)
   institution_id String?      @db.Uuid
 
-  @@index([search_document], type: Gin)
   @@map("transactions")
 }
 

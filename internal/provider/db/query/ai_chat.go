@@ -25,14 +25,23 @@ func (qb *QueryBuilder) ListAIChats(
 	query := goqu.
 		From(schema.AIChat.Table()).
 		Select(schema.AIChat.ColumnAll()).
+		Distinct(schema.AIChat.ColumnID()).
 		Where(goqu.I(schema.AIChat.ColumnDeletedAt()).IsNull())
 
+	joins := qb.buildAIChatJoins(options)
+
 	whereExps, orderedExps := qb.buildAIChatExpressions(options)
+
+	orderedExps = append(
+		[]exp.OrderedExpression{goqu.I(schema.AIChat.ColumnID()).Asc()},
+		orderedExps...,
+	)
 
 	query = qb.buildAIChatQuery(
 		query,
 		options,
 		whereExps,
+		joins,
 		orderedExps,
 	)
 
@@ -55,12 +64,18 @@ func (qb *QueryBuilder) CountAIChats(
 
 	query := goqu.
 		From(schema.AIChat.Table()).
-		Select(goqu.COUNT(schema.AIChat.ColumnAll())).
+		Select(
+			goqu.COUNT(
+				goqu.DISTINCT(schema.AIChat.ColumnID()),
+			),
+		).
 		Where(goqu.I(schema.AIChat.ColumnDeletedAt()).IsNull())
+
+	joins := qb.buildAIChatJoins(options)
 
 	whereExps, _ := qb.buildAIChatExpressions(options)
 
-	query = qb.buildAIChatQuery(query, options, whereExps, nil)
+	query = qb.buildAIChatQuery(query, options, whereExps, joins, nil)
 
 	var count int64
 	if err := qb.Scan(ctx, query, &count); err != nil {
@@ -77,7 +92,9 @@ func (qb *QueryBuilder) buildAIChatExpressions(
 	if options.Search != "" {
 		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.AIChat.ColumnSearchDocument(),
+			schema.AIChat.ColumnTitle(),
+			schema.AIChatMessage.ColumnMessage(),
+			schema.AIChatAnswer.ColumnMessage(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, orderExp.Desc())
@@ -102,8 +119,13 @@ func (qb *QueryBuilder) buildAIChatQuery(
 	query *goqu.SelectDataset,
 	options repo.AIChatOptions,
 	whereExps []goqu.Expression,
+	joins []Join,
 	orderedExps []exp.OrderedExpression,
 ) *goqu.SelectDataset {
+	for _, join := range joins {
+		query = query.LeftJoin(join.Table, join.Condition)
+	}
+
 	if len(whereExps) > 0 {
 		query = query.Where(whereExps...)
 	}
@@ -121,4 +143,35 @@ func (qb *QueryBuilder) buildAIChatQuery(
 	}
 
 	return query
+}
+
+func (qb *QueryBuilder) buildAIChatJoins(
+	options repo.AIChatOptions,
+) []Join {
+	aiChatMessage := Join{
+		Table: goqu.I(schema.AIChatMessage.Table()),
+		Condition: goqu.
+			On(
+				goqu.I(schema.AIChat.ColumnID()).
+					Eq(goqu.I(schema.AIChatMessage.ColumnAiChatID())),
+			),
+	}
+
+	aiChatAnswer := Join{
+		Table: goqu.I(schema.AIChatAnswer.Table()),
+		Condition: goqu.
+			On(
+				goqu.I(schema.AIChatAnswer.ColumnAiChatMessageID()).
+					Eq(goqu.I(schema.AIChatMessage.ColumnID())),
+			),
+	}
+
+	if options.Search != "" {
+		return []Join{
+			aiChatMessage,
+			aiChatAnswer,
+		}
+	}
+
+	return []Join{}
 }

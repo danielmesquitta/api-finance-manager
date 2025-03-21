@@ -38,7 +38,7 @@ func (q *Queries) CountAIChatMessagesAndAnswers(ctx context.Context, aiChatID uu
 const createAIChat = `-- name: CreateAIChat :one
 INSERT INTO ai_chats (user_id)
 VALUES ($1)
-RETURNING id, title, search_document, created_at, updated_at, deleted_at, user_id
+RETURNING id, title, created_at, updated_at, deleted_at, user_id
 `
 
 func (q *Queries) CreateAIChat(ctx context.Context, userID uuid.UUID) (AiChat, error) {
@@ -47,7 +47,6 @@ func (q *Queries) CreateAIChat(ctx context.Context, userID uuid.UUID) (AiChat, e
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
-		&i.SearchDocument,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
@@ -68,7 +67,7 @@ func (q *Queries) DeleteAIChat(ctx context.Context, id uuid.UUID) error {
 }
 
 const getAIChatByID = `-- name: GetAIChatByID :one
-SELECT id, title, search_document, created_at, updated_at, deleted_at, user_id
+SELECT id, title, created_at, updated_at, deleted_at, user_id
 FROM ai_chats
 WHERE id = $1
   AND deleted_at IS NULL
@@ -80,7 +79,6 @@ func (q *Queries) GetAIChatByID(ctx context.Context, id uuid.UUID) (AiChat, erro
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
-		&i.SearchDocument,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
@@ -90,7 +88,7 @@ func (q *Queries) GetAIChatByID(ctx context.Context, id uuid.UUID) (AiChat, erro
 }
 
 const getLatestAIChatByUserID = `-- name: GetLatestAIChatByUserID :one
-SELECT ai_chats.id, ai_chats.title, ai_chats.search_document, ai_chats.created_at, ai_chats.updated_at, ai_chats.deleted_at, ai_chats.user_id,
+SELECT ai_chats.id, ai_chats.title, ai_chats.created_at, ai_chats.updated_at, ai_chats.deleted_at, ai_chats.user_id,
   EXISTS (
     SELECT 1
     FROM ai_chat_messages
@@ -106,14 +104,13 @@ LIMIT 1
 `
 
 type GetLatestAIChatByUserIDRow struct {
-	ID             uuid.UUID  `json:"id"`
-	Title          *string    `json:"title"`
-	SearchDocument string     `json:"search_document"`
-	CreatedAt      time.Time  `json:"created_at"`
-	UpdatedAt      time.Time  `json:"updated_at"`
-	DeletedAt      *time.Time `json:"deleted_at"`
-	UserID         uuid.UUID  `json:"user_id"`
-	HasMessages    bool       `json:"has_messages"`
+	ID          uuid.UUID  `json:"id"`
+	Title       *string    `json:"title"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+	DeletedAt   *time.Time `json:"deleted_at"`
+	UserID      uuid.UUID  `json:"user_id"`
+	HasMessages bool       `json:"has_messages"`
 }
 
 func (q *Queries) GetLatestAIChatByUserID(ctx context.Context, userID uuid.UUID) (GetLatestAIChatByUserIDRow, error) {
@@ -122,7 +119,6 @@ func (q *Queries) GetLatestAIChatByUserID(ctx context.Context, userID uuid.UUID)
 	err := row.Scan(
 		&i.ID,
 		&i.Title,
-		&i.SearchDocument,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,

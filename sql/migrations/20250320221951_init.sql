@@ -1,4 +1,7 @@
 -- CreateExtension
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+
+-- CreateExtension
 CREATE EXTENSION IF NOT EXISTS "unaccent";
 
 -- CreateTable
@@ -53,7 +56,6 @@ CREATE TABLE "ai_chat_answers" (
 CREATE TABLE "ai_chats" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "title" TEXT,
-    "search_document" tsvector NOT NULL DEFAULT ''::tsvector,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
@@ -104,7 +106,6 @@ CREATE TABLE "institutions" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "search_document" tsvector NOT NULL DEFAULT ''::tsvector,
     "logo" TEXT,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
@@ -117,7 +118,6 @@ CREATE TABLE "payment_methods" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "search_document" tsvector NOT NULL DEFAULT ''::tsvector,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
 
@@ -129,7 +129,6 @@ CREATE TABLE "transaction_categories" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "search_document" tsvector NOT NULL DEFAULT ''::tsvector,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "deleted_at" TIMESTAMPTZ,
@@ -142,7 +141,6 @@ CREATE TABLE "transactions" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "external_id" TEXT,
     "name" TEXT NOT NULL,
-    "search_document" tsvector NOT NULL DEFAULT ''::tsvector,
     "amount" BIGINT NOT NULL,
     "is_ignored" BOOLEAN NOT NULL DEFAULT false,
     "date" TIMESTAMPTZ NOT NULL,
@@ -202,21 +200,6 @@ CREATE TABLE "users" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "ai_chat_answers_ai_chat_message_id_key" ON "ai_chat_answers"("ai_chat_message_id");
-
--- CreateIndex
-CREATE INDEX "ai_chats_search_document_idx" ON "ai_chats" USING GIN ("search_document");
-
--- CreateIndex
-CREATE INDEX "institutions_search_document_idx" ON "institutions" USING GIN ("search_document");
-
--- CreateIndex
-CREATE INDEX "payment_methods_search_document_idx" ON "payment_methods" USING GIN ("search_document");
-
--- CreateIndex
-CREATE INDEX "transaction_categories_search_document_idx" ON "transaction_categories" USING GIN ("search_document");
-
--- CreateIndex
-CREATE INDEX "transactions_search_document_idx" ON "transactions" USING GIN ("search_document");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");

@@ -197,33 +197,33 @@ func TestListTransactions(t *testing.T) {
 		{
 			description: "search transactions by category name",
 			queryParams: map[string]string{
-				handler.QueryParamSearch:   "transporte",
+				handler.QueryParamSearch:   "transprt",
 				handler.QueryParamPageSize: "5",
 			},
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
 				"33f86bd0-cbb9-40e9-bdb9-c7a5d0ab0e5f",
-				"7ed055ed-fbff-492c-9767-11e07d60cc5c",
-				"a87fa722-55d4-44a0-91c2-7e424fbd1f3a",
+				"351093fb-d63d-406f-a8e0-ddd8a37b9bcb",
 				"dcbaccad-1c50-4f68-91d7-9645671fc66e",
 				"7cad86b1-5579-41b0-b927-0d6d6ccc7669",
+				"7ed055ed-fbff-492c-9767-11e07d60cc5c",
 			},
 		},
 		{
 			description: "search transactions by transaction name",
 			queryParams: map[string]string{
-				handler.QueryParamSearch:   "daniel santos de mesquita",
+				handler.QueryParamSearch:   "daniel mesquita",
 				handler.QueryParamPageSize: "5",
 			},
 			token:        mockoauth.PremiumTierMockToken,
 			expectedCode: http.StatusOK,
 			expectedTransactionIDs: []string{
-				"dccd57b9-eb39-4c3c-8502-34ae6ca82b8d",
-				"1425810b-3536-4259-aa3e-b1833df06e5d",
-				"59a754cb-def9-4728-9d4e-565ec1774702",
+				"7f00a7c6-2f07-4e19-9be6-ab6be20e2bdd",
 				"155fdf1b-9199-44d9-8fb2-2f7ebbd06440",
 				"312cf698-f131-4f14-8fd9-b0ffda75bfa2",
+				"ec793a7d-37ba-47e3-b12a-04499c08b762",
+				"96463c37-4b69-4dd5-9ad3-136e86aae2bf",
 			},
 		},
 	}

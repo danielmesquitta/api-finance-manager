@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"reflect"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
@@ -34,21 +33,31 @@ type Join struct {
 	Condition exp.JoinCondition
 }
 
+// buildSearch builds a search expression and an orderable expression like:
+// WHERE column1 % indexed_unaccent('search') OR column2 % indexed_unaccent('search') ...
+// ORDER BY GREATEST(similarity(column1, 'search'), similarity(column2, 'search'), ...)
 func (qb *QueryBuilder) buildSearch(
-	search, column string,
+	search string,
+	columns ...string,
 ) (exp.Expression, exp.Orderable) {
-	searchQuery := fmt.Sprintf(
-		"%s @@ plainto_tsquery('portuguese', unaccent(?))",
-		column,
-	)
+	var whereExps []exp.Expression
+	var similarityExps []any
+	for _, col := range columns {
+		whereExps = append(whereExps,
+			goqu.L(col+" % indexed_unaccent(?)", search),
+		)
+		similarityExps = append(
+			similarityExps,
+			goqu.Func(
+				"similarity",
+				goqu.I(col),
+				goqu.L("indexed_unaccent(?)", search),
+			),
+		)
+	}
 
-	whereExp := goqu.L(searchQuery, search)
-
-	orderExp := goqu.Func(
-		"ts_rank",
-		goqu.I(column),
-		goqu.L("plainto_tsquery('portuguese', unaccent(?))", search),
-	)
+	whereExp := goqu.Or(whereExps...)
+	orderExp := goqu.Func("GREATEST", similarityExps...)
 
 	return whereExp, orderExp
 }

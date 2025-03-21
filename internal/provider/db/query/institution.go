@@ -102,7 +102,7 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 	if options.Search != "" {
 		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.Institution.ColumnSearchDocument(),
+			schema.Institution.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, orderExp.Desc())

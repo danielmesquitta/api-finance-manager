@@ -28,9 +28,17 @@ func (qb *QueryBuilder) ListTransactions(
 		Select(schema.Transaction.ColumnAll()).
 		Where(goqu.I(schema.Transaction.ColumnDeletedAt()).IsNull())
 
+	joins := qb.buildTransactionJoins(options)
+
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
 
-	query = qb.buildTransactionsQuery(query, options, whereExps, orderedExps)
+	query = qb.buildTransactionsQuery(
+		query,
+		options,
+		whereExps,
+		joins,
+		orderedExps,
+	)
 
 	var transactions []entity.Transaction
 	if err := qb.Scan(ctx, query, &transactions); err != nil {
@@ -61,31 +69,9 @@ func (qb *QueryBuilder) ListFullTransactions(
 			goqu.I(schema.PaymentMethod.ColumnName()).
 				As("payment_method_name"),
 		).
-		LeftJoin(
-			goqu.I(schema.TransactionCategory.Table()),
-			goqu.
-				On(
-					goqu.I(schema.Transaction.ColumnCategoryID()).
-						Eq(goqu.I(schema.TransactionCategory.ColumnID())),
-				),
-		).
-		LeftJoin(
-			goqu.I(schema.Institution.Table()),
-			goqu.
-				On(
-					goqu.I(schema.Transaction.ColumnInstitutionID()).
-						Eq(goqu.I(schema.Institution.ColumnID())),
-				),
-		).
-		LeftJoin(
-			goqu.I(schema.PaymentMethod.Table()),
-			goqu.
-				On(
-					goqu.I(schema.Transaction.ColumnPaymentMethodID()).
-						Eq(goqu.I(schema.PaymentMethod.ColumnID())),
-				),
-		).
 		Where(goqu.I(schema.Transaction.ColumnDeletedAt()).IsNull())
+
+	joins := qb.buildTransactionJoins(options, true)
 
 	whereExps, orderedExps := qb.buildTransactionExpressions(userID, options)
 
@@ -93,6 +79,7 @@ func (qb *QueryBuilder) ListFullTransactions(
 		query,
 		options,
 		whereExps,
+		joins,
 		orderedExps,
 	)
 
@@ -119,9 +106,11 @@ func (qb *QueryBuilder) CountTransactions(
 		Select(goqu.COUNT(schema.Transaction.ColumnAll())).
 		Where(goqu.I(schema.Transaction.ColumnDeletedAt()).IsNull())
 
+	joins := qb.buildTransactionJoins(options)
+
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
 
-	query = qb.buildTransactionsQuery(query, options, whereExps, nil)
+	query = qb.buildTransactionsQuery(query, options, whereExps, joins, nil)
 
 	var count int64
 	if err := qb.Scan(ctx, query, &count); err != nil {
@@ -146,9 +135,11 @@ func (qb *QueryBuilder) SumTransactions(
 		Select(goqu.SUM(schema.Transaction.ColumnAmount())).
 		Where(goqu.I(schema.Transaction.ColumnDeletedAt()).IsNull())
 
+	joins := qb.buildTransactionJoins(options)
+
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
 
-	query = qb.buildTransactionsQuery(query, options, whereExps, nil)
+	query = qb.buildTransactionsQuery(query, options, whereExps, joins, nil)
 
 	var count int64
 	if err := qb.Scan(ctx, query, &count); err != nil {
@@ -177,9 +168,11 @@ func (qb *QueryBuilder) SumTransactionsByCategory(
 		Where(goqu.I(schema.Transaction.ColumnDeletedAt()).IsNull()).
 		GroupBy(goqu.I(schema.Transaction.ColumnCategoryID()))
 
+	joins := qb.buildTransactionJoins(options)
+
 	whereExps, _ := qb.buildTransactionExpressions(userID, options)
 
-	query = qb.buildTransactionsQuery(query, options, whereExps, nil)
+	query = qb.buildTransactionsQuery(query, options, whereExps, joins, nil)
 
 	rows := []struct {
 		CategoryID uuid.UUID `db:"category_id"`
@@ -210,7 +203,10 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if options.Search != "" {
 		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.Transaction.ColumnSearchDocument(),
+			schema.Transaction.ColumnName(),
+			schema.TransactionCategory.ColumnName(),
+			schema.Institution.ColumnName(),
+			schema.PaymentMethod.ColumnName(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, orderExp.Desc())
@@ -284,12 +280,72 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	return whereExps, orderedExps
 }
 
+func (qb *QueryBuilder) buildTransactionJoins(
+	options repo.TransactionOptions,
+	shouldJoinAll ...bool,
+) []Join {
+	institutionJoin := Join{
+		Table: goqu.I(schema.Institution.Table()),
+		Condition: goqu.
+			On(
+				goqu.I(schema.Transaction.ColumnInstitutionID()).
+					Eq(goqu.I(schema.Institution.ColumnID())),
+			),
+	}
+
+	transactionCategoryJoin := Join{
+		Table: goqu.I(schema.TransactionCategory.Table()),
+		Condition: goqu.
+			On(
+				goqu.I(schema.Transaction.ColumnCategoryID()).
+					Eq(goqu.I(schema.TransactionCategory.ColumnID())),
+			),
+	}
+
+	paymentMethodJoin := Join{
+		Table: goqu.I(schema.PaymentMethod.Table()),
+		Condition: goqu.
+			On(
+				goqu.I(schema.Transaction.ColumnPaymentMethodID()).
+					Eq(goqu.I(schema.PaymentMethod.ColumnID())),
+			),
+	}
+
+	if (len(shouldJoinAll) > 0 && shouldJoinAll[0]) || options.Search != "" {
+		return []Join{
+			institutionJoin,
+			transactionCategoryJoin,
+			paymentMethodJoin,
+		}
+	}
+
+	joins := []Join{}
+	if len(options.CategoryIDs) > 0 {
+		joins = append(joins, transactionCategoryJoin)
+	}
+
+	if len(options.InstitutionIDs) > 0 {
+		joins = append(joins, institutionJoin)
+	}
+
+	if len(options.PaymentMethodIDs) > 0 {
+		joins = append(joins, paymentMethodJoin)
+	}
+
+	return joins
+}
+
 func (qb *QueryBuilder) buildTransactionsQuery(
 	query *goqu.SelectDataset,
 	options repo.TransactionOptions,
 	whereExps []goqu.Expression,
+	joins []Join,
 	orderedExps []exp.OrderedExpression,
 ) *goqu.SelectDataset {
+	for _, join := range joins {
+		query = query.LeftJoin(join.Table, join.Condition)
+	}
+
 	if len(whereExps) > 0 {
 		query = query.Where(whereExps...)
 	}
