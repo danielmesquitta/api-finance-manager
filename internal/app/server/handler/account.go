@@ -53,7 +53,7 @@ func (h *AccountHandler) Create(c *fiber.Ctx) error {
 
 // @Summary Get accounts balance
 // @Description Gets user total balance and transactions monthly balance with previous month comparison
-// @Tags Balance
+// @Tags Account
 // @Security BearerAuth
 // @Accept json
 // @Produce json
@@ -69,7 +69,7 @@ func (h *AccountHandler) Create(c *fiber.Ctx) error {
 // @Success 200 {object} dto.GetAccountsBalanceResponse
 // @Failure 401 {object} dto.ErrorResponse
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /v1/balances [get]
+// @Router /v1/accounts/balances [get]
 func (h *AccountHandler) GetBalance(c *fiber.Ctx) error {
 	userID, _, err := GetUser(c)
 	if err != nil {
@@ -97,13 +97,13 @@ func (h *AccountHandler) GetBalance(c *fiber.Ctx) error {
 
 // @Summary Sync account balances from open finance
 // @Description Sync account balances from open finance
-// @Tags Balance
+// @Tags Account
 // @Security BasicAuth
 // @Accept json
 // @Produce json
 // @Success 204
 // @Failure 500 {object} dto.ErrorResponse
-// @Router /v1/admin/balances/sync [post]
+// @Router /v1/admin/accounts/balances/sync [post]
 func (h *AccountHandler) Sync(c *fiber.Ctx) error {
 	ctx := c.UserContext()
 	if err := h.sab.Execute(ctx); err != nil {

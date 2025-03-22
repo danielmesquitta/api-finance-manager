@@ -47,6 +47,116 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/accounts/balances": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Gets user total balance and transactions monthly balance with previous month comparison",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "Get accounts balance",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Start date",
+                        "name": "start_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "format": "date",
+                        "description": "End date",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Institution IDs",
+                        "name": "institution_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Category IDs",
+                        "name": "category_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Payment method IDs",
+                        "name": "payment_method_ids",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter only expenses",
+                        "name": "is_expense",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter only incomes",
+                        "name": "is_income",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "Filter ignored or not ignored transactions",
+                        "name": "is_ignored",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetAccountsBalanceResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/admin/accounts": {
             "post": {
                 "security": [
@@ -95,7 +205,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/admin/balances/sync": {
+        "/v1/admin/accounts/balances/sync": {
             "post": {
                 "security": [
                     {
@@ -110,7 +220,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Balance"
+                    "Account"
                 ],
                 "summary": "Sync account balances from open finance",
                 "responses": {
@@ -665,116 +775,6 @@ const docTemplate = `{
                         "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthorized",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/dto.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/balances": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Gets user total balance and transactions monthly balance with previous month comparison",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Balance"
-                ],
-                "summary": "Get accounts balance",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Search",
-                        "name": "search",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "format": "date",
-                        "description": "Start date",
-                        "name": "start_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "format": "date",
-                        "description": "End date",
-                        "name": "end_date",
-                        "in": "query"
-                    },
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "csv",
-                        "description": "Institution IDs",
-                        "name": "institution_ids",
-                        "in": "query"
-                    },
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "csv",
-                        "description": "Category IDs",
-                        "name": "category_ids",
-                        "in": "query"
-                    },
-                    {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        },
-                        "collectionFormat": "csv",
-                        "description": "Payment method IDs",
-                        "name": "payment_method_ids",
-                        "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "Filter only expenses",
-                        "name": "is_expense",
-                        "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "Filter only incomes",
-                        "name": "is_income",
-                        "in": "query"
-                    },
-                    {
-                        "type": "boolean",
-                        "description": "Filter ignored or not ignored transactions",
-                        "name": "is_ignored",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/dto.GetAccountsBalanceResponse"
                         }
                     },
                     "401": {
@@ -2668,7 +2668,6 @@ const docTemplate = `{
                 "payment_method_name": {
                     "type": "string"
                 },
-                "search_document": {},
                 "updated_at": {
                     "type": "string"
                 },
@@ -3217,7 +3216,6 @@ const docTemplate = `{
                 "payment_method_name": {
                     "type": "string"
                 },
-                "search_document": {},
                 "updated_at": {
                     "type": "string"
                 },
