@@ -17,7 +17,7 @@ require (
 	github.com/jackc/pgx/v5 v5.7.3
 	github.com/jinzhu/copier v0.4.0
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/openai/openai-go v0.1.0-alpha.65
+	github.com/openai/openai-go v0.1.0-beta.2
 	github.com/redis/go-redis/v9 v9.7.3
 	github.com/spf13/viper v1.20.0
 	github.com/stretchr/testify v1.10.0

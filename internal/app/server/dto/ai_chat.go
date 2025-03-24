@@ -24,3 +24,7 @@ type UpdateAIChatRequest struct {
 type GenerateAIChatMessageRequest struct {
 	aichat.GenerateAIChatMessageUseCaseInput
 }
+
+type GenerateAIChatMessageResponse struct {
+	entity.AIChatAnswer
+}

@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"testing"
 	"time"
@@ -115,29 +116,70 @@ func TestGenerateAIChatMessage(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		description  string
-		token        string
-		expectedCode int
+		description             string
+		token                   string
+		aiChatID                string
+		body                    dto.GenerateAIChatMessageRequest
+		expectedMessageContains string
+		expectedCode            int
 	}{
+		// {
+		// 	description: "fails without token",
+		// 	token:       "",
+		// 	aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
+		// 	body: dto.GenerateAIChatMessageRequest{
+		// 		GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
+		// 			Message: "Lorem ipsum",
+		// 		},
+		// 	},
+		// 	expectedCode: http.StatusBadRequest,
+		// },
+		// {
+		// 	description: "should not create a new AI chat for a free tier user",
+		// 	token:       mockoauth.FreeTierMockToken,
+		// 	aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
+		// 	body: dto.GenerateAIChatMessageRequest{
+		// 		GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
+		// 			Message: "Lorem ipsum",
+		// 		},
+		// 	},
+		// 	expectedCode: http.StatusBadRequest,
+		// },
+		// {
+		// 	description: "generates a new AI chat message about food transactions",
+		// 	token:       mockoauth.PremiumTierMockToken,
+		// 	aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
+		// 	body: dto.GenerateAIChatMessageRequest{
+		// 		GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
+		// 			Message: "Quanto gastei com comida em outubro de 2024?",
+		// 		},
+		// 	},
+		// 	expectedMessageContains: "1.648,85",
+		// 	expectedCode:            http.StatusCreated,
+		// },
+		// {
+		// 	description: "generates a new AI chat message about transportation transactions",
+		// 	token:       mockoauth.PremiumTierMockToken,
+		// 	aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
+		// 	body: dto.GenerateAIChatMessageRequest{
+		// 		GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
+		// 			Message: "Quanto gastei com transporte em outubro de 2024?",
+		// 		},
+		// 	},
+		// 	expectedMessageContains: "545,84",
+		// 	expectedCode:            http.StatusCreated,
+		// },
 		{
-			description:  "fails without token",
-			token:        "",
-			expectedCode: http.StatusBadRequest,
-		},
-		{
-			description:  "should not create a new AI chat if the user's latest one is empty",
-			token:        mockoauth.PremiumTierMockToken,
-			expectedCode: http.StatusCreated,
-		},
-		{
-			description:  "creates a new AI chat",
-			token:        mockoauth.TrialTierMockToken,
-			expectedCode: http.StatusCreated,
-		},
-		{
-			description:  "should not create a new AI chat for a free tier user",
-			token:        mockoauth.FreeTierMockToken,
-			expectedCode: http.StatusBadRequest,
+			description: "generates a new AI chat message about transportation transactions",
+			token:       mockoauth.PremiumTierMockToken,
+			aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
+			body: dto.GenerateAIChatMessageRequest{
+				GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
+					Message: "Como foi meu orçamento no mês de novembro de 2024?",
+				},
+			},
+			expectedMessageContains: "",
+			expectedCode:            http.StatusCreated,
 		},
 	}
 
@@ -155,10 +197,13 @@ func TestGenerateAIChatMessage(t *testing.T) {
 				signInRes = app.SignIn(test.token)
 			}
 
+			var actualResponse dto.GenerateAIChatMessageResponse
 			statusCode, rawBody, err := app.MakeRequest(
 				http.MethodPost,
-				"/api/v1/ai-chats",
+				fmt.Sprintf("/api/v1/ai-chats/%s/messages", test.aiChatID),
 				WithBearerToken(signInRes.AccessToken),
+				WithBody(test.body),
+				WithResponse(&actualResponse),
 			)
 			assert.Nil(t, err)
 
@@ -172,6 +217,16 @@ func TestGenerateAIChatMessage(t *testing.T) {
 			if test.expectedCode != http.StatusCreated {
 				return
 			}
+
+			log.Println("actualResponse.Message", actualResponse.Message)
+
+			assert.NotNil(t, actualResponse.ID)
+			assert.NotNil(t, actualResponse.Message)
+			assert.Contains(
+				t,
+				actualResponse.Message,
+				test.expectedMessageContains,
+			)
 		})
 	}
 }

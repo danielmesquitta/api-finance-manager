@@ -18,6 +18,6 @@ func NewOpenAI(
 	)
 
 	return &OpenAI{
-		Client: client,
+		Client: &client,
 	}
 }

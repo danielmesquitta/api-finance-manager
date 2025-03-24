@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/openai/openai-go"
@@ -119,31 +120,34 @@ func (uc *GenerateAIChatMessageUseCase) generateMessageResponse(
 	const FunctionGetUserFinancialData = "get_user_financial_data"
 
 	params := openai.ChatCompletionNewParams{
-		Messages: openai.F([]openai.ChatCompletionMessageParamUnion{
+		Messages: []openai.ChatCompletionMessageParamUnion{
+			openai.SystemMessage(
+				fmt.Sprintf(
+					"Today is %s and you are a financial specialist with access to all of your clients' financial data. Drawing on your expertise in financial planning, please provide insightful answers and actionable advice.",
+					time.Now().Format(time.RFC3339),
+				),
+			),
 			openai.UserMessage(in.Message),
-		}),
-		Tools: openai.F([]openai.ChatCompletionToolParam{
+		},
+		Tools: []openai.ChatCompletionToolParam{
 			{
-				Type: openai.F(openai.ChatCompletionToolTypeFunction),
-				Function: openai.F(openai.FunctionDefinitionParam{
-					Name: openai.String(FunctionGetChatHistory),
+				Function: openai.FunctionDefinitionParam{
+					Name: FunctionGetChatHistory,
 					Description: openai.String(
 						"Get chat history, including previous messages and responses",
 					),
-				}),
+				},
 			},
 			{
-				Type: openai.F(openai.ChatCompletionToolTypeFunction),
-				Function: openai.F(openai.FunctionDefinitionParam{
-					Name: openai.String(FunctionGetUserFinancialData),
+				Function: openai.FunctionDefinitionParam{
+					Name: FunctionGetUserFinancialData,
 					Description: openai.String(
 						"Get user financial data, such as transactions, accounts, and budgets",
 					),
-				}),
+				},
 			},
-		}),
-		Seed:  openai.Int(0),
-		Model: openai.F(openai.ChatModelO3Mini),
+		},
+		Model: openai.ChatModelO3Mini,
 	}
 
 	completion, err := uc.oa.Client.Chat.Completions.New(ctx, params)
@@ -156,11 +160,10 @@ func (uc *GenerateAIChatMessageUseCase) generateMessageResponse(
 		return completion.Choices[0].Message.Content, nil
 	}
 
-	params.Messages.Value = append(
-		params.Messages.Value,
-		completion.Choices[0].Message,
+	params.Messages = append(
+		params.Messages,
+		completion.Choices[0].Message.ToParam(),
 	)
-
 	g, gCtx := errgroup.WithContext(ctx)
 	mu := sync.Mutex{}
 	for _, toolCall := range toolCalls {
@@ -172,9 +175,9 @@ func (uc *GenerateAIChatMessageUseCase) generateMessageResponse(
 					return errs.New(err)
 				}
 				mu.Lock()
-				params.Messages.Value = append(
-					params.Messages.Value,
-					openai.ToolMessage(toolCall.ID, chatHistory),
+				params.Messages = append(
+					params.Messages,
+					openai.ToolMessage(chatHistory, toolCall.ID),
 				)
 				mu.Unlock()
 
@@ -188,9 +191,9 @@ func (uc *GenerateAIChatMessageUseCase) generateMessageResponse(
 					return errs.New(err)
 				}
 				mu.Lock()
-				params.Messages.Value = append(
-					params.Messages.Value,
-					openai.ToolMessage(toolCall.ID, userFinancialData),
+				params.Messages = append(
+					params.Messages,
+					openai.ToolMessage(userFinancialData, toolCall.ID),
 				)
 				mu.Unlock()
 
@@ -285,32 +288,38 @@ func (uc *GenerateAIChatMessageUseCase) generateSQLQuery(
 		return "", errs.New(err)
 	}
 
-	paymentMethodsMap := map[string]any{}
+	paymentMethodMaps := []map[string]any{}
 	for _, pm := range paymentMethods {
-		paymentMethodsMap["id"] = pm.ID.String()
-		paymentMethodsMap["name"] = pm.Name
+		paymentMethodMaps = append(paymentMethodMaps, map[string]any{
+			"id":   pm.ID.String(),
+			"name": pm.Name,
+		})
 	}
-	paymentMethodsJSON, err := json.Marshal(paymentMethodsMap)
+	paymentMethodsJSON, err := json.Marshal(paymentMethodMaps)
 	if err != nil {
 		return "", errs.New(err)
 	}
 
-	categoriesMap := map[string]any{}
+	categoryMaps := []map[string]any{}
 	for _, c := range categories {
-		categoriesMap["id"] = c.ID.String()
-		categoriesMap["name"] = c.Name
+		categoryMaps = append(categoryMaps, map[string]any{
+			"id":   c.ID.String(),
+			"name": c.Name,
+		})
 	}
-	categoriesJSON, err := json.Marshal(categoriesMap)
+	categoriesJSON, err := json.Marshal(categoryMaps)
 	if err != nil {
 		return "", errs.New(err)
 	}
 
-	institutionsMap := map[string]any{}
+	institutionMaps := []map[string]any{}
 	for _, i := range institutions {
-		institutionsMap["id"] = i.ID.String()
-		institutionsMap["name"] = i.Name
+		institutionMaps = append(institutionMaps, map[string]any{
+			"id":   i.ID.String(),
+			"name": i.Name,
+		})
 	}
-	institutionsJSON, err := json.Marshal(institutionsMap)
+	institutionsJSON, err := json.Marshal(institutionMaps)
 	if err != nil {
 		return "", errs.New(err)
 	}
@@ -322,7 +331,7 @@ Here's the database schema (simplified Prisma format):
 model Transaction {
   id String @id @db.Uuid
   name String
-  amount BigInt           // Stored in cents, divide by 100 for display
+  amount BigInt           // Stored in cents, divide by 100 for display, negative for spent and positive for earned
   is_ignored Boolean      // If true, ignore this transaction in calculations
   date DateTime
   deleted_at DateTime?
@@ -400,6 +409,17 @@ Here is the transaction_categories table data, represented as JSON:
 Here is the institutions table data, with only institutions that the user has an account, represented as JSON:
 %s
 
+CONSIDERATIONS:
+- Budgets are set for a specific month and repeat. If a new budget isn't created the next month, the most recent one applies. For example, to get the latest budget for a user:
+
+SELECT *
+FROM budgets
+WHERE user_id = $1
+  AND date <= $2
+  AND deleted_at IS NULL
+ORDER BY date DESC
+LIMIT 1;
+
 IMPORTANT RULES:
 1. ALWAYS filter for the specific user: user_id = '%s'
 2. ALWAYS exclude deleted records: deleted_at IS NULL
@@ -407,8 +427,9 @@ IMPORTANT RULES:
 4. Format amounts as dollars using amount::float/100 in your SELECT
 5. Include appropriate JOINs to get related data when needed
 6. You cannot write destructive queries (INSERT, UPDATE, DELETE)
-7. Instead of returning columns with default or technical names, use the AS keyword to create clear, self-explanatory column names in your query results
-8. Respond ONLY with a single SQL query, no explanations or comments.`,
+7. Use the AS keyword to create clear, self-explanatory column names in your query results
+8. Respond ONLY with a single SQL query, no explanations or comments
+9. Favor searching for one or multiple transaction_categories, payment_methods, and institutions by their IDs instead of doing full-text searches.`,
 		string(paymentMethodsJSON),
 		string(categoriesJSON),
 		string(institutionsJSON),
@@ -423,11 +444,11 @@ IMPORTANT RULES:
 	chatCompletion, err := uc.oa.Client.Chat.Completions.New(
 		ctx,
 		openai.ChatCompletionNewParams{
-			Messages: openai.F([]openai.ChatCompletionMessageParamUnion{
+			Messages: []openai.ChatCompletionMessageParamUnion{
 				openai.SystemMessage(systemPrompt),
 				openai.UserMessage(userPrompt),
-			}),
-			Model: openai.F(openai.ChatModelO3Mini),
+			},
+			Model: openai.ChatModelO3Mini,
 		},
 	)
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"reflect"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
@@ -102,7 +103,13 @@ func (qb *QueryBuilder) scan(
 			if errors.Is(err, sql.ErrNoRows) {
 				return nil
 			}
-			return errs.New(err)
+			return errs.New(
+				fmt.Errorf(
+					"failed to execute sql query: sql query: %s: %w",
+					query,
+					err,
+				),
+			)
 		}
 		return nil
 
@@ -111,8 +118,32 @@ func (qb *QueryBuilder) scan(
 			if errors.Is(err, sql.ErrNoRows) {
 				return nil
 			}
-			return errs.New(err)
+			return errs.New(
+				fmt.Errorf(
+					"failed to execute sql query: sql query: %s: %w",
+					query,
+					err,
+				),
+			)
 		}
+		return nil
+
+	case reflect.Map:
+		row := qb.db.QueryRowxContext(ctx, query, args...)
+		m := make(map[string]any)
+		if err := row.MapScan(m); err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				return nil
+			}
+			return errs.New(
+				fmt.Errorf(
+					"failed to execute sql query: sql query: %s: %w",
+					query,
+					err,
+				),
+			)
+		}
+		reflect.ValueOf(dest).Elem().Set(reflect.ValueOf(m))
 		return nil
 
 	default:
@@ -121,7 +152,13 @@ func (qb *QueryBuilder) scan(
 			if errors.Is(err, sql.ErrNoRows) {
 				return nil
 			}
-			return errs.New(err)
+			return errs.New(
+				fmt.Errorf(
+					"failed to execute sql query: sql query: %s: %w",
+					query,
+					err,
+				),
+			)
 		}
 		return nil
 	}

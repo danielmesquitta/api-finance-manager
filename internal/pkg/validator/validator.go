@@ -1,7 +1,6 @@
 package validator
 
 import (
-	"fmt"
 	"log"
 	"strings"
 
@@ -18,81 +17,86 @@ import (
 	ptBRTranslations "github.com/go-playground/validator/v10/translations/pt_BR"
 )
 
+const defaultLangKey = entity.LanguagePortuguese
+
+var langsByKey = map[entity.Language]struct {
+	translator               locales.Translator
+	registerTranslationsFunc func(v *validator.Validate, trans ut.Translator) (err error)
+}{
+	entity.LanguagePortuguese: {
+		translator:               pt_BR.New(),
+		registerTranslationsFunc: ptBRTranslations.RegisterDefaultTranslations,
+	},
+	entity.LanguageEnglish: {
+		translator:               en.New(),
+		registerTranslationsFunc: enTranslations.RegisterDefaultTranslations,
+	},
+	entity.LanguageSpanish: {
+		translator:               es.New(),
+		registerTranslationsFunc: esTranslations.RegisterDefaultTranslations,
+	},
+}
+
+type validatorLanguage struct {
+	Validate   *validator.Validate
+	Translator ut.Translator
+}
+
 type Validator struct {
-	v   *validator.Validate
-	uni *ut.UniversalTranslator
+	vls map[entity.Language]validatorLanguage
 }
 
 func New() *Validator {
-	langsByKey := map[entity.Language]locales.Translator{
-		entity.LanguagePortuguese: pt_BR.New(),
-		entity.LanguageEnglish:    en.New(),
-		entity.LanguageSpanish:    es.New(),
-	}
-
-	defaultLangKey := entity.LanguagePortuguese
 	defaultLang := langsByKey[defaultLangKey]
 
-	langs := []locales.Translator{}
+	translators := []locales.Translator{}
 	for _, lang := range langsByKey {
-		langs = append(langs, lang)
+		translators = append(translators, lang.translator)
 	}
 
-	uni := ut.New(defaultLang, langs...)
+	uni := ut.New(defaultLang.translator, translators...)
 
-	validate := validator.New()
+	vls := map[entity.Language]validatorLanguage{}
+	for k, v := range langsByKey {
+		translator, ok := uni.GetTranslator(string(k))
+		if !ok {
+			log.Fatalf("translator not found for language: %s", k)
+		}
 
-	t, ok := uni.GetTranslator(string(defaultLangKey))
-	if !ok {
-		log.Fatalf("translator for %s not found", defaultLangKey)
-	}
-	if err := enTranslations.RegisterDefaultTranslations(validate, t); err != nil {
-		log.Fatalln(err)
+		val := validator.New()
+		if err := v.registerTranslationsFunc(val, translator); err != nil {
+			log.Fatalln(err)
+		}
+		vls[k] = validatorLanguage{
+			Validate:   val,
+			Translator: translator,
+		}
 	}
 
 	return &Validator{
-		v:   validate,
-		uni: uni,
+		vls: vls,
 	}
 }
 
 // Validate validates the struct data using the provided language code ("pt_BR", "en", "es").
 // It returns an error with translated messages if the data is invalid.
-func (v *Validator) Validate(data any, lang ...entity.Language) error {
-	if len(lang) == 0 {
-		lang = append(lang, entity.LanguageEnglish)
+func (v *Validator) Validate(data any, language ...entity.Language) error {
+	if len(language) == 0 {
+		language = append(language, defaultLangKey)
 	}
-	l := lang[0]
+	l := language[0]
 
-	translator, ok := v.uni.GetTranslator(string(l))
+	vl, ok := v.vls[l]
 	if !ok {
-		return errs.New(
-			fmt.Sprintf("translator not found for language: %s", l),
+		log.Printf(
+			"validator not found for language %s, using fallback %s",
+			l,
+			defaultLangKey,
 		)
+		vl = v.vls[defaultLangKey]
 	}
 
-	// Register the default translations based on the language.
-	switch l {
-	case "pt_BR":
-		if err := ptBRTranslations.RegisterDefaultTranslations(v.v, translator); err != nil {
-			return err
-		}
-	case "en":
-		if err := enTranslations.RegisterDefaultTranslations(v.v, translator); err != nil {
-			return err
-		}
-	case "es":
-		if err := esTranslations.RegisterDefaultTranslations(v.v, translator); err != nil {
-			return err
-		}
-	default:
-		// Fallback to English translations.
-		if err := enTranslations.RegisterDefaultTranslations(v.v, translator); err != nil {
-			return err
-		}
-	}
-
-	err := v.v.Struct(data)
+	err := vl.Validate.Struct(data)
 	if err == nil {
 		return nil
 	}
@@ -105,7 +109,7 @@ func (v *Validator) Validate(data any, lang ...entity.Language) error {
 	strErrs := make([]string, len(validationErrs))
 	errItems := make([]errs.ErrorItem, len(validationErrs))
 	for i, validationErr := range validationErrs {
-		strErrs[i] = validationErr.Translate(translator)
+		strErrs[i] = validationErr.Translate(vl.Translator)
 		errItems[i] = errs.ErrorItem{
 			Name:   validationErr.Field(),
 			Reason: validationErr.Error(),
