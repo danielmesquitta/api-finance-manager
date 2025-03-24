@@ -55,6 +55,7 @@ type UserClaims struct {
 	IssuedAt              time.Time
 	ExpiresAt             time.Time
 	Tier                  entity.Tier
+	Language              entity.Language
 	SubscriptionExpiresAt *time.Time
 }
 

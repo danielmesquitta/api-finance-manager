@@ -234,6 +234,7 @@ model User {
   name                    String
   email                   String    @unique
   tier                    String
+  language                String    @default("pt_BR")
   avatar                  String?
   subscription_expires_at DateTime? @db.Timestamptz()
   synchronized_at         DateTime? @db.Timestamptz()
