@@ -11,30 +11,19 @@ import (
 	"github.com/google/uuid"
 )
 
-const deleteAIChatMessages = `-- name: DeleteAIChatMessages :exec
-UPDATE ai_chat_messages
-SET deleted_at = NOW()
-WHERE ai_chat_id = $1
-`
-
-func (q *Queries) DeleteAIChatMessages(ctx context.Context, aiChatID uuid.UUID) error {
-	_, err := q.db.Exec(ctx, deleteAIChatMessages, aiChatID)
-	return err
-}
-
-const generateAIChatMessage = `-- name: GenerateAIChatMessage :one
+const createAIChatMessage = `-- name: CreateAIChatMessage :one
 INSERT INTO ai_chat_messages (message, ai_chat_id)
 VALUES ($1, $2)
 RETURNING id, message, created_at, deleted_at, ai_chat_id
 `
 
-type GenerateAIChatMessageParams struct {
+type CreateAIChatMessageParams struct {
 	Message  string    `json:"message"`
 	AiChatID uuid.UUID `json:"ai_chat_id"`
 }
 
-func (q *Queries) GenerateAIChatMessage(ctx context.Context, arg GenerateAIChatMessageParams) (AiChatMessage, error) {
-	row := q.db.QueryRow(ctx, generateAIChatMessage, arg.Message, arg.AiChatID)
+func (q *Queries) CreateAIChatMessage(ctx context.Context, arg CreateAIChatMessageParams) (AiChatMessage, error) {
+	row := q.db.QueryRow(ctx, createAIChatMessage, arg.Message, arg.AiChatID)
 	var i AiChatMessage
 	err := row.Scan(
 		&i.ID,
@@ -44,4 +33,15 @@ func (q *Queries) GenerateAIChatMessage(ctx context.Context, arg GenerateAIChatM
 		&i.AiChatID,
 	)
 	return i, err
+}
+
+const deleteAIChatMessages = `-- name: DeleteAIChatMessages :exec
+UPDATE ai_chat_messages
+SET deleted_at = NOW()
+WHERE ai_chat_id = $1
+`
+
+func (q *Queries) DeleteAIChatMessages(ctx context.Context, aiChatID uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteAIChatMessages, aiChatID)
+	return err
 }

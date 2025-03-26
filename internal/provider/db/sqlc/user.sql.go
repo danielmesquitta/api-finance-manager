@@ -21,7 +21,7 @@ INSERT INTO users (
     subscription_expires_at
   )
 VALUES ($1, $2, $3, $4, $5)
-RETURNING id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+RETURNING id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, language
 `
 
 type CreateUserParams struct {
@@ -52,6 +52,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.Language,
 	)
 	return i, err
 }
@@ -86,7 +87,7 @@ func (q *Queries) DestroyUser(ctx context.Context, id uuid.UUID) error {
 }
 
 const getDeletedUserByHashedEmail = `-- name: GetDeletedUserByHashedEmail :one
-SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, language
 FROM users
 WHERE email = $1
   AND deleted_at IS NOT NULL
@@ -106,12 +107,13 @@ func (q *Queries) GetDeletedUserByHashedEmail(ctx context.Context, email string)
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.Language,
 	)
 	return i, err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, language
 FROM users
 WHERE email = $1
   AND deleted_at IS NULL
@@ -131,12 +133,13 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.Language,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+SELECT id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, language
 FROM users
 WHERE id = $1
   AND deleted_at IS NULL
@@ -156,6 +159,7 @@ func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.Language,
 	)
 	return i, err
 }
@@ -169,7 +173,7 @@ SET name = $2,
   subscription_expires_at = $6,
   synchronized_at = $7
 WHERE id = $1
-RETURNING id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at
+RETURNING id, name, email, tier, avatar, subscription_expires_at, synchronized_at, created_at, updated_at, deleted_at, language
 `
 
 type UpdateUserParams struct {
@@ -204,6 +208,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
+		&i.Language,
 	)
 	return i, err
 }

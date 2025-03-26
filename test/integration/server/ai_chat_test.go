@@ -218,13 +218,16 @@ func TestGenerateAIChatMessage(t *testing.T) {
 				return
 			}
 
-			log.Println("actualResponse.Message", actualResponse.Message)
+			log.Println(
+				"actualResponse.AIChatAnswer.Message",
+				actualResponse.AIChatAnswer.Message,
+			)
 
-			assert.NotNil(t, actualResponse.ID)
-			assert.NotNil(t, actualResponse.Message)
+			assert.NotNil(t, actualResponse.Title)
+			assert.NotNil(t, actualResponse.AIChatAnswer.Message)
 			assert.Contains(
 				t,
-				actualResponse.Message,
+				actualResponse.AIChatAnswer.Message,
 				test.expectedMessageContains,
 			)
 		})

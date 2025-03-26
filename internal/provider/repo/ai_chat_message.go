@@ -8,9 +8,9 @@ import (
 )
 
 type AIChatMessageRepo interface {
-	GenerateAIChatMessage(
+	CreateAIChatMessage(
 		ctx context.Context,
-		params GenerateAIChatMessageParams,
+		params CreateAIChatMessageParams,
 	) (*entity.AIChatMessage, error)
 	DeleteAIChatMessages(ctx context.Context, aiChatID uuid.UUID) error
 }

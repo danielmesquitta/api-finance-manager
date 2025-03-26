@@ -1,4 +1,4 @@
--- name: GenerateAIChatMessage :one
+-- name: CreateAIChatMessage :one
 INSERT INTO ai_chat_messages (message, ai_chat_id)
 VALUES ($1, $2)
 RETURNING *;

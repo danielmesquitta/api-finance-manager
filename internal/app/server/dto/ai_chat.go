@@ -26,5 +26,5 @@ type GenerateAIChatMessageRequest struct {
 }
 
 type GenerateAIChatMessageResponse struct {
-	entity.AIChatAnswer
+	aichat.GenerateAIChatMessageUseCaseOutput
 }

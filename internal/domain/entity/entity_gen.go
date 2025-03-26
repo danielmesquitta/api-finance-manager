@@ -148,6 +148,7 @@ type User struct {
 	Name                  string     `db:"name" json:"name,omitempty"`
 	Email                 string     `db:"email" json:"email,omitempty"`
 	Tier                  string     `db:"tier" json:"tier,omitempty"`
+	Language              string     `db:"language" json:"language,omitempty"`
 	Avatar                *string    `db:"avatar" json:"avatar,omitempty"`
 	SubscriptionExpiresAt *time.Time `db:"subscription_expires_at" json:"subscription_expires_at,omitempty"`
 	SynchronizedAt        *time.Time `db:"synchronized_at" json:"synchronized_at,omitempty"`

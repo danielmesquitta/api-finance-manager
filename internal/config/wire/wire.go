@@ -27,6 +27,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache/rediscache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/query"
+	"github.com/danielmesquitta/api-finance-manager/internal/provider/gpt"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/gpt/openai"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/googleoauth"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/oauth/mockoauth"
@@ -64,6 +65,8 @@ var providers = []any{
 	db.NewSQLX,
 	query.NewQueryBuilder,
 	db.NewDB,
+
+	wire.Bind(new(gpt.GPT), new(*openai.OpenAI)),
 	openai.NewOpenAI,
 
 	wire.Bind(new(tx.TX), new(*tx.PgxTX)),

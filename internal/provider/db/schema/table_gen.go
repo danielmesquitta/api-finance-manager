@@ -498,6 +498,10 @@ func (t tableUser) ColumnID() string {
 	return fmt.Sprintf("%s.id", t)
 }
 
+func (t tableUser) ColumnLanguage() string {
+	return fmt.Sprintf("%s.language", t)
+}
+
 func (t tableUser) ColumnName() string {
 	return fmt.Sprintf("%s.name", t)
 }
