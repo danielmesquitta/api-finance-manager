@@ -91,21 +91,28 @@ func (o *OpenAI) processToolCalls(
 		g.Go(func() error {
 			tool, ok := toolsByName[tc.ID]
 			if !ok {
-				return fmt.Errorf("tool %s not found", tc.ID)
+				slog.Error("tool not found", "tool_id", tc.ID)
+				return nil
 			}
 
 			var args map[string]any
 			if err := json.Unmarshal([]byte(tc.Function.Arguments), &args); err != nil {
-				return fmt.Errorf(
-					"failed to unmarshal tool %s args: %w",
-					tc.ID,
-					err,
+				slog.Error(
+					"failed to unmarshal tool args",
+					"tool_id", tc.ID,
+					"error", err,
 				)
+				return nil
 			}
 
 			toolMessage, err := tool.Func(subCtx, args)
 			if err != nil {
-				return fmt.Errorf("tool %s failed: %w", tc.ID, err)
+				slog.Error(
+					"tool function call failed",
+					"tool_id", tc.ID,
+					"error", err,
+				)
+				return nil
 			}
 
 			mu.Lock()
@@ -114,12 +121,14 @@ func (o *OpenAI) processToolCalls(
 				openai.ToolMessage(toolMessage, tc.ID),
 			)
 			mu.Unlock()
+
 			return nil
 		})
 	}
 
 	return g.Wait()
 }
+
 func (o *OpenAI) prepareParams(
 	messages []gpt.Message,
 	opts gpt.Options,

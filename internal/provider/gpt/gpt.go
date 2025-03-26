@@ -15,10 +15,12 @@ type Message struct {
 	Content string `json:"content"`
 }
 
+type ToolFunc func(ctx context.Context, args map[string]any) (string, error)
+
 type Tool struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Func        func(ctx context.Context, args map[string]any) (string, error)
+	Func        ToolFunc
 	Args        map[string]any `json:"args"`
 }
 
