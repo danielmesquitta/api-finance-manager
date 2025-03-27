@@ -7,23 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-type PremiumUserOptions struct {
-	Limit  uint `json:"-"`
-	Offset uint `json:"-"`
-}
-
-type PremiumUserOption func(*PremiumUserOptions)
-
-func WithPremiumUserPagination(
-	limit uint,
-	offset uint,
-) PremiumUserOption {
-	return func(o *PremiumUserOptions) {
-		o.Limit = limit
-		o.Offset = offset
-	}
-}
-
 type UserRepo interface {
 	CreateUser(
 		ctx context.Context,
