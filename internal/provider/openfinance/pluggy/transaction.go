@@ -278,7 +278,7 @@ func (c *Client) setTransactionCategory(
 	t *openfinance.Transaction,
 	r Result,
 ) {
-	t.CategoryExternalID = ptr.Value(r.CategoryID)
+	t.CategoryExternalID = ptr.Deref(r.CategoryID)
 
 	if r.PaymentData == nil ||
 		r.PaymentData.Payer == nil ||
@@ -308,7 +308,7 @@ func (c *Client) setTransactionAmount(
 		return nil
 	}
 
-	amountInAccountCurrency := ptr.Value(r.AmountInAccountCurrency)
+	amountInAccountCurrency := ptr.Deref(r.AmountInAccountCurrency)
 	if amountInAccountCurrency != 0 {
 		t.Amount = money.ToCents(amountInAccountCurrency)
 		return nil
@@ -332,14 +332,14 @@ func (c *Client) setTransactionPaymentMethod(
 		return
 	}
 
-	operationType := ptr.Value(r.OperationType)
+	operationType := ptr.Deref(r.OperationType)
 	if operationType == OperationTypeCartao {
 		t.PaymentMethodExternalID = PaymentMethodCreditCard
 		return
 	}
 
 	if r.PaymentData != nil {
-		t.PaymentMethodExternalID = ptr.Value(r.PaymentData.PaymentMethod)
+		t.PaymentMethodExternalID = ptr.Deref(r.PaymentData.PaymentMethod)
 		return
 	}
 
