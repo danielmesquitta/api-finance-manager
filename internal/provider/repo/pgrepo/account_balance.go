@@ -2,11 +2,13 @@ package pgrepo
 
 import (
 	"context"
+	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/db/sqlc"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
+	"github.com/google/uuid"
 	"github.com/jinzhu/copier"
 )
 
@@ -39,14 +41,11 @@ func (r *AccountBalanceRepo) CreateAccountBalances(
 
 func (r *AccountBalanceRepo) GetUserBalanceOnDate(
 	ctx context.Context,
-	params repo.GetUserBalanceOnDateParams,
+	userID uuid.UUID,
+	date time.Time,
+	options ...repo.AccountBalanceOption,
 ) (int64, error) {
-	dbParams := sqlc.GetUserBalanceOnDateParams{}
-	if err := copier.Copy(&dbParams, params); err != nil {
-		return 0, errs.New(err)
-	}
-
-	return r.db.GetUserBalanceOnDate(ctx, dbParams)
+	return r.db.GetUserBalanceOnDate(ctx, userID, date, options...)
 }
 
 var _ repo.AccountBalanceRepo = (*AccountBalanceRepo)(nil)

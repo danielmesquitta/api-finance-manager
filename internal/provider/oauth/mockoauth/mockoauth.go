@@ -2,6 +2,7 @@ package mockoauth
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
@@ -100,7 +101,10 @@ func (m *MockOAuth) GetUser(
 ) (*entity.User, *entity.UserAuthProvider, error) {
 	user, ok := Users[token]
 	if !ok {
-		user = Users[PremiumTierMockToken]
+		user, ok = Users[PremiumTierMockToken]
+		if !ok || user == nil {
+			return nil, nil, errors.New("user not found")
+		}
 	}
 
 	return user.User, user.AuthProvider, nil

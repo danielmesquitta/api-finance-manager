@@ -2,7 +2,24 @@ package repo
 
 import (
 	"context"
+	"time"
+
+	"github.com/google/uuid"
 )
+
+type AccountBalanceOptions struct {
+	InstitutionIDs []uuid.UUID `json:"institution_ids"`
+}
+
+type AccountBalanceOption func(*AccountBalanceOptions)
+
+func WithAAccountBalanceInstitutions(
+	institutionIDs []uuid.UUID,
+) AccountBalanceOption {
+	return func(o *AccountBalanceOptions) {
+		o.InstitutionIDs = institutionIDs
+	}
+}
 
 type AccountBalanceRepo interface {
 	CreateAccountBalances(
@@ -11,6 +28,8 @@ type AccountBalanceRepo interface {
 	) error
 	GetUserBalanceOnDate(
 		ctx context.Context,
-		arg GetUserBalanceOnDateParams,
+		userID uuid.UUID,
+		date time.Time,
+		options ...AccountBalanceOption,
 	) (int64, error)
 }

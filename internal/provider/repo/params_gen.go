@@ -23,11 +23,6 @@ type CreateAccountBalancesParams struct {
 	AccountID uuid.UUID `json:"account_id"`
 }
 
-type GetUserBalanceOnDateParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Date   time.Time `json:"date"`
-}
-
 type ListAIChatMessagesAndAnswersParams struct {
 	AiChatID uuid.UUID `json:"ai_chat_id"`
 	Limit    int32     `json:"limit"`

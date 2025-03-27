@@ -137,11 +137,10 @@ func (uc *SignInUseCase) refreshToken(
 	if user == nil {
 		return nil, errs.ErrUserNotFound
 	}
-	return uc.signIn(ctx, user)
+	return uc.signIn(user)
 }
 
 func (uc *SignInUseCase) signIn(
-	ctx context.Context,
 	user *entity.User,
 ) (*SignInUseCaseOutput, error) {
 	in7Days := time.Now().Add(time.Hour * 24 * 7)
@@ -156,7 +155,7 @@ func (uc *SignInUseCase) signIn(
 		return nil, errs.New(err)
 	}
 
-	tokenClaims.Tier = entity.Tier(user.Tier)
+	tokenClaims.Tier = user.Tier
 	tokenClaims.SubscriptionExpiresAt = user.SubscriptionExpiresAt
 	in24Hours := time.Now().Add(time.Hour * 24)
 	tokenClaims.ExpiresAt = in24Hours
@@ -200,7 +199,7 @@ func (uc *SignInUseCase) createUserAndSignIn(
 			return errs.New(err)
 		}
 
-		out, err = uc.signIn(ctx, user)
+		out, err = uc.signIn(user)
 		if err != nil {
 			return errs.New(err)
 		}
@@ -248,7 +247,7 @@ func (uc *SignInUseCase) updateUserAndSignIn(
 			}
 		}
 
-		out, err = uc.signIn(ctx, updatedUser)
+		out, err = uc.signIn(updatedUser)
 		if err != nil {
 			return errs.New(err)
 		}
@@ -268,7 +267,7 @@ func (uc *SignInUseCase) createUser(
 	authUser *entity.User,
 ) (*entity.User, error) {
 	params := repo.CreateUserParams{
-		Tier: string(entity.TierFree),
+		Tier: entity.TierFree,
 	}
 	if err := copier.CopyWithOption(
 		&params,

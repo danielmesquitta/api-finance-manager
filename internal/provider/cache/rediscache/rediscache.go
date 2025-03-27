@@ -39,7 +39,7 @@ func (r *RedisCache) Scan(
 	key cache.Key,
 	value any,
 ) (bool, error) {
-	strCmd := r.c.Get(ctx, string(key))
+	strCmd := r.c.Get(ctx, key)
 	if strCmd.Err() == redis.Nil {
 		return false, nil
 	}
@@ -60,7 +60,7 @@ func (r *RedisCache) Set(
 	value any,
 	expiration time.Duration,
 ) error {
-	return r.c.Set(ctx, string(key), value, expiration).Err()
+	return r.c.Set(ctx, key, value, expiration).Err()
 }
 
 func (r *RedisCache) Delete(
@@ -68,10 +68,7 @@ func (r *RedisCache) Delete(
 	keys ...cache.Key,
 ) error {
 	ks := make([]string, len(keys))
-	for i, k := range keys {
-		ks[i] = string(k)
-	}
-
+	copy(ks, keys)
 	return r.c.Del(ctx, ks...).Err()
 }
 

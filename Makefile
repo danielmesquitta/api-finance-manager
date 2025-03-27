@@ -31,7 +31,7 @@ install:
 
 .PHONY: update
 update:
-	@go mod tidy && go get -u ./...
+	@go get -u ./... && go mod tidy
 
 .PHONY: run
 run:
@@ -55,7 +55,7 @@ build:
 
 .PHONY: lint
 lint:
-	@golangci-lint run && nilaway ./...
+	@golangci-lint run && golines **/*.go -m 80 --dry-run
 
 .PHONY: lint-fix
 lint-fix:

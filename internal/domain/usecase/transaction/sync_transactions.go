@@ -289,9 +289,9 @@ func (uc *SyncTransactionsUseCase) syncPaymentMethods(
 	paymentMethods []entity.PaymentMethod,
 ) ([]entity.PaymentMethod, error) {
 	paymentMethodNamesByExternalID := map[string]string{
-		string(pluggy.PaymentMethodBOLETO):     "Boleto",
-		string(pluggy.PaymentMethodCreditCard): "Cartão de crédito",
-		string(pluggy.PaymentMethodDEBIT):      "Cartão de débito",
+		pluggy.PaymentMethodBOLETO:     "Boleto",
+		pluggy.PaymentMethodCreditCard: "Cartão de crédito",
+		pluggy.PaymentMethodDEBIT:      "Cartão de débito",
 	}
 
 	uniqueExternalIDs := make(map[string]struct{})

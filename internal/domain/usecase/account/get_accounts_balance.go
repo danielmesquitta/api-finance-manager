@@ -58,6 +58,8 @@ func (uc *GetAccountsBalanceUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
+	balanceOpts := prepareBalanceOptions(in.TransactionOptions)
+
 	cmpDates := dateutil.CalculateComparisonDates(in.StartDate, in.EndDate)
 
 	g, gCtx := errgroup.WithContext(ctx)
@@ -68,10 +70,9 @@ func (uc *GetAccountsBalanceUseCase) Execute(
 		var err error
 		currentBalance, err = uc.abr.GetUserBalanceOnDate(
 			gCtx,
-			repo.GetUserBalanceOnDateParams{
-				UserID: in.UserID,
-				Date:   cmpDates.EndDate,
-			},
+			in.UserID,
+			cmpDates.EndDate,
+			balanceOpts...,
 		)
 		return err
 	})
@@ -80,10 +81,9 @@ func (uc *GetAccountsBalanceUseCase) Execute(
 		var err error
 		previousBalance, err = uc.abr.GetUserBalanceOnDate(
 			gCtx,
-			repo.GetUserBalanceOnDateParams{
-				UserID: in.UserID,
-				Date:   cmpDates.ComparisonEndDate,
-			},
+			in.UserID,
+			cmpDates.ComparisonEndDate,
+			balanceOpts...,
 		)
 		return err
 	})

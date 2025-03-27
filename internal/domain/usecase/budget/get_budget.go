@@ -6,7 +6,6 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
@@ -34,7 +33,6 @@ func NewGetBudgetUseCase(
 }
 
 type GetBudgetUseCaseInput struct {
-	usecase.PaginationInput
 	UserID uuid.UUID `json:"user_id" validate:"required"`
 	Date   time.Time `json:"date"    validate:"required"`
 }
@@ -134,7 +132,6 @@ func (uc *GetBudgetUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
-	// Invert spentPreviousMonth and spentByCategoryID values to make them positive
 	spentPreviousMonth = -1 * spentPreviousMonth
 	for categoryID, spent := range spentByCategoryID {
 		spentByCategoryID[categoryID] = -1 * spent

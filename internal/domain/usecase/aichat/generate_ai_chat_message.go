@@ -11,6 +11,8 @@ import (
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/account"
+	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/budget"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/gpt"
@@ -28,6 +30,8 @@ type GenerateAIChatMessageUseCase struct {
 	tcr   repo.TransactionCategoryRepo
 	ir    repo.InstitutionRepo
 	tr    repo.TransactionRepo
+	gbuc  *budget.GetBudgetUseCase
+	gabuc *account.GetAccountsBalanceUseCase
 }
 
 func NewGenerateAIChatMessageUseCase(
@@ -41,6 +45,8 @@ func NewGenerateAIChatMessageUseCase(
 	tcr repo.TransactionCategoryRepo,
 	ir repo.InstitutionRepo,
 	tr repo.TransactionRepo,
+	gbuc *budget.GetBudgetUseCase,
+	gabuc *account.GetAccountsBalanceUseCase,
 ) *GenerateAIChatMessageUseCase {
 	return &GenerateAIChatMessageUseCase{
 		v:     v,
@@ -53,6 +59,8 @@ func NewGenerateAIChatMessageUseCase(
 		tcr:   tcr,
 		ir:    ir,
 		tr:    tr,
+		gbuc:  gbuc,
+		gabuc: gabuc,
 	}
 }
 
@@ -343,50 +351,20 @@ Using your expertise in financial planning, please analyze the information provi
 		{
 			Name:        "list_user_transactions",
 			Description: "List user transactions and sum them up. The transactions are filtered by the given parameters.",
-			Func:        uc.getUserTransactions(in),
-			Args: map[string]any{
-				"type": "object",
-				"properties": map[string]any{
-					"start_date": map[string]any{
-						"type":        "string",
-						"description": "The start date for filtering transactions (RFC3339 format).",
-					},
-					"end_date": map[string]any{
-						"type":        "string",
-						"description": "The end date for filtering transactions (RFC3339 format).",
-					},
-					"category_ids": map[string]any{
-						"type": "array",
-						"items": map[string]any{
-							"type": "string",
-						},
-						"description": "The category IDs to filter transactions by",
-					},
-					"institution_ids": map[string]any{
-						"type": "array",
-						"items": map[string]any{
-							"type": "string",
-						},
-						"description": "The institution IDs to filter transactions by",
-					},
-					"payment_method_ids": map[string]any{
-						"type": "array",
-						"items": map[string]any{
-							"type": "string",
-						},
-						"description": "The payment method IDs to filter transactions by",
-					},
-					"is_expense": map[string]any{
-						"type":        "boolean",
-						"description": "Return only expenses if true.",
-					},
-					"is_income": map[string]any{
-						"type":        "boolean",
-						"description": "Return only income if true.",
-					},
-				},
-				"required": []string{"start_date", "end_date"},
-			},
+			Func:        uc.listUserTransactions(in.UserID),
+			Args:        listTransactionArgs,
+		},
+		{
+			Name:        "get_user_accounts_balance",
+			Description: "Get user's accounts balance filtered by institution, start and end date. If no institution is provided all accounts are considered.",
+			Func:        uc.getUserAccountsBalance(in.UserID),
+			Args:        getAccountsBalanceArgs,
+		},
+		{
+			Name:        "get_user_budget",
+			Description: "Get user's budget definitions and the amount they spent in a specific month.",
+			Func:        uc.getUserBudget(in.UserID),
+			Args:        getBudgetArgs,
 		},
 	}
 
@@ -402,59 +380,15 @@ Using your expertise in financial planning, please analyze the information provi
 	return message.Content, nil
 }
 
-func (uc *GenerateAIChatMessageUseCase) getUserTransactions(
-	in GenerateAIChatMessageUseCaseInput,
+func (uc *GenerateAIChatMessageUseCase) listUserTransactions(
+	userID uuid.UUID,
 ) gpt.ToolFunc {
 	return func(ctx context.Context, args map[string]any) (string, error) {
 		g, subCtx := errgroup.WithContext(ctx)
 
-		startDate, err := uc.parseRequiredDateArg(args, "start_date")
+		opts, err := uc.buildTransactionOptionsFromArgs(args)
 		if err != nil {
 			return "", errs.New(err)
-		}
-
-		endDate, err := uc.parseRequiredDateArg(args, "end_date")
-		if err != nil {
-			return "", errs.New(err)
-		}
-
-		opts := []repo.TransactionOption{
-			repo.WithTransactionDateAfter(*startDate),
-			repo.WithTransactionDateBefore(*endDate),
-		}
-
-		categoryIDs := uc.parseUUIDsArg(args, "category_ids")
-		if len(categoryIDs) > 0 {
-			opts = append(
-				opts,
-				repo.WithTransactionCategories(categoryIDs...),
-			)
-		}
-
-		institutionIDs := uc.parseUUIDsArg(args, "institution_ids")
-		if len(institutionIDs) > 0 {
-			opts = append(
-				opts,
-				repo.WithTransactionInstitutions(institutionIDs...),
-			)
-		}
-
-		paymentMethodIDs := uc.parseUUIDsArg(args, "payment_method_ids")
-		if len(paymentMethodIDs) > 0 {
-			opts = append(
-				opts,
-				repo.WithTransactionInstitutions(paymentMethodIDs...),
-			)
-		}
-
-		isExpense := uc.parseBoolArg(args, "is_expense")
-		if isExpense {
-			opts = append(opts, repo.WithTransactionIsExpense(isExpense))
-		}
-
-		isIncome := uc.parseBoolArg(args, "is_income")
-		if isIncome {
-			opts = append(opts, repo.WithTransactionIsIncome(isIncome))
 		}
 
 		var (
@@ -464,13 +398,13 @@ func (uc *GenerateAIChatMessageUseCase) getUserTransactions(
 		g.Go(func() (err error) {
 			transactions, err = uc.tr.ListTransactions(
 				subCtx,
-				in.UserID,
+				userID,
 				opts...)
 			return err
 		})
 
 		g.Go(func() (err error) {
-			sum, err = uc.tr.SumTransactions(subCtx, in.UserID, opts...)
+			sum, err = uc.tr.SumTransactions(subCtx, userID, opts...)
 			return err
 		})
 
@@ -482,6 +416,174 @@ func (uc *GenerateAIChatMessageUseCase) getUserTransactions(
 			"description":  "List of user transactions, where amounts and sums are given in cents. Negative values represent expenses; positive values represent income.",
 			"transactions": transactions,
 			"sum":          sum,
+		}
+		responseJSON, err := json.Marshal(response)
+		if err != nil {
+			return "", errs.New(err)
+		}
+
+		return string(responseJSON), nil
+	}
+}
+
+func (uc *GenerateAIChatMessageUseCase) buildTransactionOptionsFromArgs(
+	args map[string]any,
+) ([]repo.TransactionOption, error) {
+	startDate, err := uc.parseRequiredDateArg(args, ArgKeyStartDate)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	endDate, err := uc.parseRequiredDateArg(args, ArgKeyEndDate)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	opts := []repo.TransactionOption{
+		repo.WithTransactionDateAfter(*startDate),
+		repo.WithTransactionDateBefore(*endDate),
+		repo.WithTransactionIsIgnored(false),
+	}
+
+	categoryIDs := uc.parseUUIDsArg(args, ArgKeyCategoryIDs)
+	if len(categoryIDs) > 0 {
+		opts = append(
+			opts,
+			repo.WithTransactionCategories(categoryIDs...),
+		)
+	}
+
+	institutionIDs := uc.parseUUIDsArg(args, ArgKeyInstitutionIDs)
+	if len(institutionIDs) > 0 {
+		opts = append(
+			opts,
+			repo.WithTransactionInstitutions(institutionIDs...),
+		)
+	}
+
+	paymentMethodIDs := uc.parseUUIDsArg(args, ArgKeyPaymentMethodIDs)
+	if len(paymentMethodIDs) > 0 {
+		opts = append(
+			opts,
+			repo.WithTransactionInstitutions(paymentMethodIDs...),
+		)
+	}
+
+	isExpense := uc.parseBoolArg(args, ArgKeyIsExpense)
+	if isExpense {
+		opts = append(opts, repo.WithTransactionIsExpense(isExpense))
+	}
+
+	isIncome := uc.parseBoolArg(args, ArgKeyIsIncome)
+	if isIncome {
+		opts = append(opts, repo.WithTransactionIsIncome(isIncome))
+	}
+
+	search, ok := args[ArgKeySearch].(string)
+	if ok {
+		opts = append(opts, repo.WithTransactionSearch(search))
+	}
+
+	return opts, nil
+}
+
+func (uc *GenerateAIChatMessageUseCase) getUserAccountsBalance(
+	userID uuid.UUID,
+) gpt.ToolFunc {
+	return func(ctx context.Context, args map[string]any) (string, error) {
+		opts, err := uc.buildAccountsBalanceOptionsFromArgs(args)
+		if err != nil {
+			return "", errs.New(err)
+		}
+
+		options := repo.TransactionOptions{}
+		for _, opt := range opts {
+			opt(&options)
+		}
+
+		budgetOutput, err := uc.gabuc.Execute(
+			ctx,
+			account.GetAccountsBalanceUseCaseInput{
+				UserID:             userID,
+				TransactionOptions: options,
+			},
+		)
+		if err != nil {
+			return "", errs.New(err)
+		}
+
+		response := map[string]any{
+			"description": "The user's budget for the given month, where amounts are given in cents and percentages are given as integers (example: 1055 represents 10.55%).",
+			"data":        budgetOutput,
+		}
+		responseJSON, err := json.Marshal(response)
+		if err != nil {
+			return "", errs.New(err)
+		}
+
+		return string(responseJSON), nil
+	}
+}
+
+func (uc *GenerateAIChatMessageUseCase) buildAccountsBalanceOptionsFromArgs(
+	args map[string]any,
+) ([]repo.TransactionOption, error) {
+	startDate, err := uc.parseRequiredDateArg(args, ArgKeyStartDate)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	endDate, err := uc.parseRequiredDateArg(args, ArgKeyEndDate)
+	if err != nil {
+		return nil, errs.New(err)
+	}
+
+	opts := []repo.TransactionOption{
+		repo.WithTransactionDateAfter(*startDate),
+		repo.WithTransactionDateBefore(*endDate),
+		repo.WithTransactionIsIgnored(false),
+	}
+
+	institutionIDs := uc.parseUUIDsArg(args, ArgKeyInstitutionIDs)
+	if len(institutionIDs) > 0 {
+		opts = append(
+			opts,
+			repo.WithTransactionInstitutions(institutionIDs...),
+		)
+	}
+
+	return opts, nil
+}
+
+func (uc *GenerateAIChatMessageUseCase) getUserBudget(
+	userID uuid.UUID,
+) gpt.ToolFunc {
+	return func(ctx context.Context, args map[string]any) (string, error) {
+		g, subCtx := errgroup.WithContext(ctx)
+
+		date, err := uc.parseRequiredDateArg(args, ArgKeyDate)
+		if err != nil {
+			return "", errs.New(err)
+		}
+
+		budgetOutput, err := uc.gbuc.Execute(
+			subCtx,
+			budget.GetBudgetUseCaseInput{
+				UserID: userID,
+				Date:   *date,
+			},
+		)
+		if err != nil {
+			return "", errs.New(err)
+		}
+
+		if err := g.Wait(); err != nil {
+			return "", errs.New(err)
+		}
+
+		response := map[string]any{
+			"description": "The user's budget for the given month, where amounts are given in cents and percentages are given as integers (example: 1055 represents 10.55%).",
+			"data":        budgetOutput,
 		}
 		responseJSON, err := json.Marshal(response)
 		if err != nil {
@@ -538,6 +640,100 @@ func (uc *GenerateAIChatMessageUseCase) parseBoolArg(
 	if !ok {
 		return false
 	}
-
 	return parsed
+}
+
+type ArgKey = string
+
+const (
+	ArgKeyStartDate        ArgKey = "start_date"
+	ArgKeyEndDate          ArgKey = "end_date"
+	ArgKeyCategoryIDs      ArgKey = "category_ids"
+	ArgKeyInstitutionIDs   ArgKey = "institution_ids"
+	ArgKeyPaymentMethodIDs ArgKey = "payment_method_ids"
+	ArgKeyIsExpense        ArgKey = "is_expense"
+	ArgKeyIsIncome         ArgKey = "is_income"
+	ArgKeySearch           ArgKey = "search"
+	ArgKeyDate             ArgKey = "date"
+)
+
+var listTransactionArgs = map[string]any{
+	"type": "object",
+	"properties": map[string]any{
+		ArgKeyStartDate: map[string]any{
+			"type":        "string",
+			"description": "The start date for filtering transactions (RFC3339 format in the GMT-3 timezone).",
+		},
+		ArgKeyEndDate: map[string]any{
+			"type":        "string",
+			"description": "The end date for filtering transactions (RFC3339 format in the GMT-3 timezone).",
+		},
+		ArgKeyCategoryIDs: map[string]any{
+			"type": "array",
+			"items": map[string]any{
+				"type": "string",
+			},
+			"description": "The category IDs to filter transactions by",
+		},
+		ArgKeyInstitutionIDs: map[string]any{
+			"type": "array",
+			"items": map[string]any{
+				"type": "string",
+			},
+			"description": "The institution IDs to filter transactions by",
+		},
+		ArgKeyPaymentMethodIDs: map[string]any{
+			"type": "array",
+			"items": map[string]any{
+				"type": "string",
+			},
+			"description": "The payment method IDs to filter transactions by",
+		},
+		ArgKeyIsExpense: map[string]any{
+			"type":        "boolean",
+			"description": "Return only expenses if true.",
+		},
+		ArgKeyIsIncome: map[string]any{
+			"type":        "boolean",
+			"description": "Return only income if true.",
+		},
+		ArgKeySearch: map[string]any{
+			"type":        "string",
+			"description": "Search for transactions by name (Prefer using category, institution and payment method IDs).",
+		},
+	},
+	"required": []string{ArgKeyStartDate, ArgKeyEndDate},
+}
+
+var getAccountsBalanceArgs = map[string]any{
+	"type": "object",
+	"properties": map[string]any{
+		ArgKeyStartDate: map[string]any{
+			"type":        "string",
+			"description": "The start date for filtering balances (RFC3339 format in the GMT-3 timezone).",
+		},
+		ArgKeyEndDate: map[string]any{
+			"type":        "string",
+			"description": "The end date for filtering balances (RFC3339 format in the GMT-3 timezone).",
+		},
+		ArgKeyInstitutionIDs: map[string]any{
+			"type": "array",
+			"items": map[string]any{
+				"type": "string",
+			},
+			"description": "The institution IDs to filter balances by",
+		},
+	},
+	"required": []string{ArgKeyStartDate, ArgKeyEndDate},
+}
+
+var getBudgetArgs = map[string]any{
+	"type": "object",
+	"properties": map[string]any{
+		ArgKeyDate: map[string]any{
+			"type":        "string",
+			"description": "The first day of the month to get the budget for (RFC3339 format in the GMT-3 timezone).",
+		},
+	},
+	"required": []string{ArgKeyDate},
 }
