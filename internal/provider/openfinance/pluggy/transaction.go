@@ -12,6 +12,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/ptr"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
 	"github.com/google/uuid"
 	"golang.org/x/sync/errgroup"
@@ -74,14 +75,14 @@ type DocumentNumber struct {
 	Value string       `json:"value"`
 }
 
-type CurrencyCode string
+type CurrencyCode = string
 
 const (
 	CurrencyCodeBRL CurrencyCode = "BRL"
 	CurrencyCodeUSD CurrencyCode = "USD"
 )
 
-type OperationType string
+type OperationType = string
 
 const (
 	OperationTypeCartao                        OperationType = "CARTAO"
@@ -101,14 +102,14 @@ const (
 	OperationTypeTransferenciaMesmaInstituicao OperationType = "TRANSFERENCIA_MESMA_INSTITUICAO"
 )
 
-type DocumentType string
+type DocumentType = string
 
 const (
 	DocumentTypeCNPJ DocumentType = "CNPJ"
 	DocumentTypeCPF  DocumentType = "CPF"
 )
 
-type PaymentMethod string
+type PaymentMethod = string
 
 const (
 	PaymentMethodOther      PaymentMethod = "OTHER"
@@ -120,14 +121,14 @@ const (
 	PaymentMethodTEF        PaymentMethod = "TEF"
 )
 
-type Status string
+type Status = string
 
 const (
 	Pending Status = "PENDING"
 	Posted  Status = "POSTED"
 )
 
-type ResultType string
+type ResultType = string
 
 const (
 	Credit ResultType = "CREDIT"
@@ -277,9 +278,7 @@ func (c *Client) setTransactionCategory(
 	t *openfinance.Transaction,
 	r Result,
 ) {
-	if r.CategoryID != nil {
-		t.CategoryExternalID = *r.CategoryID
-	}
+	t.CategoryExternalID = ptr.Value(r.CategoryID)
 
 	if r.PaymentData == nil ||
 		r.PaymentData.Payer == nil ||
@@ -309,12 +308,13 @@ func (c *Client) setTransactionAmount(
 		return nil
 	}
 
-	if r.AmountInAccountCurrency != nil {
-		t.Amount = money.ToCents(*r.AmountInAccountCurrency)
+	amountInAccountCurrency := ptr.Value(r.AmountInAccountCurrency)
+	if amountInAccountCurrency != 0 {
+		t.Amount = money.ToCents(amountInAccountCurrency)
 		return nil
 	}
 
-	return errs.New("amount is nil")
+	return errs.New("amount is 0")
 }
 
 func (c *Client) setTransactionPaymentMethod(
@@ -322,25 +322,26 @@ func (c *Client) setTransactionPaymentMethod(
 	r Result,
 ) {
 	if r.CreditCardMetadata != nil {
-		t.PaymentMethodExternalID = string(PaymentMethodCreditCard)
+		t.PaymentMethodExternalID = PaymentMethodCreditCard
 		t.Amount = t.Amount * -1
 		return
 	}
 
 	if strings.HasPrefix(r.Description, "COMPRA C/CARTAO") {
-		t.PaymentMethodExternalID = string(PaymentMethodCreditCard)
+		t.PaymentMethodExternalID = PaymentMethodCreditCard
 		return
 	}
 
-	if r.OperationType != nil && *r.OperationType == OperationTypeCartao {
-		t.PaymentMethodExternalID = string(PaymentMethodCreditCard)
+	operationType := ptr.Value(r.OperationType)
+	if operationType == OperationTypeCartao {
+		t.PaymentMethodExternalID = PaymentMethodCreditCard
 		return
 	}
 
-	if r.PaymentData != nil && r.PaymentData.PaymentMethod != nil {
-		t.PaymentMethodExternalID = string(*r.PaymentData.PaymentMethod)
+	if r.PaymentData != nil {
+		t.PaymentMethodExternalID = ptr.Value(r.PaymentData.PaymentMethod)
 		return
 	}
 
-	t.PaymentMethodExternalID = string(PaymentMethodOther)
+	t.PaymentMethodExternalID = PaymentMethodOther
 }
