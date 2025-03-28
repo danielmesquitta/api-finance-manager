@@ -24,7 +24,8 @@ func (qb *QueryBuilder) GetUserBalanceOnDate(
 		From(schema.AccountBalance.Table()).
 		Select(schema.AccountBalance.ColumnAmount()).
 		Where(
-			goqu.I(schema.AccountBalance.ColumnAccountID()).Eq(goqu.I("a.id")),
+			goqu.I(schema.AccountBalance.ColumnAccountID()).
+				Eq(goqu.I(schema.Account.ColumnID())),
 			goqu.I(schema.AccountBalance.ColumnCreatedAt()).Lte(date),
 			goqu.I(schema.AccountBalance.ColumnDeletedAt()).IsNull(),
 		).

@@ -89,9 +89,9 @@ func (o *OpenAI) processToolCalls(
 
 	for _, tc := range toolCalls {
 		g.Go(func() error {
-			tool, ok := toolsByName[tc.ID]
+			tool, ok := toolsByName[tc.Function.Name]
 			if !ok {
-				slog.Error("tool not found", "tool_id", tc.ID)
+				slog.Error("tool not found", "tool_id", tc.Function.Name)
 				return nil
 			}
 
@@ -139,6 +139,7 @@ func (o *OpenAI) prepareParams(
 	param := openai.ChatCompletionNewParams{
 		Messages: openAIMessages,
 		Tools:    openAITools,
+		Model:    openai.ChatModelO3Mini,
 	}
 	if opts.Temperature > 0 {
 		param.Temperature = openai.Float(opts.Temperature)
