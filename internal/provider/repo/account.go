@@ -17,66 +17,14 @@ type AccountOptions struct {
 	IsSubscriptionActive *bool                `json:"is_subscription_active"`
 }
 
-type AccountOption func(*AccountOptions)
-
-func WithAccountPagination(
-	limit uint,
-	offset uint,
-) AccountOption {
-	return func(o *AccountOptions) {
-		o.Limit = limit
-		o.Offset = offset
-	}
-}
-
-func WithAccountUserIDs(
-	userIDs []uuid.UUID,
-) AccountOption {
-	return func(o *AccountOptions) {
-		o.UserIDs = userIDs
-	}
-}
-
-func WithAccountExternalIDs(
-	externalIDs []string,
-) AccountOption {
-	return func(o *AccountOptions) {
-		o.ExternalIDs = externalIDs
-	}
-}
-
-func WithAccountUserTiers(
-	userTiers []entity.Tier,
-) AccountOption {
-	return func(o *AccountOptions) {
-		o.UserTiers = userTiers
-	}
-}
-
-func WithAccountSubscriptionActive(
-	isSubscriptionActive bool,
-) AccountOption {
-	return func(o *AccountOptions) {
-		o.IsSubscriptionActive = &isSubscriptionActive
-	}
-}
-
-func WithAccountTypes(
-	types []entity.AccountType,
-) AccountOption {
-	return func(o *AccountOptions) {
-		o.Types = types
-	}
-}
-
 type AccountRepo interface {
 	ListAccounts(
 		ctx context.Context,
-		opts ...AccountOption,
+		opts ...AccountOptions,
 	) ([]entity.Account, error)
 	ListFullAccounts(
 		ctx context.Context,
-		opts ...AccountOption,
+		opts ...AccountOptions,
 	) ([]entity.FullAccount, error)
 	CreateAccounts(
 		ctx context.Context,

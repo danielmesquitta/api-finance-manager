@@ -8,6 +8,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/ptr"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
@@ -95,35 +96,33 @@ func (uc *GetBudgetUseCase) Execute(
 		return err
 	})
 
-	baseTransactionOpts := []repo.TransactionOption{
-		repo.WithTransactionIsIgnored(false),
-		repo.WithTransactionIsExpense(true),
+	baseTransactionOpts := repo.TransactionOptions{
+		IsIgnored: ptr.New(false),
+		IsExpense: true,
 	}
 
 	g.Go(func() error {
-		opts := append(
-			baseTransactionOpts,
-			repo.WithTransactionDateAfter(cmpDates.StartDate),
-			repo.WithTransactionDateBefore(cmpDates.EndDate),
-		)
+		opts := baseTransactionOpts
+		opts.StartDate = cmpDates.StartDate
+		opts.EndDate = cmpDates.EndDate
+
 		spentByCategoryID, err = uc.tr.SumTransactionsByCategory(
 			gCtx,
 			in.UserID,
-			opts...,
+			opts,
 		)
 		return err
 	})
 
 	g.Go(func() error {
-		opts := append(
-			baseTransactionOpts,
-			repo.WithTransactionDateAfter(cmpDates.ComparisonStartDate),
-			repo.WithTransactionDateBefore(cmpDates.ComparisonEndDate),
-		)
+		opts := baseTransactionOpts
+		opts.StartDate = cmpDates.ComparisonStartDate
+		opts.EndDate = cmpDates.ComparisonEndDate
+
 		spentPreviousMonth, err = uc.tr.SumTransactions(
 			gCtx,
 			in.UserID,
-			opts...,
+			opts,
 		)
 		return err
 	})

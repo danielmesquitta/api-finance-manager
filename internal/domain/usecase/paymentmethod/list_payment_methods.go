@@ -31,40 +31,28 @@ func (uc *ListPaymentMethodsUseCase) Execute(
 	ctx context.Context,
 	in ListPaymentMethodsUseCaseInput,
 ) (*entity.PaginatedList[entity.PaymentMethod], error) {
-	offset := usecase.PreparePaginationInput(&in.PaginationInput)
-
 	g, gCtx := errgroup.WithContext(ctx)
 	var paymentMethods []entity.PaymentMethod
 	var count int64
-
-	options := []repo.PaymentMethodOption{}
-
-	if in.Search != "" {
-		options = append(
-			options,
-			repo.WithPaymentMethodSearch(in.Search),
-		)
-	}
 
 	g.Go(func() error {
 		var err error
 		count, err = uc.pmr.CountPaymentMethods(
 			gCtx,
-			options...,
+			in.PaymentMethodOptions,
 		)
 		return err
 	})
 
-	options = append(
-		options,
-		repo.WithPaymentMethodPagination(in.PageSize, offset),
+	in.PaymentMethodOptions.Limit, in.PaymentMethodOptions.Offset = usecase.PreparePaginationInput(
+		in.PaginationInput,
 	)
 
 	g.Go(func() error {
 		var err error
 		paymentMethods, err = uc.pmr.ListPaymentMethods(
 			gCtx,
-			options...,
+			in.PaymentMethodOptions,
 		)
 		return err
 	})

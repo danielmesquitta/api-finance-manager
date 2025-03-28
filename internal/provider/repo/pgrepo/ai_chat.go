@@ -46,7 +46,7 @@ func (r *AIChatRepo) CreateAIChat(
 
 func (r *AIChatRepo) ListAIChats(
 	ctx context.Context,
-	opts ...repo.AIChatOption,
+	opts ...repo.AIChatOptions,
 ) ([]entity.AIChat, error) {
 	aiChats, err := r.db.ListAIChats(ctx, opts...)
 	if err != nil {
@@ -58,7 +58,7 @@ func (r *AIChatRepo) ListAIChats(
 
 func (r *AIChatRepo) CountAIChats(
 	ctx context.Context,
-	opts ...repo.AIChatOption,
+	opts ...repo.AIChatOptions,
 ) (int64, error) {
 	return r.db.CountAIChats(ctx, opts...)
 }

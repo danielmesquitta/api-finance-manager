@@ -14,40 +14,14 @@ type TransactionCategoryOptions struct {
 	IDs    []uuid.UUID `json:"category_ids"`
 }
 
-type TransactionCategoryOption func(*TransactionCategoryOptions)
-
-func WithTransactionCategoryPagination(
-	limit uint,
-	offset uint,
-) TransactionCategoryOption {
-	return func(o *TransactionCategoryOptions) {
-		o.Limit = limit
-		o.Offset = offset
-	}
-}
-
-func WithTransactionCategorySearch(search string) TransactionCategoryOption {
-	return func(o *TransactionCategoryOptions) {
-		o.Search = search
-	}
-}
-
-func WithTransactionCategoryIDs(
-	ids []uuid.UUID,
-) TransactionCategoryOption {
-	return func(o *TransactionCategoryOptions) {
-		o.IDs = ids
-	}
-}
-
 type TransactionCategoryRepo interface {
 	ListTransactionCategories(
 		ctx context.Context,
-		opts ...TransactionCategoryOption,
+		opts ...TransactionCategoryOptions,
 	) ([]entity.TransactionCategory, error)
 	CountTransactionCategories(
 		ctx context.Context,
-		opts ...TransactionCategoryOption,
+		opts ...TransactionCategoryOptions,
 	) (int64, error)
 	CreateTransactionCategories(
 		ctx context.Context,

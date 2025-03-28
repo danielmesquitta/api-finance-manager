@@ -14,12 +14,9 @@ import (
 
 func (qb *QueryBuilder) ListPaymentMethods(
 	ctx context.Context,
-	opts ...repo.PaymentMethodOption,
+	opts ...repo.PaymentMethodOptions,
 ) ([]entity.PaymentMethod, error) {
-	options := repo.PaymentMethodOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.PaymentMethod.Table()).
@@ -45,12 +42,9 @@ func (qb *QueryBuilder) ListPaymentMethods(
 
 func (qb *QueryBuilder) CountPaymentMethods(
 	ctx context.Context,
-	opts ...repo.PaymentMethodOption,
+	opts ...repo.PaymentMethodOptions,
 ) (int64, error) {
-	options := repo.PaymentMethodOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.PaymentMethod.Table()).
@@ -113,4 +107,13 @@ func (qb *QueryBuilder) buildPaymentMethodQuery(
 	}
 
 	return query
+}
+
+func (qb *QueryBuilder) preparePaymentMethodOptions(
+	opts ...repo.PaymentMethodOptions,
+) repo.PaymentMethodOptions {
+	if len(opts) < 1 {
+		return repo.PaymentMethodOptions{}
+	}
+	return opts[0]
 }

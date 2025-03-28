@@ -14,12 +14,9 @@ import (
 
 func (qb *QueryBuilder) ListInstitutions(
 	ctx context.Context,
-	opts ...repo.InstitutionOption,
+	opts ...repo.InstitutionOptions,
 ) ([]entity.Institution, error) {
-	options := repo.InstitutionOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.Institution.Table()).
@@ -49,12 +46,9 @@ func (qb *QueryBuilder) ListInstitutions(
 
 func (qb *QueryBuilder) CountInstitutions(
 	ctx context.Context,
-	opts ...repo.InstitutionOption,
+	opts ...repo.InstitutionOptions,
 ) (int64, error) {
-	options := repo.InstitutionOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.Institution.Table()).
@@ -149,4 +143,13 @@ func (qb *QueryBuilder) buildInstitutionQuery(
 	}
 
 	return query
+}
+
+func (qb *QueryBuilder) prepareInstitutionOptions(
+	opts ...repo.InstitutionOptions,
+) repo.InstitutionOptions {
+	if len(opts) < 1 {
+		return repo.InstitutionOptions{}
+	}
+	return opts[0]
 }

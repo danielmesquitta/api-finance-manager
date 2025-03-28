@@ -13,32 +13,14 @@ type PaymentMethodOptions struct {
 	Search string `json:"search"`
 }
 
-type PaymentMethodOption func(*PaymentMethodOptions)
-
-func WithPaymentMethodPagination(
-	limit uint,
-	offset uint,
-) PaymentMethodOption {
-	return func(o *PaymentMethodOptions) {
-		o.Limit = limit
-		o.Offset = offset
-	}
-}
-
-func WithPaymentMethodSearch(search string) PaymentMethodOption {
-	return func(o *PaymentMethodOptions) {
-		o.Search = search
-	}
-}
-
 type PaymentMethodRepo interface {
 	ListPaymentMethods(
 		ctx context.Context,
-		opts ...PaymentMethodOption,
+		opts ...PaymentMethodOptions,
 	) ([]entity.PaymentMethod, error)
 	CountPaymentMethods(
 		ctx context.Context,
-		opts ...PaymentMethodOption,
+		opts ...PaymentMethodOptions,
 	) (int64, error)
 	CreatePaymentMethods(
 		ctx context.Context,

@@ -87,7 +87,9 @@ func (u *UpsertBudgetUseCase) Execute(
 	g.Go(func() error {
 		categoriesCount, err = u.cr.CountTransactionCategories(
 			gCtx,
-			repo.WithTransactionCategoryIDs(categoryIDs),
+			repo.TransactionCategoryOptions{
+				IDs: categoryIDs,
+			},
 		)
 		if err != nil {
 			return errs.New(err)

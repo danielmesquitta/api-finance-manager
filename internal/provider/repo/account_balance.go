@@ -11,16 +11,6 @@ type AccountBalanceOptions struct {
 	InstitutionIDs []uuid.UUID `json:"institution_ids"`
 }
 
-type AccountBalanceOption func(*AccountBalanceOptions)
-
-func WithAAccountBalanceInstitutions(
-	institutionIDs []uuid.UUID,
-) AccountBalanceOption {
-	return func(o *AccountBalanceOptions) {
-		o.InstitutionIDs = institutionIDs
-	}
-}
-
 type AccountBalanceRepo interface {
 	CreateAccountBalances(
 		ctx context.Context,
@@ -30,6 +20,6 @@ type AccountBalanceRepo interface {
 		ctx context.Context,
 		userID uuid.UUID,
 		date time.Time,
-		options ...AccountBalanceOption,
+		opts ...AccountBalanceOptions,
 	) (int64, error)
 }

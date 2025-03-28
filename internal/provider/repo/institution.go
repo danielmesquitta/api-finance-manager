@@ -14,38 +14,14 @@ type InstitutionOptions struct {
 	UserIDs []uuid.UUID `json:"-"`
 }
 
-type InstitutionOption func(*InstitutionOptions)
-
-func WithInstitutionPagination(
-	limit uint,
-	offset uint,
-) InstitutionOption {
-	return func(o *InstitutionOptions) {
-		o.Limit = limit
-		o.Offset = offset
-	}
-}
-
-func WithInstitutionSearch(search string) InstitutionOption {
-	return func(o *InstitutionOptions) {
-		o.Search = search
-	}
-}
-
-func WithInstitutionUsers(userIDs []uuid.UUID) InstitutionOption {
-	return func(o *InstitutionOptions) {
-		o.UserIDs = userIDs
-	}
-}
-
 type InstitutionRepo interface {
 	ListInstitutions(
 		ctx context.Context,
-		opts ...InstitutionOption,
+		opts ...InstitutionOptions,
 	) ([]entity.Institution, error)
 	CountInstitutions(
 		ctx context.Context,
-		opts ...InstitutionOption,
+		opts ...InstitutionOptions,
 	) (int64, error)
 	CreateInstitutions(
 		ctx context.Context,

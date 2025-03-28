@@ -29,7 +29,7 @@ func NewTransactionRepo(
 func (r *TransactionRepo) ListTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.TransactionOption,
+	opts ...repo.TransactionOptions,
 ) ([]entity.Transaction, error) {
 	transactions, err := r.db.ListTransactions(ctx, userID, opts...)
 	if err != nil {
@@ -41,7 +41,7 @@ func (r *TransactionRepo) ListTransactions(
 func (r *TransactionRepo) ListFullTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.TransactionOption,
+	opts ...repo.TransactionOptions,
 ) ([]entity.FullTransaction, error) {
 	transactions, err := r.db.
 		ListFullTransactions(ctx, userID, opts...)
@@ -54,7 +54,7 @@ func (r *TransactionRepo) ListFullTransactions(
 func (r *TransactionRepo) CountTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.TransactionOption,
+	opts ...repo.TransactionOptions,
 ) (int64, error) {
 	return r.db.CountTransactions(ctx, userID, opts...)
 }
@@ -62,7 +62,7 @@ func (r *TransactionRepo) CountTransactions(
 func (r *TransactionRepo) SumTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.TransactionOption,
+	opts ...repo.TransactionOptions,
 ) (int64, error) {
 	return r.db.SumTransactions(ctx, userID, opts...)
 }
@@ -70,7 +70,7 @@ func (r *TransactionRepo) SumTransactions(
 func (r *TransactionRepo) SumTransactionsByCategory(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.TransactionOption,
+	opts ...repo.TransactionOptions,
 ) (map[uuid.UUID]int64, error) {
 	return r.db.SumTransactionsByCategory(ctx, userID, opts...)
 }

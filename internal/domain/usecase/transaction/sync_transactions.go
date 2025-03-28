@@ -13,6 +13,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/ptr"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
@@ -68,8 +69,8 @@ func (uc *SyncTransactionsUseCase) Execute(
 	cacheExp := time.Hour * 12
 	offset := 0
 
-	accountOpts := []repo.AccountOption{
-		repo.WithAccountSubscriptionActive(true),
+	accountOpts := repo.AccountOptions{
+		IsSubscriptionActive: ptr.New(true),
 	}
 
 	if isSyncingAllUsers {
@@ -87,20 +88,12 @@ func (uc *SyncTransactionsUseCase) Execute(
 			return nil
 		}
 
-		accountOpts = append(
-			accountOpts,
-			repo.WithAccountPagination(
-				uint(uc.e.SyncTransactionsMaxAccounts),
-				uint(offset),
-			),
-		)
+		accountOpts.Limit = uint(uc.e.SyncTransactionsMaxAccounts)
+		accountOpts.Offset = uint(offset)
 	}
 
 	if len(in.UserIDs) > 0 {
-		accountOpts = append(
-			accountOpts,
-			repo.WithAccountUserIDs(in.UserIDs),
-		)
+		accountOpts.UserIDs = in.UserIDs
 	}
 
 	g, gCtx := errgroup.WithContext(ctx)
@@ -113,7 +106,7 @@ func (uc *SyncTransactionsUseCase) Execute(
 
 	g.Go(func() error {
 		var err error
-		accounts, err = uc.ar.ListFullAccounts(gCtx, accountOpts...)
+		accounts, err = uc.ar.ListFullAccounts(gCtx, accountOpts)
 		return err
 	})
 
@@ -485,12 +478,12 @@ func (uc *SyncTransactionsUseCase) listRepoTransactions(
 	userID uuid.UUID,
 	lastSynchronizedAt time.Time,
 ) ([]entity.Transaction, error) {
-	var opts []repo.TransactionOption
+	var opts repo.TransactionOptions
 	if !lastSynchronizedAt.IsZero() {
-		opts = append(opts, repo.WithTransactionDateAfter(lastSynchronizedAt))
+		opts.StartDate = lastSynchronizedAt
 	}
 
-	txs, err := uc.tr.ListTransactions(ctx, userID, opts...)
+	txs, err := uc.tr.ListTransactions(ctx, userID, opts)
 	if err != nil {
 		return nil, errs.New(err)
 	}

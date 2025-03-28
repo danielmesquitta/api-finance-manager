@@ -15,12 +15,9 @@ import (
 
 func (qb *QueryBuilder) ListAIChats(
 	ctx context.Context,
-	opts ...repo.AIChatOption,
+	opts ...repo.AIChatOptions,
 ) ([]entity.AIChat, error) {
-	options := repo.AIChatOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.AIChat.Table()).
@@ -55,12 +52,9 @@ func (qb *QueryBuilder) ListAIChats(
 
 func (qb *QueryBuilder) CountAIChats(
 	ctx context.Context,
-	opts ...repo.AIChatOption,
+	opts ...repo.AIChatOptions,
 ) (int64, error) {
-	options := repo.AIChatOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.AIChat.Table()).

@@ -14,12 +14,9 @@ import (
 
 func (qb *QueryBuilder) ListAccounts(
 	ctx context.Context,
-	opts ...repo.AccountOption,
+	opts ...repo.AccountOptions,
 ) ([]entity.Account, error) {
-	options := repo.AccountOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.Account.Table()).
@@ -42,12 +39,9 @@ func (qb *QueryBuilder) ListAccounts(
 
 func (qb *QueryBuilder) ListFullAccounts(
 	ctx context.Context,
-	opts ...repo.AccountOption,
+	opts ...repo.AccountOptions,
 ) ([]entity.FullAccount, error) {
-	options := repo.AccountOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.Account.Table()).
@@ -77,12 +71,9 @@ func (qb *QueryBuilder) ListFullAccounts(
 
 func (qb *QueryBuilder) CountAccounts(
 	ctx context.Context,
-	opts ...repo.AccountOption,
+	opts ...repo.AccountOptions,
 ) (int64, error) {
-	options := repo.AccountOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.Account.Table()).

@@ -27,7 +27,7 @@ func NewInstitutionRepo(
 
 func (r *InstitutionRepo) ListInstitutions(
 	ctx context.Context,
-	opts ...repo.InstitutionOption,
+	opts ...repo.InstitutionOptions,
 ) ([]entity.Institution, error) {
 	institutions, err := r.db.ListInstitutions(ctx, opts...)
 	if err != nil {
@@ -44,7 +44,7 @@ func (r *InstitutionRepo) ListInstitutions(
 
 func (r *InstitutionRepo) CountInstitutions(
 	ctx context.Context,
-	opts ...repo.InstitutionOption,
+	opts ...repo.InstitutionOptions,
 ) (int64, error) {
 	return r.db.CountInstitutions(ctx, opts...)
 }

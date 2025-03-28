@@ -14,30 +14,6 @@ type AIChatOptions struct {
 	Search string    `json:"search"`
 }
 
-type AIChatOption func(*AIChatOptions)
-
-func WithAIChatPagination(
-	limit uint,
-	offset uint,
-) AIChatOption {
-	return func(o *AIChatOptions) {
-		o.Limit = limit
-		o.Offset = offset
-	}
-}
-
-func WithAIChatUser(userID uuid.UUID) AIChatOption {
-	return func(o *AIChatOptions) {
-		o.UserID = userID
-	}
-}
-
-func WithAIChatSearch(search string) AIChatOption {
-	return func(o *AIChatOptions) {
-		o.Search = search
-	}
-}
-
 type AIChatRepo interface {
 	CreateAIChat(
 		ctx context.Context,
@@ -57,11 +33,11 @@ type AIChatRepo interface {
 	) (*entity.FullAIChat, error)
 	ListAIChats(
 		ctx context.Context,
-		opts ...AIChatOption,
+		opts ...AIChatOptions,
 	) ([]entity.AIChat, error)
 	CountAIChats(
 		ctx context.Context,
-		opts ...AIChatOption,
+		opts ...AIChatOptions,
 	) (int64, error)
 	UpdateAIChat(
 		ctx context.Context,

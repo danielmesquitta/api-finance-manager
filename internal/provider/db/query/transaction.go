@@ -16,12 +16,9 @@ import (
 func (qb *QueryBuilder) ListTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.TransactionOption,
+	opts ...repo.TransactionOptions,
 ) ([]entity.Transaction, error) {
-	options := repo.TransactionOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.Transaction.Table()).
@@ -51,12 +48,9 @@ func (qb *QueryBuilder) ListTransactions(
 func (qb *QueryBuilder) ListFullTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.TransactionOption,
+	opts ...repo.TransactionOptions,
 ) ([]entity.FullTransaction, error) {
-	options := repo.TransactionOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.Transaction.Table()).
@@ -94,12 +88,9 @@ func (qb *QueryBuilder) ListFullTransactions(
 func (qb *QueryBuilder) CountTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.TransactionOption,
+	opts ...repo.TransactionOptions,
 ) (int64, error) {
-	options := repo.TransactionOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.Transaction.Table()).
@@ -123,12 +114,9 @@ func (qb *QueryBuilder) CountTransactions(
 func (qb *QueryBuilder) SumTransactions(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.TransactionOption,
+	opts ...repo.TransactionOptions,
 ) (int64, error) {
-	options := repo.TransactionOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.Transaction.Table()).
@@ -152,12 +140,9 @@ func (qb *QueryBuilder) SumTransactions(
 func (qb *QueryBuilder) SumTransactionsByCategory(
 	ctx context.Context,
 	userID uuid.UUID,
-	opts ...repo.TransactionOption,
+	opts ...repo.TransactionOptions,
 ) (map[uuid.UUID]int64, error) {
-	options := repo.TransactionOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.Transaction.Table()).

@@ -16,12 +16,9 @@ func (qb *QueryBuilder) GetUserBalanceOnDate(
 	ctx context.Context,
 	userID uuid.UUID,
 	date time.Time,
-	options ...repo.AccountBalanceOption,
+	options ...repo.AccountBalanceOptions,
 ) (int64, error) {
-	opts := repo.AccountBalanceOptions{}
-	for _, opt := range options {
-		opt(&opts)
-	}
+	opts := prepareOptions(options...)
 
 	subQuery := goqu.
 		From(schema.AccountBalance.Table()).

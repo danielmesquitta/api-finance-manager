@@ -13,6 +13,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/account"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/budget"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/ptr"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/gpt"
@@ -399,12 +400,12 @@ func (uc *GenerateAIChatMessageUseCase) listUserTransactions(
 			transactions, err = uc.tr.ListTransactions(
 				subCtx,
 				userID,
-				opts...)
+				*opts)
 			return err
 		})
 
 		g.Go(func() (err error) {
-			sum, err = uc.tr.SumTransactions(subCtx, userID, opts...)
+			sum, err = uc.tr.SumTransactions(subCtx, userID, *opts)
 			return err
 		})
 
@@ -428,7 +429,7 @@ func (uc *GenerateAIChatMessageUseCase) listUserTransactions(
 
 func (uc *GenerateAIChatMessageUseCase) buildTransactionOptionsFromArgs(
 	args map[string]any,
-) ([]repo.TransactionOption, error) {
+) (*repo.TransactionOptions, error) {
 	startDate, err := uc.parseRequiredDateArg(args, ArgKeyStartDate)
 	if err != nil {
 		return nil, errs.New(err)
@@ -439,52 +440,43 @@ func (uc *GenerateAIChatMessageUseCase) buildTransactionOptionsFromArgs(
 		return nil, errs.New(err)
 	}
 
-	opts := []repo.TransactionOption{
-		repo.WithTransactionDateAfter(*startDate),
-		repo.WithTransactionDateBefore(*endDate),
-		repo.WithTransactionIsIgnored(false),
+	opts := repo.TransactionOptions{
+		StartDate: *startDate,
+		EndDate:   *endDate,
+		IsIgnored: ptr.New(false),
 	}
 
 	categoryIDs := uc.parseUUIDsArg(args, ArgKeyCategoryIDs)
 	if len(categoryIDs) > 0 {
-		opts = append(
-			opts,
-			repo.WithTransactionCategories(categoryIDs...),
-		)
+		opts.CategoryIDs = categoryIDs
 	}
 
 	institutionIDs := uc.parseUUIDsArg(args, ArgKeyInstitutionIDs)
 	if len(institutionIDs) > 0 {
-		opts = append(
-			opts,
-			repo.WithTransactionInstitutions(institutionIDs...),
-		)
+		opts.InstitutionIDs = institutionIDs
 	}
 
 	paymentMethodIDs := uc.parseUUIDsArg(args, ArgKeyPaymentMethodIDs)
 	if len(paymentMethodIDs) > 0 {
-		opts = append(
-			opts,
-			repo.WithTransactionInstitutions(paymentMethodIDs...),
-		)
+		opts.PaymentMethodIDs = paymentMethodIDs
 	}
 
 	isExpense := uc.parseBoolArg(args, ArgKeyIsExpense)
 	if isExpense {
-		opts = append(opts, repo.WithTransactionIsExpense(isExpense))
+		opts.IsExpense = isExpense
 	}
 
 	isIncome := uc.parseBoolArg(args, ArgKeyIsIncome)
 	if isIncome {
-		opts = append(opts, repo.WithTransactionIsIncome(isIncome))
+		opts.IsIncome = isIncome
 	}
 
-	search, ok := args[ArgKeySearch].(string)
-	if ok {
-		opts = append(opts, repo.WithTransactionSearch(search))
+	search, _ := args[ArgKeySearch].(string)
+	if search != "" {
+		opts.Search = search
 	}
 
-	return opts, nil
+	return &opts, nil
 }
 
 func (uc *GenerateAIChatMessageUseCase) getUserAccountsBalance(
@@ -496,16 +488,11 @@ func (uc *GenerateAIChatMessageUseCase) getUserAccountsBalance(
 			return "", errs.New(err)
 		}
 
-		options := repo.TransactionOptions{}
-		for _, opt := range opts {
-			opt(&options)
-		}
-
 		budgetOutput, err := uc.gabuc.Execute(
 			ctx,
 			account.GetAccountsBalanceUseCaseInput{
 				UserID:             userID,
-				TransactionOptions: options,
+				TransactionOptions: *opts,
 			},
 		)
 		if err != nil {
@@ -527,7 +514,7 @@ func (uc *GenerateAIChatMessageUseCase) getUserAccountsBalance(
 
 func (uc *GenerateAIChatMessageUseCase) buildAccountsBalanceOptionsFromArgs(
 	args map[string]any,
-) ([]repo.TransactionOption, error) {
+) (*repo.TransactionOptions, error) {
 	startDate, err := uc.parseRequiredDateArg(args, ArgKeyStartDate)
 	if err != nil {
 		return nil, errs.New(err)
@@ -538,21 +525,18 @@ func (uc *GenerateAIChatMessageUseCase) buildAccountsBalanceOptionsFromArgs(
 		return nil, errs.New(err)
 	}
 
-	opts := []repo.TransactionOption{
-		repo.WithTransactionDateAfter(*startDate),
-		repo.WithTransactionDateBefore(*endDate),
-		repo.WithTransactionIsIgnored(false),
+	opts := repo.TransactionOptions{
+		StartDate: *startDate,
+		EndDate:   *endDate,
+		IsIgnored: ptr.New(false),
 	}
 
 	institutionIDs := uc.parseUUIDsArg(args, ArgKeyInstitutionIDs)
 	if len(institutionIDs) > 0 {
-		opts = append(
-			opts,
-			repo.WithTransactionInstitutions(institutionIDs...),
-		)
+		opts.InstitutionIDs = institutionIDs
 	}
 
-	return opts, nil
+	return &opts, nil
 }
 
 func (uc *GenerateAIChatMessageUseCase) getUserBudget(

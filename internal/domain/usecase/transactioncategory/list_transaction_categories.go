@@ -32,40 +32,26 @@ func (uc *ListTransactionCategoriesUseCase) Execute(
 	ctx context.Context,
 	in ListCategoriesInput,
 ) (*entity.PaginatedList[entity.TransactionCategory], error) {
-	offset := usecase.PreparePaginationInput(&in.PaginationInput)
-
 	g, gCtx := errgroup.WithContext(ctx)
 	var categories []entity.TransactionCategory
 	var count int64
 
-	options := []repo.TransactionCategoryOption{}
-
-	if in.Search != "" {
-		options = append(
-			options,
-			repo.WithTransactionCategorySearch(in.Search),
-		)
-	}
-
-	g.Go(func() error {
-		var err error
+	g.Go(func() (err error) {
 		count, err = uc.cr.CountTransactionCategories(
 			gCtx,
-			options...,
+			in.TransactionCategoryOptions,
 		)
 		return err
 	})
 
-	options = append(
-		options,
-		repo.WithTransactionCategoryPagination(in.PageSize, offset),
+	in.TransactionCategoryOptions.Limit, in.TransactionCategoryOptions.Offset = usecase.PreparePaginationInput(
+		in.PaginationInput,
 	)
 
-	g.Go(func() error {
-		var err error
+	g.Go(func() (err error) {
 		categories, err = uc.cr.ListTransactionCategories(
 			gCtx,
-			options...,
+			in.TransactionCategoryOptions,
 		)
 		return err
 	})

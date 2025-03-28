@@ -43,9 +43,9 @@ func (r *AccountBalanceRepo) GetUserBalanceOnDate(
 	ctx context.Context,
 	userID uuid.UUID,
 	date time.Time,
-	options ...repo.AccountBalanceOption,
+	opts ...repo.AccountBalanceOptions,
 ) (int64, error) {
-	return r.db.GetUserBalanceOnDate(ctx, userID, date, options...)
+	return r.db.GetUserBalanceOnDate(ctx, userID, date, opts...)
 }
 
 var _ repo.AccountBalanceRepo = (*AccountBalanceRepo)(nil)

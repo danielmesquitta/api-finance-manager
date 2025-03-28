@@ -33,7 +33,7 @@ func (uc *ListAIChatMessagesAndAnswersUseCase) Execute(
 	ctx context.Context,
 	in ListAIChatMessagesAndAnswersUseCaseInput,
 ) (*entity.PaginatedList[entity.AIChatMessageAndAnswer], error) {
-	offset := usecase.PreparePaginationInput(&in.PaginationInput)
+	limit, offset := usecase.PreparePaginationInput(in.PaginationInput)
 
 	g, gCtx := errgroup.WithContext(ctx)
 	var (
@@ -56,7 +56,7 @@ func (uc *ListAIChatMessagesAndAnswersUseCase) Execute(
 			gCtx,
 			repo.ListAIChatMessagesAndAnswersParams{
 				AiChatID: in.AIChatID,
-				Limit:    int32(in.PageSize),
+				Limit:    int32(limit),
 				Offset:   int32(offset),
 			},
 		)

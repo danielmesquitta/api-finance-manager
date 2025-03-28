@@ -29,14 +29,14 @@ func NewAccountRepo(
 
 func (r *AccountRepo) ListAccounts(
 	ctx context.Context,
-	opts ...repo.AccountOption,
+	opts ...repo.AccountOptions,
 ) ([]entity.Account, error) {
 	return r.qb.ListAccounts(ctx, opts...)
 }
 
 func (r *AccountRepo) ListFullAccounts(
 	ctx context.Context,
-	opts ...repo.AccountOption,
+	opts ...repo.AccountOptions,
 ) ([]entity.FullAccount, error) {
 	return r.qb.ListFullAccounts(ctx, opts...)
 }

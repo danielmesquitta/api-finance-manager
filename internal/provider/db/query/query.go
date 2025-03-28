@@ -163,3 +163,13 @@ func (qb *QueryBuilder) scan(
 		return nil
 	}
 }
+
+func prepareOptions[T any](
+	opts ...T,
+) T {
+	var zero T
+	if len(opts) < 1 {
+		return zero
+	}
+	return opts[0]
+}

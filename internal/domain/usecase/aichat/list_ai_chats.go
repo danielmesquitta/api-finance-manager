@@ -31,40 +31,29 @@ func (uc *ListAIChatsUseCase) Execute(
 	ctx context.Context,
 	in ListAIChatsUseCaseInput,
 ) (*entity.PaginatedList[entity.AIChat], error) {
-	offset := usecase.PreparePaginationInput(&in.PaginationInput)
 
 	g, gCtx := errgroup.WithContext(ctx)
 	var aiChats []entity.AIChat
 	var count int64
 
-	options := []repo.AIChatOption{}
-
-	if in.Search != "" {
-		options = append(
-			options,
-			repo.WithAIChatSearch(in.Search),
-		)
-	}
-
 	g.Go(func() error {
 		var err error
 		count, err = uc.pmr.CountAIChats(
 			gCtx,
-			options...,
+			in.AIChatOptions,
 		)
 		return err
 	})
 
-	options = append(
-		options,
-		repo.WithAIChatPagination(in.PageSize, offset),
+	in.AIChatOptions.Limit, in.AIChatOptions.Offset = usecase.PreparePaginationInput(
+		in.PaginationInput,
 	)
 
 	g.Go(func() error {
 		var err error
 		aiChats, err = uc.pmr.ListAIChats(
 			gCtx,
-			options...,
+			in.AIChatOptions,
 		)
 		return err
 	})

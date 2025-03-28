@@ -14,12 +14,9 @@ import (
 
 func (qb *QueryBuilder) ListTransactionCategories(
 	ctx context.Context,
-	opts ...repo.TransactionCategoryOption,
+	opts ...repo.TransactionCategoryOptions,
 ) ([]entity.TransactionCategory, error) {
-	options := repo.TransactionCategoryOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.TransactionCategory.Table()).
@@ -45,12 +42,9 @@ func (qb *QueryBuilder) ListTransactionCategories(
 
 func (qb *QueryBuilder) CountTransactionCategories(
 	ctx context.Context,
-	opts ...repo.TransactionCategoryOption,
+	opts ...repo.TransactionCategoryOptions,
 ) (int64, error) {
-	options := repo.TransactionCategoryOptions{}
-	for _, opt := range opts {
-		opt(&options)
-	}
+	options := prepareOptions(opts...)
 
 	query := goqu.
 		From(schema.TransactionCategory.Table()).
@@ -119,4 +113,13 @@ func (qb *QueryBuilder) buildCategoryQuery(
 	}
 
 	return query
+}
+
+func (qb *QueryBuilder) prepareTransactionCategoryOptions(
+	opts ...repo.TransactionCategoryOptions,
+) repo.TransactionCategoryOptions {
+	if len(opts) < 1 {
+		return repo.TransactionCategoryOptions{}
+	}
+	return opts[0]
 }

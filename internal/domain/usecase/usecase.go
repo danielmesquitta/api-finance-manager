@@ -11,14 +11,14 @@ type PaginationInput struct {
 	PageSize uint `json:"page_size"`
 }
 
-func PreparePaginationInput(in *PaginationInput) (offset uint) {
+func PreparePaginationInput(in PaginationInput) (limit, offset uint) {
 	if in.Page < 1 {
 		in.Page = 1
 	}
 	if in.PageSize < 1 {
 		in.PageSize = 20
 	}
-	return (in.Page - 1) * in.PageSize
+	return in.PageSize, (in.Page - 1) * in.PageSize
 }
 
 func PreparePaginationOutput[T any](

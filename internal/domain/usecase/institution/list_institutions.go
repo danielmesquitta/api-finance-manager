@@ -32,40 +32,28 @@ func (uc *ListInstitutionsUseCase) Execute(
 	ctx context.Context,
 	in ListInstitutionsUseCaseInput,
 ) (*entity.PaginatedList[entity.Institution], error) {
-	offset := usecase.PreparePaginationInput(&in.PaginationInput)
-
 	g, gCtx := errgroup.WithContext(ctx)
 	var institutions []entity.Institution
 	var count int64
-
-	options := []repo.InstitutionOption{}
-	if len(in.UserIDs) > 0 {
-		options = append(options, repo.WithInstitutionUsers(in.UserIDs))
-	}
-
-	if in.Search != "" {
-		options = append(options, repo.WithInstitutionSearch(in.Search))
-	}
 
 	g.Go(func() error {
 		var err error
 		count, err = uc.ir.CountInstitutions(
 			gCtx,
-			options...,
+			in.InstitutionOptions,
 		)
 		return err
 	})
 
-	options = append(
-		options,
-		repo.WithInstitutionPagination(in.PageSize, offset),
+	in.InstitutionOptions.Limit, in.InstitutionOptions.Offset = usecase.PreparePaginationInput(
+		in.PaginationInput,
 	)
 
 	g.Go(func() error {
 		var err error
 		institutions, err = uc.ir.ListInstitutions(
 			gCtx,
-			options...,
+			in.InstitutionOptions,
 		)
 		return err
 	})

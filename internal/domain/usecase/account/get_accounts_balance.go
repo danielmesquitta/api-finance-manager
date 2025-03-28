@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
-	"github.com/danielmesquitta/api-finance-manager/internal/domain/usecase/transaction"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/money"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
@@ -58,7 +57,10 @@ func (uc *GetAccountsBalanceUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
-	balanceOpts := prepareBalanceOptions(in.TransactionOptions)
+	balanceOpts := repo.AccountBalanceOptions{}
+	if err := copier.Copy(&balanceOpts, in.TransactionOptions); err != nil {
+		return nil, errs.New(err)
+	}
 
 	cmpDates := dateutil.CalculateComparisonDates(in.StartDate, in.EndDate)
 
@@ -66,104 +68,78 @@ func (uc *GetAccountsBalanceUseCase) Execute(
 	var currentBalance, previousBalance, currentIncome,
 		previousIncome, currentExpense, previousExpense int64
 
-	g.Go(func() error {
-		var err error
+	g.Go(func() (err error) {
 		currentBalance, err = uc.abr.GetUserBalanceOnDate(
 			gCtx,
 			in.UserID,
 			cmpDates.EndDate,
-			balanceOpts...,
+			balanceOpts,
 		)
 		return err
 	})
 
-	g.Go(func() error {
-		var err error
+	g.Go(func() (err error) {
 		previousBalance, err = uc.abr.GetUserBalanceOnDate(
 			gCtx,
 			in.UserID,
 			cmpDates.ComparisonEndDate,
-			balanceOpts...,
+			balanceOpts,
 		)
 		return err
 	})
 
-	g.Go(func() error {
-		var err error
-
-		var inOpts repo.TransactionOptions
-		if err := copier.Copy(&inOpts, in.TransactionOptions); err != nil {
-			return err
-		}
-		inOpts.StartDate = cmpDates.StartDate
-		inOpts.EndDate = cmpDates.EndDate
-		inOpts.IsIncome = true
-		opts := transaction.PrepareTransactionOptions(inOpts)
+	g.Go(func() (err error) {
+		opts := in.TransactionOptions
+		opts.StartDate = cmpDates.StartDate
+		opts.EndDate = cmpDates.EndDate
+		opts.IsIncome = true
 
 		currentIncome, err = uc.tr.SumTransactions(
 			gCtx,
 			in.UserID,
-			opts...,
+			opts,
 		)
 		return err
 	})
 
-	g.Go(func() error {
-		var err error
-
-		var inOpts repo.TransactionOptions
-		if err := copier.Copy(&inOpts, in.TransactionOptions); err != nil {
-			return err
-		}
-		inOpts.StartDate = cmpDates.ComparisonStartDate
-		inOpts.EndDate = cmpDates.ComparisonEndDate
-		inOpts.IsIncome = true
-		opts := transaction.PrepareTransactionOptions(inOpts)
+	g.Go(func() (err error) {
+		opts := in.TransactionOptions
+		opts.StartDate = cmpDates.ComparisonStartDate
+		opts.EndDate = cmpDates.ComparisonEndDate
+		opts.IsIncome = true
 
 		previousIncome, err = uc.tr.SumTransactions(
 			gCtx,
 			in.UserID,
-			opts...,
+			opts,
 		)
 		return err
 	})
 
-	g.Go(func() error {
-		var err error
-
-		var inOpts repo.TransactionOptions
-		if err := copier.Copy(&inOpts, in.TransactionOptions); err != nil {
-			return err
-		}
-		inOpts.StartDate = cmpDates.StartDate
-		inOpts.EndDate = cmpDates.EndDate
-		inOpts.IsExpense = true
-		opts := transaction.PrepareTransactionOptions(inOpts)
+	g.Go(func() (err error) {
+		opts := in.TransactionOptions
+		opts.StartDate = cmpDates.StartDate
+		opts.EndDate = cmpDates.EndDate
+		opts.IsExpense = true
 
 		currentExpense, err = uc.tr.SumTransactions(
 			gCtx,
 			in.UserID,
-			opts...,
+			opts,
 		)
 		return err
 	})
 
-	g.Go(func() error {
-		var err error
-
-		var inOpts repo.TransactionOptions
-		if err := copier.Copy(&inOpts, in.TransactionOptions); err != nil {
-			return err
-		}
-		inOpts.StartDate = cmpDates.ComparisonStartDate
-		inOpts.EndDate = cmpDates.ComparisonEndDate
-		inOpts.IsExpense = true
-		opts := transaction.PrepareTransactionOptions(inOpts)
+	g.Go(func() (err error) {
+		opts := in.TransactionOptions
+		opts.StartDate = cmpDates.ComparisonStartDate
+		opts.EndDate = cmpDates.ComparisonEndDate
+		opts.IsExpense = true
 
 		previousExpense, err = uc.tr.SumTransactions(
 			gCtx,
 			in.UserID,
-			opts...,
+			opts,
 		)
 		return err
 	})

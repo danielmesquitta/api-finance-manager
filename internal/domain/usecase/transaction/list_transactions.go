@@ -42,27 +42,22 @@ func (uc *ListTransactionsUseCase) Execute(
 		return nil, errs.New(err)
 	}
 
-	offset := usecase.PreparePaginationInput(&in.PaginationInput)
-
 	g, gCtx := errgroup.WithContext(ctx)
 	var transactions []entity.FullTransaction
 	var count int64
-
-	opts := PrepareTransactionOptions(in.TransactionOptions)
 
 	g.Go(func() error {
 		var err error
 		count, err = uc.tr.CountTransactions(
 			gCtx,
 			in.UserID,
-			opts...,
+			in.TransactionOptions,
 		)
 		return err
 	})
 
-	opts = append(
-		opts,
-		repo.WithTransactionPagination(in.PageSize, offset),
+	in.TransactionOptions.Limit, in.TransactionOptions.Offset = usecase.PreparePaginationInput(
+		in.PaginationInput,
 	)
 
 	g.Go(func() error {
@@ -70,7 +65,7 @@ func (uc *ListTransactionsUseCase) Execute(
 		transactions, err = uc.tr.ListFullTransactions(
 			gCtx,
 			in.UserID,
-			opts...,
+			in.TransactionOptions,
 		)
 		return err
 	})

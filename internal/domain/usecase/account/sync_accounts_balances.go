@@ -11,6 +11,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/ptr"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/tx"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/cache"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/openfinance"
@@ -58,11 +59,11 @@ func (uc *SyncAccountsBalancesUseCase) Execute(ctx context.Context) error {
 
 	accounts, err := uc.ar.ListFullAccounts(
 		ctx,
-		repo.WithAccountSubscriptionActive(true),
-		repo.WithAccountPagination(
-			uint(uc.e.SyncBalancesMaxAccounts),
-			uint(offset),
-		),
+		repo.AccountOptions{
+			Limit:                uint(uc.e.SyncBalancesMaxAccounts),
+			Offset:               uint(offset),
+			IsSubscriptionActive: ptr.New(true),
+		},
 	)
 	if err != nil {
 		return errs.New(err)

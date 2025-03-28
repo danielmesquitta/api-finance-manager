@@ -7,6 +7,7 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/dateutil"
+	"github.com/danielmesquitta/api-finance-manager/internal/pkg/ptr"
 	"github.com/danielmesquitta/api-finance-manager/internal/pkg/validator"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 	"github.com/google/uuid"
@@ -76,18 +77,18 @@ func (uc *GetBudgetCategoryUseCase) Execute(
 		return nil, errs.ErrBudgetCategoryNotFound
 	}
 
-	transactionOpts := []repo.TransactionOption{
-		repo.WithTransactionDateAfter(monthStart),
-		repo.WithTransactionDateBefore(monthEnd),
-		repo.WithTransactionCategories(in.CategoryID),
-		repo.WithTransactionIsIgnored(false),
-		repo.WithTransactionIsExpense(true),
+	transactionOpts := repo.TransactionOptions{
+		StartDate:   monthStart,
+		EndDate:     monthEnd,
+		CategoryIDs: []uuid.UUID{in.CategoryID},
+		IsIgnored:   ptr.New(false),
+		IsExpense:   true,
 	}
 
 	spent, err := uc.tr.SumTransactions(
 		ctx,
 		in.UserID,
-		transactionOpts...,
+		transactionOpts,
 	)
 	if err != nil {
 		return nil, errs.New(err)

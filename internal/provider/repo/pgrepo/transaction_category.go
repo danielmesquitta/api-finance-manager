@@ -29,7 +29,7 @@ func NewCategoryRepo(
 
 func (r *TransactionCategoryRepo) ListTransactionCategories(
 	ctx context.Context,
-	opts ...repo.TransactionCategoryOption,
+	opts ...repo.TransactionCategoryOptions,
 ) ([]entity.TransactionCategory, error) {
 	categories, err := r.db.ListTransactionCategories(ctx, opts...)
 	if err != nil {
@@ -41,7 +41,7 @@ func (r *TransactionCategoryRepo) ListTransactionCategories(
 
 func (r *TransactionCategoryRepo) CountTransactionCategories(
 	ctx context.Context,
-	opts ...repo.TransactionCategoryOption,
+	opts ...repo.TransactionCategoryOptions,
 ) (int64, error) {
 	return r.db.CountTransactionCategories(ctx, opts...)
 }

@@ -129,7 +129,9 @@ func (uc *CreateAccountsUseCase) Execute(
 	if userInstitution != nil {
 		registeredAccounts, err := uc.ar.ListAccounts(
 			ctx,
-			repo.WithAccountExternalIDs(accountExternalIDs),
+			repo.AccountOptions{
+				ExternalIDs: accountExternalIDs,
+			},
 		)
 		if err != nil {
 			return errs.New(err)

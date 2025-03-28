@@ -22,83 +22,11 @@ type TransactionOptions struct {
 	IsIgnored        *bool       `json:"is_ignored"`
 }
 
-type TransactionOption func(*TransactionOptions)
-
-func WithTransactionPagination(
-	limit uint,
-	offset uint,
-) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.Limit = limit
-		o.Offset = offset
-	}
-}
-
-func WithTransactionSearch(search string) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.Search = search
-	}
-}
-
-func WithTransactionDateAfter(startDate time.Time) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.StartDate = startDate
-	}
-}
-
-func WithTransactionDateBefore(endDate time.Time) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.EndDate = endDate
-	}
-}
-
-func WithTransactionCategories(categoryIDs ...uuid.UUID) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.CategoryIDs = categoryIDs
-	}
-}
-
-func WithTransactionInstitutions(
-	institutionIDs ...uuid.UUID,
-) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.InstitutionIDs = institutionIDs
-	}
-}
-
-func WithTransactionPaymentMethods(
-	paymentMethodIDs ...uuid.UUID,
-) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.PaymentMethodIDs = paymentMethodIDs
-	}
-}
-
-func WithTransactionIsExpense(isExpense bool) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.IsExpense = isExpense
-	}
-}
-
-func WithTransactionIsIncome(isIncome bool) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.IsIncome = isIncome
-	}
-}
-
-func WithTransactionIsIgnored(
-	isIgnored bool,
-) TransactionOption {
-	return func(o *TransactionOptions) {
-		o.IsIgnored = &isIgnored
-	}
-}
-
 type TransactionRepo interface {
 	CountTransactions(
 		ctx context.Context,
 		userID uuid.UUID,
-		opts ...TransactionOption,
+		opts ...TransactionOptions,
 	) (int64, error)
 	CreateTransaction(
 		ctx context.Context,
@@ -115,22 +43,22 @@ type TransactionRepo interface {
 	ListTransactions(
 		ctx context.Context,
 		userID uuid.UUID,
-		opts ...TransactionOption,
+		opts ...TransactionOptions,
 	) ([]entity.Transaction, error)
 	ListFullTransactions(
 		ctx context.Context,
 		userID uuid.UUID,
-		opts ...TransactionOption,
+		opts ...TransactionOptions,
 	) ([]entity.FullTransaction, error)
 	SumTransactions(
 		ctx context.Context,
 		userID uuid.UUID,
-		opts ...TransactionOption,
+		opts ...TransactionOptions,
 	) (int64, error)
 	SumTransactionsByCategory(
 		ctx context.Context,
 		userID uuid.UUID,
-		opts ...TransactionOption,
+		opts ...TransactionOptions,
 	) (map[uuid.UUID]int64, error)
 	UpdateTransaction(
 		ctx context.Context,
