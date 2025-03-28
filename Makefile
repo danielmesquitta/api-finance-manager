@@ -99,7 +99,7 @@ unit-test:
 
 .PHONY: integration-test
 integration-test:
-	@ENVIRONMENT=test go test ./test/integration/... -timeout 60s
+	@ENVIRONMENT=test go test ./test/integration/... -timeout 3m
 
 .PHONY: test
 test: unit-test integration-test

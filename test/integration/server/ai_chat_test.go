@@ -123,52 +123,52 @@ func TestGenerateAIChatMessage(t *testing.T) {
 		expectedMessageContains string
 		expectedCode            int
 	}{
-		// {
-		// 	description: "fails without token",
-		// 	token:       "",
-		// 	aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
-		// 	body: dto.GenerateAIChatMessageRequest{
-		// 		GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
-		// 			Message: "Lorem ipsum",
-		// 		},
-		// 	},
-		// 	expectedCode: http.StatusBadRequest,
-		// },
-		// {
-		// 	description: "should not create a new AI chat for a free tier user",
-		// 	token:       mockoauth.FreeTierMockToken,
-		// 	aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
-		// 	body: dto.GenerateAIChatMessageRequest{
-		// 		GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
-		// 			Message: "Lorem ipsum",
-		// 		},
-		// 	},
-		// 	expectedCode: http.StatusBadRequest,
-		// },
-		// {
-		// 	description: "generates a new AI chat message about food transactions",
-		// 	token:       mockoauth.PremiumTierMockToken,
-		// 	aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
-		// 	body: dto.GenerateAIChatMessageRequest{
-		// 		GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
-		// 			Message: "Quanto gastei com comida em outubro de 2024?",
-		// 		},
-		// 	},
-		// 	expectedMessageContains: "1.648,85",
-		// 	expectedCode:            http.StatusCreated,
-		// },
-		// {
-		// 	description: "generates a new AI chat message about transportation transactions",
-		// 	token:       mockoauth.PremiumTierMockToken,
-		// 	aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
-		// 	body: dto.GenerateAIChatMessageRequest{
-		// 		GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
-		// 			Message: "Quanto gastei com transporte em outubro de 2024?",
-		// 		},
-		// 	},
-		// 	expectedMessageContains: "545,84",
-		// 	expectedCode:            http.StatusCreated,
-		// },
+		{
+			description: "fails without token",
+			token:       "",
+			aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
+			body: dto.GenerateAIChatMessageRequest{
+				GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
+					Message: "Lorem ipsum",
+				},
+			},
+			expectedCode: http.StatusBadRequest,
+		},
+		{
+			description: "should not create a new AI chat for a free tier user",
+			token:       mockoauth.FreeTierMockToken,
+			aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
+			body: dto.GenerateAIChatMessageRequest{
+				GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
+					Message: "Lorem ipsum",
+				},
+			},
+			expectedCode: http.StatusBadRequest,
+		},
+		{
+			description: "generates a new AI chat message about food transactions",
+			token:       mockoauth.PremiumTierMockToken,
+			aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
+			body: dto.GenerateAIChatMessageRequest{
+				GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
+					Message: "Quanto gastei com comida em outubro de 2024?",
+				},
+			},
+			expectedMessageContains: "1.648,85",
+			expectedCode:            http.StatusCreated,
+		},
+		{
+			description: "generates a new AI chat message about transportation transactions",
+			token:       mockoauth.PremiumTierMockToken,
+			aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
+			body: dto.GenerateAIChatMessageRequest{
+				GenerateAIChatMessageUseCaseInput: aichat.GenerateAIChatMessageUseCaseInput{
+					Message: "Quanto gastei com transporte em outubro de 2024?",
+				},
+			},
+			expectedMessageContains: "545,84",
+			expectedCode:            http.StatusCreated,
+		},
 		{
 			description: "generates a new AI chat message about transportation transactions",
 			token:       mockoauth.PremiumTierMockToken,
@@ -219,7 +219,12 @@ func TestGenerateAIChatMessage(t *testing.T) {
 			}
 
 			log.Println(
-				"actualResponse.AIChatAnswer.Message",
+				"message",
+				test.body.Message,
+			)
+
+			log.Println(
+				"answer",
 				actualResponse.AIChatAnswer.Message,
 			)
 
