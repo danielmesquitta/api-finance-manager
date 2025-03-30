@@ -392,6 +392,8 @@ components:
                     type: string
                 id:
                     type: string
+                language:
+                    type: string
                 name:
                     type: string
                 subscription_expires_at:
@@ -828,6 +830,8 @@ components:
                 email:
                     type: string
                 id:
+                    type: string
+                language:
                     type: string
                 name:
                     type: string

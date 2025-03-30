@@ -2694,6 +2694,9 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "language": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -3345,6 +3348,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "language": {
                     "type": "string"
                 },
                 "name": {

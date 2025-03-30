@@ -2687,6 +2687,9 @@
                 "id": {
                     "type": "string"
                 },
+                "language": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -3338,6 +3341,9 @@
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "language": {
                     "type": "string"
                 },
                 "name": {

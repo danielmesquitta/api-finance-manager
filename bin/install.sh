@@ -10,6 +10,7 @@ packages=(
     "github.com/google/wire/cmd/wire@latest"
     "github.com/danielmesquitta/prisma-go-tools@latest"
     "github.com/danielmesquitta/copy-sqlc-params@latest"
+    "github.com/danielmesquitta/wire-config@latest"
     "github.com/swaggo/swag/cmd/swag@latest"
     "github.com/zxmfke/swagger2openapi3/cmd/swag2op@latest"
 )
