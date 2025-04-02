@@ -12,8 +12,8 @@ func (tdb *TestDB) ListBudgets(
 	ctx context.Context,
 ) ([]entity.Budget, error) {
 	query := goqu.
-		Select(schema.Budget.ColumnAll()).
-		From(schema.Budget.Table())
+		Select(schema.Budget.All()).
+		From(schema.Budget.String())
 
 	dest := []entity.Budget{}
 	if err := tdb.Scan(ctx, query, &dest); err != nil {

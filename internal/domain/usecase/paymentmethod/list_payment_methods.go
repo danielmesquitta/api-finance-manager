@@ -44,7 +44,7 @@ func (uc *ListPaymentMethodsUseCase) Execute(
 		return err
 	})
 
-	in.PaymentMethodOptions.Limit, in.PaymentMethodOptions.Offset = usecase.PreparePaginationInput(
+	in.Limit, in.Offset = usecase.PreparePaginationInput(
 		in.PaginationInput,
 	)
 

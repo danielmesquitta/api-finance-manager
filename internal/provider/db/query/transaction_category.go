@@ -19,9 +19,9 @@ func (qb *QueryBuilder) ListTransactionCategories(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.TransactionCategory.Table()).
-		Select(schema.TransactionCategory.ColumnAll()).
-		Where(goqu.I(schema.TransactionCategory.ColumnDeletedAt()).IsNull())
+		From(schema.TransactionCategory.String()).
+		Select(schema.TransactionCategory.All()).
+		Where(goqu.I(schema.TransactionCategory.DeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildCategoryExpressions(options)
 
@@ -47,9 +47,9 @@ func (qb *QueryBuilder) CountTransactionCategories(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.TransactionCategory.Table()).
-		Select(goqu.COUNT(schema.TransactionCategory.ColumnAll())).
-		Where(goqu.I(schema.TransactionCategory.ColumnDeletedAt()).IsNull())
+		From(schema.TransactionCategory.String()).
+		Select(goqu.COUNT(schema.TransactionCategory.All())).
+		Where(goqu.I(schema.TransactionCategory.DeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildCategoryExpressions(options)
 
@@ -70,21 +70,21 @@ func (qb *QueryBuilder) buildCategoryExpressions(
 	if options.Search != "" {
 		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.TransactionCategory.ColumnName(),
+			schema.TransactionCategory.Name(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, orderExp.Desc())
 	}
 
 	if len(options.IDs) > 0 {
-		exp := goqu.I(schema.TransactionCategory.ColumnID()).
+		exp := goqu.I(schema.TransactionCategory.ID()).
 			In(options.IDs)
 		whereExps = append(whereExps, exp)
 	}
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(schema.TransactionCategory.ColumnName()).Asc(),
+		goqu.I(schema.TransactionCategory.Name()).Asc(),
 	)
 
 	return whereExps, orderedExps
@@ -113,13 +113,4 @@ func (qb *QueryBuilder) buildCategoryQuery(
 	}
 
 	return query
-}
-
-func (qb *QueryBuilder) prepareTransactionCategoryOptions(
-	opts ...repo.TransactionCategoryOptions,
-) repo.TransactionCategoryOptions {
-	if len(opts) < 1 {
-		return repo.TransactionCategoryOptions{}
-	}
-	return opts[0]
 }

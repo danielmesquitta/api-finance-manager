@@ -20,17 +20,17 @@ func (qb *QueryBuilder) ListAIChats(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.AIChat.Table()).
-		Select(schema.AIChat.ColumnAll()).
-		Distinct(schema.AIChat.ColumnID()).
-		Where(goqu.I(schema.AIChat.ColumnDeletedAt()).IsNull())
+		From(schema.AIChat.String()).
+		Select(schema.AIChat.All()).
+		Distinct(schema.AIChat.ID()).
+		Where(goqu.I(schema.AIChat.DeletedAt()).IsNull())
 
 	joins := qb.buildAIChatJoins(options)
 
 	whereExps, orderedExps := qb.buildAIChatExpressions(options)
 
 	orderedExps = append(
-		[]exp.OrderedExpression{goqu.I(schema.AIChat.ColumnID()).Asc()},
+		[]exp.OrderedExpression{goqu.I(schema.AIChat.ID()).Asc()},
 		orderedExps...,
 	)
 
@@ -57,13 +57,13 @@ func (qb *QueryBuilder) CountAIChats(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.AIChat.Table()).
+		From(schema.AIChat.String()).
 		Select(
 			goqu.COUNT(
-				goqu.DISTINCT(schema.AIChat.ColumnID()),
+				goqu.DISTINCT(schema.AIChat.ID()),
 			),
 		).
-		Where(goqu.I(schema.AIChat.ColumnDeletedAt()).IsNull())
+		Where(goqu.I(schema.AIChat.DeletedAt()).IsNull())
 
 	joins := qb.buildAIChatJoins(options)
 
@@ -86,9 +86,9 @@ func (qb *QueryBuilder) buildAIChatExpressions(
 	if options.Search != "" {
 		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.AIChat.ColumnTitle(),
-			schema.AIChatMessage.ColumnMessage(),
-			schema.AIChatAnswer.ColumnMessage(),
+			schema.AIChat.Title(),
+			schema.AIChatMessage.Message(),
+			schema.AIChatAnswer.Message(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, orderExp.Desc())
@@ -96,13 +96,13 @@ func (qb *QueryBuilder) buildAIChatExpressions(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(schema.AIChat.ColumnUpdatedAt()).Desc(),
+		goqu.I(schema.AIChat.UpdatedAt()).Desc(),
 	)
 
 	if options.UserID != uuid.Nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.AIChat.ColumnUserID()).Eq(options.UserID),
+			goqu.I(schema.AIChat.UserID()).Eq(options.UserID),
 		)
 	}
 
@@ -143,20 +143,20 @@ func (qb *QueryBuilder) buildAIChatJoins(
 	options repo.AIChatOptions,
 ) []Join {
 	aiChatMessage := Join{
-		Table: goqu.I(schema.AIChatMessage.Table()),
+		Table: goqu.I(schema.AIChatMessage.String()),
 		Condition: goqu.
 			On(
-				goqu.I(schema.AIChat.ColumnID()).
-					Eq(goqu.I(schema.AIChatMessage.ColumnAiChatID())),
+				goqu.I(schema.AIChat.ID()).
+					Eq(goqu.I(schema.AIChatMessage.AiChatID())),
 			),
 	}
 
 	aiChatAnswer := Join{
-		Table: goqu.I(schema.AIChatAnswer.Table()),
+		Table: goqu.I(schema.AIChatAnswer.String()),
 		Condition: goqu.
 			On(
-				goqu.I(schema.AIChatAnswer.ColumnAiChatMessageID()).
-					Eq(goqu.I(schema.AIChatMessage.ColumnID())),
+				goqu.I(schema.AIChatAnswer.AiChatMessageID()).
+					Eq(goqu.I(schema.AIChatMessage.ID())),
 			),
 	}
 

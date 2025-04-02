@@ -44,7 +44,7 @@ func (uc *ListTransactionCategoriesUseCase) Execute(
 		return err
 	})
 
-	in.TransactionCategoryOptions.Limit, in.TransactionCategoryOptions.Offset = usecase.PreparePaginationInput(
+	in.Limit, in.Offset = usecase.PreparePaginationInput(
 		in.PaginationInput,
 	)
 

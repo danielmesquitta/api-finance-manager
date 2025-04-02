@@ -151,18 +151,18 @@ func TestGetBudget(t *testing.T) {
 
 			assert.Equal(
 				t,
-				test.expectedResponse.Budget.ID,
-				actualResponse.Budget.ID,
+				test.expectedResponse.ID,
+				actualResponse.ID,
 			)
 			assert.Equal(
 				t,
-				test.expectedResponse.Budget.Amount,
-				actualResponse.Budget.Amount,
+				test.expectedResponse.Amount,
+				actualResponse.Amount,
 			)
 			assert.True(
 				t,
-				test.expectedResponse.Budget.Date.After(
-					actualResponse.Budget.Date,
+				test.expectedResponse.Date.After(
+					actualResponse.Date,
 				),
 			)
 
@@ -217,12 +217,12 @@ func TestGetBudget(t *testing.T) {
 
 			actualBudgetCategories := map[uuid.UUID]budget.GetBudgetUseCaseBudgetCategories{}
 			for _, budgetCategory := range actualResponse.BudgetCategories {
-				actualBudgetCategories[budgetCategory.BudgetCategory.ID] = budgetCategory
+				actualBudgetCategories[budgetCategory.ID] = budgetCategory
 			}
 
 			for _, expectedCategory := range test.expectedResponse.BudgetCategories {
-				actualBudgetCategory, ok := actualBudgetCategories[expectedCategory.BudgetCategory.ID]
-				assert.True(t, ok, expectedCategory.BudgetCategory.ID)
+				actualBudgetCategory, ok := actualBudgetCategories[expectedCategory.ID]
+				assert.True(t, ok, expectedCategory.ID)
 				if !ok {
 					continue
 				}
@@ -381,7 +381,7 @@ func TestUpsertBudget(t *testing.T) {
 			actualBudgetCategoriesMap := map[uuid.UUID]entity.BudgetCategory{}
 			for _, abc := range actualBudgetCategories {
 				bc := entity.BudgetCategory{}
-				if err := copier.Copy(&bc, abc.BudgetCategory); err != nil {
+				if err := copier.Copy(&bc, abc); err != nil {
 					t.Fatal(err)
 				}
 				actualBudgetCategoriesMap[abc.TransactionCategory.ID] = bc

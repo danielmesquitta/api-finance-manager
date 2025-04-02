@@ -31,7 +31,7 @@ func TestSignIn(t *testing.T) {
 			},
 			token:         mockoauth.PremiumTierMockToken,
 			expectedCode:  http.StatusOK,
-			expectedEmail: mockoauth.Users[mockoauth.PremiumTierMockToken].User.Email,
+			expectedEmail: mockoauth.Users[mockoauth.PremiumTierMockToken].Email,
 		},
 		{
 			description: "signs in with unregistered user",
@@ -42,7 +42,7 @@ func TestSignIn(t *testing.T) {
 			},
 			token:         mockoauth.UnregisteredUserMockToken,
 			expectedCode:  http.StatusOK,
-			expectedEmail: mockoauth.Users[mockoauth.UnregisteredUserMockToken].User.Email,
+			expectedEmail: mockoauth.Users[mockoauth.UnregisteredUserMockToken].Email,
 		},
 	}
 
@@ -97,7 +97,7 @@ func TestRefreshToken(t *testing.T) {
 			description:   "refreshes token",
 			token:         mockoauth.PremiumTierMockToken,
 			expectedCode:  http.StatusOK,
-			expectedEmail: mockoauth.Users[mockoauth.PremiumTierMockToken].User.Email,
+			expectedEmail: mockoauth.Users[mockoauth.PremiumTierMockToken].Email,
 		},
 		{
 			description:   "fails without access token",

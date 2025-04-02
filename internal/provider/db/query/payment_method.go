@@ -19,9 +19,9 @@ func (qb *QueryBuilder) ListPaymentMethods(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.PaymentMethod.Table()).
-		Select(schema.PaymentMethod.ColumnAll()).
-		Where(goqu.I(schema.PaymentMethod.ColumnDeletedAt()).IsNull())
+		From(schema.PaymentMethod.String()).
+		Select(schema.PaymentMethod.All()).
+		Where(goqu.I(schema.PaymentMethod.DeletedAt()).IsNull())
 
 	whereExps, orderedExps := qb.buildPaymentMethodExpressions(options)
 
@@ -47,9 +47,9 @@ func (qb *QueryBuilder) CountPaymentMethods(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.PaymentMethod.Table()).
-		Select(goqu.COUNT(schema.PaymentMethod.ColumnAll())).
-		Where(goqu.I(schema.PaymentMethod.ColumnDeletedAt()).IsNull())
+		From(schema.PaymentMethod.String()).
+		Select(goqu.COUNT(schema.PaymentMethod.All())).
+		Where(goqu.I(schema.PaymentMethod.DeletedAt()).IsNull())
 
 	whereExps, _ := qb.buildPaymentMethodExpressions(options)
 
@@ -70,7 +70,7 @@ func (qb *QueryBuilder) buildPaymentMethodExpressions(
 	if options.Search != "" {
 		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.PaymentMethod.ColumnName(),
+			schema.PaymentMethod.Name(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, orderExp.Desc())
@@ -78,7 +78,7 @@ func (qb *QueryBuilder) buildPaymentMethodExpressions(
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(schema.PaymentMethod.ColumnName()).Asc(),
+		goqu.I(schema.PaymentMethod.Name()).Asc(),
 	)
 
 	return whereExps, orderedExps
@@ -107,13 +107,4 @@ func (qb *QueryBuilder) buildPaymentMethodQuery(
 	}
 
 	return query
-}
-
-func (qb *QueryBuilder) preparePaymentMethodOptions(
-	opts ...repo.PaymentMethodOptions,
-) repo.PaymentMethodOptions {
-	if len(opts) < 1 {
-		return repo.PaymentMethodOptions{}
-	}
-	return opts[0]
 }

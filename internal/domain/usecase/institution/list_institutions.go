@@ -45,7 +45,7 @@ func (uc *ListInstitutionsUseCase) Execute(
 		return err
 	})
 
-	in.InstitutionOptions.Limit, in.InstitutionOptions.Offset = usecase.PreparePaginationInput(
+	in.Limit, in.Offset = usecase.PreparePaginationInput(
 		in.PaginationInput,
 	)
 

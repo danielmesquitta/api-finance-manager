@@ -14,13 +14,13 @@ func (tdb *TestDB) GetLatestDeletedUser(
 	userID uuid.UUID,
 ) (*entity.User, error) {
 	query := goqu.
-		Select(schema.User.ColumnAll()).
-		From(schema.User.Table()).
+		Select(schema.User.All()).
+		From(schema.User.String()).
 		Where(
-			goqu.I(schema.User.ColumnID()).Eq(userID),
-			goqu.I(schema.User.ColumnDeletedAt()).IsNotNull(),
+			goqu.I(schema.User.ID()).Eq(userID),
+			goqu.I(schema.User.DeletedAt()).IsNotNull(),
 		).
-		Order(goqu.I(schema.User.ColumnDeletedAt()).Desc()).
+		Order(goqu.I(schema.User.DeletedAt()).Desc()).
 		Limit(1)
 
 	dest := &entity.User{}

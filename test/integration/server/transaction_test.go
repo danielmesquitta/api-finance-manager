@@ -347,7 +347,7 @@ func TestGetTransaction(t *testing.T) {
 				assert.Equal(
 					t,
 					test.expectedTransactionID,
-					out.Transaction.ID.String(),
+					out.ID.String(),
 				)
 			}
 		})

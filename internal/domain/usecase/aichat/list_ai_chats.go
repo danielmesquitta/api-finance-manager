@@ -45,7 +45,7 @@ func (uc *ListAIChatsUseCase) Execute(
 		return err
 	})
 
-	in.AIChatOptions.Limit, in.AIChatOptions.Offset = usecase.PreparePaginationInput(
+	in.Limit, in.Offset = usecase.PreparePaginationInput(
 		in.PaginationInput,
 	)
 

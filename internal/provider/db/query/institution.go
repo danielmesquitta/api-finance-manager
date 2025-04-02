@@ -19,15 +19,15 @@ func (qb *QueryBuilder) ListInstitutions(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.Institution.Table()).
-		Select(schema.Institution.ColumnAll()).
-		Distinct(schema.Institution.ColumnID()).
-		Where(goqu.I(schema.Institution.ColumnDeletedAt()).IsNull())
+		From(schema.Institution.String()).
+		Select(schema.Institution.All()).
+		Distinct(schema.Institution.ID()).
+		Where(goqu.I(schema.Institution.DeletedAt()).IsNull())
 
 	query = qb.buildInstitutionJoins(query, options)
 
 	orderedExps := []exp.OrderedExpression{
-		goqu.I(schema.Institution.ColumnID()).Asc(),
+		goqu.I(schema.Institution.ID()).Asc(),
 	}
 
 	whereExps, auxOrderedExps := qb.buildInstitutionExpressions(options)
@@ -51,13 +51,13 @@ func (qb *QueryBuilder) CountInstitutions(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.Institution.Table()).
+		From(schema.Institution.String()).
 		Select(
 			goqu.COUNT(
-				goqu.DISTINCT(schema.Institution.ColumnAll()),
+				goqu.DISTINCT(schema.Institution.All()),
 			),
 		).
-		Where(goqu.I(schema.Institution.ColumnDeletedAt()).IsNull())
+		Where(goqu.I(schema.Institution.DeletedAt()).IsNull())
 
 	query = qb.buildInstitutionJoins(query, options)
 
@@ -79,10 +79,10 @@ func (qb *QueryBuilder) buildInstitutionJoins(
 ) *goqu.SelectDataset {
 	if len(options.UserIDs) > 0 {
 		query = query.Join(
-			goqu.I(schema.UserInstitution.Table()),
+			goqu.I(schema.UserInstitution.String()),
 			goqu.On(
-				goqu.I(schema.UserInstitution.ColumnInstitutionID()).
-					Eq(goqu.I(schema.Institution.ColumnID())),
+				goqu.I(schema.UserInstitution.InstitutionID()).
+					Eq(goqu.I(schema.Institution.ID())),
 			),
 		)
 	}
@@ -96,7 +96,7 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 	if options.Search != "" {
 		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.Institution.ColumnName(),
+			schema.Institution.Name(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, orderExp.Desc())
@@ -105,14 +105,14 @@ func (qb *QueryBuilder) buildInstitutionExpressions(
 	if len(options.UserIDs) > 0 {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.UserInstitution.ColumnUserID()).
+			goqu.I(schema.UserInstitution.UserID()).
 				In(options.UserIDs),
 		)
 	}
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(schema.Institution.ColumnName()).Asc(),
+		goqu.I(schema.Institution.Name()).Asc(),
 	)
 
 	return whereExps, orderedExps
@@ -143,13 +143,4 @@ func (qb *QueryBuilder) buildInstitutionQuery(
 	}
 
 	return query
-}
-
-func (qb *QueryBuilder) prepareInstitutionOptions(
-	opts ...repo.InstitutionOptions,
-) repo.InstitutionOptions {
-	if len(opts) < 1 {
-		return repo.InstitutionOptions{}
-	}
-	return opts[0]
 }

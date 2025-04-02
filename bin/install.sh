@@ -1,7 +1,7 @@
 #!/bin/bash
 
 packages=(
-    "github.com/golangci/golangci-lint/cmd/golangci-lint@latest"
+    "github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.0.2"
     "go.uber.org/nilaway/cmd/nilaway@latest"
     "github.com/segmentio/golines@latest"
     "github.com/air-verse/air@latest"

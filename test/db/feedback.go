@@ -13,10 +13,10 @@ func (tdb *TestDB) GetLatestFeedbackByUserID(
 	userID string,
 ) (*entity.Feedback, error) {
 	query := goqu.
-		Select(schema.Feedback.ColumnAll()).
-		From(schema.Feedback.Table()).
-		Where(goqu.Ex{schema.Feedback.ColumnUserID(): userID}).
-		Order(goqu.I(schema.Feedback.ColumnCreatedAt()).Desc()).
+		Select(schema.Feedback.All()).
+		From(schema.Feedback.String()).
+		Where(goqu.Ex{schema.Feedback.UserID(): userID}).
+		Order(goqu.I(schema.Feedback.CreatedAt()).Desc()).
 		Limit(1)
 
 	dest := &entity.Feedback{}

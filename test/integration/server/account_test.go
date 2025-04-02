@@ -113,62 +113,62 @@ func TestGetAccountsBalance(t *testing.T) {
 
 			assert.Equal(
 				t,
-				test.expectedResponse.GetAccountsBalanceUseCaseOutput.ComparisonDates,
-				actualResponse.GetAccountsBalanceUseCaseOutput.ComparisonDates,
+				test.expectedResponse.ComparisonDates,
+				actualResponse.ComparisonDates,
 			)
 
 			assert.Equal(
 				t,
-				test.expectedResponse.GetAccountsBalanceUseCaseOutput.CurrentBalance,
-				actualResponse.GetAccountsBalanceUseCaseOutput.CurrentBalance,
+				test.expectedResponse.CurrentBalance,
+				actualResponse.CurrentBalance,
 			)
 
 			assert.Equal(
 				t,
-				test.expectedResponse.GetAccountsBalanceUseCaseOutput.PreviousBalance,
-				actualResponse.GetAccountsBalanceUseCaseOutput.PreviousBalance,
+				test.expectedResponse.PreviousBalance,
+				actualResponse.PreviousBalance,
 			)
 
 			assert.Equal(
 				t,
-				test.expectedResponse.GetAccountsBalanceUseCaseOutput.BalancePercentageVariation,
-				actualResponse.GetAccountsBalanceUseCaseOutput.BalancePercentageVariation,
+				test.expectedResponse.BalancePercentageVariation,
+				actualResponse.BalancePercentageVariation,
 			)
 
 			assert.Equal(
 				t,
-				test.expectedResponse.GetAccountsBalanceUseCaseOutput.CurrentIncome,
-				actualResponse.GetAccountsBalanceUseCaseOutput.CurrentIncome,
+				test.expectedResponse.CurrentIncome,
+				actualResponse.CurrentIncome,
 			)
 
 			assert.Equal(
 				t,
-				test.expectedResponse.GetAccountsBalanceUseCaseOutput.PreviousIncome,
-				actualResponse.GetAccountsBalanceUseCaseOutput.PreviousIncome,
+				test.expectedResponse.PreviousIncome,
+				actualResponse.PreviousIncome,
 			)
 
 			assert.Equal(
 				t,
-				test.expectedResponse.GetAccountsBalanceUseCaseOutput.IncomePercentageVariation,
-				actualResponse.GetAccountsBalanceUseCaseOutput.IncomePercentageVariation,
+				test.expectedResponse.IncomePercentageVariation,
+				actualResponse.IncomePercentageVariation,
 			)
 
 			assert.Equal(
 				t,
-				test.expectedResponse.GetAccountsBalanceUseCaseOutput.CurrentExpense,
-				actualResponse.GetAccountsBalanceUseCaseOutput.CurrentExpense,
+				test.expectedResponse.CurrentExpense,
+				actualResponse.CurrentExpense,
 			)
 
 			assert.Equal(
 				t,
-				test.expectedResponse.GetAccountsBalanceUseCaseOutput.PreviousExpense,
-				actualResponse.GetAccountsBalanceUseCaseOutput.PreviousExpense,
+				test.expectedResponse.PreviousExpense,
+				actualResponse.PreviousExpense,
 			)
 
 			assert.Equal(
 				t,
-				test.expectedResponse.GetAccountsBalanceUseCaseOutput.ExpensePercentageVariation,
-				actualResponse.GetAccountsBalanceUseCaseOutput.ExpensePercentageVariation,
+				test.expectedResponse.ExpensePercentageVariation,
+				actualResponse.ExpensePercentageVariation,
 			)
 		})
 	}

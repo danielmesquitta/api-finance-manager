@@ -14,13 +14,13 @@ func (tdb *TestDB) GetLatestUserDeletedAIChat(
 	userID uuid.UUID,
 ) (*entity.AIChat, error) {
 	query := goqu.
-		Select(schema.AIChat.ColumnAll()).
-		From(schema.AIChat.Table()).
+		Select(schema.AIChat.All()).
+		From(schema.AIChat.String()).
 		Where(
-			goqu.I(schema.AIChat.ColumnUserID()).Eq(userID),
-			goqu.I(schema.AIChat.ColumnDeletedAt()).IsNotNull(),
+			goqu.I(schema.AIChat.UserID()).Eq(userID),
+			goqu.I(schema.AIChat.DeletedAt()).IsNotNull(),
 		).
-		Order(goqu.I(schema.AIChat.ColumnDeletedAt()).Desc()).
+		Order(goqu.I(schema.AIChat.DeletedAt()).Desc()).
 		Limit(1)
 
 	dest := &entity.AIChat{}

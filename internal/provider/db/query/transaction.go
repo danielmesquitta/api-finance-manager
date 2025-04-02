@@ -21,9 +21,9 @@ func (qb *QueryBuilder) ListTransactions(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.Transaction.Table()).
-		Select(schema.Transaction.ColumnAll()).
-		Where(goqu.I(schema.Transaction.ColumnDeletedAt()).IsNull())
+		From(schema.Transaction.String()).
+		Select(schema.Transaction.All()).
+		Where(goqu.I(schema.Transaction.DeletedAt()).IsNull())
 
 	joins := qb.buildTransactionJoins(options)
 
@@ -53,17 +53,17 @@ func (qb *QueryBuilder) ListFullTransactions(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.Transaction.Table()).
+		From(schema.Transaction.String()).
 		Select(
-			schema.Transaction.ColumnAll(),
-			goqu.I(schema.TransactionCategory.ColumnName()).
+			schema.Transaction.All(),
+			goqu.I(schema.TransactionCategory.Name()).
 				As("category_name"),
-			goqu.I(schema.Institution.ColumnName()).As("institution_name"),
-			goqu.I(schema.Institution.ColumnLogo()).As("institution_logo"),
-			goqu.I(schema.PaymentMethod.ColumnName()).
+			goqu.I(schema.Institution.Name()).As("institution_name"),
+			goqu.I(schema.Institution.Logo()).As("institution_logo"),
+			goqu.I(schema.PaymentMethod.Name()).
 				As("payment_method_name"),
 		).
-		Where(goqu.I(schema.Transaction.ColumnDeletedAt()).IsNull())
+		Where(goqu.I(schema.Transaction.DeletedAt()).IsNull())
 
 	joins := qb.buildTransactionJoins(options, true)
 
@@ -93,9 +93,9 @@ func (qb *QueryBuilder) CountTransactions(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.Transaction.Table()).
-		Select(goqu.COUNT(schema.Transaction.ColumnAll())).
-		Where(goqu.I(schema.Transaction.ColumnDeletedAt()).IsNull())
+		From(schema.Transaction.String()).
+		Select(goqu.COUNT(schema.Transaction.All())).
+		Where(goqu.I(schema.Transaction.DeletedAt()).IsNull())
 
 	joins := qb.buildTransactionJoins(options)
 
@@ -119,9 +119,9 @@ func (qb *QueryBuilder) SumTransactions(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.Transaction.Table()).
-		Select(goqu.SUM(schema.Transaction.ColumnAmount())).
-		Where(goqu.I(schema.Transaction.ColumnDeletedAt()).IsNull())
+		From(schema.Transaction.String()).
+		Select(goqu.SUM(schema.Transaction.Amount())).
+		Where(goqu.I(schema.Transaction.DeletedAt()).IsNull())
 
 	joins := qb.buildTransactionJoins(options)
 
@@ -145,13 +145,13 @@ func (qb *QueryBuilder) SumTransactionsByCategory(
 	options := prepareOptions(opts...)
 
 	query := goqu.
-		From(schema.Transaction.Table()).
+		From(schema.Transaction.String()).
 		Select(
-			goqu.I(schema.Transaction.ColumnCategoryID()),
-			goqu.SUM(schema.Transaction.ColumnAmount()).As("sum"),
+			goqu.I(schema.Transaction.CategoryID()),
+			goqu.SUM(schema.Transaction.Amount()).As("sum"),
 		).
-		Where(goqu.I(schema.Transaction.ColumnDeletedAt()).IsNull()).
-		GroupBy(goqu.I(schema.Transaction.ColumnCategoryID()))
+		Where(goqu.I(schema.Transaction.DeletedAt()).IsNull()).
+		GroupBy(goqu.I(schema.Transaction.CategoryID()))
 
 	joins := qb.buildTransactionJoins(options)
 
@@ -181,17 +181,17 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 ) (whereExps []goqu.Expression, orderedExps []exp.OrderedExpression) {
 	whereExps = append(
 		whereExps,
-		goqu.I(schema.Transaction.ColumnUserID()).Eq(userID),
+		goqu.I(schema.Transaction.UserID()).Eq(userID),
 	)
 
 	options.Search = strings.TrimSpace(options.Search)
 	if options.Search != "" {
 		searchExp, orderExp := qb.buildSearch(
 			options.Search,
-			schema.Transaction.ColumnName(),
-			schema.TransactionCategory.ColumnName(),
-			schema.Institution.ColumnName(),
-			schema.PaymentMethod.ColumnName(),
+			schema.Transaction.Name(),
+			schema.TransactionCategory.Name(),
+			schema.Institution.Name(),
+			schema.PaymentMethod.Name(),
 		)
 		whereExps = append(whereExps, searchExp)
 		orderedExps = append(orderedExps, orderExp.Desc())
@@ -200,7 +200,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if len(options.CategoryIDs) > 0 {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.Transaction.ColumnCategoryID()).
+			goqu.I(schema.Transaction.CategoryID()).
 				In(options.CategoryIDs),
 		)
 	}
@@ -208,7 +208,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if len(options.InstitutionIDs) > 0 {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.Transaction.ColumnInstitutionID()).
+			goqu.I(schema.Transaction.InstitutionID()).
 				In(options.InstitutionIDs),
 		)
 	}
@@ -216,7 +216,7 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if len(options.PaymentMethodIDs) > 0 {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.Transaction.ColumnPaymentMethodID()).
+			goqu.I(schema.Transaction.PaymentMethodID()).
 				In(options.PaymentMethodIDs),
 		)
 	}
@@ -224,42 +224,42 @@ func (qb *QueryBuilder) buildTransactionExpressions(
 	if !options.StartDate.IsZero() {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.Transaction.ColumnDate()).Gte(options.StartDate),
+			goqu.I(schema.Transaction.Date()).Gte(options.StartDate),
 		)
 	}
 
 	if !options.EndDate.IsZero() {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.Transaction.ColumnDate()).Lte(options.EndDate),
+			goqu.I(schema.Transaction.Date()).Lte(options.EndDate),
 		)
 	}
 
 	if options.IsExpense {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.Transaction.ColumnAmount()).Lt(0),
+			goqu.I(schema.Transaction.Amount()).Lt(0),
 		)
 	}
 
 	if options.IsIncome {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.Transaction.ColumnAmount()).Gt(0),
+			goqu.I(schema.Transaction.Amount()).Gt(0),
 		)
 	}
 
 	if options.IsIgnored != nil {
 		whereExps = append(
 			whereExps,
-			goqu.I(schema.Transaction.ColumnIsIgnored()).
+			goqu.I(schema.Transaction.IsIgnored()).
 				Eq(*options.IsIgnored),
 		)
 	}
 
 	orderedExps = append(
 		orderedExps,
-		goqu.I(schema.Transaction.ColumnName()).Asc(),
+		goqu.I(schema.Transaction.Name()).Asc(),
 	)
 
 	return whereExps, orderedExps
@@ -270,29 +270,29 @@ func (qb *QueryBuilder) buildTransactionJoins(
 	shouldJoinAll ...bool,
 ) []Join {
 	institutionJoin := Join{
-		Table: goqu.I(schema.Institution.Table()),
+		Table: goqu.I(schema.Institution.String()),
 		Condition: goqu.
 			On(
-				goqu.I(schema.Transaction.ColumnInstitutionID()).
-					Eq(goqu.I(schema.Institution.ColumnID())),
+				goqu.I(schema.Transaction.InstitutionID()).
+					Eq(goqu.I(schema.Institution.ID())),
 			),
 	}
 
 	transactionCategoryJoin := Join{
-		Table: goqu.I(schema.TransactionCategory.Table()),
+		Table: goqu.I(schema.TransactionCategory.String()),
 		Condition: goqu.
 			On(
-				goqu.I(schema.Transaction.ColumnCategoryID()).
-					Eq(goqu.I(schema.TransactionCategory.ColumnID())),
+				goqu.I(schema.Transaction.CategoryID()).
+					Eq(goqu.I(schema.TransactionCategory.ID())),
 			),
 	}
 
 	paymentMethodJoin := Join{
-		Table: goqu.I(schema.PaymentMethod.Table()),
+		Table: goqu.I(schema.PaymentMethod.String()),
 		Condition: goqu.
 			On(
-				goqu.I(schema.Transaction.ColumnPaymentMethodID()).
-					Eq(goqu.I(schema.PaymentMethod.ColumnID())),
+				goqu.I(schema.Transaction.PaymentMethodID()).
+					Eq(goqu.I(schema.PaymentMethod.ID())),
 			),
 	}
 

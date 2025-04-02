@@ -13,10 +13,10 @@ func (tdb *TestDB) GetLatestTransactionByUserID(
 	userID string,
 ) (*entity.Transaction, error) {
 	query := goqu.
-		Select(schema.Transaction.ColumnAll()).
-		From(schema.Transaction.Table()).
-		Where(goqu.Ex{schema.Transaction.ColumnUserID(): userID}).
-		Order(goqu.I(schema.Transaction.ColumnCreatedAt()).Desc()).
+		Select(schema.Transaction.All()).
+		From(schema.Transaction.String()).
+		Where(goqu.Ex{schema.Transaction.UserID(): userID}).
+		Order(goqu.I(schema.Transaction.CreatedAt()).Desc()).
 		Limit(1)
 
 	dest := &entity.Transaction{}
