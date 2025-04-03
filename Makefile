@@ -117,5 +117,9 @@ triggers:
 seed:
 	@go run cmd/seed/main.go
 
+.PHONY: test_db
+test_db:
+	@go run cmd/test_db/main.go
+
 %::
 	@true

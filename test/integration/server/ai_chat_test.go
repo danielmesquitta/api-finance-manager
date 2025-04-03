@@ -170,7 +170,7 @@ func TestGenerateAIChatMessage(t *testing.T) {
 			expectedCode:            http.StatusCreated,
 		},
 		{
-			description: "generates a new AI chat message about transportation transactions",
+			description: "generates a new AI chat message about budget in November 2024",
 			token:       mockoauth.PremiumTierMockToken,
 			aiChatID:    "df2017de-e019-4d14-b540-b31aafddffb8",
 			body: dto.GenerateAIChatMessageRequest{

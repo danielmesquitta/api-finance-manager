@@ -31,6 +31,7 @@ type Env struct {
 	Host                             string      `mapstructure:"HOST"`
 	Port                             string      `mapstructure:"PORT"`
 	PostgresDatabaseURL              string      `mapstructure:"POSTGRES_DATABASE_URL"               validate:"required"`
+	PostgresTestDatabaseURL          string      `mapstructure:"POSTGRES_TEST_DATABASE_URL"`
 	RedisDatabaseURL                 string      `mapstructure:"REDIS_DATABASE_URL"                  validate:"required"`
 	JWTAccessTokenSecretKey          string      `mapstructure:"JWT_ACCESS_TOKEN_SECRET_KEY"         validate:"required"`
 	JWTRefreshTokenSecretKey         string      `mapstructure:"JWT_REFRESH_TOKEN_SECRET_KEY"        validate:"required"`
