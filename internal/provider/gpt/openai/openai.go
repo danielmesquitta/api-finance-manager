@@ -1,18 +1,19 @@
 package openai
 
 import (
+	"cmp"
 	"context"
 	"encoding/json"
 	"fmt"
 	"log/slog"
 	"sync"
 
+	"github.com/sashabaranov/go-openai"
+	"golang.org/x/sync/errgroup"
+
 	"github.com/danielmesquitta/api-finance-manager/internal/config/env"
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/errs"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/gpt"
-	"github.com/openai/openai-go"
-	"github.com/openai/openai-go/option"
-	"golang.org/x/sync/errgroup"
 )
 
 type OpenAI struct {
@@ -22,12 +23,10 @@ type OpenAI struct {
 func NewOpenAI(
 	e *env.Env,
 ) *OpenAI {
-	client := openai.NewClient(
-		option.WithAPIKey(e.OpenAIAPIKey),
-	)
+	client := openai.NewClient(e.OpenAIAPIKey)
 
 	return &OpenAI{
-		Client: &client,
+		Client: client,
 	}
 }
 
@@ -50,7 +49,7 @@ func (o *OpenAI) Completion(
 
 	const maxAttempts = 3
 	for range maxAttempts {
-		completion, err := o.Client.Chat.Completions.New(ctx, params)
+		completion, err := o.Client.CreateChatCompletion(ctx, params)
 		if err != nil {
 			return nil, errs.New(err)
 		}
@@ -67,7 +66,7 @@ func (o *OpenAI) Completion(
 			return &message, nil
 		}
 
-		params.Messages = append(params.Messages, choice.ToParam())
+		params.Messages = append(params.Messages, choice)
 
 		err = o.processToolCalls(ctx, choice.ToolCalls, toolsByName, &params)
 		if err != nil {
@@ -80,9 +79,9 @@ func (o *OpenAI) Completion(
 
 func (o *OpenAI) processToolCalls(
 	ctx context.Context,
-	toolCalls []openai.ChatCompletionMessageToolCall,
+	toolCalls []openai.ToolCall,
 	toolsByName map[string]gpt.Tool,
-	params *openai.ChatCompletionNewParams,
+	params *openai.ChatCompletionRequest,
 ) error {
 	g, subCtx := errgroup.WithContext(ctx)
 	mu := sync.Mutex{}
@@ -105,6 +104,8 @@ func (o *OpenAI) processToolCalls(
 				return nil
 			}
 
+			slog.Info("Tool call", "name", tc.Function.Name, "args", args)
+
 			toolMessage, err := tool.Func(subCtx, args)
 			if err != nil {
 				slog.Error(
@@ -118,7 +119,12 @@ func (o *OpenAI) processToolCalls(
 			mu.Lock()
 			params.Messages = append(
 				params.Messages,
-				openai.ToolMessage(toolMessage, tc.ID),
+				openai.ChatCompletionMessage{
+					Role:       openai.ChatMessageRoleTool,
+					Content:    toolMessage,
+					Name:       tc.Function.Name,
+					ToolCallID: tc.ID,
+				},
 			)
 			mu.Unlock()
 
@@ -132,20 +138,24 @@ func (o *OpenAI) processToolCalls(
 func (o *OpenAI) prepareParams(
 	messages []gpt.Message,
 	opts gpt.Options,
-) openai.ChatCompletionNewParams {
+) openai.ChatCompletionRequest {
 	openAIMessages := o.parseMessages(messages)
 	openAITools := o.parseTools(opts.Tools)
 
-	param := openai.ChatCompletionNewParams{
-		Messages: openAIMessages,
+	model := cmp.Or(opts.Model, openai.O3Mini)
+
+	param := openai.ChatCompletionRequest{
 		Tools:    openAITools,
-		Model:    openai.ChatModelO3Mini,
+		Messages: openAIMessages,
+		Model:    model,
 	}
-	if opts.Temperature > 0 {
-		param.Temperature = openai.Float(opts.Temperature)
+
+	if opts.Temperature != 0 {
+		param.Temperature = opts.Temperature
 	}
-	if opts.Seed > 0 {
-		param.Seed = openai.Int(opts.Seed)
+
+	if opts.Seed != nil {
+		param.Seed = opts.Seed
 	}
 
 	return param
@@ -153,14 +163,16 @@ func (o *OpenAI) prepareParams(
 
 func (o *OpenAI) parseTools(
 	tools []gpt.Tool,
-) []openai.ChatCompletionToolParam {
-	openAITools := []openai.ChatCompletionToolParam{}
+) []openai.Tool {
+	openAITools := []openai.Tool{}
 	for _, tool := range tools {
-		openAITool := openai.ChatCompletionToolParam{
-			Function: openai.FunctionDefinitionParam{
+		openAITool := openai.Tool{
+			Type: openai.ToolTypeFunction,
+			Function: &openai.FunctionDefinition{
 				Name:        tool.Name,
-				Description: openai.String(tool.Description),
+				Description: tool.Description,
 				Parameters:  tool.Args,
+				Strict:      true,
 			},
 		}
 
@@ -172,8 +184,8 @@ func (o *OpenAI) parseTools(
 
 func (o *OpenAI) parseMessages(
 	messages []gpt.Message,
-) []openai.ChatCompletionMessageParamUnion {
-	openAIMessages := []openai.ChatCompletionMessageParamUnion{}
+) []openai.ChatCompletionMessage {
+	openAIMessages := []openai.ChatCompletionMessage{}
 	for _, message := range messages {
 		msg, err := o.parseMessage(message)
 		if err != nil {
@@ -192,17 +204,20 @@ func (o *OpenAI) parseMessages(
 
 func (o *OpenAI) parseMessage(
 	message gpt.Message,
-) (*openai.ChatCompletionMessageParamUnion, error) {
-	var msg openai.ChatCompletionMessageParamUnion
+) (*openai.ChatCompletionMessage, error) {
+	var msg = openai.ChatCompletionMessage{
+		Content: message.Content,
+	}
+
 	switch message.Role {
 	case gpt.RoleAssistant:
-		msg = openai.AssistantMessage(message.Content)
+		msg.Role = openai.ChatMessageRoleAssistant
 
 	case gpt.RoleSystem:
-		msg = openai.SystemMessage(message.Content)
+		msg.Role = openai.ChatMessageRoleSystem
 
 	case gpt.RoleUser:
-		msg = openai.UserMessage(message.Content)
+		msg.Role = openai.ChatMessageRoleUser
 
 	default:
 		return nil, errs.New(fmt.Errorf("invalid role %s", message.Role))

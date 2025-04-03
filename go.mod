@@ -17,8 +17,8 @@ require (
 	github.com/jackc/pgx/v5 v5.7.4
 	github.com/jinzhu/copier v0.4.0
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/openai/openai-go v0.1.0-beta.5
 	github.com/redis/go-redis/v9 v9.7.3
+	github.com/sashabaranov/go-openai v1.38.1
 	github.com/spf13/viper v1.20.1
 	github.com/stretchr/testify v1.10.0
 	github.com/swaggo/fiber-swagger v1.3.0
@@ -77,7 +77,7 @@ require (
 	github.com/moby/docker-image-spec v1.3.1 // indirect
 	github.com/moby/patternmatcher v0.6.0 // indirect
 	github.com/moby/sys/sequential v0.6.0 // indirect
-	github.com/moby/sys/user v0.3.0 // indirect
+	github.com/moby/sys/user v0.4.0 // indirect
 	github.com/moby/sys/userns v0.1.0 // indirect
 	github.com/moby/term v0.5.2 // indirect
 	github.com/morikuni/aec v1.0.0 // indirect
@@ -98,10 +98,6 @@ require (
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/swaggo/files v1.0.1 // indirect
-	github.com/tidwall/gjson v1.18.0 // indirect
-	github.com/tidwall/match v1.1.1 // indirect
-	github.com/tidwall/pretty v1.2.1 // indirect
-	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/tinylib/msgp v1.2.5 // indirect
 	github.com/tklauser/go-sysconf v0.3.15 // indirect
 	github.com/tklauser/numcpus v0.10.0 // indirect

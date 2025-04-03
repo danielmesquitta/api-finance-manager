@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"testing"
 	"time"
@@ -217,16 +216,6 @@ func TestGenerateAIChatMessage(t *testing.T) {
 			if test.expectedCode != http.StatusCreated {
 				return
 			}
-
-			log.Println(
-				"message",
-				test.body.Message,
-			)
-
-			log.Println(
-				"answer",
-				actualResponse.AIChatAnswer.Message,
-			)
 
 			assert.NotNil(t, actualResponse.Title)
 			assert.NotNil(t, actualResponse.AIChatAnswer.Message)

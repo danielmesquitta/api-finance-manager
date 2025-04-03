@@ -24,29 +24,43 @@ type Tool struct {
 	Args        map[string]any `json:"args"`
 }
 
+type Model = string
+
+const (
+	ModelO3Mini Model = "o3-mini"
+	Model4oMini Model = "gpt-4o-mini"
+)
+
 type Options struct {
-	Temperature float64 `json:"temperature"`
-	Seed        int64   `json:"seed"`
+	Temperature float32 `json:"temperature"`
+	Seed        *int    `json:"seed"`
 	Tools       []Tool  `json:"tools"`
+	Model       Model   `json:"model"`
 }
 
 type Option func(*Options)
 
-func WithTemperature(temperature float64) Option {
+func WithTemperature(temperature float32) Option {
 	return func(o *Options) {
 		o.Temperature = temperature
 	}
 }
 
-func WithSeed(seed int64) Option {
+func WithSeed(seed int) Option {
 	return func(o *Options) {
-		o.Seed = seed
+		o.Seed = &seed
 	}
 }
 
 func WithTools(tools []Tool) Option {
 	return func(o *Options) {
 		o.Tools = tools
+	}
+}
+
+func WithModel(model Model) Option {
+	return func(o *Options) {
+		o.Model = model
 	}
 }
 

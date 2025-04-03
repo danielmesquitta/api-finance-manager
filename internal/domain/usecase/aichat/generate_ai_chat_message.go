@@ -4,6 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
+	"math/rand/v2"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -19,6 +22,14 @@ import (
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/gpt"
 	"github.com/danielmesquitta/api-finance-manager/internal/provider/repo"
 )
+
+var errorMessages = []string{
+	"Desculpe, mas não entendemos sua pergunta. Poderia reformulá-la?",
+	"Lamentamos, mas sua pergunta não ficou clara. Poderia reformular?",
+	"Desculpe, não foi possível interpretar sua dúvida. Poderia formular de outra forma?",
+	"Desculpe, não compreendemos sua questão. Poderia reescrevê-la?",
+	"Sentimos muito, mas não conseguimos entender o que você perguntou. Poderia reformular a questão?",
+}
 
 type GenerateAIChatMessageUseCase struct {
 	v     *validator.Validator
@@ -135,7 +146,7 @@ func (uc *GenerateAIChatMessageUseCase) Execute(
 		return nil, errs.ErrAIChatNotFound
 	}
 
-	jsonPaymentMethods, jsonTransactionCategories, jsonInstitutions, err := uc.jsonMarshalEntities(
+	entitiesMap, err := uc.simplifyEntities(
 		paymentMethods,
 		transactionCategories,
 		institutions,
@@ -161,15 +172,23 @@ func (uc *GenerateAIChatMessageUseCase) Execute(
 			ctx,
 			in,
 			chatHistory,
-			jsonPaymentMethods,
-			jsonTransactionCategories,
-			jsonInstitutions,
+			entitiesMap...,
 		)
 		return err
 	})
 
 	if err := g.Wait(); err != nil {
-		return nil, errs.New(err)
+		slog.Error(
+			"failed to generate AI chat answer",
+			"user_id",
+			in.UserID,
+			"message",
+			in.Message,
+			"error",
+			err,
+		)
+		title = ""
+		answer = errorMessages[rand.IntN(len(errorMessages))]
 	}
 
 	var aiChatAnswer *entity.AIChatAnswer
@@ -235,7 +254,11 @@ func (uc *GenerateAIChatMessageUseCase) generateAIChatTitle(
 		},
 	}
 
-	completion, err := uc.gp.Completion(ctx, messages)
+	completion, err := uc.gp.Completion(
+		ctx,
+		messages,
+		gpt.WithModel(gpt.Model4oMini),
+	)
 	if err != nil {
 		return "", errs.New(err)
 	}
@@ -243,11 +266,11 @@ func (uc *GenerateAIChatMessageUseCase) generateAIChatTitle(
 	return completion.Content, nil
 }
 
-func (uc *GenerateAIChatMessageUseCase) jsonMarshalEntities(
+func (uc *GenerateAIChatMessageUseCase) simplifyEntities(
 	paymentMethods []entity.PaymentMethod,
 	transactionCategories []entity.TransactionCategory,
 	institutions []entity.Institution,
-) (string, string, string, error) {
+) ([][]map[string]string, error) {
 	paymentMethodsMap := []map[string]string{}
 	for _, pm := range paymentMethods {
 		paymentMethodsMap = append(paymentMethodsMap, map[string]string{
@@ -275,25 +298,46 @@ func (uc *GenerateAIChatMessageUseCase) jsonMarshalEntities(
 		})
 	}
 
-	paymentMethodsJSON, err := json.Marshal(paymentMethodsMap)
-	if err != nil {
-		return "", "", "", errs.New(err)
+	entities := [][]map[string]string{
+		paymentMethodsMap,
+		transactionCategoriesMap,
+		institutionsMap,
 	}
 
-	transactionCategoriesJSON, err := json.Marshal(transactionCategoriesMap)
-	if err != nil {
-		return "", "", "", errs.New(err)
+	return entities, nil
+}
+
+func (uc *GenerateAIChatMessageUseCase) jsonMarshalEntities(
+	entities ...[]map[string]string,
+) ([]string, error) {
+	var jsonStrings []string
+	for _, entity := range entities {
+		entityJSON, err := json.Marshal(entity)
+		if err != nil {
+			return nil, errs.New(err)
+		}
+		jsonStrings = append(jsonStrings, string(entityJSON))
 	}
 
-	institutionsJSON, err := json.Marshal(institutionsMap)
-	if err != nil {
-		return "", "", "", errs.New(err)
+	return jsonStrings, nil
+}
+
+func (uc *GenerateAIChatMessageUseCase) parseEntityNames(
+	entities ...[]map[string]string,
+) ([][]string, error) {
+	names := make([][]string, len(entities))
+	for i, entity := range entities {
+		names[i] = make([]string, len(entity))
+		for j, e := range entity {
+			name, ok := e["name"]
+			if !ok {
+				return nil, fmt.Errorf("name not found in entity %d", i)
+			}
+			names[i][j] = name
+		}
 	}
 
-	return string(paymentMethodsJSON),
-		string(transactionCategoriesJSON),
-		string(institutionsJSON),
-		nil
+	return names, nil
 }
 
 func (uc *GenerateAIChatMessageUseCase) parseChatHistory(
@@ -317,23 +361,12 @@ func (uc *GenerateAIChatMessageUseCase) generateAIChatAnswer(
 	ctx context.Context,
 	in GenerateAIChatMessageUseCaseInput,
 	chatHistory []gpt.Message,
-	jsonPaymentMethods string,
-	jsonTransactionCategories string,
-	jsonInstitutions string,
+	entities ...[]map[string]string,
 ) (string, error) {
 	systemMessage := fmt.Sprintf(
-		`You are a financial planning specialist with access to a system containing your clients' transactions. The system also includes the following information:
-
-- Current Date and Time: %s
-- Payment Methods: %s
-- Transaction Categories: %s
-- Institutions: %s
-
+		`Today is %s and you are a financial planning specialist with access to a system containing your clients' transactions.
 Using your expertise in financial planning, please analyze the information provided and offer data-driven insights along with actionable advice.`,
 		time.Now().Format(time.RFC3339),
-		jsonPaymentMethods,
-		jsonTransactionCategories,
-		jsonInstitutions,
 	)
 
 	messages := append([]gpt.Message{
@@ -348,24 +381,50 @@ Using your expertise in financial planning, please analyze the information provi
 		Content: in.Message,
 	})
 
+	entityNames, err := uc.parseEntityNames(entities...)
+	if err != nil {
+		return "", errs.New(err)
+	}
+
+	paymentMethodNames := strings.Join(entityNames[0], ", ")
+	transactionCategoryNames := strings.Join(entityNames[1], ", ")
+	institutionNames := strings.Join(entityNames[2], ", ")
+
+	jsonEntities, err := uc.jsonMarshalEntities(entities...)
+	if err != nil {
+		return "", errs.New(err)
+	}
+	jsonPaymentMethods := jsonEntities[0]
+	jsonTransactionCategories := jsonEntities[1]
+	jsonInstitutions := jsonEntities[2]
+
 	tools := []gpt.Tool{
 		{
-			Name:        "list_user_transactions",
-			Description: "List user transactions and sum them up. The transactions are filtered by the given parameters.",
-			Func:        uc.listUserTransactions(in.UserID),
-			Args:        listTransactionArgs,
+			Name: "list_user_transactions",
+			Description: fmt.Sprintf(
+				"List user transactions and sum them up. The transactions are about all user financial data movement and it can be filtered by start and end date, categories (%s), institutions (%s), payment methods (%s) and if it is expense or income.",
+				transactionCategoryNames,
+				institutionNames,
+				paymentMethodNames,
+			),
+			Func: uc.listUserTransactions(in.UserID),
+			Args: buildListTransactionArgs(
+				jsonPaymentMethods,
+				jsonTransactionCategories,
+				jsonInstitutions,
+			),
 		},
 		{
 			Name:        "get_user_accounts_balance",
 			Description: "Get user's accounts balance filtered by institution, start and end date. If no institution is provided all accounts are considered.",
 			Func:        uc.getUserAccountsBalance(in.UserID),
-			Args:        getAccountsBalanceArgs,
+			Args:        buildGetUserAccountsBalanceArgs(jsonInstitutions),
 		},
 		{
 			Name:        "get_user_budget",
 			Description: "Get user's budget definitions and the amount they spent in a specific month.",
 			Func:        uc.getUserBudget(in.UserID),
-			Args:        getBudgetArgs,
+			Args:        buildGetBudgetArgs(),
 		},
 	}
 
@@ -599,13 +658,17 @@ func (uc *GenerateAIChatMessageUseCase) parseUUIDsArg(
 	args map[string]any,
 	key string,
 ) []uuid.UUID {
-	strs, ok := args[key].([]string)
+	values, ok := args[key].([]any)
 	if !ok {
 		return nil
 	}
 
-	uuids := make([]uuid.UUID, len(strs))
-	for i, str := range strs {
+	uuids := make([]uuid.UUID, len(values))
+	for i, v := range values {
+		str, ok := v.(string)
+		if !ok {
+			return nil
+		}
 		id, err := uuid.Parse(str)
 		if err != nil {
 			return nil
@@ -641,83 +704,128 @@ const (
 	ArgKeyDate             ArgKey = "date"
 )
 
-var listTransactionArgs = map[string]any{
-	"type": "object",
-	"properties": map[string]any{
-		ArgKeyStartDate: map[string]any{
-			"type":        "string",
-			"description": "The start date for filtering transactions (RFC3339 format in the GMT-3 timezone).",
-		},
-		ArgKeyEndDate: map[string]any{
-			"type":        "string",
-			"description": "The end date for filtering transactions (RFC3339 format in the GMT-3 timezone).",
-		},
-		ArgKeyCategoryIDs: map[string]any{
-			"type": "array",
-			"items": map[string]any{
-				"type": "string",
+func buildListTransactionArgs(
+	jsonPaymentMethods,
+	jsonTransactionCategories,
+	jsonInstitutions string,
+) map[string]any {
+	var listTransactionArgs = map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			ArgKeyStartDate: map[string]any{
+				"type":        "string",
+				"description": "The start date for filtering transactions (RFC3339 format in the GMT-3 timezone).",
 			},
-			"description": "The category IDs to filter transactions by",
-		},
-		ArgKeyInstitutionIDs: map[string]any{
-			"type": "array",
-			"items": map[string]any{
-				"type": "string",
+			ArgKeyEndDate: map[string]any{
+				"type":        "string",
+				"description": "The end date for filtering transactions (RFC3339 format in the GMT-3 timezone).",
 			},
-			"description": "The institution IDs to filter transactions by",
-		},
-		ArgKeyPaymentMethodIDs: map[string]any{
-			"type": "array",
-			"items": map[string]any{
-				"type": "string",
+			ArgKeyCategoryIDs: map[string]any{
+				"type": "array",
+				"items": map[string]any{
+					"type": "string",
+				},
+				"description": fmt.Sprintf(
+					"The category IDs to filter transactions by (use empty array to list all). Here is all possible categories: %s",
+					jsonTransactionCategories,
+				),
 			},
-			"description": "The payment method IDs to filter transactions by",
+			ArgKeyInstitutionIDs: map[string]any{
+				"type": "array",
+				"items": map[string]any{
+					"type": "string",
+				},
+				"description": fmt.Sprintf(
+					"The institution IDs to filter transactions by (use empty array to list all). Here is all possible institutions: %s",
+					jsonInstitutions,
+				),
+			},
+			ArgKeyPaymentMethodIDs: map[string]any{
+				"type": "array",
+				"items": map[string]any{
+					"type": "string",
+				},
+				"description": fmt.Sprintf(
+					"The payment method IDs to filter transactions by (use empty array to list all). Here is all possible payment methods: %s",
+					jsonPaymentMethods,
+				),
+			},
+			ArgKeyIsExpense: map[string]any{
+				"type":        "boolean",
+				"description": "Return only expenses if true. (use false to return all)",
+			},
+			ArgKeyIsIncome: map[string]any{
+				"type":        "boolean",
+				"description": "Return only income if true. (use false to return all)",
+			},
+			ArgKeySearch: map[string]any{
+				"type":        "string",
+				"description": "Search for transactions by name (Prefer using category, institution and payment method IDs; use empty string to return all).",
+			},
 		},
-		ArgKeyIsExpense: map[string]any{
-			"type":        "boolean",
-			"description": "Return only expenses if true.",
+		"required": []string{
+			ArgKeyStartDate,
+			ArgKeyEndDate,
+			ArgKeyCategoryIDs,
+			ArgKeyInstitutionIDs,
+			ArgKeyPaymentMethodIDs,
+			ArgKeyIsExpense,
+			ArgKeyIsIncome,
+			ArgKeySearch,
 		},
-		ArgKeyIsIncome: map[string]any{
-			"type":        "boolean",
-			"description": "Return only income if true.",
-		},
-		ArgKeySearch: map[string]any{
-			"type":        "string",
-			"description": "Search for transactions by name (Prefer using category, institution and payment method IDs).",
-		},
-	},
-	"required": []string{ArgKeyStartDate, ArgKeyEndDate},
+		"additionalProperties": false,
+	}
+
+	return listTransactionArgs
 }
 
-var getAccountsBalanceArgs = map[string]any{
-	"type": "object",
-	"properties": map[string]any{
-		ArgKeyStartDate: map[string]any{
-			"type":        "string",
-			"description": "The start date for filtering balances (RFC3339 format in the GMT-3 timezone).",
-		},
-		ArgKeyEndDate: map[string]any{
-			"type":        "string",
-			"description": "The end date for filtering balances (RFC3339 format in the GMT-3 timezone).",
-		},
-		ArgKeyInstitutionIDs: map[string]any{
-			"type": "array",
-			"items": map[string]any{
-				"type": "string",
+func buildGetUserAccountsBalanceArgs(
+	jsonInstitutions string,
+) map[string]any {
+	var getAccountsBalanceArgs = map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			ArgKeyStartDate: map[string]any{
+				"type":        "string",
+				"description": "The start date for filtering balances (RFC3339 format in the GMT-3 timezone).",
 			},
-			"description": "The institution IDs to filter balances by",
+			ArgKeyEndDate: map[string]any{
+				"type":        "string",
+				"description": "The end date for filtering balances (RFC3339 format in the GMT-3 timezone).",
+			},
+			ArgKeyInstitutionIDs: map[string]any{
+				"type": "array",
+				"items": map[string]any{
+					"type": "string",
+				},
+				"description": fmt.Sprintf(
+					"The institution IDs to filter balances by (use empty array to list all). Here is all possible institutions: %s",
+					jsonInstitutions,
+				),
+			},
 		},
-	},
-	"required": []string{ArgKeyStartDate, ArgKeyEndDate},
+		"required": []string{
+			ArgKeyStartDate,
+			ArgKeyEndDate,
+			ArgKeyInstitutionIDs,
+		},
+		"additionalProperties": false,
+	}
+
+	return getAccountsBalanceArgs
 }
 
-var getBudgetArgs = map[string]any{
-	"type": "object",
-	"properties": map[string]any{
-		ArgKeyDate: map[string]any{
-			"type":        "string",
-			"description": "The first day of the month to get the budget for (RFC3339 format in the GMT-3 timezone).",
+func buildGetBudgetArgs() map[string]any {
+	var getBudgetArgs = map[string]any{
+		"type": "object",
+		"properties": map[string]any{
+			ArgKeyDate: map[string]any{
+				"type":        "string",
+				"description": "The first day of the month to get the budget for (RFC3339 format in the GMT-3 timezone).",
+			},
 		},
-	},
-	"required": []string{ArgKeyDate},
+		"required":             []string{ArgKeyDate},
+		"additionalProperties": false,
+	}
+	return getBudgetArgs
 }

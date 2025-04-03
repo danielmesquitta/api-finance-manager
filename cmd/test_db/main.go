@@ -28,8 +28,15 @@ func main() {
 	pgx := db.NewPGXPool(e)
 	sqlx := db.NewSQLX(pgx)
 
-	runSQLFiles(sqlx, "sql/migrations/*.sql")
-	runSQLFiles(sqlx, "sql/testdata/*.sql")
+	if err := runSQLFiles(sqlx, "sql/migrations/*.sql"); err != nil {
+		log.Fatalf("failed to run migration SQL files: %v", err)
+		return
+	}
+
+	if err := runSQLFiles(sqlx, "sql/testdata/*.sql"); err != nil {
+		log.Fatalf("failed to run test data SQL files: %v", err)
+		return
+	}
 }
 
 // prepareDatabaseConfigs extracts the test database name from the DSN and
@@ -61,19 +68,17 @@ func createTestDatabase(testDBName string, defaultConfig *env.Env) {
 	defer defPGX.Close()
 	defSQLX := db.NewSQLX(defPGX)
 
-	log.Printf("Dropping test database '%s' if it exists...", testDBName)
 	if _, err := defSQLX.Exec("DROP DATABASE IF EXISTS " + testDBName); err != nil {
 		log.Fatalf("failed to drop test database: %v", err)
 	}
 
-	log.Printf("Creating test database '%s'...", testDBName)
 	if _, err := defSQLX.Exec("CREATE DATABASE " + testDBName); err != nil {
 		log.Fatalf("failed to create test database: %v", err)
 	}
 }
 
 // runSQLFiles reads and executes all SQL statements from files that match the given pattern.
-func runSQLFiles(sqlx *sqlx.DB, pattern string) {
+func runSQLFiles(sqlx *sqlx.DB, pattern string) error {
 	files, err := filepath.Glob(pattern)
 	if err != nil {
 		log.Fatalf("error retrieving files with pattern %s: %v", pattern, err)
@@ -81,11 +86,12 @@ func runSQLFiles(sqlx *sqlx.DB, pattern string) {
 	for _, file := range files {
 		content, err := os.ReadFile(file)
 		if err != nil {
-			log.Printf("failed to read file %s: %v", file, err)
-			continue
+			return err
 		}
 		if _, err = sqlx.Exec(string(content)); err != nil {
-			log.Printf("failed to execute sql in file %s: %v", file, err)
+			return err
 		}
 	}
+
+	return nil
 }

@@ -2,6 +2,7 @@ package validator
 
 import (
 	"log"
+	"log/slog"
 	"strings"
 
 	"github.com/danielmesquitta/api-finance-manager/internal/domain/entity"
@@ -88,10 +89,10 @@ func (v *Validator) Validate(data any, language ...entity.Language) error {
 
 	vl, ok := v.vls[l]
 	if !ok {
-		log.Printf(
-			"validator not found for language %s, using fallback %s",
-			l,
-			defaultLangKey,
+		slog.Info(
+			"validator not found for language, using fallback",
+			"language", l,
+			"fallback", defaultLangKey,
 		)
 		vl = v.vls[defaultLangKey]
 	}
